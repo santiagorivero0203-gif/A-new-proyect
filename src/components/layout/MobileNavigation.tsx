@@ -5,6 +5,7 @@ import {
   BookOpenIcon,
   LayersIcon,
   CalculatorIcon,
+  UploadCloudIcon,
 } from '../common/Icons';
 
 interface MobileNavigationProps {
@@ -21,22 +22,27 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ currentTab, 
     {
       id: 'PRODUCTIVITY',
       label: 'Tareas',
-      icon: <TimerIcon className="w-5 h-5" />,
+      icon: <TimerIcon className="w-4 h-4" />,
     },
     {
       id: 'GUIDES',
       label: 'Guías',
-      icon: <BookOpenIcon className="w-5 h-5" />,
+      icon: <BookOpenIcon className="w-4 h-4" />,
     },
     {
       id: 'EXAMS',
       label: 'Simulador',
-      icon: <LayersIcon className="w-5 h-5" />,
+      icon: <LayersIcon className="w-4 h-4" />,
+    },
+    {
+      id: 'STORAGE',
+      label: 'Storage',
+      icon: <UploadCloudIcon className="w-4 h-4" />,
     },
     {
       id: 'TOOLS',
       label: 'Ajustes',
-      icon: <CalculatorIcon className="w-5 h-5" />,
+      icon: <CalculatorIcon className="w-4 h-4" />,
     },
   ];
 

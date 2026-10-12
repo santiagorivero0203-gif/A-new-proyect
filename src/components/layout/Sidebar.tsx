@@ -7,9 +7,11 @@ import {
   LayersIcon,
   CalculatorIcon,
   FlameIcon,
+  UploadCloudIcon,
+  PaletteIcon,
 } from '../common/Icons';
 
-export type MainTabType = 'PRODUCTIVITY' | 'GUIDES' | 'EXAMS' | 'TOOLS';
+export type MainTabType = 'PRODUCTIVITY' | 'GUIDES' | 'EXAMS' | 'STORAGE' | 'CREATIVE_BOARD' | 'TOOLS';
 
 interface SidebarProps {
   currentTab: MainTabType;
@@ -25,6 +27,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
 }) => {
   const { user } = useAuth();
+  const isMafe = user?.academic_profile === 'mafe_diseno_ucab';
+  const isSantiago = user?.academic_profile === 'santiago_fisica_ucv';
 
   const navigationTabs: { id: MainTabType; name: string; icon: React.ReactNode; badge?: string }[] = [
     {
@@ -42,12 +46,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'EXAMS',
       name: 'Simulador de Exámenes',
       icon: <LayersIcon className="w-4 h-4 text-purple-600" />,
+      badge: 'Simadi',
     },
+    {
+      id: 'STORAGE',
+      name: 'Documentos & Storage',
+      icon: <UploadCloudIcon className="w-4 h-4 text-emerald-600" />,
+      badge: 'PDF / Foto',
+    },
+    ...(isMafe
+      ? [
+          {
+            id: 'CREATIVE_BOARD' as MainTabType,
+            name: 'Tablero Creativo',
+            icon: <PaletteIcon className="w-4 h-4 text-purple-600" />,
+            badge: 'Kanban',
+          },
+        ]
+      : []),
     {
       id: 'TOOLS',
       name: 'Calculadora & Ajustes',
       icon: <CalculatorIcon className="w-4 h-4 text-slate-600" />,
-      badge: 'Extra',
+      badge: isSantiago ? 'Física' : 'Extra',
     },
   ];
 

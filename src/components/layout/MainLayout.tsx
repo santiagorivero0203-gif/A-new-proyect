@@ -4,6 +4,7 @@ import type { MainTabType } from './Sidebar';
 import { Header } from './Header';
 import { MobileNavigation } from './MobileNavigation';
 import { AuthModal } from '../auth/AuthModal';
+import { FloatingCalculatorWidget } from '../tools/FloatingCalculatorWidget';
 
 interface MainLayoutProps {
   currentTab: MainTabType;
@@ -41,6 +42,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           {children}
         </main>
       </div>
+
+      {/* Widget Flotante de Calculadora Científica (Módulo Analítico) */}
+      <FloatingCalculatorWidget />
 
       {/* Barra de Navegación Inferior Móvil */}
       <MobileNavigation
