@@ -50,11 +50,53 @@ interface GuideDetail {
   aiSummarySnippet?: string;
 }
 
-export const AcademicGuidesView: React.FC = () => {
+import type { Question } from '../../types/exam.types';
+import { geminiService } from '../../services/geminiService';
+
+export interface AcademicGuidesViewProps {
+  onStartExamWithQuestions?: (questions: Question[], title: string) => void;
+}
+
+export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
+  onStartExamWithQuestions,
+}) => {
   const { user, academicProfile } = useAuth();
   const [selectedSubject, setSelectedSubject] = useState<SubjectFilter>('ALL');
   const [activeGuideModal, setActiveGuideModal] = useState<GuideDetail | null>(null);
   const [activeTab, setActiveTab] = useState<GuideTab>('TEORIA');
+
+  const [aiSnippets, setAiSnippets] = useState<Record<number, { summary: string; questions: Question[] }>>({});
+  const [isGeneratingAiFor, setIsGeneratingAiFor] = useState<number | null>(null);
+
+  const handleGenerateAiSnippet = async (guide: GuideDetail) => {
+    setIsGeneratingAiFor(guide.id);
+    try {
+      const mockDoc: any = {
+        id: `guide-${guide.id}`,
+        title: guide.title,
+        description: guide.summary,
+        file_path: '',
+        file_type: 'application/pdf',
+        tags: [guide.subjectLabel],
+        storage_bucket: 'guides',
+      };
+      const res = await geminiService.analyzeDocument({
+        document: mockDoc,
+        profile: user?.academic_profile || 'santiago_fisica_ucv',
+      });
+      if (res.success && res.data) {
+        setAiSnippets((prev) => ({
+          ...prev,
+          [guide.id]: {
+            summary: res.data!.documentSummary,
+            questions: res.data!.generatedQuestions || [],
+          },
+        }));
+      }
+    } finally {
+      setIsGeneratingAiFor(null);
+    }
+  };
 
   const guidesCatalog: GuideDetail[] = [
     {
@@ -611,15 +653,62 @@ export const AcademicGuidesView: React.FC = () => {
               </div>
             )}
 
-            {/* Espacio reservado para Gemini AI (Fase 3) */}
-            <div className="p-3 bg-blue-50/50 border border-blue-200 rounded-2xl flex items-center justify-between text-xs text-blue-700">
-              <span className="flex items-center gap-1.5">
-                <SparklesIcon className="w-4 h-4" />
-                <span>Módulo de IA Gemini: Resúmenes y flashcards automáticas disponibles en Fase 3</span>
-              </span>
-              <span className="font-mono font-bold text-[10px] bg-blue-100 px-2 py-0.5 rounded-full">
-                Próximamente
-              </span>
+            {/* Asistente Inteligente Google Gemini (Fase 3 Activa) */}
+            <div className="p-4 bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-slate-50 border border-blue-200/90 rounded-2xl space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-blue-900">
+                  <SparklesIcon className="w-4 h-4 text-blue-600" />
+                  <span>Asistente Gemini 2.5: Síntesis Dinámica para {user?.full_name || 'Estudiante'}</span>
+                </span>
+                <span className="font-mono font-bold text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                  IA Activa
+                </span>
+              </div>
+
+              {aiSnippets[activeGuideModal.id] ? (
+                <div className="p-3 bg-white rounded-xl border border-blue-200/80 text-xs text-slate-700 space-y-2 animate-fadeIn">
+                  <p className="leading-relaxed font-sans">
+                    {aiSnippets[activeGuideModal.id].summary}
+                  </p>
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      Enfoque adaptado para {user?.academic_profile.replace(/_/g, ' ')}
+                    </span>
+                    {onStartExamWithQuestions && aiSnippets[activeGuideModal.id].questions.length > 0 && (
+                      <button
+                        onClick={() => {
+                          const item = aiSnippets[activeGuideModal.id];
+                          onStartExamWithQuestions(
+                            item.questions,
+                            `Práctica IA: ${activeGuideModal.title}`
+                          );
+                          setActiveGuideModal(null);
+                        }}
+                        className="btn-primary text-[11px] py-1.5 px-3 flex items-center gap-1"
+                      >
+                        <SparklesIcon className="w-3 h-3 text-blue-400" />
+                        <span>Practicar {aiSnippets[activeGuideModal.id].questions.length} Preguntas</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-slate-600">
+                    Genera una síntesis ultra-condensada y preguntas de práctica adaptadas a tu nivel académico.
+                  </p>
+                  <button
+                    disabled={isGeneratingAiFor === activeGuideModal.id}
+                    onClick={() => handleGenerateAiSnippet(activeGuideModal)}
+                    className="btn-brand text-xs py-1.5 px-3.5 shrink-0 flex items-center gap-1.5"
+                  >
+                    <SparklesIcon className="w-3.5 h-3.5" />
+                    <span>
+                      {isGeneratingAiFor === activeGuideModal.id ? 'Generando...' : 'Generar Síntesis IA'}
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Footer del Modal */}

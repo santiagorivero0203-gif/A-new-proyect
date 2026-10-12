@@ -1,24 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { storageService } from '../../services/storageService';
+import { geminiService } from '../../services/geminiService';
 import { DocumentUploader } from './DocumentUploader';
 import { DocumentGallery } from './DocumentGallery';
+import { GeminiConfigModal } from '../ai/GeminiConfigModal';
 import type { UserDocument } from '../../types';
+import type { Question } from '../../types/exam.types';
 import {
   UploadCloudIcon,
   FileTextIcon,
   SparklesIcon,
 } from '../common/Icons';
 
+interface StorageManagerViewProps {
+  onStartExamWithQuestions?: (questions: Question[], title: string) => void;
+  onNavigateToGuides?: () => void;
+}
+
 /**
- * Gestor Integral de Documentos y Supabase Storage
- * Proporciona subida directa con barra de progreso, galería organizada,
- * estadísticas de uso y filtrado pedagógico.
+ * Gestor Integral de Documentos, Supabase Storage y Motor Gemini Multimodal
+ * Proporciona subida directa, galería organizada, extracción de temarios con IA
+ * y lanzamiento instantáneo de exámenes pedagógicos.
  */
-export const StorageManagerView: React.FC = () => {
+export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
+  onStartExamWithQuestions,
+  onNavigateToGuides,
+}) => {
   const { user, isDemoMode } = useAuth();
   const [activeTab, setActiveTab] = useState<'GALLERY' | 'UPLOAD'>('GALLERY');
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+  const [isGeminiConfigOpen, setIsGeminiConfigOpen] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(() => geminiService.hasApiKey());
+
   const [stats, setStats] = useState({
     totalDocs: 0,
     totalMB: 0,
@@ -61,40 +75,56 @@ export const StorageManagerView: React.FC = () => {
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold mb-2">
             <UploadCloudIcon className="w-3.5 h-3.5" />
-            Supabase Storage & PostgreSQL Relacional
+            Supabase Storage & Google Gemini 2.5 Flash
           </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-display">
             Almacén de Documentos & Apuntes
           </h2>
           <p className="text-sm text-slate-500 max-w-2xl">
-            Sube PDFs de estudio, fotos de la pizarra y apuntes en alta resolución. Vinculados de forma segura a tu cuenta de estudiante.
+            Sube PDFs, fotos de la pizarra y apuntes en alta resolución. Analízalos con IA para generar bancos de preguntas automáticos.
           </p>
         </div>
 
-        {/* Pestañas de Vista */}
-        <div className="inline-flex p-1 bg-slate-200/70 rounded-2xl border border-slate-200 self-start md:self-auto">
+        {/* Pestañas de Vista y Configuración de Gemini */}
+        <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
           <button
-            onClick={() => setActiveTab('GALLERY')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-              activeTab === 'GALLERY'
-                ? 'bg-white text-slate-900 shadow-soft-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            onClick={() => setIsGeminiConfigOpen(true)}
+            className="px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 flex items-center gap-2 shadow-soft-sm transition-all"
+            title="Configurar clave de Gemini o consultar estado del motor"
           >
-            <FileTextIcon className="w-3.5 h-3.5 text-blue-600" />
-            <span>Mis Documentos ({stats.totalDocs})</span>
+            <SparklesIcon className="w-3.5 h-3.5 text-blue-600" />
+            <span>Gemini AI</span>
+            <span
+              className={`w-2 h-2 rounded-full ${
+                hasApiKey ? 'bg-emerald-500' : 'bg-blue-500'
+              }`}
+            />
           </button>
-          <button
-            onClick={() => setActiveTab('UPLOAD')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-              activeTab === 'UPLOAD'
-                ? 'bg-white text-slate-900 shadow-soft-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <UploadCloudIcon className="w-3.5 h-3.5 text-blue-600" />
-            <span>Subir Archivo</span>
-          </button>
+
+          <div className="inline-flex p-1 bg-slate-200/70 rounded-2xl border border-slate-200">
+            <button
+              onClick={() => setActiveTab('GALLERY')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                activeTab === 'GALLERY'
+                  ? 'bg-white text-slate-900 shadow-soft-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <FileTextIcon className="w-3.5 h-3.5 text-blue-600" />
+              <span>Mis Documentos ({stats.totalDocs})</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('UPLOAD')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                activeTab === 'UPLOAD'
+                  ? 'bg-white text-slate-900 shadow-soft-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <UploadCloudIcon className="w-3.5 h-3.5 text-blue-600" />
+              <span>Subir Archivo</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -151,27 +181,38 @@ export const StorageManagerView: React.FC = () => {
 
       {/* Contenido según Pestaña Activa */}
       {activeTab === 'GALLERY' ? (
-        <DocumentGallery refreshTrigger={refreshTrigger} />
+        <DocumentGallery
+          refreshTrigger={refreshTrigger}
+          onStartExamWithQuestions={onStartExamWithQuestions}
+          onNavigateToGuides={onNavigateToGuides}
+        />
       ) : (
         <div className="max-w-2xl mx-auto">
           <DocumentUploader onDocumentUploaded={handleUploadSuccess} />
         </div>
       )}
 
-      {/* Banner de Sincronización con Supabase */}
+      {/* Banner de Sincronización con Supabase y Gemini */}
       <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
         <div className="flex items-center gap-2">
           <SparklesIcon className="w-4 h-4 text-blue-600 shrink-0" />
           <span>
             {isDemoMode
-              ? 'Modo Demo activo: Los documentos se previsualizan y persisten localmente en caché.'
+              ? 'Modo Demo activo: Los análisis de Gemini y documentos se persisten localmente en caché.'
               : 'Conexión activa con Supabase Storage (bucket `documents`) y tabla `user_documents`.'}
           </span>
         </div>
         <span className="font-mono text-[11px] text-slate-400">
-          Límite máximo por archivo: 15 MB
+          Gemini 2.5 Flash • Multimodal Ready
         </span>
       </div>
+
+      {/* Modal de Configuración de API Key */}
+      <GeminiConfigModal
+        isOpen={isGeminiConfigOpen}
+        onClose={() => setIsGeminiConfigOpen(false)}
+        onKeySaved={() => setHasApiKey(geminiService.hasApiKey())}
+      />
     </div>
   );
 };

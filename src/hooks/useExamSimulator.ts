@@ -148,21 +148,28 @@ export function useExamSimulator() {
   }, [session.status, session.isPaused, session.secondsRemaining, finishExam]);
 
   /**
-   * Inicia un examen configurando la selección de preguntas
+   * Inicia un examen configurando la selección de preguntas (admite banco generado por IA)
    */
-  const startExam = (config: ExamConfig) => {
-    let pool = [...QUESTION_BANK];
+  const startExam = (config: ExamConfig, customQuestions?: Question[]) => {
+    let pool =
+      customQuestions && customQuestions.length > 0
+        ? [...customQuestions]
+        : config.customQuestions && config.customQuestions.length > 0
+        ? [...config.customQuestions]
+        : [...QUESTION_BANK];
 
-    if (config.subject) {
-      pool = pool.filter((q) => q.subject === config.subject);
-    }
+    if (!customQuestions && !config.customQuestions) {
+      if (config.subject) {
+        pool = pool.filter((q) => q.subject === config.subject);
+      }
 
-    if (config.mode === 'SIMADI_UCV') {
-      pool = pool.filter(
-        (q) =>
-          q.targetProfiles.includes('santiago_fisica_ucv') ||
-          q.targetProfiles.includes('prima_bachillerato_5')
-      );
+      if (config.mode === 'SIMADI_UCV') {
+        pool = pool.filter(
+          (q) =>
+            q.targetProfiles.includes('santiago_fisica_ucv') ||
+            q.targetProfiles.includes('prima_bachillerato_5')
+        );
+      }
     }
 
     if (config.shuffleQuestions) {

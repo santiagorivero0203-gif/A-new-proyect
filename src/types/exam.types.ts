@@ -32,6 +32,7 @@ export type ExamMode =
   | 'SIMADI_OPSU'
   | 'BY_SUBJECT'
   | 'QUICK_PRACTICE'
+  | 'AI_GENERATED'
   | 'CUSTOM';
 
 export interface ExamConfig {
@@ -42,6 +43,7 @@ export interface ExamConfig {
   timeLimitSeconds: number; // e.g., 60 * 60 para 1 hora
   allowPause: boolean;
   shuffleQuestions: boolean;
+  customQuestions?: Question[];
 }
 
 export interface ExamSessionState {

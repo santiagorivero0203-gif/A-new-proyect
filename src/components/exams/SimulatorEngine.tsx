@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useExamSimulator } from '../../hooks/useExamSimulator';
 import { ExamRunner } from './ExamRunner';
 import { ExamResultsReport } from './ExamResultsReport';
 import { LayersIcon, PlayIcon, SparklesIcon } from '../common/Icons';
-import type { AcademicSubject } from '../../types/exam.types';
+import type { AcademicSubject, ExamConfig, Question } from '../../types/exam.types';
 
-export const SimulatorEngine: React.FC = () => {
+interface SimulatorEngineProps {
+  initialConfig?: ExamConfig | null;
+  initialQuestions?: Question[] | null;
+  onClearInitial?: () => void;
+}
+
+export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
+  initialConfig,
+  initialQuestions,
+  onClearInitial,
+}) => {
   const {
     session,
     report,
@@ -21,6 +31,13 @@ export const SimulatorEngine: React.FC = () => {
   } = useExamSimulator();
 
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<AcademicSubject | 'TODAS'>('TODAS');
+
+  useEffect(() => {
+    if (initialConfig && initialQuestions && initialQuestions.length > 0) {
+      startExam(initialConfig, initialQuestions);
+      if (onClearInitial) onClearInitial();
+    }
+  }, [initialConfig, initialQuestions, startExam, onClearInitial]);
 
   if (session.status === 'IN_PROGRESS') {
     return (
