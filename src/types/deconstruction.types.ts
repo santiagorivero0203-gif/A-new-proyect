@@ -138,11 +138,26 @@ export function convertDeconstructedToQuestions(
       text: optText,
     }));
 
-    // Determinar la opción correcta comparando el texto
-    const normalizedCorrect = dq.correcta.trim().toLowerCase();
-    const matchedOption = options.find(
+    // Determinar la opción correcta comparando texto exacto o letra/índice (ej: "B", "Opción B", "b)")
+    const normalizedCorrect = (dq.correcta || '').trim().toLowerCase();
+    let matchedOption = options.find(
       (opt) => opt.text.trim().toLowerCase() === normalizedCorrect
     );
+
+    if (!matchedOption) {
+      // Coincidencia por letra ('a', 'b', 'c', 'd' o 'opción x' o '1' a '4')
+      const letterMatch = normalizedCorrect.match(/\b([a-d])\b|^opci[oó]n\s*([a-d])|\b([1-4])\b/i);
+      if (letterMatch) {
+        const letter = (letterMatch[1] || letterMatch[2] || '').toLowerCase();
+        const num = letterMatch[3] ? parseInt(letterMatch[3], 10) - 1 : -1;
+        if (letter) {
+          matchedOption = options.find((opt) => opt.id === `opt-${letter}`);
+        } else if (num >= 0 && num < options.length) {
+          matchedOption = options[num];
+        }
+      }
+    }
+
     const correctOptionId = matchedOption ? matchedOption.id : options[0]?.id || 'opt-a';
 
     // Extraer resolución de la justificación si tiene formato KaTeX o deducción

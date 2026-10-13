@@ -7,14 +7,34 @@ import {
   MaximizeIcon,
 } from '../common/Icons';
 
+interface FloatingCalculatorWidgetProps {
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
 /**
  * Widget Flotante de Calculadora Científica (Módulo Analítico)
  * Disponible universalmente para todos los estudiantes durante
  * exámenes y guías de estudio sin interrumpir el flujo ni reiniciar temporizadores.
  */
-export const FloatingCalculatorWidget: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+export const FloatingCalculatorWidget: React.FC<FloatingCalculatorWidgetProps> = ({
+  isOpen: controlledIsOpen,
+  onOpenChange,
+}) => {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+
+  const isControlled = controlledIsOpen !== undefined;
+  const isOpen = isControlled ? controlledIsOpen : internalIsOpen;
+
+  const handleSetOpen = (nextOpen: boolean) => {
+    if (!isControlled) {
+      setInternalIsOpen(nextOpen);
+    }
+    if (onOpenChange) {
+      onOpenChange(nextOpen);
+    }
+  };
 
   return (
     <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 pointer-events-auto select-none print:hidden">
@@ -22,7 +42,7 @@ export const FloatingCalculatorWidget: React.FC = () => {
       {!isOpen && (
         <button
           onClick={() => {
-            setIsOpen(true);
+            handleSetOpen(true);
             setIsMinimized(false);
           }}
           className="flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-soft-lg font-bold text-xs transition-all transform hover:scale-105 active:scale-95 border bg-white text-slate-800 border-slate-200/90 hover:bg-slate-50"
@@ -42,7 +62,7 @@ export const FloatingCalculatorWidget: React.FC = () => {
       {isOpen && (
         <div
           className={`bg-white rounded-3xl border border-slate-200/90 shadow-soft-lg overflow-hidden transition-all duration-200 ${
-            isMinimized ? 'w-72 h-14' : 'w-80 sm:w-96 shadow-2xl animate-fadeIn'
+            isMinimized ? 'w-72 max-w-[calc(100vw-2rem)] h-14' : 'w-[calc(100vw-2rem)] max-w-sm sm:w-96 shadow-2xl animate-fadeIn'
           }`}
         >
           {/* Barra Superior / Header de la Ventana */}
@@ -69,7 +89,7 @@ export const FloatingCalculatorWidget: React.FC = () => {
                 )}
               </button>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => handleSetOpen(false)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                 title="Cerrar panel flotante"
               >

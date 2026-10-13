@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { ScientificCalculator } from '../dashboards/ScientificCalculator';
 import { CalculatorIcon } from '../common/Icons';
+import { cacheCleaner } from '../../services/cacheCleaner';
 
 export const ToolsAndSettingsView: React.FC = () => {
   const { user, updateUserPreferences, isDemoMode } = useAuth();
@@ -93,6 +94,40 @@ export const ToolsAndSettingsView: React.FC = () => {
                 </span>
               </div>
             </div>
+          </div>
+
+          {/* Tarjeta de Directriz Estado Cero & Purga de Caché */}
+          <div className="app-card p-6 space-y-4 bg-white border border-slate-200/80 shadow-soft">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 font-sans">
+                  Mantenimiento & Estado Cero
+                </h3>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  Elimina residuos de pruebas, mocks y restablece la app limpia de fábrica.
+                </p>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold">
+                Zero Dummy
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Si detectas datos antiguos en tu navegador o deseas iniciar un nuevo ciclo académico completamente limpio (0 eventos, 0 tareas ficticias), restablece la memoria local.
+            </p>
+
+            <button
+              onClick={() => {
+                if (window.confirm('¿Deseas restablecer el caché local y purgar todos los datos de prueba? Esta acción dejará las tablas limpias para iniciar en producción.')) {
+                  const res = cacheCleaner.resetAllLocalCache();
+                  alert(`Caché purgado con éxito (${res.purgedKeysCount} registros limpiados). La plataforma está en Estado Cero.`);
+                  window.location.reload();
+                }
+              }}
+              className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200/80 hover:border-rose-200 text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+            >
+              <span>Restablecer Caché Local & Purgar Datos de Prueba</span>
+            </button>
           </div>
         </div>
       </div>

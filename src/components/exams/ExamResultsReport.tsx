@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { ExamReport } from '../../types/exam.types';
 import { renderLatex } from '../../utils/latexRenderer';
 import { CheckCircleIcon, TrophyIcon, RotateCcwIcon } from '../common/Icons';
+import { notificationService } from '../../services/notificationService';
 
 interface ExamResultsReportProps {
   report: ExamReport;
@@ -124,6 +125,39 @@ export const ExamResultsReport: React.FC<ExamResultsReportProps> = ({
             })}
           </div>
         </div>
+
+        {/* Planificador Automático de Repetición Espaciada (<60%) */}
+        {report.percentage < 60 && (
+          <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg shrink-0">
+                🔁
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-slate-900">
+                  Planificador de Repetición Espaciada Adaptativo
+                </h4>
+                <p className="text-xs text-slate-600 mt-0.5">
+                  Efectividad del {report.percentage}%. ¿Deseas agendar automáticamente 3 micro-sesiones de 15 min (a los 2, 5 y 10 días) en tu calendario para asegurar el dominio antes del parcial real?
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                notificationService.scheduleSpacedRepetition(
+                  'santiago_fisica_ucv',
+                  report.examTitle,
+                  report.questions[0]?.subject || 'Matemática',
+                  report.percentage
+                );
+                alert('¡3 micro-repasos agendados en tu calendario con alarmas nativas!');
+              }}
+              className="btn-brand text-xs py-2.5 px-4 rounded-xl shrink-0 font-bold shadow-soft-sm"
+            >
+              Agendar Repasos (Días 2, 5 y 10)
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Revisión Pregunta a Pregunta con Justificaciones */}

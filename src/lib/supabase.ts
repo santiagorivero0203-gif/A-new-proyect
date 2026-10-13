@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../types/database.types';
 
-// Obtener credenciales desde variables de entorno Vite
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Obtener credenciales desde variables de entorno Vite de forma segura
+const env = typeof import.meta !== 'undefined' && (import.meta as any).env ? (import.meta as any).env : {};
+const supabaseUrl = env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || '';
 
 /**
  * Determina si la aplicación cuenta con credenciales activas de Supabase

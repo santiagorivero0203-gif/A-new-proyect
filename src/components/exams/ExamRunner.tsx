@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ExamSessionState } from '../../types/exam.types';
-import { renderLatex } from '../../utils/latexRenderer';
 import { TimerIcon, PauseIcon, PlayIcon } from '../common/Icons';
+import { ExamQuestionCard } from './ExamQuestionCard';
+import { ExamTimerBadge } from './ExamTimerBadge';
+import { proctoringSystem } from '../../services/proctoringSystem';
 
 interface ExamRunnerProps {
   session: ExamSessionState;
@@ -25,15 +27,16 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
   onFinish,
 }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Liberación estricta de cámara/hardware al salir o terminar la prueba
+  useEffect(() => {
+    return () => {
+      proctoringSystem.stopCameraHardware();
+    };
+  }, []);
 
   const currentQuestion = session.questions[session.currentIndex];
-  const isTimeCritical = session.secondsRemaining < 5 * 60; // Menos de 5 minutos
-
-  const formatTimer = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   const answeredCount = Object.keys(session.userAnswers).length;
   const totalCount = session.questions.length;
@@ -41,9 +44,11 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
   const isFlagged = currentQuestion ? session.flaggedQuestions[currentQuestion.id] : false;
 
   const handleFinishClick = () => {
+    if (isSubmitting) return;
     if (answeredCount < totalCount) {
       setShowConfirmModal(true);
     } else {
+      setIsSubmitting(true);
       onFinish();
     }
   };
@@ -84,21 +89,14 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
             </button>
           )}
 
-          <div
-            className={`px-3 py-1.5 rounded-xl font-mono text-sm font-bold flex items-center gap-2 border transition-all ${
-              isTimeCritical
-                ? 'bg-rose-50 text-rose-700 border-rose-300 animate-pulse'
-                : 'bg-slate-100 text-slate-800 border-slate-200'
-            }`}
-          >
-            <span>{formatTimer(session.secondsRemaining)}</span>
-          </div>
+          <ExamTimerBadge secondsRemaining={session.secondsRemaining} />
 
           <button
             onClick={handleFinishClick}
-            className="btn-primary text-xs py-2 px-3.5"
+            disabled={isSubmitting}
+            className="btn-primary text-xs py-2 px-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Finalizar Examen
+            {isSubmitting ? 'Finalizando...' : 'Finalizar Examen'}
           </button>
         </div>
       </div>
@@ -147,88 +145,16 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
         </div>
       </div>
 
-      {/* Tarjeta de la Pregunta Activa */}
-      <div className="app-card p-6 sm:p-8 space-y-6">
-        {/* Metadatos y Flag */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-              {currentQuestion.subject}
-            </span>
-            <span className="text-xs text-slate-400 font-medium">
-              • {currentQuestion.topic}
-            </span>
-            <span className="text-[11px] text-slate-400 font-mono">
-              ({currentQuestion.difficulty})
-            </span>
-          </div>
-
-          <button
-            onClick={() => onToggleFlag(currentQuestion.id)}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-medium transition-all border ${
-              isFlagged
-                ? 'bg-amber-50 text-amber-700 border-amber-300 font-bold'
-                : 'text-slate-500 border-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            <span>{isFlagged ? '★ Marcada para Revisar' : '☆ Marcar para Revisar'}</span>
-          </button>
-        </div>
-
-        {/* Enunciado de la Pregunta */}
-        <div className="space-y-4">
-          <div
-            className="text-base sm:text-lg font-medium text-slate-900 leading-relaxed font-sans"
-            dangerouslySetInnerHTML={{
-              __html: renderLatex(currentQuestion.questionText, false),
-            }}
-          />
-
-          {currentQuestion.latexFormula && (
-            <div
-              className="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl text-center text-slate-900 font-serif"
-              dangerouslySetInnerHTML={{
-                __html: renderLatex(currentQuestion.latexFormula, true),
-              }}
-            />
-          )}
-        </div>
-
-        {/* Lista de Opciones */}
-        <div className="space-y-3 pt-2">
-          {currentQuestion.options.map((opt) => {
-            const isSelected = currentAnswer === opt.id;
-            return (
-              <div
-                key={opt.id}
-                onClick={() => onSelectAnswer(currentQuestion.id, opt.id)}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
-                  isSelected
-                    ? 'bg-brand-50/70 border-brand-500 shadow-soft-sm text-slate-900 ring-1 ring-brand-500/20 font-medium'
-                    : 'bg-white border-slate-200/90 hover:border-slate-300 hover:bg-slate-50/50 text-slate-700'
-                }`}
-              >
-                <div className="flex items-center gap-3.5">
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${
-                      isSelected
-                        ? 'border-brand-500 bg-brand-500'
-                        : 'border-slate-300'
-                    }`}
-                  >
-                    {isSelected && <span className="w-2 h-2 rounded-full bg-white" />}
-                  </div>
-                  <span
-                    className="text-sm text-slate-900 leading-normal font-sans"
-                    dangerouslySetInnerHTML={{
-                      __html: renderLatex(opt.text, false),
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {/* Tarjeta de la Pregunta Activa (Aislada y Memorizada con React.memo) */}
+      <div className="space-y-4">
+        <ExamQuestionCard
+          question={currentQuestion}
+          selectedAnswer={currentAnswer}
+          isFlagged={Boolean(isFlagged)}
+          onSelectAnswer={onSelectAnswer}
+          onToggleFlag={onToggleFlag}
+        />
+      </div>
 
         {/* Botones de Navegación */}
         <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
@@ -254,7 +180,6 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
             </button>
           )}
         </div>
-      </div>
 
       {/* Modal de Confirmación si faltan preguntas */}
       {showConfirmModal && (
@@ -274,13 +199,16 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
                 Volver a revisar
               </button>
               <button
+                disabled={isSubmitting}
                 onClick={() => {
+                  if (isSubmitting) return;
+                  setIsSubmitting(true);
                   setShowConfirmModal(false);
                   onFinish();
                 }}
-                className="btn-primary text-xs px-4 bg-rose-600 hover:bg-rose-700"
+                className="btn-primary text-xs px-4 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sí, entregar evaluación
+                {isSubmitting ? 'Entregando...' : 'Sí, entregar evaluación'}
               </button>
             </div>
           </div>

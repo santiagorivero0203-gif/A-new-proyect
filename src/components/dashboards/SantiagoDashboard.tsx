@@ -7,7 +7,7 @@ import { renderLatex } from '../../utils/latexRenderer';
 
 /**
  * Dashboard Analítico de Santiago (Escuela de Física UCV)
- * Formulado bajo la estética clara y sofisticada de Invoficlib.
+ * Formulado bajo la estética clara y sofisticada de tonos neutros y cobalto.
  * Incluye formulario LaTeX dinámico, constantes universales y acceso rápido
  * a la calculadora científica analítica.
  */
@@ -26,7 +26,7 @@ export const SantiagoDashboard: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Banner Analítico UCV - Estilo Invoficlib */}
+      {/* Banner Analítico UCV */}
       <div className="app-card p-6 sm:p-8 bg-white border border-slate-200/90 shadow-soft-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold">

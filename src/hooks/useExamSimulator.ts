@@ -8,6 +8,7 @@ import type {
 import { QUESTION_BANK } from '../lib/questionBank';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { sessionRecoveryService } from '../services/sessionRecoveryService';
 
 export function useExamSimulator() {
   const { user } = useAuth();
@@ -32,11 +33,25 @@ export function useExamSimulator() {
   });
 
   const [report, setReport] = useState<ExamReport | null>(null);
+  const [recoverableSession, setRecoverableSession] = useState<ExamSessionState | null>(null);
+
+  // Escuchar reconexión y detectar sesiones pendientes de recuperación
+  useEffect(() => {
+    const cleanupSync = sessionRecoveryService.initNetworkSyncListener();
+    const backup = sessionRecoveryService.getActiveExamSession();
+    if (backup && backup.status === 'IN_PROGRESS' && backup.questions.length > 0) {
+      setRecoverableSession(backup);
+    }
+    return cleanupSync;
+  }, []);
 
   // Mantener referencia síncrona al estado actual de la sesión para evitar llamadas impuras dentro del updater
   const sessionRef = useRef(session);
   useEffect(() => {
     sessionRef.current = session;
+    if (session.status === 'IN_PROGRESS') {
+      sessionRecoveryService.saveActiveExamSession(session);
+    }
   }, [session]);
 
   /**
@@ -111,26 +126,41 @@ export function useExamSimulator() {
       completedAt: generatedReport.completedAt,
     }));
 
-    // 3. Persistir asíncronamente en Supabase de forma segura y desacoplada
-    if (user?.id && isSupabaseConfigured()) {
-      (supabase.from('exam_results') as any)
-        .insert({
-          user_id: user.id,
-          exam_title: current.config.title,
-          subject: current.config.subject || 'Multidisciplinar',
-          score: scoreOn20,
-          total_questions: current.questions.length,
-          correct_answers: correct,
-          time_taken_seconds: timeTaken,
-          breakdown: topicBreakdown,
-          answers: current.userAnswers,
-        })
-        .then(({ error }: { error: any }) => {
-          if (error) console.warn('No se pudo guardar resultado en Supabase:', error.message);
-        })
-        .catch((err: any) => {
-          console.warn('Excepción de red al guardar resultado de examen:', err);
-        });
+    // 3. Limpiar respaldo de sesión en curso
+    sessionRecoveryService.clearActiveExamSession();
+
+    // 4. Persistir en Supabase o encolar para sincronización offline
+    if (user?.id) {
+      if (!navigator.onLine || !isSupabaseConfigured()) {
+        sessionRecoveryService.queuePendingReport(generatedReport, user.id);
+        console.info('[useExamSimulator] Sin conexión activa. Reporte encolado en caché offline local.');
+      } else {
+        (supabase.from('exam_results') as any)
+          .insert({
+            user_id: user.id,
+            exam_title: current.config.title,
+            subject: current.config.subject || 'Multidisciplinar',
+            area: current.config.subject || 'Multidisciplinar',
+            score: scoreOn20,
+            percentage,
+            total_questions: current.questions.length,
+            correct_answers: correct,
+            time_taken_seconds: timeTaken,
+            time_used_seconds: timeTaken,
+            breakdown: topicBreakdown,
+            answers: current.userAnswers,
+          })
+          .then(({ error }: { error: any }) => {
+            if (error) {
+              console.warn('Fallo guardando en Supabase. Encolando offline:', error.message);
+              sessionRecoveryService.queuePendingReport(generatedReport, user.id);
+            }
+          })
+          .catch((err: any) => {
+            console.warn('Excepción de red al guardar resultado de examen. Encolando offline:', err);
+            sessionRecoveryService.queuePendingReport(generatedReport, user.id);
+          });
+      }
     }
   }, [user]);
 
@@ -274,9 +304,24 @@ export function useExamSimulator() {
     }));
   };
 
+  const resumeRecoveredSession = () => {
+    if (recoverableSession) {
+      setSession(recoverableSession);
+      setRecoverableSession(null);
+    }
+  };
+
+  const discardRecoveredSession = () => {
+    sessionRecoveryService.clearActiveExamSession();
+    setRecoverableSession(null);
+  };
+
   return {
     session,
     report,
+    recoverableSession,
+    resumeRecoveredSession,
+    discardRecoveredSession,
     startExam,
     selectAnswer,
     toggleFlagQuestion,

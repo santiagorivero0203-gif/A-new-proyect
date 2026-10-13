@@ -74,7 +74,12 @@ const AppContent: React.FC = () => {
           />
         );
       case 'PLANNER':
-        return <AcademicPlannerView />;
+        return (
+          <AcademicPlannerView
+            onLaunchExam={handleLaunchExam}
+            onNavigateToGuides={() => setCurrentTab('GUIDES')}
+          />
+        );
       case 'GUIDES':
         return (
           <AcademicGuidesView

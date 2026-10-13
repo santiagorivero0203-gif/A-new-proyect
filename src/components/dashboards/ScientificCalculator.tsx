@@ -32,7 +32,7 @@ export const ScientificCalculator: React.FC<{ isEmbedded?: boolean }> = ({ isEmb
         .replace(/π/g, `${Math.PI}`)
         .replace(/e(?![a-zA-Z0-9])/g, `${Math.E}`);
 
-      sanitized = sanitized.replace(/(\d+(\.\d+)?)\^(\d+(\.\d+)?)/g, 'Math.pow($1,$3)');
+      sanitized = sanitized.replace(/\^/g, '**');
 
       // eslint-disable-next-line @typescript-eslint/no-implied-eval
       const result = Function(`"use strict"; return (${sanitized})`)();

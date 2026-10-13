@@ -26,11 +26,23 @@ function escapeHtml(text: string): string {
  * 3. Si displayMode es true y la cadena es una fórmula explícita pura (inicia con comando LaTeX o viene de un campo de fórmula):
  *    se compila en bloque centrado.
  */
+// Caché de alto rendimiento en memoria para evitar re-compilaciones costosas de KaTeX
+const latexCache = new Map<string, string>();
+const MAX_CACHE_SIZE = 1500;
+
 export function renderLatex(content: string | undefined | null, displayMode: boolean = false): string {
   if (!content) return '';
 
   const trimmed = content.trim();
   if (!trimmed) return '';
+
+  const cacheKey = `${displayMode ? 'D:' : 'I:'}${trimmed}`;
+  const cached = latexCache.get(cacheKey);
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  const computeResult = (): string => {
 
   // Caso A: Modo bloque explícito para campos dedicados a fórmulas (ej. latexFormula)
   if (displayMode) {
@@ -120,4 +132,15 @@ export function renderLatex(content: string | undefined | null, displayMode: boo
     console.error('Error procesando contenido LaTeX mixto:', err);
     return escapeHtml(trimmed);
   }
+};
+
+  const finalHtml = computeResult();
+
+  if (latexCache.size >= MAX_CACHE_SIZE) {
+    const firstKey = latexCache.keys().next().value;
+    if (firstKey) latexCache.delete(firstKey);
+  }
+  latexCache.set(cacheKey, finalHtml);
+
+  return finalHtml;
 }

@@ -18,11 +18,13 @@ import {
   EyeIcon,
   XIcon,
 } from '../common/Icons';
+import { EmptyState } from '../common/EmptyState';
 
 interface DocumentGalleryProps {
   onSelectDocument?: (doc: UserDocument) => void;
   onStartExamWithQuestions?: (questions: Question[], title: string) => void;
   onNavigateToGuides?: () => void;
+  onUploadClick?: () => void;
   filterTag?: string;
   refreshTrigger?: number;
 }
@@ -36,6 +38,7 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
   onSelectDocument,
   onStartExamWithQuestions,
   onNavigateToGuides,
+  onUploadClick,
   filterTag,
   refreshTrigger = 0,
 }) => {
@@ -220,19 +223,16 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
           <p className="text-xs text-slate-500">Consultando almacenamiento en Supabase...</p>
         </div>
       ) : filteredDocuments.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-2xl border border-slate-200/80">
-          <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-lg">
-            📂
-          </div>
-          <h4 className="text-sm font-bold text-slate-900 mb-1">
-            No se encontraron documentos
-          </h4>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            {searchQuery || selectedTag !== 'TODOS'
+        <EmptyState
+          title={searchQuery || selectedTag !== 'TODOS' ? 'No se encontraron documentos' : 'Aún no has subido apuntes ni archivos'}
+          description={
+            searchQuery || selectedTag !== 'TODOS'
               ? 'Intenta con otro término de búsqueda o limpia los filtros.'
-              : 'Aún no has subido apuntes ni archivos. Utiliza la pestaña superior para cargar tu primer documento.'}
-          </p>
-        </div>
+              : 'Sube fotos de pizarra, guías en PDF o apuntes para analizarlos con IA y generar evaluaciones automáticas.'
+          }
+          actionLabel={!searchQuery && selectedTag === 'TODOS' && onUploadClick ? '+ Subir Primer Documento' : undefined}
+          onAction={onUploadClick}
+        />
       ) : (
         /* Cuadrícula de Documentos */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -327,14 +327,23 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
                   <div className="space-y-2 pt-1">
                     <button
                       onClick={() => handleAnalyzeWithGemini(doc)}
+                      disabled={isAiProcessing}
                       className={`w-full text-[11px] py-2 px-3 rounded-xl font-bold flex items-center justify-center gap-1.5 transition-all ${
-                        hasAiAnalysis
+                        isAiProcessing
+                          ? 'bg-slate-300 text-slate-500 cursor-not-allowed opacity-70'
+                          : hasAiAnalysis
                           ? 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'
                           : 'bg-[#1d1d1f] text-white hover:bg-slate-800 shadow-soft-sm'
                       }`}
                     >
                       <SparklesIcon className="w-3.5 h-3.5 text-blue-400" />
-                      <span>{hasAiAnalysis ? 'Ver Análisis IA & Preguntas' : 'Analizar con Gemini 2.5'}</span>
+                      <span>
+                        {isAiProcessing
+                          ? 'Analizando...'
+                          : hasAiAnalysis
+                          ? 'Ver Análisis IA & Preguntas'
+                          : 'Analizar con Gemini 2.5'}
+                      </span>
                     </button>
 
                     <div className="flex items-center gap-2">

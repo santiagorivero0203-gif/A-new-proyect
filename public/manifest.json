@@ -1,0 +1,21 @@
+{
+  "short_name": "CPE Studio",
+  "name": "Centro de Productividad Estudiantil",
+  "description": "Ecosistema unificado de estudio, deconstrucción pedagógica con IA Gemini, agenda académica y simulador de exámenes.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#FFFFFF",
+  "background_color": "#F8FAFC",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

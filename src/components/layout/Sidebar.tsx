@@ -23,7 +23,7 @@ interface SidebarProps {
 
 /**
  * Barra Lateral de Navegación (Sidebar)
- * Inspirado en la arquitectura visual limpia y espaciosa de Invoficlib:
+ * Arquitectura visual limpia y espaciosa:
  * Logo distintivo, botón destacado de acción rápida (+ Deconstruir Material),
  * píldoras activas en fondo negro de alto contraste, e iconos nítidos.
  */
@@ -94,11 +94,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         }`}
       >
         <div className="space-y-6">
-          {/* Logo y Encabezado del Sistema (Estilo Invoficlib) */}
+          {/* Logo y Encabezado del Sistema */}
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-soft">
-                {/* Isotipo geométrico limpio estilo panal / tres hexágonos concéntricos */}
+                {/* Isotipo geométrico limpio de panal / nodos de conocimiento */}
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <circle cx="12" cy="7" r="3" />
                   <circle cx="7" cy="16" r="3" />
@@ -108,10 +108,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
               <div>
                 <h1 className="text-base font-extrabold text-slate-900 tracking-tight leading-tight font-sans">
-                  Invoficlib CPE
+                  Centro de Productividad
                 </h1>
                 <p className="text-xs text-slate-500 font-medium leading-none">
-                  Sistema de Estudio
+                  Ecosistema Estudiantil
                 </p>
               </div>
             </div>
@@ -124,7 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           </div>
 
-          {/* Botón Principal de Acción Destacada estilo '+ Nuevo Registro' de Invoficlib */}
+          {/* Botón Principal de Acción Destacada */}
           <div>
             <button
               onClick={() => {
@@ -226,7 +226,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Información de Versión y Marca */}
           <div className="flex items-center justify-between px-1 text-xs text-slate-400 font-mono">
             <span>v1.2.0</span>
-            <span className="text-slate-500 font-semibold">Invoficlib</span>
+            <span className="text-slate-500 font-semibold">CPE Studio</span>
           </div>
         </div>
       </aside>

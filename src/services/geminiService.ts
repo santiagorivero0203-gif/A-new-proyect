@@ -14,20 +14,89 @@ const LOCAL_STORAGE_CUSTOM_QUESTIONS_KEY = 'cpe_custom_questions_cache';
 const GEMINI_MODELS = ['gemini-flash-latest', 'gemini-3.8-flash'];
 
 /**
- * Parsea un JSON generado por Gemini sanitizando secuencias de escape de LaTeX
+ * Parsea un JSON generado por Gemini sanitizando secuencias de escape de LaTeX y bloques de markdown
  */
 export function safeJsonParse<T>(rawText: string): T {
+  if (!rawText || typeof rawText !== 'string') {
+    throw new Error('Entrada vacía o inválida para safeJsonParse');
+  }
+
+  // 1. Extraer el bloque JSON delimitado (ignora texto conversacional introductorio o final y ```json ... ```)
+  let cleaned = rawText.trim();
+  const firstBrace = cleaned.indexOf('{');
+  const lastBrace = cleaned.lastIndexOf('}');
+  const firstBracket = cleaned.indexOf('[');
+  const lastBracket = cleaned.lastIndexOf(']');
+
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+  } else if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+    cleaned = cleaned.slice(firstBracket, lastBracket + 1);
+  } else {
+    cleaned = cleaned.replace(/```json/gi, '').replace(/```/g, '').trim();
+  }
+
+  // 2. Intento directo de parseo estándar
   try {
-    return JSON.parse(rawText) as T;
+    return JSON.parse(cleaned) as T;
   } catch {
-    const sanitized = rawText.replace(/\\([^"\\\/bfnrtu])/g, '\\\\$1');
+    // 3. Sanitizar secuencias LaTeX (ej. \vec, \frac, \alpha, \sim) que no son escapes válidos en JSON
+    const sanitized = cleaned.replace(/\\([^"\\\/bfnrtu])/g, '\\\\$1');
     try {
       return JSON.parse(sanitized) as T;
-    } catch {
-      const cleaned = sanitized.replace(/```json/gi, '').replace(/```/g, '').trim();
-      return JSON.parse(cleaned) as T;
+    } catch (finalErr) {
+      // 4. Último recurso: escapar comillas internas mal formadas si fuese necesario
+      throw new Error(`Fallo al parsear JSON de Gemini: ${finalErr instanceof Error ? finalErr.message : String(finalErr)}`);
     }
   }
+}
+
+/**
+ * Validador estricto del esquema pedagógico de 7 pilares
+ * Inyecta estructuras seguras por defecto si la respuesta de IA omitió algún campo menor,
+ * garantizando que la UI nunca sufra errores de acceso a arrays indefinidos.
+ */
+export function validateAndFillDeconstructedGuide(guide: any, fallbackTitle: string = 'Guía de Estudio'): DeconstructedAcademicGuide {
+  return {
+    id: guide?.id,
+    userId: guide?.userId,
+    documentId: guide?.documentId,
+    createdAt: guide?.createdAt,
+    sourceType: guide?.sourceType,
+    guideMetadata: {
+      title: guide?.guideMetadata?.title || fallbackTitle,
+      area: guide?.guideMetadata?.area || 'Ciencias & Humanidades',
+      summary: guide?.guideMetadata?.summary || 'Análisis pedagógico estructurado en 7 pilares.',
+    },
+    phenomenonAndTheory: guide?.phenomenonAndTheory || 'Desarrollo conceptual en elaboración.',
+    glossary: Array.isArray(guide?.glossary) ? guide.glossary : [],
+    formulasAndStrategies: {
+      coreFormulas: Array.isArray(guide?.formulasAndStrategies?.coreFormulas)
+        ? guide.formulasAndStrategies.coreFormulas
+        : [],
+      mnemonicsAndPatterns: Array.isArray(guide?.formulasAndStrategies?.mnemonicsAndPatterns)
+        ? guide.formulasAndStrategies.mnemonicsAndPatterns
+        : [],
+    },
+    stepByStepExamples: Array.isArray(guide?.stepByStepExamples) ? guide.stepByStepExamples : [],
+    commonErrorsAlerts: Array.isArray(guide?.commonErrorsAlerts) ? guide.commonErrorsAlerts : [],
+    studyTechniquesHub: {
+      activeRecallFlashcards: Array.isArray(guide?.studyTechniquesHub?.activeRecallFlashcards)
+        ? guide.studyTechniquesHub.activeRecallFlashcards
+        : [],
+      cornellSynthesis: {
+        cues: Array.isArray(guide?.studyTechniquesHub?.cornellSynthesis?.cues)
+          ? guide.studyTechniquesHub.cornellSynthesis.cues
+          : [],
+        notes: Array.isArray(guide?.studyTechniquesHub?.cornellSynthesis?.notes)
+          ? guide.studyTechniquesHub.cornellSynthesis.notes
+          : [],
+        summary: guide?.studyTechniquesHub?.cornellSynthesis?.summary || '',
+      },
+      conceptMapNodes: guide?.studyTechniquesHub?.conceptMapNodes || '',
+    },
+    generatedQuestions: Array.isArray(guide?.generatedQuestions) ? guide.generatedQuestions : [],
+  };
 }
 
 /**
@@ -108,27 +177,23 @@ const DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION = `DEBES responder con un objeto JS
  */
 export const geminiService = {
   /**
-   * Obtiene la clave de API activa de Gemini (desde localStorage o .env)
+   * Obtiene la clave de API activa de Gemini estrictamente desde las variables de entorno protegidas
    */
   getApiKey(): string {
-    const fromStorage = localStorage.getItem(GEMINI_API_KEY_STORAGE);
-    if (fromStorage && fromStorage.trim().length > 10) return fromStorage.trim();
-    return import.meta.env.VITE_GEMINI_API_KEY || '';
-  },
-
-  /**
-   * Guarda o actualiza la clave de API de Gemini
-   */
-  setApiKey(key: string): void {
-    if (!key.trim()) {
-      localStorage.removeItem(GEMINI_API_KEY_STORAGE);
-    } else {
-      localStorage.setItem(GEMINI_API_KEY_STORAGE, key.trim());
+    // Purgar de forma preventiva cualquier residuo en localStorage por confidencialidad
+    try {
+      if (typeof window !== 'undefined' && localStorage.getItem(GEMINI_API_KEY_STORAGE)) {
+        localStorage.removeItem(GEMINI_API_KEY_STORAGE);
+      }
+    } catch {
+      // Ignorar errores de localStorage
     }
+    const env = typeof import.meta !== 'undefined' && (import.meta as any).env ? (import.meta as any).env : {};
+    return env.VITE_GEMINI_API_KEY || '';
   },
 
   /**
-   * Verifica si hay una clave de Gemini disponible
+   * Verifica si hay una clave de Gemini disponible en el entorno
    */
   hasApiKey(): boolean {
     return Boolean(this.getApiKey());
@@ -322,7 +387,8 @@ ${DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION}`;
         if (rawText) {
           if (onProgress) onProgress('Estructurando guía hiper-compleja y KaTeX...', 75);
 
-          const parsed = safeJsonParse<DeconstructedAcademicGuide>(rawText);
+          const rawParsed = safeJsonParse<any>(rawText);
+          const parsed = validateAndFillDeconstructedGuide(rawParsed, titleContext);
           parsed.id = `guide-dec-${Date.now()}`;
           parsed.userId = userId;
           parsed.documentId = document?.id;

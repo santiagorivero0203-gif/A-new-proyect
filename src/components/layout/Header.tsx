@@ -29,8 +29,8 @@ const TAB_BREADCRUMBS: Record<string, string> = {
 
 /**
  * Header de Navegación Superior
- * Inspirado en la arquitectura visual limpia y espaciosa de Invoficlib:
- * Migas de pan, pills de estado en tiempo real (Gemini / Supabase), avatar y control de salida.
+ * Arquitectura visual limpia y espaciosa:
+ * Migas de pan, indicador de IA Gemini, control de tema, avatar y acceso a cuenta.
  */
 export const Header: React.FC<HeaderProps> = ({
   onOpenAuth,
@@ -38,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAccountManager,
   currentTab,
 }) => {
-  const { user, isDemoMode, signOut } = useAuth();
+  const { user, signOut } = useAuth();
 
   const breadcrumbSection = TAB_BREADCRUMBS[currentTab] || 'Panel de Control';
 
@@ -54,7 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-30 w-full h-18 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between transition-colors">
-      {/* Lado Izquierdo: Botón Menú Móvil + Breadcrumbs estilo Invoficlib */}
+      {/* Lado Izquierdo: Botón Menú Móvil + Breadcrumbs */}
       <div className="flex items-center gap-4">
         <button
           onClick={onToggleMobileSidebar}
@@ -78,35 +78,17 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Lado Derecho: Pills de estado en vivo, Toggle de Luz, Usuario y Salir */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
-        {/* Pill 1: Estado Gemini 3.8 Flash */}
+        {/* Pill 1: Estado Gemini Flash */}
         <div
           className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200/80 text-xs font-semibold text-slate-700 transition-all shadow-soft-sm cursor-default"
-          title="Motor de Inteligencia Artificial Gemini 3.8 Flash activo"
+          title="Motor de Inteligencia Artificial Gemini activo"
         >
           <SparklesIcon className="w-4 h-4 text-brand-500" />
           <span className="text-slate-500 font-normal">IA:</span>
           <span className="text-slate-900 font-bold">Gemini Flash</span>
         </div>
 
-        {/* Pill 2: Estado Supabase */}
-        <div
-          className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium transition-all shadow-soft-sm ${
-            isDemoMode
-              ? 'bg-amber-50/80 border-amber-200 text-amber-800'
-              : 'bg-emerald-50/80 border-emerald-200/90 text-emerald-800'
-          }`}
-          title={isDemoMode ? 'Almacenamiento interactivo local activo' : 'Conectado a PostgreSQL y Storage en tiempo real'}
-        >
-          <span
-            className={`w-2 h-2 rounded-full ${
-              isDemoMode ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'
-            }`}
-          />
-          <span className="text-slate-500 font-normal">DB:</span>
-          <span className="font-bold">{isDemoMode ? 'Local Cache' : 'Supabase Live'}</span>
-        </div>
-
-        {/* Botón de Modo Claro / Luminosidad (como en Invoficlib) */}
+        {/* Botón de Modo Claro / Luminosidad */}
         <button
           className="w-9 h-9 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 flex items-center justify-center text-slate-700 hover:text-slate-900 transition-all shadow-soft-sm active:scale-95"
           title="Modo visual optimizado para estudio diurno"

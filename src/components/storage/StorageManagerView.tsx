@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { storageService } from '../../services/storageService';
-import { geminiService } from '../../services/geminiService';
 import { DocumentUploader } from './DocumentUploader';
 import { DocumentGallery } from './DocumentGallery';
-import { GeminiConfigModal } from '../ai/GeminiConfigModal';
 import type { UserDocument } from '../../types';
 import type { Question } from '../../types/exam.types';
 import {
@@ -19,8 +17,8 @@ interface StorageManagerViewProps {
 }
 
 /**
- * Gestor Integral de Documentos, Supabase Storage y Motor Gemini Multimodal
- * Proporciona subida directa, galería organizada, extracción de temarios con IA
+ * Gestor Integral de Documentos y Supabase Storage
+ * Proporciona subida directa, galería organizada, extracción de temarios
  * y lanzamiento instantáneo de exámenes pedagógicos.
  */
 export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
@@ -30,8 +28,6 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
   const { user, isDemoMode } = useAuth();
   const [activeTab, setActiveTab] = useState<'GALLERY' | 'UPLOAD'>('GALLERY');
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
-  const [isGeminiConfigOpen, setIsGeminiConfigOpen] = useState(false);
-  const [hasApiKey, setHasApiKey] = useState(() => geminiService.hasApiKey());
 
   const [stats, setStats] = useState({
     totalDocs: 0,
@@ -85,22 +81,8 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
           </p>
         </div>
 
-        {/* Pestañas de Vista y Configuración de Gemini */}
+        {/* Pestañas de Vista */}
         <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
-          <button
-            onClick={() => setIsGeminiConfigOpen(true)}
-            className="px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 flex items-center gap-2 shadow-soft-sm transition-all"
-            title="Configurar clave de Gemini o consultar estado del motor"
-          >
-            <SparklesIcon className="w-3.5 h-3.5 text-blue-600" />
-            <span>Gemini AI</span>
-            <span
-              className={`w-2 h-2 rounded-full ${
-                hasApiKey ? 'bg-emerald-500' : 'bg-blue-500'
-              }`}
-            />
-          </button>
-
           <div className="inline-flex p-1 bg-slate-200/70 rounded-2xl border border-slate-200">
             <button
               onClick={() => setActiveTab('GALLERY')}
@@ -185,6 +167,7 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
           refreshTrigger={refreshTrigger}
           onStartExamWithQuestions={onStartExamWithQuestions}
           onNavigateToGuides={onNavigateToGuides}
+          onUploadClick={() => setActiveTab('UPLOAD')}
         />
       ) : (
         <div className="max-w-2xl mx-auto">
@@ -206,13 +189,6 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
           Gemini 2.5 Flash • Multimodal Ready
         </span>
       </div>
-
-      {/* Modal de Configuración de API Key */}
-      <GeminiConfigModal
-        isOpen={isGeminiConfigOpen}
-        onClose={() => setIsGeminiConfigOpen(false)}
-        onKeySaved={() => setHasApiKey(geminiService.hasApiKey())}
-      />
     </div>
   );
 };

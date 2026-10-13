@@ -120,11 +120,21 @@ export const TasksWidget: React.FC = () => {
           </div>
         </form>
 
-        {/* Lista de Tareas Limpia (Sin tarjetas anidadas) */}
+        {/* Lista de Tareas Limpia */}
         <div className="divide-y divide-slate-100 max-h-[320px] overflow-y-auto pr-1">
           {tasks.length === 0 ? (
-            <div className="py-8 text-center text-xs text-slate-400">
-              No hay tareas pendientes para esta cuenta.
+            <div className="py-6 px-2">
+              <div className="bg-slate-50/60 border border-dashed border-slate-200/90 rounded-2xl p-6 text-center flex flex-col items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/80 text-slate-400 flex items-center justify-center mb-2 shadow-soft-sm">
+                  <CheckCircleIcon className="w-5 h-5 text-slate-400" />
+                </div>
+                <h4 className="text-xs font-bold text-slate-800 font-sans">
+                  No tienes tareas pendientes
+                </h4>
+                <p className="text-[11px] text-slate-500 max-w-xs mt-0.5">
+                  Escribe una meta de estudio arriba para comenzar a organizar tu día.
+                </p>
+              </div>
             </div>
           ) : (
             tasks.map((task) => (

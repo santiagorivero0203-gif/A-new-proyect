@@ -7,6 +7,8 @@ import {
   XIcon,
 } from '../common/Icons';
 
+import { EmptyState } from '../common/EmptyState';
+
 export interface CreativeDeliveryItem {
   id: string;
   title: string;
@@ -18,45 +20,6 @@ export interface CreativeDeliveryItem {
   notes?: string;
 }
 
-const INITIAL_DELIVERIES: CreativeDeliveryItem[] = [
-  {
-    id: 'deliv-1',
-    title: 'Investigación de Usuarios & Análisis de Requerimientos',
-    course: 'Metodología de Proyectos',
-    column: 'brief',
-    dueDate: '18 Octubre',
-    tags: ['Requerimientos', 'Análisis', 'Investigación'],
-    notes: 'Entrevistas a 12 usuarios sobre hábitos de estudio y ergonomía.',
-  },
-  {
-    id: 'deliv-2',
-    title: 'Definición de Especificaciones y Materiales',
-    course: 'Materialidad y Procesos',
-    column: 'moodboard',
-    dueDate: '22 Octubre',
-    tags: ['Materialidad', 'Acabados', 'Especificaciones'],
-    notes: 'Exploración de materiales y tolerancias para ensamble.',
-  },
-  {
-    id: 'deliv-3',
-    title: 'Modelado Técnico & Planos de Fabricación',
-    course: 'Modelado y CAD',
-    column: 'in_progress',
-    dueDate: '28 Octubre',
-    tags: ['Planos', 'Tolerancias', 'Modelado'],
-    notes: 'Ajuste de cotas para ensamble a presión y costillas de refuerzo.',
-  },
-  {
-    id: 'deliv-4',
-    title: 'Memoria Descriptiva & Láminas Finales',
-    course: 'Presentación de Proyectos',
-    column: 'final',
-    dueDate: '02 Noviembre',
-    tags: ['Memoria', 'Planos', 'Entrega'],
-    notes: 'Formato estándar de entrega con especificaciones técnicas.',
-  },
-];
-
 const COLUMNS = [
   { id: 'brief', label: '1. Brief & Análisis', badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
   { id: 'moodboard', label: '2. Bocetos & Moodboard', badgeColor: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -65,33 +28,32 @@ const COLUMNS = [
 ] as const;
 
 /**
- * Tablero Visual de Entregas Creativas (Módulo Creativo - María Fernanda UCAB)
- * Estilo Kanban y Masonry Grid con integración directa a imágenes del Storage.
+ * Tablero Visual de Entregas Creativas (Directriz Estado Cero)
+ * Estilo Kanban y Masonry Grid sin datos hardcodeados ni ficticios.
  */
 export const CreativeDeliveryBoard: React.FC = () => {
   const { user } = useAuth();
-  const userStorageKey = `cpe_${user?.id || 'default'}_creative_deliveries`;
-
-  const getInitialForUser = () => {
-    const isMafe = user?.id?.includes('mafe') || user?.academic_profile === 'mafe_diseno_ucab';
-    return isMafe ? INITIAL_DELIVERIES : [];
-  };
+  const userStorageKey = `cpe_${user?.id || 'default'}_creative_deliveries_clean_v1`;
 
   const [deliveries, setDeliveries] = useState<CreativeDeliveryItem[]>(() => {
     try {
       const saved = localStorage.getItem(userStorageKey);
-      return saved ? JSON.parse(saved) : getInitialForUser();
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+      return [];
     } catch {
-      return getInitialForUser();
+      return [];
     }
   });
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(userStorageKey);
-      setDeliveries(saved ? JSON.parse(saved) : getInitialForUser());
+      setDeliveries(saved ? JSON.parse(saved) : []);
     } catch {
-      setDeliveries(getInitialForUser());
+      setDeliveries([]);
     }
   }, [userStorageKey, user?.id]);
 
@@ -262,6 +224,16 @@ export const CreativeDeliveryBoard: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Banner de Estado Cero si no hay entregas */}
+      {deliveries.length === 0 && (
+        <EmptyState
+          title="No tienes entregas ni proyectos en el tablero"
+          description="Organiza tus proyectos por etapas (Brief, Bocetos, Prototipado, Jurado Final) con imágenes de referencia y notas de entrega."
+          actionLabel="+ Crear Primera Entrega"
+          onAction={() => setShowAddModal(true)}
+        />
+      )}
 
       {/* VISTA 1: TABLERO KANBAN */}
       {viewMode === 'KANBAN' ? (

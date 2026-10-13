@@ -13,6 +13,7 @@ import {
   CheckCircleIcon,
   LayersIcon,
 } from '../common/Icons';
+import { AudioGuidePlayer } from './AudioGuidePlayer';
 
 export interface DeconstructedGuideViewProps {
   guide: DeconstructedAcademicGuide;
@@ -106,8 +107,14 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           </p>
         </div>
 
-        {/* Acciones de Cabecera: Botón Cobalto Principal & Cerrar */}
-        <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-auto">
+        {/* Acciones de Cabecera: Reproductor de Audio-Guía, Botón Cobalto Principal & Cerrar */}
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-end sm:self-auto">
+          {/* Reproductor Text-to-Speech de la Guía */}
+          <AudioGuidePlayer
+            guideTitle={guideMetadata.title}
+            guideText={`${phenomenonAndTheory}. ${guideMetadata.summary}`}
+          />
+
           {totalQuestions > 0 && onStartExamWithQuestions && (
             <button
               onClick={handleLaunchSimulator}
@@ -115,7 +122,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
               title="Iniciar simulación de examen de este tema"
             >
               <PlayIcon className="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
-              <span>Simular Examen de este Tema ({totalQuestions})</span>
+              <span>Simular Examen ({totalQuestions})</span>
             </button>
           )}
 

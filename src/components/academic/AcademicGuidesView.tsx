@@ -15,6 +15,7 @@ import {
   SparklesIcon,
   TrashIcon,
 } from '../common/Icons';
+import { EmptyState } from '../common/EmptyState';
 import type { Question } from '../../types/exam.types';
 
 export interface AcademicGuidesViewProps {
@@ -185,19 +186,11 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
       {activeTab === 'AI_DECONSTRUCTED' ? (
         <div className="space-y-6">
           {deconstructedGuides.length === 0 ? (
-            <div className="p-12 text-center bg-white rounded-3xl border border-slate-200/90 shadow-soft space-y-4 max-w-2xl mx-auto">
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0F52BA] flex items-center justify-center mx-auto text-xl shadow-soft-sm">
-                ✦
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900 font-sans">
-                  Aún no has generado Guías Hiper-Complejas
-                </h3>
-                <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto mt-1 font-sans">
-                  Utiliza el Motor de Deconstrucción Académica en tu Tablero Principal o sube tus apuntes y PDFs en el Almacén de Documentos para que Gemini deconstruya la materia en 7 pilares pedagógicos.
-                </p>
-              </div>
-            </div>
+            <EmptyState
+              title="Aún no has generado guías deconstruidas"
+              description="Sube tus apuntes o PDFs de materias en el Almacén de Documentos para deconstruirlos en 7 pilares pedagógicos con fórmulas, flashcards y banco de preguntas oficial."
+              className="max-w-2xl mx-auto"
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {deconstructedGuides.map((guide) => (
@@ -365,6 +358,11 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
             </div>
           </div>
         </div>
+      ) : guides.length === 0 ? (
+        <EmptyState
+          title="No hay guías disponibles en esta categoría"
+          description="Selecciona otra categoría en la barra superior o utiliza el Selector de Temas por Área."
+        />
       ) : (
         /* VISTA 3: GRID DE GUÍAS DE ESTUDIO OFICIALES */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

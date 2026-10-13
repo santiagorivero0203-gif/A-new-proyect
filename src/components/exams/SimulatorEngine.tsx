@@ -19,6 +19,9 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
   const {
     session,
     report,
+    recoverableSession,
+    resumeRecoveredSession,
+    discardRecoveredSession,
     startExam,
     selectAnswer,
     toggleFlagQuestion,
@@ -67,6 +70,41 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
   // Vista de Selección de Evaluaciones
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
+      {/* Banner de Recuperación de Sesión tras Caída de Red o Recarga */}
+      {recoverableSession && (
+        <div className="p-5 rounded-3xl bg-blue-50/70 border-2 border-[#0F52BA]/30 shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <h3 className="text-sm font-bold text-slate-900 font-sans">
+                Sesión de examen en curso detectada
+              </h3>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed font-sans">
+              Tienes una evaluación sin finalizar: <strong>{recoverableSession.config.title}</strong> con{' '}
+              <strong>{Object.keys(recoverableSession.userAnswers).length}</strong> de{' '}
+              <strong>{recoverableSession.questions.length}</strong> preguntas respondidas.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={discardRecoveredSession}
+              className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition-colors"
+            >
+              Descartar
+            </button>
+            <button
+              onClick={resumeRecoveredSession}
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0F52BA] hover:bg-[#0c4194] shadow-soft-sm transition-all flex items-center gap-1.5"
+            >
+              <span>Retomar donde lo dejé</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Encabezado Limpio sin AI Slop */}
       <div className="pb-4 border-b border-slate-200/80">
         <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold mb-2">

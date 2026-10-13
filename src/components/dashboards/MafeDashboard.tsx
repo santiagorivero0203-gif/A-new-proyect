@@ -5,15 +5,15 @@ import { PaletteIcon } from '../common/Icons';
 
 /**
  * Dashboard Especializado de María Fernanda (Diseño Integral UCAB)
- * Totalmente adaptado al estilo claro Invoficlib / Apple, integrando
- * el tablero Kanban de entregas y el mural de referencias de Supabase Storage.
+ * Adaptado a la estética clara y refinada con bordes redondeados y tipografía editorial,
+ * integrando el tablero Kanban de entregas y el mural de referencias de Supabase Storage.
  */
 export const MafeDashboard: React.FC = () => {
   const { user } = useAuth();
 
   return (
     <div className="space-y-8">
-      {/* Banner Superior Estilo Invoficlib */}
+      {/* Banner Superior */}
       <div className="app-card p-6 sm:p-8 bg-white border border-slate-200/90 shadow-soft-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-xs font-semibold">
