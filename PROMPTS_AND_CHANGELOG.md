@@ -380,4 +380,37 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/components/layout/Sidebar.tsx` | Actualizar | Integración de cambio de estudiante en 1 clic en el pie del menú. |
 | `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Integración de Álgebra Vectorial y pestaña de Telemetría & Cuotas. |
 
+---
+
+### Prompt 14: Sprint A — Laboratorio Virtual de Ciencias Exactas (Química, Biología y Genética)
+> **Contenido**:
+> Implementación del **Sprint A** de la suite de 200 funciones (Módulos de Química y Biología):
+> 1. **Balanceador Estequiométrico Determinista (Función 111)**:
+>    - Archivo: `src/components/tools/StoichiometryBalancer.tsx`
+>    - Balance determinista de ecuaciones químicas clásicas (Combustión de metano, Síntesis de agua, Fotosíntesis, Oxidación férrica, Neutralización ácido-base, Proceso Haber-Bosch).
+>    - Renderizado con KaTeX de reactivos y productos, verificación de conservación atómica y cálculo interactivo de masas molares, moles y gramos con identificación de reactivo limitante.
+> 2. **Tabla Periódica Interactiva de Elementos (Función 112)**:
+>    - Archivo: `src/components/tools/InteractivePeriodicTable.tsx`
+>    - Matriz de elementos con número atómico ($Z$), masa atómica ($u$), electronegatividad de Pauling, radio atómico en picómetros ($pm$) y configuración electrónica en estado fundamental (notación de gas noble). Búsqueda reactiva en tiempo real por símbolo, nombre o número atómico.
+> 3. **Calculadora Cuantitativa de pH, pOH y Molaridad (Función 113)**:
+>    - Archivo: `src/components/tools/PhMolarityCalculator.tsx`
+>    - Panel con slider interactivo de pH (0 a 14), cálculo de $pOH = 14 - pH$, concentración de $[H_3O^+]$ y $[OH^-]$ en notación científica KaTeX, y categorización ácida/neutra/básica.
+>    - Calculadora de preparación de soluciones de laboratorio: masa de soluto ($g$), masa molar ($g/mol$) y volumen ($mL$) para calcular la concentración Molar ($M = n/V$).
+> 4. **Simulador de Genética Mendeliana & Cuadros de Punnett (Función 114)**:
+>    - Archivo: `src/components/tools/MendelianGeneticsSimulator.tsx`
+>    - Cruces monohíbridos ($2 \times 2$, alelos $A/a$) y dihíbridos ($4 \times 4$, alelos $A/a$ y $B/b$).
+>    - Cálculo exacto de frecuencias genotípicas y fenotípicas porcentuales y verificación de la 1ª, 2ª y 3ª Ley de Mendel.
+> 5. **Acoplamiento en la Suite**:
+>    - Archivo: `src/components/tools/ToolsAndSettingsView.tsx`
+>    - Pestaña dedicada `Química & Biología` (`SCIENCE_LAB`) con sub-navegación minimalista e instantánea.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/components/tools/StoichiometryBalancer.tsx` | Crear | Balanceador estequiométrico de masa y reactivo limitante con KaTeX. |
+| `src/components/tools/InteractivePeriodicTable.tsx` | Crear | Tabla periódica con electronegatividad, radios atómicos y configuraciones cuánticas. |
+| `src/components/tools/PhMolarityCalculator.tsx` | Crear | Calculadora de pH, pOH, concentraciones iónicas y molaridad $M = n/V$. |
+| `src/components/tools/MendelianGeneticsSimulator.tsx` | Crear | Simulador de cuadros de Punnett monohíbridos y dihíbridos con leyes de Mendel. |
+| `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Pestaña `Química & Biología` (`SCIENCE_LAB`) con conmutación entre los 4 módulos. |
+
+
 

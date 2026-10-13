@@ -11,9 +11,9 @@
 
 | Estado | Significado | Cantidad | Porcentaje |
 | :--- | :--- | :---: | :---: |
-| 🟢 **100% Operativas** | Funciones con Lógica real + UI conectada de extremo a extremo sin dependencias faltantes | **65** | **32.5%** |
+| 🟢 **100% Operativas** | Funciones con Lógica real + UI conectada de extremo a extremo sin dependencias faltantes | **69** | **34.5%** |
 | 🟡 **Parciales / Solo UI** | Módulos maquetados con estado local o interfaz funcional que admiten mayor automatización | **45** | **22.5%** |
-| 🔴 **Pendientes (0%)** | Funciones no creadas aún, estructuradas en paquetes de trabajo (Sprints) | **90** | **45.0%** |
+| 🔴 **Pendientes (0%)** | Funciones no creadas aún, estructuradas en paquetes de trabajo (Sprints) | **86** | **43.0%** |
 | **TOTAL** | **Alcance del Roadmap Global** | **200** | **100%** |
 
 ---
@@ -34,13 +34,17 @@
 11. **Monitor de Servicios en Vivo (`LiveSystemStatusWidget`)**: Medición de latencia en milisegundos hacia Supabase, API Vercel y Servidor MCP con badge en Header.
 12. **Panel de Telemetría y Cuotas (`AdminTelemetryPanel`)**: Supervisión de cuota Gemini Flash, peticiones Carril A vs Carril B y capacidad en Storage.
 
-### B. Herramientas Matemáticas, Físicas y Científicas
+### B. Herramientas Matemáticas, Físicas y Científicas (Sprint A Completado)
 13. **Solucionador Determinista de Sistemas Lineales 2×2**: Resolución paso a paso en KaTeX mediante **Reducción**, **Sustitución**, **Igualación** y **Regla de Cramer**.
 14. **Solucionador Determinista de Sistemas Lineales 3×3**: Resolución exacta mediante determinantes de tercer orden por la Regla de Sarrus.
 15. **Aritmética Fraccionaria Determinista**: Clase `Fraction` con Máximo Común Divisor (MCD) para mostrar siempre fracciones simplificadas sin decimales periódicos.
 16. **Calculadora Científica Interactiva**: Funciones trigonométricas, exponenciales, logaritmos, memoria y evaluación segura con teclado virtual.
 17. **Calculadora de Álgebra Vectorial 2D y 3D (`VectorCalculatorWidget`)**: Magnitud euclidiana $||\vec{u}||$, producto escalar $\vec{u} \cdot \vec{v}$, ángulo en grados sexagesimales, producto vectorial 3D $\vec{u} \times \vec{v}$ y proyección ortogonal.
-18. **Laboratorio de Ecuaciones LaTeX**: Renderizador en tiempo real con KaTeX seguro frente a inyecciones.
+18. **Balanceador Estequiométrico Determinista (`StoichiometryBalancer`)**: Conservación de masa, masas molares, balance atómico con KaTeX y cálculo interactivo de reactivo limitante.
+19. **Tabla Periódica Interactiva (`InteractivePeriodicTable`)**: Configuración cuántica, electronegatividad de Pauling, radio atómico y filtrado reactivo instantáneo.
+20. **Calculadora Cuantitativa de pH, pOH y Molaridad (`PhMolarityCalculator`)**: Escala logarítmica de pH/pOH, concentraciones $[H_3O^+]/[OH^-]$ y cálculo de concentración molar ($M = n/V$).
+21. **Simulador de Genética Mendeliana & Punnett (`MendelianGeneticsSimulator`)**: Cruces monohíbridos ($2 \times 2$) y dihíbridos ($4 \times 4$) con frecuencias genotípicas/fenotípicas y leyes de Mendel.
+22. **Laboratorio de Ecuaciones LaTeX**: Renderizador en tiempo real con KaTeX seguro frente a inyecciones.
 
 ### C. Diseño, Color y Canva Studio Hub
 19. **Canva Studio Hub (`CanvaStudioHub`)**: Integración con visualizador de embeds de Canva en vivo dentro del taller de diseño.
