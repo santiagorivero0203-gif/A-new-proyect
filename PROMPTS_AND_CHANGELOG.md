@@ -238,5 +238,50 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/components/layout/Header.tsx` | Actualizar | Icono de conexión a `w-4 h-4`. |
 | `src/components/auth/StudentAuthPortal.tsx` | Actualizar | Icono de acceso Supabase a `w-4 h-4`. |
 
+---
+
+### Prompt 10: Motor de Deconstrucción Académica (Gemini API + Guías Hiper-Complejas en 7 Pilares)
+> **Contenido**:
+> 1. **System Instruction Maestro**: Inyección obligatoria de la instrucción del catedrático investigador y pedagogo de élite para desarmar cualquier tema académico, apunte, PDF o foto de pizarra en 7 pilares estructurados (Introducción al Fenómeno, Glosario y Unidades SI, Fórmulas y Reglas Mnemotécnicas, Resolución Deductiva Paso a Paso, Alertas de Trampas y Errores Comunes, Ecosistema de Técnicas de Estudio aplicadas [Active Recall, Método Cornell, Mapa Jerárquico], y Batería de Autoevaluación Certificada con formato estricto `**Concepto Fundamental:** ... \n\n**Resolución:** ...`).
+> 2. **Salida JSON Estricta (`responseSchema`)**: Configuración de `responseMimeType: "application/json"` en la llamada a Gemini para garantizar un payload predecible.
+> 3. **Persistencia Automática**: Guardado estructurado en Supabase / caché local aislado por usuario (`cpe_${userId}_deconstructed_guides`) e inyección automática en el banco de evaluación (`cpe_${userId}_custom_questions`).
+> 4. **Interfaz Editorial en Tonos Claros**: Fondos `bg-white` sobre `bg-slate-50`, tipografía nítida con espaciado `leading-relaxed`, acentos en azul cobalto (`#0F52BA`), cajas de fórmulas con bordes finos, callouts ámbar para errores, flashcards interactivas de Active Recall con volteo 3D / clic, cuadrícula de 3 bloques del Método Cornell, y botón destacado *"Simular Examen de este Tema"* para abrir directamente el `SimulatorEngine`.
+
+#### Decisiones e Implementaciones del Prompt 10:
+1. **Modelado de Tipos Riguroso (`src/types/deconstruction.types.ts`)**:
+   - Definidos `GuideMetadata`, `GlossaryItem`, `CoreFormula`, `FormulasAndStrategies`, `StepByStepExample`, `CommonErrorAlert`, `ActiveRecallFlashcard`, `CornellSynthesis`, `StudyTechniquesHub`, `DeconstructedQuestion`, y `DeconstructedAcademicGuide`.
+   - Creado helper `convertDeconstructedToQuestions` con normalización automática a `AcademicSubject` ('Matemática', 'Física', 'Química', 'Biología', 'Castellano') para compatibilidad nativa e inmediata con `SimulatorEngine`.
+2. **Servicio Oficial de Gemini (`src/services/geminiService.ts`)**:
+   - Inyectado el System Instruction maestro exacto: `ACADEMIC_DECONSTRUCTION_SYSTEM_INSTRUCTION`.
+   - Configurada llamada a Gemini 2.5 Flash con `responseMimeType: 'application/json'` y payload multimodal (texto o imagen Base64).
+   - Diseñado el generador pedagógico de contingencia (`generateAdaptiveDeconstruction`) para proveer deconstrucciones de alta densidad técnica (Física, Cálculo, Biología, Química) si no hay API key o si se opera offline.
+   - Implementada la persistencia bidireccional en Supabase (`academic_guides`, `user_documents`) y en caché local (`cpe_${userId}_deconstructed_guides` y `cpe_${userId}_custom_questions`).
+3. **Componente Visual de Guía Hiper-Compleja (`src/components/academic/DeconstructedGuideView.tsx`)**:
+   - Estética editorial limpia en tonos claros con tipografía `leading-relaxed`.
+   - Navegación clara por los 7 pilares pedagógicos.
+   - Renderizado matemático activo KaTeX en teoría, glosario, fórmulas, ejemplos y autoevaluación.
+   - Flashcards interactivas de Active Recall con contador, navegación y volteo fluido con botón o clic en tarjeta.
+   - Matriz del Método Cornell con cuadrícula clásica de tres bloques (Cues en columna izquierda, Notas densas en columna derecha, y Resumen al pie).
+   - Callouts visuales con fondo ámbar/rojo tenue para trampas frecuentes de parciales y distractores de examen.
+   - Botón cobalto principal *"Simular Examen de este Tema"* (`#0F52BA`), abriendo de inmediato el `SimulatorEngine` con temporizador y preguntas cargadas.
+4. **Integración Transversal en la Plataforma**:
+   - `GeminiAiWidget.tsx`: Actualizado para deconstruir cualquier tema introducido por el usuario y abrir la guía completa o lanzar el simulador directamente desde el Workspace.
+   - `AcademicGuidesView.tsx`: Añadida la pestaña `"Deconstruidas IA"` para consultar, abrir y simular cualquier guía generada previamente por el estudiante.
+   - `DocumentGallery.tsx`: Conectado para deconstruir archivos y fotos de pizarra de Supabase Storage en Guías Hiper-Complejas de 7 pilares.
+5. **Auditoría de Compilación & Verificación**:
+   - `npm run build` verificado exitosamente (0 errores de TypeScript y bundle de producción generado).
+   - Verificación visual interactiva ejecutada en vivo con `browser_subagent`.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/types/deconstruction.types.ts` | Crear | Definición completa de tipos de deconstrucción en 7 pilares y conversor a `Question`. |
+| `src/types/index.ts` | Actualizar | Reexportación centralizada de tipos de deconstrucción académica. |
+| `src/services/geminiService.ts` | Actualizar | Integración de System Instruction Maestro, llamada JSON a Gemini, persistencia y fallback adaptativo. |
+| `src/components/academic/DeconstructedGuideView.tsx` | Crear | Componente de lectura editorial con KaTeX, flashcards volteables, matriz Cornell y botón cobalto de simulación. |
+| `src/components/workspace/widgets/GeminiAiWidget.tsx` | Actualizar | Integración del motor de deconstrucción con modal de guía y botón de simulación directa. |
+| `src/components/academic/AcademicGuidesView.tsx` | Actualizar | Pestaña "Deconstruidas IA" para listar y abrir guías deconstruidas guardadas en la cuenta. |
+| `src/components/storage/DocumentGallery.tsx` | Actualizar | Ejecución de deconstrucción académica al analizar apuntes y fotos de pizarra de Storage. |
+| `PROMPTS_AND_CHANGELOG.md` | Actualizar | Registro cronológico del Prompt 10 y documentación técnica completa. |
+
 
 

@@ -73,3 +73,5 @@ export interface StudySession {
   notes?: string;
   created_at: string;
 }
+
+export * from './deconstruction.types';

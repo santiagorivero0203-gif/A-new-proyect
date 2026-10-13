@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import {
   simadiBankService,
   type SimadiGuide,
 } from '../../services/simadiBankService';
+import { geminiService } from '../../services/geminiService';
+import type { DeconstructedAcademicGuide } from '../../types/deconstruction.types';
+import { convertDeconstructedToQuestions } from '../../types/deconstruction.types';
+import { DeconstructedGuideView } from './DeconstructedGuideView';
 import {
   BookOpenIcon,
   PlayIcon,
   XIcon,
+  SparklesIcon,
+  TrashIcon,
 } from '../common/Icons';
 import type { Question } from '../../types/exam.types';
 
@@ -14,31 +21,48 @@ export interface AcademicGuidesViewProps {
   onStartExamWithQuestions?: (questions: Question[], title: string) => void;
 }
 
-type CategoryTab = 'ALL' | 'verbal' | 'logico' | 'ciencia' | 'TOPIC_SELECTOR';
+type CategoryTab =
+  | 'ALL'
+  | 'verbal'
+  | 'logico'
+  | 'ciencia'
+  | 'TOPIC_SELECTOR'
+  | 'AI_DECONSTRUCTED';
+
 type DetailTab = 'THEORY' | 'EXAMS' | 'REFERENCES';
 
 export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
   onStartExamWithQuestions,
 }) => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<CategoryTab>('ALL');
   const [selectedGuide, setSelectedGuide] = useState<SimadiGuide | null>(null);
   const [detailTab, setDetailTab] = useState<DetailTab>('THEORY');
+
+  // Estado para Guías Deconstruidas con Gemini IA
+  const [selectedDeconstructedGuide, setSelectedDeconstructedGuide] =
+    useState<DeconstructedAcademicGuide | null>(null);
 
   // Estado del Selector de Temas
   const [selectedArea, setSelectedArea] = useState<string>('Razonamiento Lógico Numérico');
   const [selectedTopic, setSelectedTopic] = useState<string>('Teoría de Números (MCM/MCD)');
   const [questionCount, setQuestionCount] = useState<number>(10);
 
-  // Obtener guías
+  // Obtener guías oficiales de la base
   const guides = simadiBankService.getAllGuides(
-    activeTab === 'TOPIC_SELECTOR' ? 'ALL' : activeTab
+    activeTab === 'TOPIC_SELECTOR' || activeTab === 'AI_DECONSTRUCTED'
+      ? 'ALL'
+      : activeTab
   );
+
+  // Obtener guías deconstruidas generadas por el usuario
+  const deconstructedGuides = user ? geminiService.getDeconstructedGuides(user.id) : [];
 
   // Datos para el selector de temas
   const areasSummary = simadiBankService.getAreasSummary();
   const topicsForCurrentArea = simadiBankService.getTopicsByArea(selectedArea);
 
-  // Lanzar práctica desde una guía
+  // Lanzar práctica desde una guía simadi
   const handleStartPracticeFromGuide = (guide: SimadiGuide) => {
     const questions = simadiBankService.getQuestionsForGuide(guide, 10);
     if (onStartExamWithQuestions) {
@@ -55,16 +79,39 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
     }
   };
 
+  // Lanzar examen desde una guía deconstruida
+  const handleStartExamFromDeconstructed = (guide: DeconstructedAcademicGuide) => {
+    if (!onStartExamWithQuestions) return;
+    const questions = convertDeconstructedToQuestions(
+      guide.generatedQuestions,
+      guide.guideMetadata.title,
+      user?.academic_profile
+    );
+    onStartExamWithQuestions(
+      questions,
+      `Simulación: ${guide.guideMetadata.title}`
+    );
+  };
+
+  const handleDeleteDeconstructed = (guideId: string) => {
+    if (!user) return;
+    if (window.confirm('¿Deseas eliminar esta guía deconstruida de tu centro de estudio?')) {
+      geminiService.deleteDeconstructedGuide(guideId, user.id);
+      // Forzar render cambiando de estado sutilmente
+      setActiveTab('AI_DECONSTRUCTED');
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
-      {/* Encabezado Limpio sin AI Slop */}
+      {/* Encabezado Limpio con Acento Cobalto */}
       <div className="pb-4 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-slate-900 tracking-tight font-sans">
-            Guías Académicas & Selección de Temas
+            Guías Académicas & Motor de Deconstrucción
           </h2>
           <span className="text-xs text-slate-500 font-mono mt-0.5 block">
-            11 guías temáticas oficiales • 1.111 ejercicios clasificados
+            11 guías temáticas oficiales • {deconstructedGuides.length} guías deconstruidas con Gemini AI
           </span>
         </div>
 
@@ -120,11 +167,102 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
           >
             Selector de Temas
           </button>
+          <button
+            onClick={() => setActiveTab('AI_DECONSTRUCTED')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              activeTab === 'AI_DECONSTRUCTED'
+                ? 'bg-[#0F52BA] text-white shadow-soft-sm font-bold'
+                : 'text-[#0F52BA] hover:bg-blue-50'
+            }`}
+          >
+            <SparklesIcon className="w-3.5 h-3.5" />
+            <span>Deconstruidas IA ({deconstructedGuides.length})</span>
+          </button>
         </div>
       </div>
 
-      {/* VISTA 1: SELECTOR DE TEMAS POR ÁREA */}
-      {activeTab === 'TOPIC_SELECTOR' ? (
+      {/* VISTA 1: GUÍAS DECONSTRUIDAS POR GEMINI IA (7 PILARES) */}
+      {activeTab === 'AI_DECONSTRUCTED' ? (
+        <div className="space-y-6">
+          {deconstructedGuides.length === 0 ? (
+            <div className="p-12 text-center bg-white rounded-3xl border border-slate-200/90 shadow-soft space-y-4 max-w-2xl mx-auto">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0F52BA] flex items-center justify-center mx-auto text-xl shadow-soft-sm">
+                ✦
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900 font-sans">
+                  Aún no has generado Guías Hiper-Complejas
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto mt-1 font-sans">
+                  Utiliza el Motor de Deconstrucción Académica en tu Tablero Principal o sube tus apuntes y PDFs en el Almacén de Documentos para que Gemini deconstruya la materia en 7 pilares pedagógicos.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {deconstructedGuides.map((guide) => (
+                <div
+                  key={guide.id}
+                  className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-blue-400 transition-all shadow-soft flex flex-col justify-between space-y-4"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 text-[#0F52BA] font-mono">
+                        {guide.guideMetadata.area || 'Deconstrucción IA'}
+                      </span>
+                      <span className="text-[10px] font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
+                        {guide.generatedQuestions?.length || 0} Preguntas
+                      </span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-slate-900 leading-snug font-sans">
+                      {guide.guideMetadata.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 font-sans">
+                      {guide.guideMetadata.summary}
+                    </p>
+
+                    <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-mono text-slate-400">
+                      <span>• {guide.glossary?.length || 0} términos SI</span>
+                      <span>• {guide.formulasAndStrategies?.coreFormulas?.length || 0} fórmulas</span>
+                      <span>• {guide.studyTechniquesHub?.activeRecallFlashcards?.length || 0} flashcards</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => setSelectedDeconstructedGuide(guide)}
+                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 flex-1 flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <BookOpenIcon className="w-3.5 h-3.5 text-[#0F52BA]" />
+                      <span>Ver Guía 7 Pilares</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleStartExamFromDeconstructed(guide)}
+                      className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-1.5 px-3 rounded-xl shadow-soft flex items-center justify-center gap-1.5 transition-colors"
+                      title="Simular examen con preguntas de esta guía"
+                    >
+                      <PlayIcon className="w-3.5 h-3.5 text-white" />
+                      <span>Simular</span>
+                    </button>
+
+                    <button
+                      onClick={() => guide.id && handleDeleteDeconstructed(guide.id)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                      title="Eliminar guía"
+                    >
+                      <TrashIcon className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : activeTab === 'TOPIC_SELECTOR' ? (
+        /* VISTA 2: SELECTOR DE TEMAS POR ÁREA */
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Columna Izquierda: Áreas Generales */}
@@ -144,7 +282,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                     }}
                     className={`w-full p-4 rounded-2xl border text-left transition-all flex items-center justify-between ${
                       isSelected
-                        ? 'bg-white border-brand-500 ring-1 ring-brand-500/20 shadow-soft-sm text-slate-900'
+                        ? 'bg-white border-[#0F52BA] ring-1 ring-[#0F52BA]/20 shadow-soft-sm text-slate-900'
                         : 'bg-white/70 border-slate-200/80 hover:bg-white text-slate-700'
                     }`}
                   >
@@ -196,7 +334,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                       onClick={() => setSelectedTopic(topic)}
                       className={`p-3 rounded-xl border text-left transition-all flex items-center justify-between ${
                         isChosen
-                          ? 'bg-blue-50/70 border-brand-500 text-slate-900 ring-1 ring-brand-500/20'
+                          ? 'bg-blue-50/70 border-[#0F52BA] text-slate-900 ring-1 ring-[#0F52BA]/20'
                           : 'bg-slate-50/60 border-slate-200/70 hover:bg-slate-100 text-slate-700'
                       }`}
                     >
@@ -218,9 +356,9 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                 <button
                   onClick={handleStartPracticeFromTopic}
                   disabled={!selectedTopic}
-                  className="btn-brand text-xs py-2 px-4 flex items-center gap-2"
+                  className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2 px-4 rounded-xl shadow-soft flex items-center gap-2 transition-colors cursor-pointer"
                 >
-                  <PlayIcon className="w-3.5 h-3.5" />
+                  <PlayIcon className="w-3.5 h-3.5 text-white" />
                   <span>Practicar este Tema ({questionCount} Preguntas)</span>
                 </button>
               </div>
@@ -228,7 +366,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
           </div>
         </div>
       ) : (
-        /* VISTA 2: GRID DE GUÍAS DE ESTUDIO */
+        /* VISTA 3: GRID DE GUÍAS DE ESTUDIO OFICIALES */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {guides.map((guide) => (
             <div
@@ -276,10 +414,10 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
 
                 <button
                   onClick={() => handleStartPracticeFromGuide(guide)}
-                  className="btn-brand text-xs py-1.5 px-3 flex items-center justify-center gap-1.5"
+                  className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-1.5 px-3 rounded-xl shadow-soft flex items-center justify-center gap-1.5 transition-colors"
                   title="Practicar preguntas de este tema"
                 >
-                  <PlayIcon className="w-3.5 h-3.5" />
+                  <PlayIcon className="w-3.5 h-3.5 text-white" />
                   <span>Practicar</span>
                 </button>
               </div>
@@ -288,14 +426,14 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
         </div>
       )}
 
-      {/* MODAL DETALLE DE GUÍA COMPLETA */}
+      {/* MODAL DETALLE DE GUÍA OFICIAL (SIMADI) */}
       {selectedGuide && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl border border-slate-200 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
             {/* Cabecera del Modal */}
             <div className="p-5 border-b border-slate-200 flex items-center justify-between gap-4">
               <div>
-                <span className="text-[10px] font-mono text-brand-600 font-semibold uppercase">
+                <span className="text-[10px] font-mono text-[#0F52BA] font-semibold uppercase">
                   {selectedGuide.categoryLabel}
                 </span>
                 <h3 className="text-base font-bold text-slate-900 font-sans mt-0.5">
@@ -317,7 +455,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                 onClick={() => setDetailTab('THEORY')}
                 className={`px-3 py-2 text-xs font-semibold border-b-2 transition-all ${
                   detailTab === 'THEORY'
-                    ? 'border-brand-500 text-brand-600 font-bold'
+                    ? 'border-[#0F52BA] text-[#0F52BA] font-bold'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -328,7 +466,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                 onClick={() => setDetailTab('EXAMS')}
                 className={`px-3 py-2 text-xs font-semibold border-b-2 transition-all ${
                   detailTab === 'EXAMS'
-                    ? 'border-brand-500 text-brand-600 font-bold'
+                    ? 'border-[#0F52BA] text-[#0F52BA] font-bold'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -339,7 +477,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                 onClick={() => setDetailTab('REFERENCES')}
                 className={`px-3 py-2 text-xs font-semibold border-b-2 transition-all ${
                   detailTab === 'REFERENCES'
-                    ? 'border-brand-500 text-brand-600 font-bold'
+                    ? 'border-[#0F52BA] text-[#0F52BA] font-bold'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -404,7 +542,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                       className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between text-xs"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-brand-600">📄</span>
+                        <span className="font-mono text-[#0F52BA]">📄</span>
                         <span className="font-medium text-slate-800">{ref.guideName}</span>
                       </div>
                       <span className="font-mono text-[11px] text-slate-500">{ref.pages}</span>
@@ -425,12 +563,30 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                   handleStartPracticeFromGuide(selectedGuide);
                   setSelectedGuide(null);
                 }}
-                className="btn-brand text-xs py-2 px-4 flex items-center gap-2"
+                className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2 px-4 rounded-xl shadow-soft flex items-center gap-2 transition-colors cursor-pointer"
               >
-                <PlayIcon className="w-3.5 h-3.5" />
+                <PlayIcon className="w-3.5 h-3.5 text-white" />
                 <span>Practicar este Tema Ahora</span>
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DETALLE DE GUÍA HIPER-COMPLEJA DECONSTRUIDA CON IA */}
+      {selectedDeconstructedGuide && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
+          <div className="max-w-4xl w-full">
+            <DeconstructedGuideView
+              guide={selectedDeconstructedGuide}
+              onClose={() => setSelectedDeconstructedGuide(null)}
+              onStartExamWithQuestions={(qs, title) => {
+                setSelectedDeconstructedGuide(null);
+                if (onStartExamWithQuestions) {
+                  onStartExamWithQuestions(qs, title);
+                }
+              }}
+            />
           </div>
         </div>
       )}

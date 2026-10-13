@@ -4,9 +4,11 @@ import { storageService } from '../../services/storageService';
 import { geminiService } from '../../services/geminiService';
 import type { UserDocument } from '../../types';
 import type { AiAnalysisResult } from '../../types/ai.types';
+import type { DeconstructedAcademicGuide } from '../../types/deconstruction.types';
 import type { Question } from '../../types/exam.types';
 import { AiProcessingModal } from '../ai/AiProcessingModal';
 import { AiDocumentAnalysisView } from '../ai/AiDocumentAnalysisView';
+import { DeconstructedGuideView } from '../academic/DeconstructedGuideView';
 import {
   FileTextIcon,
   TrashIcon,
@@ -51,6 +53,7 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
   const [aiProgressPercent, setAiProgressPercent] = useState<number>(0);
   const [processingDocTitle, setProcessingDocTitle] = useState<string>('');
   const [activeAnalysisResult, setActiveAnalysisResult] = useState<AiAnalysisResult | null>(null);
+  const [activeDeconstructedGuide, setActiveDeconstructedGuide] = useState<DeconstructedAcademicGuide | null>(null);
 
   const fetchDocuments = async () => {
     if (!user) return;
@@ -87,13 +90,18 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
   };
 
   /**
-   * Dispara el análisis con Gemini o abre el análisis guardado previamente
+   * Dispara la deconstrucción académica con Gemini o abre la guía guardada previamente
    */
   const handleAnalyzeWithGemini = async (doc: UserDocument) => {
     if (!user) return;
 
-    // Si ya tiene análisis guardado en PostgreSQL o caché, abrir directamente
+    // Si ya tiene guía deconstruida o análisis guardado, abrir directamente
     if (doc.ai_analysis) {
+      const analysisObj = doc.ai_analysis as any;
+      if (analysisObj.guideMetadata || analysisObj.phenomenonAndTheory) {
+        setActiveDeconstructedGuide(analysisObj as DeconstructedAcademicGuide);
+        return;
+      }
       setActiveAnalysisResult(doc.ai_analysis as unknown as AiAnalysisResult);
       return;
     }
@@ -101,12 +109,14 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
     setProcessingDocTitle(doc.title);
     setIsAiProcessing(true);
     setAiProgressPercent(15);
-    setAiProgressMessage('Inicializando pipeline multimodal de Gemini...');
+    setAiProgressMessage('Iniciando Motor de Deconstrucción Académica (7 Pilares)...');
 
     try {
-      const result = await geminiService.analyzeDocument({
-        document: doc,
+      const result = await geminiService.deconstructAcademicContent({
+        topicOrText: doc.title + (doc.description ? `: ${doc.description}` : ''),
+        userId: user.id,
         profile: user.academic_profile,
+        document: doc,
         onProgress: (step, percent) => {
           setAiProgressMessage(step);
           setAiProgressPercent(percent);
@@ -120,18 +130,18 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
             d.id === doc.id
               ? {
                   ...d,
-                  ai_summary: result.data!.documentSummary,
+                  ai_summary: result.data!.guideMetadata.summary,
                   ai_analysis: result.data as unknown as Record<string, unknown>,
                 }
               : d
           )
         );
 
-        setActiveAnalysisResult(result.data);
+        setActiveDeconstructedGuide(result.data);
       }
     } catch (err) {
-      console.error('Error en pipeline de análisis de Gemini:', err);
-      alert('Hubo un error al procesar con Gemini. Intenta nuevamente.');
+      console.error('Error en pipeline de deconstrucción de Gemini:', err);
+      alert('Hubo un error al deconstruir con Gemini. Intenta nuevamente.');
     } finally {
       setIsAiProcessing(false);
     }
@@ -458,6 +468,24 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
           onStartExamWithQuestions={onStartExamWithQuestions}
           onNavigateToGuides={onNavigateToGuides}
         />
+      )}
+
+      {/* Modal de Guía Hiper-Compleja Deconstruida (7 Pilares) */}
+      {activeDeconstructedGuide && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
+          <div className="max-w-4xl w-full">
+            <DeconstructedGuideView
+              guide={activeDeconstructedGuide}
+              onClose={() => setActiveDeconstructedGuide(null)}
+              onStartExamWithQuestions={(qs, title) => {
+                setActiveDeconstructedGuide(null);
+                if (onStartExamWithQuestions) {
+                  onStartExamWithQuestions(qs, title);
+                }
+              }}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
