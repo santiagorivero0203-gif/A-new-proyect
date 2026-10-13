@@ -636,3 +636,48 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ==============================================================================
+-- 14. TABLA: AI_PROCESSING_QUEUE (Cola de Análisis y Deconstrucción por IA) - PRIVADO / MCP
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.ai_processing_queue (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    document_url TEXT NOT NULL,
+    topic_title TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'processing', 'completed', 'failed')),
+    error_message TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+COMMENT ON TABLE public.ai_processing_queue IS 'Cola de documentos y tareas enviadas a procesar por el servidor MCP de Gemini Spark.';
+
+ALTER TABLE public.ai_processing_queue ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "ai_queue_select_own"
+    ON public.ai_processing_queue
+    FOR SELECT
+    USING ((select auth.uid()) = user_id);
+
+CREATE POLICY "ai_queue_insert_own"
+    ON public.ai_processing_queue
+    FOR INSERT
+    WITH CHECK ((select auth.uid()) = user_id);
+
+CREATE POLICY "ai_queue_update_own"
+    ON public.ai_processing_queue
+    FOR UPDATE
+    USING ((select auth.uid()) = user_id);
+
+CREATE POLICY "ai_queue_delete_own"
+    ON public.ai_processing_queue
+    FOR DELETE
+    USING ((select auth.uid()) = user_id);
+
+DROP TRIGGER IF EXISTS set_ai_processing_queue_updated_at ON public.ai_processing_queue;
+CREATE TRIGGER set_ai_processing_queue_updated_at
+    BEFORE UPDATE ON public.ai_processing_queue
+    FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
