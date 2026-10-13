@@ -743,6 +743,120 @@ function createMcpServerInstance(): McpServer {
     }
   );
 
+  // ----------------------------------------------------------------------------
+  // HERRAMIENTA 5: analyze_and_breakdown_task (Notion AI Style)
+  // ----------------------------------------------------------------------------
+  server.tool(
+    'analyze_and_breakdown_task',
+    'Analiza y desglosa un objetivo académico o tarea grande al estilo Notion AI, inyectando subtareas accionables, prioridad, estimación de pomodoros y consejo estratégico en la base de datos de Supabase.',
+    {
+      taskId: z.string().describe('ID UUID de la tarea a desglosar'),
+      userId: z.string().describe('ID UUID del estudiante propietario'),
+      ai_analysis: z
+        .object({
+          priority: z.enum(['ALTA', 'MEDIA', 'BAJA']).default('MEDIA').describe('Nivel de prioridad recomendado'),
+          estimated_pomodoros: z
+            .number()
+            .int()
+            .positive()
+            .default(2)
+            .describe('Estimación de bloques Pomodoro de 25 minutos para completarla'),
+          subtasks: z
+            .array(z.string())
+            .describe('Lista de acciones paso a paso concretas y secuenciales'),
+          strategic_advice: z
+            .string()
+            .describe('Consejo o metodología estratégica recomendada por la IA para abordar el objetivo')
+        })
+        .describe('Desglose estructurado de la tarea generado por la IA')
+    },
+    async ({ taskId, userId, ai_analysis }) => {
+      try {
+        const supabase = getSupabaseAdmin();
+
+        const updateData = {
+          priority: ai_analysis.priority,
+          ai_metadata: {
+            ...ai_analysis,
+            status: 'analyzed',
+            analyzed_at: new Date().toISOString()
+          },
+          updated_at: new Date().toISOString()
+        };
+
+        // 1. Intentar actualizar en kanban_tasks
+        let updatedTask = null;
+        let usedTable = 'kanban_tasks';
+
+        const { data: kanbanData, error: kanbanErr } = await supabase
+          .from('kanban_tasks')
+          .update(updateData)
+          .eq('id', taskId)
+          .eq('user_id', userId)
+          .select()
+          .maybeSingle();
+
+        if (!kanbanErr && kanbanData) {
+          updatedTask = kanbanData;
+        } else {
+          // Fallback seguro a user_tasks
+          usedTable = 'user_tasks';
+          const { data: userTaskData, error: userTaskErr } = await supabase
+            .from('user_tasks')
+            .update(updateData)
+            .eq('id', taskId)
+            .eq('user_id', userId)
+            .select()
+            .maybeSingle();
+
+          if (userTaskErr && !kanbanData) {
+            throw new Error(`Fallo al actualizar la tarea: ${userTaskErr.message}`);
+          }
+          updatedTask = userTaskData;
+        }
+
+        // 2. Si la tarea provenía de ai_processing_queue, marcar la cola como completed
+        try {
+          await supabase
+            .from('ai_processing_queue')
+            .update({
+              status: 'completed',
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', userId)
+            .contains('metadata', { taskId });
+        } catch {
+          // Ignorar si la cola no tiene coincidencia exacta
+        }
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(
+                {
+                  success: true,
+                  message: 'Tarea desglosada y actualizada exitosamente en Supabase al estilo Notion AI.',
+                  task_id: taskId,
+                  table_updated: usedTable,
+                  ai_analysis: ai_analysis,
+                  updated_task: updatedTask
+                },
+                null,
+                2
+              )
+            }
+          ]
+        };
+      } catch (err: any) {
+        return {
+          content: [{ type: 'text', text: `Error en analyze_and_breakdown_task: ${err.message}` }],
+          isError: true
+        };
+      }
+    }
+  );
+
   return server;
 }
 
@@ -818,7 +932,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         'get_pending_study_uploads',
         'publish_deconstructed_guide_and_exam',
         'manage_evaluation_plan_and_calendar',
-        'get_student_weaknesses'
+        'get_student_weaknesses',
+        'analyze_and_breakdown_task'
       ],
       sse_endpoint: '/api/mcp',
       message: 'Servidor MCP activo y listo para conexión con Gemini Spark.'

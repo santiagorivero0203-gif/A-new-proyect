@@ -240,6 +240,23 @@ CREATE TABLE IF NOT EXISTS public.user_tasks (
     priority TEXT NOT NULL CHECK (priority IN ('ALTA', 'MEDIA', 'BAJA')),
     due_date TEXT,
     completed BOOLEAN DEFAULT false,
+    status TEXT DEFAULT 'pending',
+    ai_metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Tabla KANBAN_TASKS para análisis inteligente Notion AI
+CREATE TABLE IF NOT EXISTS public.kanban_tasks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    priority TEXT NOT NULL CHECK (priority IN ('ALTA', 'MEDIA', 'BAJA')),
+    due_date TEXT,
+    completed BOOLEAN DEFAULT false,
+    status TEXT DEFAULT 'pending',
+    ai_metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
@@ -693,7 +710,31 @@ BEGIN
         ) THEN
             ALTER PUBLICATION supabase_realtime ADD TABLE public.ai_processing_queue;
         END IF;
+
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_publication_tables 
+            WHERE pubname = 'supabase_realtime' 
+            AND schemaname = 'public' 
+            AND tablename = 'kanban_tasks'
+        ) THEN
+            ALTER PUBLICATION supabase_realtime ADD TABLE public.kanban_tasks;
+        END IF;
     END IF;
 END $$;
+
+ALTER TABLE public.kanban_tasks ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "kanban_tasks_select_own" ON public.kanban_tasks
+    FOR SELECT TO authenticated USING ((select auth.uid()) = user_id);
+
+CREATE POLICY "kanban_tasks_insert_own" ON public.kanban_tasks
+    FOR INSERT TO authenticated WITH CHECK ((select auth.uid()) = user_id);
+
+CREATE POLICY "kanban_tasks_update_own" ON public.kanban_tasks
+    FOR UPDATE TO authenticated USING ((select auth.uid()) = user_id) WITH CHECK ((select auth.uid()) = user_id);
+
+CREATE POLICY "kanban_tasks_delete_own" ON public.kanban_tasks
+    FOR DELETE TO authenticated USING ((select auth.uid()) = user_id);
+
 
 
