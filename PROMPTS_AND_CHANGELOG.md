@@ -142,3 +142,52 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 6. **Limpieza de Placeholders en Agenda**:
    - En `plannerService.ts` se removieron los exámenes y recordatorios simulados, dejando listas limpias y listas para ingerir el cronograma y plan de evaluación real del estudiante.
 
+---
+
+### Prompt 8: Separación Estricta de Cuentas y Cumplimiento Integral de Reglas de Diseño Anti-Slop
+> **Contenido**:
+> 1. **Separación estricta de cuentas**: Erradicar definitivamente la apariencia y comportamiento de computadora compartida / cibercafé. Cada estudiante (Santiago, Andrés, Valeria, María Fernanda o cuentas registradas) debe tener su propio espacio de datos 100% aislado (agenda de evaluaciones, recordatorios, cuaderno de notas, tareas, módulos activos del workspace, presets y entregas de proyectos), sin compartir almacenamiento ni cruzar información.
+> 2. **Cumplimiento riguroso de reglas de diseño de las skills nuevas (`premium-frontend-designer`, `emilkowalski`, `impeccable`, `rulesofdesign.md`)**:
+>    - **Cero "cards inside cards"**: Erradicación total de tarjetas anidadas dentro de tarjetas principales. Uso de listas divididas (`divide-y divide-slate-100`), espaciado intencional y estados `:hover` limpios.
+>    - **Micro-interacciones y Animaciones Emil Kowalski**: Tiempos estrictamente `< 300ms` (150ms-180ms), curvas `cubic-bezier(0.16, 1, 0.3, 1)` y `ease-out`, animar exclusivamente `transform` y `opacity`, y soporte de `:active:scale-[0.98]` en botones.
+>    - **Paleta y Materialidad**: Prohibición de gradientes genéricos púrpura/azul de SaaS. Fondo claro arquitectónico (`#f8fafc`), superficies nítidas (`#ffffff`), tipografía grafito profunda (`#0f172a`), y color de acción asimétrico en Azul Cobalto Institucional (`#0F52BA`).
+>    - **Puerta de Autenticación y Gestión de Cuentas**: Creación de `StudentAuthPortal` (pantalla editorial cuando no hay sesión activa) y `AccountManagerModal` (panel modal para cambiar de cuenta o cerrar sesión sin saturar la interfaz de navegación).
+
+#### Decisiones e Implementaciones del Prompt 8:
+1. **Aislamiento Total de Almacenamiento por Usuario (`userId`)**:
+   - `src/services/taskService.ts`: Creado para aislar tareas bajo `cpe_${userId}_tasks_v2`. Si no existen datos previos, se inicializan tareas académicas auténticas y diferenciadas por nivel (laboratorio de física para Santiago, operaciones combinadas para Andrés, simulacros de admisión para Valeria, láminas de ergonomía para Mafe).
+   - `src/hooks/useWorkspaceModules.ts`: Refactorizado para vincular reactivamente los módulos activos y el preset seleccionado al `userId` activo (`cpe_${userId}_workspace_modules_v4` y `cpe_${userId}_active_preset_v4`). Al alternar de cuenta, el workspace se recompone de inmediato según el estudiante activo.
+   - `src/services/plannerService.ts`: Evaluaciones, recordatorios y notas guardados bajo particiones individuales (`cpe_${userId}_events_v2`, `cpe_${userId}_reminders_v2`, `cpe_${userId}_notes_v2`) con semillas académicas contextuales por perfil.
+   - `src/components/dashboards/CreativeDeliveryBoard.tsx`: Aislado por `cpe_${userId}_creative_deliveries`, restringiendo los datos iniciales de diseño exclusivamente a la cuenta de Mafe.
+2. **Arquitectura de Sesión & Puerta de Acceso (`StudentAuthPortal.tsx`)**:
+   - Si no hay usuario activo (`user === null`), la aplicación muestra el portal de acceso limpio `StudentAuthPortal`, con presentación editorial de las cuentas disponibles, iniciales tipográficas y acceso directo a su estación privada de estudio.
+   - `signOut()` en `AuthContext.tsx` ahora desautentica de verdad (`currentUser = null`), limpiando `cpe_active_profile_id` y regresando al portal de bienvenida en lugar de reiniciar a Santiago forzosamente.
+3. **Gestión Discreta de Cuentas (`AccountManagerModal.tsx`)**:
+   - Tanto la tarjeta de estudiante en el `Sidebar.tsx` como el indicador en el `Header.tsx` son botones interactivos que despliegan un modal limpio donde se visualiza la sesión activa, se permite cambiar a cualquier otro estudiante con 1 clic o cerrar sesión.
+4. **Erradicación de "Cards Inside Cards" (Diseño Anti-Slop)**:
+   - `QuickExamWidget.tsx`: Reemplazadas las 3 tarjetas redondeadas anidadas por filas divididas estilizadas (`divide-y divide-slate-100`) con microinteracciones y sin gradientes SaaS morados.
+   - `TasksWidget.tsx`: Convertida la lista de tarjetas pesadas anidadas a un checklist limpio con separadores sutiles, microanimación de checkbox (`active:scale-95`) y confirmación con confeti discreto.
+5. **Ajuste de Micro-interacciones Emil Kowalski en `src/index.css`**:
+   - Agregadas las variables `--ease-out: cubic-bezier(0.16, 1, 0.3, 1)` y `--ease-spring: cubic-bezier(0.23, 1, 0.32, 1)`.
+   - Transiciones de botones y tarjetas ajustadas a 150ms con aceleración por GPU y `active:scale-[0.98]`.
+   - Animación de entrada `fadeIn` reducida de 250ms a 180ms con curva cúbica responsiva.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/services/taskService.ts` | Crear | Servicio de tareas aislado por `userId` con semillas contextuales por estudiante. |
+| `src/components/auth/StudentAuthPortal.tsx` | Crear | Pantalla de bienvenida y selección de cuenta para cuando no hay sesión activa. |
+| `src/components/auth/AccountManagerModal.tsx` | Crear | Modal limpio para consultar sesión activa, cambiar de estudiante o cerrar sesión. |
+| `src/hooks/useWorkspaceModules.ts` | Refactorizar | Módulos y presets reactivos al cambio de `userId` con persistencia en namespace individual. |
+| `src/services/plannerService.ts` | Actualizar | Inicializadores contextuales por cuenta (calendario, recordatorios, notas LaTeX) con aislamiento estricto. |
+| `src/components/workspace/widgets/TasksWidget.tsx` | Refactorizar | Eliminación de tarjetas anidadas, conexión a `taskService` y checklist de alta legibilidad. |
+| `src/components/workspace/widgets/QuickExamWidget.tsx` | Refactorizar | Lista dividida sin cards-inside-cards y eliminación de badges morados SaaS. |
+| `src/components/workspace/widgets/GeminiAiWidget.tsx` | Actualizar | Consulta dinámica basada en el `academic_profile` del estudiante autenticado. |
+| `src/components/dashboards/CreativeDeliveryBoard.tsx` | Actualizar | Aislamiento estricto de entregas y moodboards por `userId`. |
+| `src/context/AuthContext.tsx` | Refactorizar | Soporte para logout auténtico (`user: null`), selección de cuentas y almacenamiento seguro. |
+| `src/App.tsx` | Refactorizar | Enrutamiento condicional con `StudentAuthPortal` cuando no hay sesión activa. |
+| `src/components/layout/Sidebar.tsx` | Actualizar | Tarjeta de estudiante interactiva que abre `AccountManagerModal`. |
+| `src/components/layout/Header.tsx` | Actualizar | Indicador interactivo de estudiante activo y botón explícito de "Cerrar Sesión". |
+| `src/components/layout/MainLayout.tsx` | Actualizar | Montaje de `AccountManagerModal` compartido. |
+| `src/index.css` | Actualizar | Tokens de easing de Emil Kowalski y transiciones snappies < 200ms. |
+
+

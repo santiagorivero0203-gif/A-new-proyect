@@ -11,6 +11,7 @@ interface AuthContextType {
   isLoading: boolean;
   isDemoMode: boolean;
   switchProfileDemo: (profileId: AcademicProfileId) => void;
+  selectStudentAccount: (profileId: AcademicProfileId) => void;
   signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signUpWithEmail: (
     email: string,
@@ -27,23 +28,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const LOCAL_STORAGE_KEY = 'cpe_active_profile_id';
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Inicializar con Santiago por defecto o el guardado en localStorage para testing
+  // Inicializar con la cuenta guardada en localStorage
   const [selectedProfileId, setSelectedProfileId] = useState<AcademicProfileId>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY) as AcademicProfileId;
     return saved && MOCK_PROFILES[saved] ? saved : 'santiago_fisica_ucv';
   });
 
-  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => MOCK_PROFILES[selectedProfileId]);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY) as AcademicProfileId;
+    if (saved && MOCK_PROFILES[saved]) {
+      return MOCK_PROFILES[saved];
+    }
+    return MOCK_PROFILES['santiago_fisica_ucv'];
+  });
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDemoMode, setIsDemoMode] = useState<boolean>(!isSupabaseConfigured());
-
-  // Sincronizar usuario cuando cambia selectedProfileId en demo
-  useEffect(() => {
-    if (isDemoMode) {
-      setCurrentUser(MOCK_PROFILES[selectedProfileId]);
-      localStorage.setItem(LOCAL_STORAGE_KEY, selectedProfileId);
-    }
-  }, [selectedProfileId, isDemoMode]);
 
   // Manejar sesión real de Supabase si está configurado
   useEffect(() => {
@@ -57,7 +57,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          // Consultar perfil de la tabla profiles
           const { data, error } = await supabase
             .from('profiles')
             .select('*')
@@ -69,13 +68,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           if (profileData && !error) {
             setCurrentUser(profileData);
             setSelectedProfileId(profileData.academic_profile);
+            localStorage.setItem(LOCAL_STORAGE_KEY, profileData.academic_profile);
             setIsDemoMode(false);
           } else {
-            // Si el trigger aún no se ejecutó, usar metadata
             setIsDemoMode(true);
           }
         } else {
-          // Sin sesión activa de Supabase, permanecer en demo para exploración inmediata
           setIsDemoMode(true);
         }
       } catch (err) {
@@ -88,7 +86,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     initAuth();
 
-    // Listener de cambios de autenticación en Supabase
     if (isSupabaseConfigured()) {
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
         if (session?.user) {
@@ -103,6 +100,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           if (profileData) {
             setCurrentUser(profileData);
             setSelectedProfileId(profileData.academic_profile);
+            localStorage.setItem(LOCAL_STORAGE_KEY, profileData.academic_profile);
             setIsDemoMode(false);
           }
         }
@@ -115,12 +113,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   /**
-   * Cambiar entre perfiles al instante (Andrés, Prima, Santiago, María Fernanda)
+   * Cambiar o seleccionar una cuenta de estudiante de forma segura y aislada
    */
   const switchProfileDemo = (profileId: AcademicProfileId) => {
     setSelectedProfileId(profileId);
     setCurrentUser(MOCK_PROFILES[profileId]);
     localStorage.setItem(LOCAL_STORAGE_KEY, profileId);
+  };
+
+  const selectStudentAccount = (profileId: AcademicProfileId) => {
+    switchProfileDemo(profileId);
   };
 
   /**
@@ -129,8 +131,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const signInWithEmail = async (email: string, password: string) => {
     try {
       if (!isSupabaseConfigured()) {
-        // En modo demo, simular éxito
-        const matchedProfile = Object.values(MOCK_PROFILES).find(p => p.email.toLowerCase() === email.toLowerCase());
+        const matchedProfile = Object.values(MOCK_PROFILES).find(
+          (p) => p.email.toLowerCase() === email.toLowerCase()
+        );
         if (matchedProfile) {
           switchProfileDemo(matchedProfile.academic_profile);
           return { success: true };
@@ -187,19 +190,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   /**
-   * Cerrar sesión
+   * Cerrar sesión por completo
    */
   const signOut = async () => {
     if (isSupabaseConfigured() && !isDemoMode) {
       await supabase.auth.signOut();
     }
-    // Volver a modo Demo predeterminado
-    setIsDemoMode(true);
-    switchProfileDemo('santiago_fisica_ucv');
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    setCurrentUser(null);
   };
 
   /**
-   * Actualizar preferencias
+   * Actualizar preferencias del usuario activo
    */
   const updateUserPreferences = (newPrefs: Partial<UserProfile['preferences']>) => {
     if (!currentUser) return;
@@ -222,6 +224,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isLoading,
         isDemoMode,
         switchProfileDemo,
+        selectStudentAccount,
         signInWithEmail,
         signUpWithEmail,
         signOut,

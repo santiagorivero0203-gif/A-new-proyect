@@ -5,10 +5,15 @@ import { SparklesIcon, LayersIcon } from '../common/Icons';
 interface HeaderProps {
   onOpenAuth: () => void;
   onToggleMobileSidebar: () => void;
+  onOpenAccountManager?: () => void;
   currentTab: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenAuth, onToggleMobileSidebar }) => {
+export const Header: React.FC<HeaderProps> = ({
+  onOpenAuth,
+  onToggleMobileSidebar,
+  onOpenAccountManager,
+}) => {
   const { user, isDemoMode, signOut } = useAuth();
 
   return (
@@ -38,11 +43,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuth, onToggleMobileSideba
         </div>
       </div>
 
-      {/* Centro vacío o título limpio */}
+      {/* Centro: Estudiante Activo con acción de cambio rápido */}
       <div className="hidden md:flex items-center gap-2">
-        <span className="text-xs font-medium text-slate-400 font-mono">
-          Estudiante Activo: <strong className="text-slate-800 font-semibold">{user?.full_name || 'Santiago Rivero'}</strong>
-        </span>
+        {user && onOpenAccountManager ? (
+          <button
+            onClick={onOpenAccountManager}
+            className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/70 border border-slate-200/60 text-xs font-medium text-slate-700 flex items-center gap-2 transition-colors duration-150 active:scale-[0.98]"
+            title="Administrar o cambiar de cuenta"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>Estudiante: <strong className="text-slate-900">{user.full_name}</strong></span>
+            <span className="text-[10px] text-slate-400 font-mono">▾</span>
+          </button>
+        ) : (
+          <span className="text-xs font-medium text-slate-400 font-mono">
+            {user ? user.full_name : 'Sin sesión'}
+          </span>
+        )}
       </div>
 
       {/* Lado Derecho: Estado y Acceso */}
@@ -64,9 +81,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuth, onToggleMobileSideba
         <button
           onClick={user ? signOut : onOpenAuth}
           className="btn-secondary text-xs py-1.5 px-3 rounded-lg"
+          title={user ? 'Cerrar sesión de esta cuenta' : 'Iniciar sesión'}
         >
           {user ? (
-            <span>Cerrar</span>
+            <span>Cerrar Sesión</span>
           ) : (
             <span className="flex items-center gap-1.5">
               <SparklesIcon className="w-3.5 h-3.5 text-blue-600" />

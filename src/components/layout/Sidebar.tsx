@@ -17,6 +17,7 @@ interface SidebarProps {
   onSelectTab: (tab: MainTabType) => void;
   isOpenMobile: boolean;
   onCloseMobile: () => void;
+  onOpenAccountManager?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -24,6 +25,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   isOpenMobile,
   onCloseMobile,
+  onOpenAccountManager,
 }) => {
   const { user } = useAuth();
 
@@ -108,8 +110,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           </div>
 
-          {/* Tarjeta del Estudiante Activo */}
-          <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-soft-sm">
+          {/* Tarjeta del Estudiante Activo (Interactiva para gestión de cuenta) */}
+          <div
+            onClick={onOpenAccountManager}
+            className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-soft-sm hover:border-slate-300 hover:shadow-soft cursor-pointer transition-all duration-150 active:scale-[0.99] group"
+            title="Administrar cuenta o cambiar de estudiante"
+          >
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">
+                Cuenta Activa
+              </span>
+              <span className="text-[10px] text-brand-500 font-medium group-hover:underline">
+                Cambiar ▾
+              </span>
+            </div>
+
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0 tracking-wider shadow-soft-sm">
                 {user?.full_name
@@ -121,7 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       .toUpperCase()
                   : 'SR'}
               </div>
-              <div className="overflow-hidden">
+              <div className="overflow-hidden min-w-0">
                 <h3 className="text-xs font-bold text-slate-900 truncate font-sans">{user?.full_name || 'Santiago Rivero'}</h3>
                 <p className="text-[11px] text-slate-500 font-medium truncate">{user?.institution || 'UCV - Ciencias'}</p>
                 <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{user?.email || 'estudiante@ucv.ve'}</p>

@@ -70,67 +70,76 @@ export const QuickExamWidget: React.FC<QuickExamWidgetProps> = ({
           </span>
         </div>
 
-        {/* Tarjetas de opciones rápidas */}
-        <div className="space-y-2.5">
-          <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-200/70 hover:border-slate-300 transition-all flex items-center justify-between gap-3">
-            <div>
+        {/* Lista de opciones rápidas (Sin tarjetas anidadas) */}
+        <div className="divide-y divide-slate-100">
+          {/* Opción 1: Examen Universitario */}
+          <div className="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group">
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className="text-xs font-bold text-slate-900">Examen Universitario</p>
-                <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-blue-100 text-blue-700 font-mono">
+                <p className="text-xs font-semibold text-slate-900 font-sans truncate">
+                  Examen Universitario
+                </p>
+                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-medium">
                   60 min
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                Cálculo, vectores y dinámica aplicada
+              <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+                Cálculo diferencial, vectores ℝ³ y dinámica newtoniana
               </p>
             </div>
             <button
               onClick={() => handleLaunch('UNIVERSITY_EXAM')}
-              className="btn-brand text-xs py-1.5 px-3 flex items-center gap-1.5 shrink-0"
+              className="btn-brand text-xs py-1.5 px-3 flex items-center gap-1.5 shrink-0 active:scale-[0.98] transition-transform duration-150"
             >
               <PlayIcon className="w-3 h-3" />
               <span>Iniciar</span>
             </button>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-200/70 hover:border-slate-300 transition-all flex items-center justify-between gap-3">
-            <div>
+          {/* Opción 2: Examen de Bachillerato */}
+          <div className="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group">
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className="text-xs font-bold text-slate-900">Examen de Bachillerato</p>
-                <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700 font-mono">
+                <p className="text-xs font-semibold text-slate-900 font-sans truncate">
+                  Examen de Bachillerato
+                </p>
+                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-medium">
                   45 min
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                Ciencias, matemática y lenguaje
+              <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+                Química, biología, matemática y razonamiento verbal
               </p>
             </div>
             <button
               onClick={() => handleLaunch('HIGH_SCHOOL_EXAM')}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shrink-0 transition-all"
+              className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 shrink-0 active:scale-[0.98] transition-transform duration-150"
             >
-              <PlayIcon className="w-3 h-3" />
+              <PlayIcon className="w-3 h-3 text-slate-600" />
               <span>Lanzar</span>
             </button>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-200/70 hover:border-slate-300 transition-all flex items-center justify-between gap-3">
-            <div>
+          {/* Opción 3: Cuestionario Rápido */}
+          <div className="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group">
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className="text-xs font-bold text-slate-900">Cuestionario Rápido</p>
-                <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 font-mono">
+                <p className="text-xs font-semibold text-slate-900 font-sans truncate">
+                  Cuestionario Rápido
+                </p>
+                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-medium">
                   15 min
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                Repaso ágil de 4 preguntas
+              <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+                Práctica ágil de 4 preguntas de fijación conceptual
               </p>
             </div>
             <button
               onClick={() => handleLaunch('QUICK_PRACTICE')}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shrink-0 transition-all"
+              className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 shrink-0 active:scale-[0.98] transition-transform duration-150"
             >
-              <PlayIcon className="w-3 h-3" />
+              <PlayIcon className="w-3 h-3 text-slate-600" />
               <span>Express</span>
             </button>
           </div>

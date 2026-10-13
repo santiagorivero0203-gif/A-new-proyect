@@ -70,14 +70,35 @@ const COLUMNS = [
  */
 export const CreativeDeliveryBoard: React.FC = () => {
   const { user } = useAuth();
+  const userStorageKey = `cpe_${user?.id || 'default'}_creative_deliveries`;
+
+  const getInitialForUser = () => {
+    const isMafe = user?.id?.includes('mafe') || user?.academic_profile === 'mafe_diseno_ucab';
+    return isMafe ? INITIAL_DELIVERIES : [];
+  };
+
   const [deliveries, setDeliveries] = useState<CreativeDeliveryItem[]>(() => {
     try {
-      const saved = localStorage.getItem('cpe_creative_deliveries');
-      return saved ? JSON.parse(saved) : INITIAL_DELIVERIES;
+      const saved = localStorage.getItem(userStorageKey);
+      return saved ? JSON.parse(saved) : getInitialForUser();
     } catch {
-      return INITIAL_DELIVERIES;
+      return getInitialForUser();
     }
   });
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(userStorageKey);
+      setDeliveries(saved ? JSON.parse(saved) : getInitialForUser());
+    } catch {
+      setDeliveries(getInitialForUser());
+    }
+  }, [userStorageKey, user?.id]);
+
+  const saveDeliveries = (items: CreativeDeliveryItem[]) => {
+    setDeliveries(items);
+    localStorage.setItem(userStorageKey, JSON.stringify(items));
+  };
 
   const [viewMode, setViewMode] = useState<'KANBAN' | 'MASONRY'>('KANBAN');
   const [userDocs, setUserDocs] = useState<UserDocument[]>([]);
@@ -109,11 +130,6 @@ export const CreativeDeliveryBoard: React.FC = () => {
       }
     });
   }, [user]);
-
-  const saveDeliveries = (items: CreativeDeliveryItem[]) => {
-    setDeliveries(items);
-    localStorage.setItem('cpe_creative_deliveries', JSON.stringify(items));
-  };
 
   const moveItem = (itemId: string, direction: 'prev' | 'next') => {
     const colOrder: ('brief' | 'moodboard' | 'in_progress' | 'final')[] = [

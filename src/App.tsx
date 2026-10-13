@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { MainLayout } from './components/layout/MainLayout';
 import type { MainTabType } from './components/layout/Sidebar';
 import { ModularWorkspaceDashboard } from './components/workspace/ModularWorkspaceDashboard';
@@ -9,16 +9,20 @@ import { SimulatorEngine } from './components/exams/SimulatorEngine';
 import { StorageManagerView } from './components/storage/StorageManagerView';
 import { CreativeDeliveryBoard } from './components/dashboards/CreativeDeliveryBoard';
 import { ToolsAndSettingsView } from './components/tools/ToolsAndSettingsView';
+import { StudentAuthPortal } from './components/auth/StudentAuthPortal';
+import { AuthModal } from './components/auth/AuthModal';
 import type { ExamConfig, Question } from './types/exam.types';
 
 /**
- * Componente Raíz de la Aplicación
- * Centro de Productividad Estudiantil
+ * Contenido Principal de la Aplicación
+ * Con control de sesión y aislamiento por cuenta de estudiante
  */
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { user } = useAuth();
   const [currentTab, setCurrentTab] = useState<MainTabType>('PRODUCTIVITY');
   const [aiExamConfig, setAiExamConfig] = useState<ExamConfig | null>(null);
   const [aiExamQuestions, setAiExamQuestions] = useState<Question[] | null>(null);
+  const [isSupabaseAuthOpen, setIsSupabaseAuthOpen] = useState(false);
 
   /**
    * Conecta los componentes de IA con el simulador de exámenes
@@ -28,7 +32,7 @@ export const App: React.FC = () => {
       mode: 'AI_GENERATED',
       title: title || 'Simulacro Personalizado por Gemini IA',
       totalQuestions: questions.length,
-      timeLimitSeconds: Math.max(questions.length * 3 * 60, 10 * 60), // Mínimo 10 min
+      timeLimitSeconds: Math.max(questions.length * 3 * 60, 10 * 60),
       allowPause: true,
       shuffleQuestions: false,
       customQuestions: questions,
@@ -45,6 +49,19 @@ export const App: React.FC = () => {
     setAiExamQuestions(config.customQuestions || null);
     setCurrentTab('EXAMS');
   };
+
+  // Si no hay sesión activa, mostrar el portal de acceso limpio y selección de cuenta
+  if (!user) {
+    return (
+      <>
+        <StudentAuthPortal onOpenSupabaseModal={() => setIsSupabaseAuthOpen(true)} />
+        <AuthModal
+          isOpen={isSupabaseAuthOpen}
+          onClose={() => setIsSupabaseAuthOpen(false)}
+        />
+      </>
+    );
+  }
 
   const renderCurrentView = () => {
     switch (currentTab) {
@@ -98,10 +115,16 @@ export const App: React.FC = () => {
   };
 
   return (
+    <MainLayout currentTab={currentTab} onSelectTab={setCurrentTab}>
+      {renderCurrentView()}
+    </MainLayout>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
     <AuthProvider>
-      <MainLayout currentTab={currentTab} onSelectTab={setCurrentTab}>
-        {renderCurrentView()}
-      </MainLayout>
+      <AppContent />
     </AuthProvider>
   );
 };

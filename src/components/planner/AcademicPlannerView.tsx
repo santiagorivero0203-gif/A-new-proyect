@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { plannerService } from '../../services/plannerService';
 import type {
   EvaluationEvent,
@@ -17,6 +18,9 @@ import {
 type PlannerTab = 'CALENDAR' | 'PLANS' | 'REMINDERS' | 'NOTES';
 
 export const AcademicPlannerView: React.FC = () => {
+  const { user } = useAuth();
+  const userId = user?.id || user?.academic_profile || 'santiago_fisica_ucv';
+
   const [activeTab, setActiveTab] = useState<PlannerTab>('CALENDAR');
 
   // Estado del planificador
@@ -50,24 +54,24 @@ export const AcademicPlannerView: React.FC = () => {
   // Filtro de notas
   const [noteSearch, setNoteSearch] = useState('');
 
-  // Cargar datos
+  // Cargar datos aislados por cuenta
   const loadData = () => {
-    setEvents(plannerService.getEvents());
-    setReminders(plannerService.getReminders());
-    setNotes(plannerService.getNotes());
-    setPlans(plannerService.getPlansBySubject());
+    setEvents(plannerService.getEvents(userId));
+    setReminders(plannerService.getReminders(userId));
+    setNotes(plannerService.getNotes(userId));
+    setPlans(plannerService.getPlansBySubject(userId));
   };
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [userId]);
 
   // Handlers de Eventos
   const handleCreateEvent = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newEventTitle.trim()) return;
 
-    plannerService.addEvent({
+    plannerService.addEvent(userId, {
       title: newEventTitle.trim(),
       subject: newEventSubject,
       date: newEventDate,
@@ -83,14 +87,14 @@ export const AcademicPlannerView: React.FC = () => {
   };
 
   const handleDeleteEvent = (id: string) => {
-    plannerService.deleteEvent(id);
+    plannerService.deleteEvent(userId, id);
     loadData();
   };
 
   const handleUpdateScore = (id: string, scoreStr: string) => {
     const num = parseFloat(scoreStr);
     if (!isNaN(num) && num >= 0 && num <= 20) {
-      plannerService.updateEventScore(id, num);
+      plannerService.updateEventScore(userId, id, num);
       loadData();
     }
   };
@@ -100,7 +104,7 @@ export const AcademicPlannerView: React.FC = () => {
     e.preventDefault();
     if (!newReminderTitle.trim()) return;
 
-    plannerService.addReminder({
+    plannerService.addReminder(userId, {
       title: newReminderTitle.trim(),
       subject: newReminderSubject,
       dueDate: newReminderDueDate,
@@ -112,12 +116,12 @@ export const AcademicPlannerView: React.FC = () => {
   };
 
   const handleToggleReminder = (id: string) => {
-    plannerService.toggleReminder(id);
+    plannerService.toggleReminder(userId, id);
     loadData();
   };
 
   const handleDeleteReminder = (id: string) => {
-    plannerService.deleteReminder(id);
+    plannerService.deleteReminder(userId, id);
     loadData();
   };
 
@@ -127,13 +131,13 @@ export const AcademicPlannerView: React.FC = () => {
     if (!newNoteTitle.trim() || !newNoteContent.trim()) return;
 
     if (selectedNote) {
-      plannerService.updateNote(selectedNote.id, {
+      plannerService.updateNote(userId, selectedNote.id, {
         title: newNoteTitle.trim(),
         subject: newNoteSubject,
         content: newNoteContent.trim(),
       });
     } else {
-      plannerService.addNote({
+      plannerService.addNote(userId, {
         title: newNoteTitle.trim(),
         subject: newNoteSubject,
         content: newNoteContent.trim(),
@@ -148,7 +152,7 @@ export const AcademicPlannerView: React.FC = () => {
   };
 
   const handleDeleteNote = (id: string) => {
-    plannerService.deleteNote(id);
+    plannerService.deleteNote(userId, id);
     if (selectedNote?.id === id) {
       setSelectedNote(null);
       setNewNoteTitle('');

@@ -1,90 +1,56 @@
-import React, { useState } from 'react';
-import { CheckCircleIcon, PlusIcon } from '../../common/Icons';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../../context/AuthContext';
+import { taskService, type TaskItem } from '../../../services/taskService';
+import { CheckCircleIcon, PlusIcon, TrashIcon } from '../../common/Icons';
 import confetti from 'canvas-confetti';
 
-interface TaskItem {
-  id: number;
-  title: string;
-  subject: string;
-  priority: 'ALTA' | 'MEDIA' | 'BAJA';
-  dueDate: string;
-  completed: boolean;
-}
-
 export const TasksWidget: React.FC = () => {
-  const [tasks, setTasks] = useState<TaskItem[]>([
-    {
-      id: 1,
-      title: 'Resolver guía de ejercicios asignados',
-      subject: 'Matemática',
-      priority: 'ALTA',
-      dueDate: 'Hoy, 6:00 PM',
-      completed: false,
-    },
-    {
-      id: 2,
-      title: 'Repasar conceptos clave y glosario técnico',
-      subject: 'Castellano & Biología',
-      priority: 'MEDIA',
-      dueDate: 'Mañana',
-      completed: true,
-    },
-    {
-      id: 3,
-      title: 'Completar bloque de 25 min de concentración sin interrupciones',
-      subject: 'Hábito de Estudio',
-      priority: 'ALTA',
-      dueDate: 'Hoy',
-      completed: true,
-    },
-    {
-      id: 4,
-      title: 'Revisar apuntes y constantes universales',
-      subject: 'Física & Química',
-      priority: 'BAJA',
-      dueDate: 'Viernes',
-      completed: false,
-    },
-  ]);
+  const { user } = useAuth();
+  const userId = user?.id || 'santiago-003-uuid';
 
+  const [tasks, setTasks] = useState<TaskItem[]>(() => taskService.getTasks(userId));
   const [newTitle, setNewTitle] = useState('');
   const [newSubject, setNewSubject] = useState('Matemática');
   const [newPriority, setNewPriority] = useState<'ALTA' | 'MEDIA' | 'BAJA'>('MEDIA');
 
+  // Recargar tareas de inmediato cuando cambia el estudiante
+  useEffect(() => {
+    setTasks(taskService.getTasks(userId));
+  }, [userId]);
+
   const toggleTask = (id: number) => {
-    setTasks((prev) =>
-      prev.map((t) => {
-        if (t.id === id) {
-          const nextState = !t.completed;
-          if (nextState) {
-            confetti({
-              particleCount: 30,
-              spread: 45,
-              origin: { y: 0.8 },
-              colors: ['#0F52BA', '#10B981', '#F59E0B'],
-            });
-          }
-          return { ...t, completed: nextState };
-        }
-        return t;
-      })
-    );
+    const target = tasks.find((t) => t.id === id);
+    const updated = taskService.toggleTask(userId, id);
+    setTasks(updated);
+
+    if (target && !target.completed) {
+      confetti({
+        particleCount: 25,
+        spread: 40,
+        origin: { y: 0.8 },
+        colors: ['#0F52BA', '#059669', '#3B82F6'],
+      });
+    }
+  };
+
+  const handleDeleteTask = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    const updated = taskService.deleteTask(userId, id);
+    setTasks(updated);
   };
 
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
 
-    const newTask: TaskItem = {
-      id: Date.now(),
+    taskService.addTask(userId, {
       title: newTitle.trim(),
       subject: newSubject,
       priority: newPriority,
       dueDate: 'Programado',
-      completed: false,
-    };
+    });
 
-    setTasks([newTask, ...tasks]);
+    setTasks(taskService.getTasks(userId));
     setNewTitle('');
   };
 
@@ -98,8 +64,8 @@ export const TasksWidget: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-brand-500" />
-              <h3 className="text-sm font-bold text-slate-900 font-display">
-                Tareas & Metas Diarias
+              <h3 className="text-sm font-bold text-slate-900 font-sans">
+                Tareas & Metas Académicas
               </h3>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -152,56 +118,76 @@ export const TasksWidget: React.FC = () => {
           </div>
         </form>
 
-        {/* Lista de Tareas */}
-        <div className="space-y-2 pt-1 max-h-[320px] overflow-y-auto pr-1">
-          {tasks.map((task) => (
-            <div
-              key={task.id}
-              onClick={() => toggleTask(task.id)}
-              className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                task.completed
-                  ? 'bg-slate-50/70 border-slate-200/50 opacity-60'
-                  : 'bg-white border-slate-200/80 hover:border-slate-300 shadow-soft-sm'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                    task.completed
-                      ? 'bg-emerald-600 text-white'
-                      : 'border-2 border-slate-300 hover:border-slate-500'
-                  }`}
-                >
-                  {task.completed && <CheckCircleIcon className="w-3.5 h-3.5" />}
-                </div>
-                <div>
-                  <p
-                    className={`text-xs font-medium ${
-                      task.completed ? 'line-through text-slate-400' : 'text-slate-800'
-                    }`}
-                  >
-                    {task.title}
-                  </p>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] font-semibold text-slate-500">{task.subject}</span>
-                    <span className="text-[10px] text-slate-400 font-mono">• {task.dueDate}</span>
-                  </div>
-                </div>
-              </div>
-
-              <span
-                className={`text-[9px] font-bold px-2 py-0.5 rounded-md font-mono ${
-                  task.priority === 'ALTA'
-                    ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                    : task.priority === 'MEDIA'
-                    ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                    : 'bg-slate-100 text-slate-600'
+        {/* Lista de Tareas Limpia (Sin tarjetas anidadas) */}
+        <div className="divide-y divide-slate-100 max-h-[320px] overflow-y-auto pr-1">
+          {tasks.length === 0 ? (
+            <div className="py-8 text-center text-xs text-slate-400">
+              No hay tareas pendientes para esta cuenta.
+            </div>
+          ) : (
+            tasks.map((task) => (
+              <div
+                key={task.id}
+                onClick={() => toggleTask(task.id)}
+                className={`py-3 px-2 rounded-xl transition-colors duration-150 cursor-pointer flex items-center justify-between gap-3 group ${
+                  task.completed ? 'opacity-50 hover:bg-slate-50/50' : 'hover:bg-slate-50'
                 }`}
               >
-                {task.priority}
-              </span>
-            </div>
-          ))}
+                <div className="flex items-center gap-3 min-w-0">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleTask(task.id);
+                    }}
+                    className={`w-4 h-4 rounded-md flex items-center justify-center transition-transform duration-150 active:scale-95 shrink-0 ${
+                      task.completed
+                        ? 'bg-emerald-600 text-white'
+                        : 'border border-slate-300 hover:border-slate-500 bg-white'
+                    }`}
+                  >
+                    {task.completed && <CheckCircleIcon className="w-3 h-3" />}
+                  </button>
+
+                  <div className="min-w-0">
+                    <p
+                      className={`text-xs font-medium leading-snug truncate ${
+                        task.completed ? 'line-through text-slate-400' : 'text-slate-800'
+                      }`}
+                    >
+                      {task.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5 text-[11px] text-slate-400 font-mono">
+                      <span className="font-semibold text-slate-600 font-sans">{task.subject}</span>
+                      <span>• {task.dueDate}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span
+                    className={`text-[9px] font-bold px-2 py-0.5 rounded-full font-mono ${
+                      task.priority === 'ALTA'
+                        ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                        : task.priority === 'MEDIA'
+                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                        : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {task.priority}
+                  </span>
+
+                  <button
+                    onClick={(e) => handleDeleteTask(e, task.id)}
+                    className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-600 transition-opacity rounded"
+                    title="Eliminar tarea"
+                  >
+                    <TrashIcon className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 import { SparklesIcon, BookOpenIcon, UploadCloudIcon } from '../../common/Icons';
 import { geminiService } from '../../../services/geminiService';
 import type { Question } from '../../../types/exam.types';
+import type { AcademicProfileId } from '../../../types';
 
 interface GeminiAiWidgetProps {
   onStartExamWithQuestions?: (questions: Question[], title: string) => void;
@@ -12,6 +14,7 @@ export const GeminiAiWidget: React.FC<GeminiAiWidgetProps> = ({
   onStartExamWithQuestions,
   onNavigateToStorage,
 }) => {
+  const { user } = useAuth();
   const [prompt, setPrompt] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [responseSnippet, setResponseSnippet] = useState<string | null>(null);
@@ -38,7 +41,7 @@ export const GeminiAiWidget: React.FC<GeminiAiWidgetProps> = ({
 
       const result = await geminiService.analyzeDocument({
         document: mockDoc,
-        profile: 'santiago_fisica_ucv',
+        profile: (user?.academic_profile || 'santiago_fisica_ucv') as AcademicProfileId,
       });
 
       if (result.success && result.data) {

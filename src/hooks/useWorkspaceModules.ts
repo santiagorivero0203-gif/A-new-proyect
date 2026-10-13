@@ -9,27 +9,33 @@ import {
 } from '../types/modules.types';
 import { useAuth } from '../context/AuthContext';
 
-const LOCAL_STORAGE_MODULES_KEY = 'cpe_user_workspace_modules_v4';
-const LOCAL_STORAGE_PRESET_KEY = 'cpe_user_active_preset_v4';
-
 const DEFAULT_ACTIVE_MODULES: WorkspaceModuleId[] = WORKSPACE_MODULES_CATALOG
   .filter((m) => m.defaultEnabled)
   .map((m) => m.id);
 
+function getModulesStorageKey(userId: string): string {
+  return `cpe_${userId}_workspace_modules_v4`;
+}
+
+function getPresetStorageKey(userId: string): string {
+  return `cpe_${userId}_active_preset_v4`;
+}
+
 /**
- * Hook de Gestión de Modularidad Universal
+ * Hook de Gestión de Modularidad Universal Aislada por Cuenta
  * Controla qué widgets o herramientas están anclados al Dashboard principal
- * respetando la personalización única de cada estudiante sin restricciones por perfil.
+ * con persistencia 100% aislada por estudiante.
  */
 export function useWorkspaceModules() {
   const { user, updateUserPreferences } = useAuth();
+  const userId = user?.id || 'guest';
 
-  // Inicializar estado desde preferencias de usuario o localStorage
-  const [activeModules, setActiveModules] = useState<WorkspaceModuleId[]>(() => {
+  // Obtener módulos iniciales para el usuario activo
+  const loadUserModules = useCallback((): WorkspaceModuleId[] => {
     if (user?.preferences?.workspace_modules && user.preferences.workspace_modules.length > 0) {
       return user.preferences.workspace_modules as WorkspaceModuleId[];
     }
-    const saved = localStorage.getItem(LOCAL_STORAGE_MODULES_KEY);
+    const saved = localStorage.getItem(getModulesStorageKey(userId));
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -37,25 +43,34 @@ export function useWorkspaceModules() {
           return parsed as WorkspaceModuleId[];
         }
       } catch {
-        // Fallback al valor por defecto
+        // Fallback
       }
     }
     return DEFAULT_ACTIVE_MODULES;
-  });
+  }, [user, userId]);
 
-  const [activePreset, setActivePreset] = useState<WorkspacePresetId | null>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_PRESET_KEY) as WorkspacePresetId | null;
+  const loadUserPreset = useCallback((): WorkspacePresetId | null => {
+    const saved = localStorage.getItem(getPresetStorageKey(userId)) as WorkspacePresetId | null;
     return saved || 'balanced';
-  });
+  }, [userId]);
 
-  // Guardar cambios en localStorage y en el contexto de usuario
+  const [activeModules, setActiveModules] = useState<WorkspaceModuleId[]>(loadUserModules);
+  const [activePreset, setActivePreset] = useState<WorkspacePresetId | null>(loadUserPreset);
+
+  // Recargar configuración del workspace de inmediato si cambia la cuenta activa
+  useEffect(() => {
+    setActiveModules(loadUserModules());
+    setActivePreset(loadUserPreset());
+  }, [userId, loadUserModules, loadUserPreset]);
+
+  // Guardar cambios en localStorage aislado y en preferencias del usuario
   const persistChanges = useCallback(
     (newModules: WorkspaceModuleId[], presetId?: WorkspacePresetId | null) => {
-      localStorage.setItem(LOCAL_STORAGE_MODULES_KEY, JSON.stringify(newModules));
+      localStorage.setItem(getModulesStorageKey(userId), JSON.stringify(newModules));
       if (presetId) {
-        localStorage.setItem(LOCAL_STORAGE_PRESET_KEY, presetId);
+        localStorage.setItem(getPresetStorageKey(userId), presetId);
       } else {
-        localStorage.removeItem(LOCAL_STORAGE_PRESET_KEY);
+        localStorage.removeItem(getPresetStorageKey(userId));
       }
 
       if (user) {
@@ -65,7 +80,7 @@ export function useWorkspaceModules() {
         });
       }
     },
-    [user, updateUserPreferences]
+    [user, userId, updateUserPreferences]
   );
 
   /**
@@ -86,7 +101,6 @@ export function useWorkspaceModules() {
       setActiveModules((prev) => {
         let updated: WorkspaceModuleId[];
         if (prev.includes(id)) {
-          // No permitir que el usuario se quede con 0 módulos
           if (prev.length <= 1) return prev;
           updated = prev.filter((m) => m !== id);
         } else {
@@ -153,13 +167,6 @@ export function useWorkspaceModules() {
   const resetToDefault = useCallback(() => {
     applyPreset('balanced');
   }, [applyPreset]);
-
-  // Si cambia el usuario y este ya tiene preferencias cargadas, sincronizar
-  useEffect(() => {
-    if (user?.preferences?.workspace_modules && user.preferences.workspace_modules.length > 0) {
-      setActiveModules(user.preferences.workspace_modules as WorkspaceModuleId[]);
-    }
-  }, [user?.id]);
 
   return {
     activeModules,

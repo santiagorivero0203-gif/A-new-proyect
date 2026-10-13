@@ -4,6 +4,7 @@ import type { MainTabType } from './Sidebar';
 import { Header } from './Header';
 import { MobileNavigation } from './MobileNavigation';
 import { AuthModal } from '../auth/AuthModal';
+import { AccountManagerModal } from '../auth/AccountManagerModal';
 import { FloatingCalculatorWidget } from '../tools/FloatingCalculatorWidget';
 
 interface MainLayoutProps {
@@ -19,6 +20,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 }) => {
   const [isOpenMobileSidebar, setIsOpenMobileSidebar] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAccountManagerOpen, setIsAccountManagerOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] flex flex-col font-sans selection:bg-brand-500 selection:text-white">
@@ -28,6 +30,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         onSelectTab={onSelectTab}
         isOpenMobile={isOpenMobileSidebar}
         onCloseMobile={() => setIsOpenMobileSidebar(false)}
+        onOpenAccountManager={() => setIsAccountManagerOpen(true)}
       />
 
       {/* Área Principal con margen adaptativo */}
@@ -36,6 +39,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           currentTab={currentTab}
           onOpenAuth={() => setIsAuthModalOpen(true)}
           onToggleMobileSidebar={() => setIsOpenMobileSidebar(!isOpenMobileSidebar)}
+          onOpenAccountManager={() => setIsAccountManagerOpen(true)}
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-24 lg:pb-12">
@@ -56,6 +60,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
+      />
+
+      {/* Modal de Gestión y Cambio Aislado de Cuentas */}
+      <AccountManagerModal
+        isOpen={isAccountManagerOpen}
+        onClose={() => setIsAccountManagerOpen(false)}
+        onOpenSupabaseAuth={() => setIsAuthModalOpen(true)}
       />
     </div>
   );
