@@ -245,6 +245,22 @@ export const AcademicPlannerView: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {events.length === 0 && (
+              <div className="col-span-full p-12 text-center bg-white border border-dashed border-slate-200 rounded-2xl space-y-3">
+                <span className="text-2xl">📅</span>
+                <h4 className="text-sm font-bold text-slate-800 font-sans">No hay evaluaciones programadas</h4>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                  Registra los exámenes, parciales y entregas de tu semestre para comenzar el seguimiento.
+                </p>
+                <button
+                  onClick={() => setShowEventModal(true)}
+                  className="btn-brand text-xs py-2 px-3.5 inline-flex items-center gap-1.5"
+                >
+                  <PlusIcon className="w-3.5 h-3.5" />
+                  <span>Programar Primera Evaluación</span>
+                </button>
+              </div>
+            )}
             {events.map((ev) => (
               <div
                 key={ev.id}

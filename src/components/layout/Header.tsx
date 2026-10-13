@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { ProfileQuickSwitcher } from '../auth/ProfileQuickSwitcher';
 import { SparklesIcon, LayersIcon } from '../common/Icons';
 
 interface HeaderProps {
@@ -39,9 +38,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuth, onToggleMobileSideba
         </div>
       </div>
 
-      {/* Lado Central: Selector Rápido de Perfil (Desktop / Tablet) */}
-      <div className="hidden md:block">
-        <ProfileQuickSwitcher compact={true} />
+      {/* Centro vacío o título limpio */}
+      <div className="hidden md:flex items-center gap-2">
+        <span className="text-xs font-medium text-slate-400 font-mono">
+          Estudiante Activo: <strong className="text-slate-800 font-semibold">{user?.full_name || 'Santiago Rivero'}</strong>
+        </span>
       </div>
 
       {/* Lado Derecho: Estado y Acceso */}

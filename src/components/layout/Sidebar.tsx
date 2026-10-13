@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { ProfileQuickSwitcher } from '../auth/ProfileQuickSwitcher';
 import {
   TimerIcon,
   BookOpenIcon,
@@ -112,27 +111,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Tarjeta del Estudiante Activo */}
           <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-soft-sm">
             <div className="flex items-center gap-3">
-              <img
-                src={user?.avatar_url}
-                alt={user?.full_name}
-                className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0"
-              />
+              <div className="w-10 h-10 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0 tracking-wider shadow-soft-sm">
+                {user?.full_name
+                  ? user.full_name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .slice(0, 2)
+                      .join('')
+                      .toUpperCase()
+                  : 'SR'}
+              </div>
               <div className="overflow-hidden">
-                <h3 className="text-xs font-bold text-slate-900 truncate font-sans">{user?.full_name}</h3>
-                <p className="text-[11px] text-slate-500 font-medium truncate">{user?.institution}</p>
-                <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{user?.email}</p>
+                <h3 className="text-xs font-bold text-slate-900 truncate font-sans">{user?.full_name || 'Santiago Rivero'}</h3>
+                <p className="text-[11px] text-slate-500 font-medium truncate">{user?.institution || 'UCV - Ciencias'}</p>
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{user?.email || 'estudiante@ucv.ve'}</p>
               </div>
             </div>
           </div>
 
-          {/* Selector de Perfil Académico */}
-          <ProfileQuickSwitcher compact={false} />
-
           {/* Menú de Navegación */}
           <div className="pt-2">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 mb-2">
-              Secciones de la Plataforma
-            </p>
             <nav className="space-y-1">
               {navigationTabs.map((tab) => {
                 const isActive = currentTab === tab.id;

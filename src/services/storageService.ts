@@ -196,34 +196,7 @@ export const storageService = {
       // Ignorar
     }
 
-    // Documentos precargados iniciales de ejemplo
-    return [
-      {
-        id: 'seed-doc-1',
-        user_id: userId,
-        title: 'Apuntes de Pizarra: Vectores y Cinemática',
-        description: 'Fotografía de la clase de vectores en R2 y descomposición trigonométrica',
-        file_path: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80',
-        file_type: 'image/jpeg',
-        file_size_bytes: 2450000,
-        tags: ['Foto Pizarra', 'Física', 'Vectores'],
-        storage_bucket: BUCKET_NAME,
-        created_at: new Date(Date.now() - 86400000).toISOString(),
-        updated_at: new Date(Date.now() - 86400000).toISOString(),
-      },
-      {
-        id: 'seed-doc-2',
-        user_id: userId,
-        title: 'Guía de Estudio: Estequiometría y Balanceo Químico',
-        description: 'Documento en PDF con 30 ejercicios prácticos para admisión UCV',
-        file_path: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80',
-        file_type: 'application/pdf',
-        file_size_bytes: 4890000,
-        tags: ['Guía PDF', 'Química', 'Guía Oficial'],
-        storage_bucket: BUCKET_NAME,
-        created_at: new Date(Date.now() - 172800000).toISOString(),
-        updated_at: new Date(Date.now() - 172800000).toISOString(),
-      },
-    ];
+    // Retornar lista vacía lista para subidas reales del estudiante
+    return [];
   },
 };

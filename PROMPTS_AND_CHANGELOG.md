@@ -111,3 +111,34 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/App.tsx` | Actualizar | Enrutamiento de la nueva pestaña `PLANNER` en el switch de la aplicación. |
 | `tailwind.config.js` | Actualizar | Estandarización de `Inter` y fuentes de sistema de alta precisión. |
 | `PROMPTS_AND_CHANGELOG.md` | Crear | Bitácora continua de requerimientos y cambios del proyecto. |
+
+---
+
+### Prompt 7: Anti-Slop Profundo, Erradicación de Placeholders, Perfil Individual & Exportación de Guías Simadi
+> **Contenido**:
+> 1. Erradicar placeholders de materias y ejercicios ficticios; eliminar todas las imágenes puestas sin justificación (Unsplash, avatares de extraños).
+> 2. Resolver el problema de que el sistema de perfiles parece como si 4 personas compartieran la misma PC.
+> 3. Exportar todas las guías reales que existían en Simulación Simadi y su sistema de selección de temas.
+> 4. Eliminar definitivamente los textos que sobreexplican funciones o secciones.
+> 5. Instalar y aplicar las skills del video de @migue.baena: `emilkowalski/skills`, `pbakaus/impeccable`, `Leonxlnx/taste-skill`, y la skill `premium-frontend-designer`, configurando los servidores MCP de Figma y Playwright en `mcp_config.json`.
+> 6. Reemplazar la tipografía genérica `Inter` por tipografías con carácter e intención de diseño (`Plus Jakarta Sans` y `Space Grotesk`).
+
+#### Decisiones e Implementaciones del Prompt 7:
+1. **Instalación de Skills Anti-Slop**:
+   - Creado `.agents/skills/premium-frontend-designer/SKILL.md` con reglas de dirección visual, principios de movimiento de Emil Kowalski (< 300ms, ease-out, transform/opacity), protocolo Figma MCP y ciclo de auto-verificación Playwright MCP.
+   - Clonadas las skills oficiales en `.agents/skills/emilkowalski`, `.agents/skills/impeccable` y `.agents/skills/taste-skill`.
+   - Añadidos los servidores `playwright` y `figma` al archivo global `mcp_config.json`.
+2. **Reemplazo Tipográfico Anti-Slop**:
+   - `index.html` y `tailwind.config.js` actualizados con `Plus Jakarta Sans` (geométrica limpia para UI) y `Space Grotesk` (grotesca moderna para títulos y encabezados), además de `Newsreader` (editorial) y `JetBrains Mono` (código y fórmulas). Erradicado `Inter` como fuente por defecto.
+3. **Erradicación Total de Imágenes Externas y Monograma Tipográfico**:
+   - Eliminadas todas las imágenes de Unsplash en `mockData.ts`, `storageService.ts`, `CreativeDeliveryBoard.tsx` y tarjetas de perfil.
+   - Implementado monograma tipográfico con iniciales vectoriales limpias en `Sidebar.tsx` en lugar de fotos de extraños.
+4. **Sistema de Perfil Individual (Fin del Kiosk Compartido)**:
+   - Removido `ProfileQuickSwitcher` de la barra superior `Header.tsx` y de la barra lateral `Sidebar.tsx`. La aplicación ahora pertenece a un único estudiante autenticado.
+5. **Exportación Total del Motor de Guías y 1.111 Preguntas Simadi**:
+   - Exportados `simadi_guides.json` (11 guías oficiales con teoría HTML, estrategias y exámenes pasados) y `simadi_preguntas.json` (1.111 preguntas oficiales con opciones, respuesta correcta y justificación pedagógica).
+   - Creado `src/services/simadiBankService.ts` con funciones de filtrado, indexación y conversión estricta al tipado de evaluaciones.
+   - Reescrito `AcademicGuidesView.tsx` integrando las 11 guías completas en 3 pestañas y un **Selector de Temas** interactivo agrupado por áreas (`Razonamiento Lógico Numérico`, `Razonamiento Verbal`, `Ciencia y Tecnología`, `Cultura General`) con selección de cantidad de preguntas y lanzamiento inmediato de cuestionarios.
+6. **Limpieza de Placeholders en Agenda**:
+   - En `plannerService.ts` se removieron los exámenes y recordatorios simulados, dejando listas limpias y listas para ingerir el cronograma y plan de evaluación real del estudiante.
+

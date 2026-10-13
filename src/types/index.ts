@@ -22,13 +22,13 @@ export interface UserProfile {
   email: string;
   full_name: string;
   username: string;
-  avatar_url: string;
+  avatar_url?: string;
   academic_profile: AcademicProfileId;
   institution: string;
   academic_goal: string;
-  level_badge: string;
-  streak_days: number;
-  xp_points: number;
+  level_badge?: string;
+  streak_days?: number;
+  xp_points?: number;
   preferences: UserPreferences;
   created_at: string;
   updated_at: string;

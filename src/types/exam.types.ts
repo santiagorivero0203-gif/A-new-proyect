@@ -25,6 +25,7 @@ export interface Question {
   correctOptionId: string;
   explanation: string;
   explanationLatex?: string;
+  sourceExam?: string;
 }
 
 export type ExamMode =
