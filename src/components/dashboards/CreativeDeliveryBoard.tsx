@@ -21,43 +21,39 @@ export interface CreativeDeliveryItem {
 const INITIAL_DELIVERIES: CreativeDeliveryItem[] = [
   {
     id: 'deliv-1',
-    title: 'Investigación de Usuarios & Mapa de Empatía',
-    course: 'Taller de Diseño Integral V',
+    title: 'Investigación de Usuarios & Análisis de Requerimientos',
+    course: 'Metodología de Proyectos',
     column: 'brief',
     dueDate: '18 Octubre',
-    tags: ['Ergonomía', 'Brief', 'UX'],
-    coverUrl: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&auto=format&fit=crop&q=80',
-    notes: 'Entrevistas a 12 usuarios sobre transporte urbano y hábitos de desplazamiento.',
+    tags: ['Requerimientos', 'Análisis', 'Investigación'],
+    notes: 'Entrevistas a 12 usuarios sobre hábitos de estudio y ergonomía.',
   },
   {
     id: 'deliv-2',
-    title: 'Moodboard de Texturas, Metales y Vidrio Esmerilado',
-    course: 'Materialidad y Procesos Industriales',
+    title: 'Definición de Especificaciones y Materiales',
+    course: 'Materialidad y Procesos',
     column: 'moodboard',
     dueDate: '22 Octubre',
-    tags: ['Materialidad', 'Acabados', 'Vidrio'],
-    coverUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-    notes: 'Exploración de materiales sostenibles para carcasa translúcida.',
+    tags: ['Materialidad', 'Acabados', 'Especificaciones'],
+    notes: 'Exploración de materiales y tolerancias para ensamble.',
   },
   {
     id: 'deliv-3',
-    title: 'Modelo 3D CAD & Render con Luces Físicas',
-    course: 'Modelado Tridimensional Asistido',
+    title: 'Modelado Técnico & Planos de Fabricación',
+    course: 'Modelado y CAD',
     column: 'in_progress',
     dueDate: '28 Octubre',
-    tags: ['3D Rhinoceros', 'KeyShot', 'Renders'],
-    coverUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80',
-    notes: 'Ajuste de tolerancias para ensamble a presión y costillas de refuerzo.',
+    tags: ['Planos', 'Tolerancias', 'Modelado'],
+    notes: 'Ajuste de cotas para ensamble a presión y costillas de refuerzo.',
   },
   {
     id: 'deliv-4',
-    title: 'Láminas Tipográficas Suizas & Memoria Gráfica',
-    course: 'Diseño Editorial y Diagramación',
+    title: 'Memoria Descriptiva & Láminas Finales',
+    course: 'Presentación de Proyectos',
     column: 'final',
     dueDate: '02 Noviembre',
-    tags: ['Editorial', 'Retícula', 'Impresión'],
-    coverUrl: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80',
-    notes: 'Formato A1 montado sobre cartón pluma con acabados mate.',
+    tags: ['Memoria', 'Planos', 'Entrega'],
+    notes: 'Formato estándar de entrega con especificaciones técnicas.',
   },
 ];
 
@@ -151,7 +147,7 @@ export const CreativeDeliveryBoard: React.FC = () => {
       column: 'brief',
       dueDate: newDueDate || 'Por definir',
       tags: newTag ? newTag.split(',').map((t) => t.trim()) : ['Diseño'],
-      coverUrl: selectedStorageDocUrl || INITIAL_DELIVERIES[0].coverUrl,
+      coverUrl: selectedStorageDocUrl || undefined,
     };
 
     saveDeliveries([newItem, ...deliveries]);
@@ -172,15 +168,15 @@ export const CreativeDeliveryBoard: React.FC = () => {
       {/* Barra de Encabezado y Selector de Vista */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-xs font-semibold mb-2">
-            <PaletteIcon className="w-3.5 h-3.5" />
-            Módulo Creativo • María Fernanda (Diseño UCAB)
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold mb-2">
+            <PaletteIcon className="w-3.5 h-3.5 text-brand-500" />
+            Entregas & Proyectos
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-display">
-            Tablero de Entregas & Gestión Visual
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
+            Tablero de Proyectos y Entregas
           </h2>
           <p className="text-sm text-slate-500">
-            Organiza tus proyectos de taller, vincula imágenes de Supabase Storage y controla fechas de jurado.
+            Organiza etapas de trabajo, entregas académicas y fechas de presentación.
           </p>
         </div>
 

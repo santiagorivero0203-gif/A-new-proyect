@@ -65,7 +65,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
             <TimerIcon className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900 font-display">{session.config.title}</h2>
+            <h2 className="text-sm font-bold text-slate-900 font-sans">{session.config.title}</h2>
             <span className="text-xs text-slate-500 font-mono">
               Pregunta {session.currentIndex + 1} de {totalCount} • {answeredCount} respondidas
             </span>
@@ -202,24 +202,24 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
               <div
                 key={opt.id}
                 onClick={() => onSelectAnswer(currentQuestion.id, opt.id)}
-                className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                   isSelected
-                    ? 'bg-blue-50/70 border-blue-500 shadow-soft-sm text-slate-900 ring-1 ring-blue-500/20'
-                    : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 text-slate-700'
+                    ? 'bg-brand-50/70 border-brand-500 shadow-soft-sm text-slate-900 ring-1 ring-brand-500/20 font-medium'
+                    : 'bg-white border-slate-200/90 hover:border-slate-300 hover:bg-slate-50/50 text-slate-700'
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3.5">
                   <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${
                       isSelected
-                        ? 'border-blue-600 bg-blue-600'
+                        ? 'border-brand-500 bg-brand-500'
                         : 'border-slate-300'
                     }`}
                   >
                     {isSelected && <span className="w-2 h-2 rounded-full bg-white" />}
                   </div>
                   <span
-                    className="text-sm font-medium"
+                    className="text-sm text-slate-900 leading-normal font-sans"
                     dangerouslySetInnerHTML={{
                       __html: renderLatex(opt.text, false),
                     }}

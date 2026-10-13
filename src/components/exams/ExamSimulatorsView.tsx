@@ -9,7 +9,7 @@ export const ExamSimulatorsView: React.FC = () => {
   const exams = [
     {
       id: 'simadi-diagnostico',
-      title: 'Prueba Diagnóstica Integral Simadi: Razonamiento Lógico & Verbal',
+      title: 'Prueba Diagnóstica Integral: Razonamiento Lógico & Verbal',
       subject: 'Exploración Vocacional & Habilidad Numérica',
       questions: 40,
       durationMinutes: 60,
@@ -19,13 +19,13 @@ export const ExamSimulatorsView: React.FC = () => {
     },
     {
       id: 'simadi-ucv-ciencias',
-      title: 'Simulacro Tipo Prueba Interna UCV (Facultad de Ciencias e Ingeniería)',
+      title: 'Examen de Carrera: Física & Matemática Aplicada',
       subject: 'Física, Matemática & Razonamiento Abstracto',
       questions: 60,
       durationMinutes: 120,
       difficulty: 'Avanzado',
       badgeColor: 'bg-purple-50 text-purple-700 border-purple-200',
-      description: 'Formato riguroso con penalización por respuesta errónea idéntico a las pruebas de admisión UCV.',
+      description: 'Formato riguroso con problemas de cálculo, vectores y cinemática.',
     },
     {
       id: 'simadi-bachillerato-ciencias',
@@ -45,14 +45,14 @@ export const ExamSimulatorsView: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-200/80 gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold mb-2">
-            <LayersIcon className="w-3.5 h-3.5" />
-            Motor de Exámenes Cronometrados • Simulación Simadi
+            <LayersIcon className="w-3.5 h-3.5 text-brand-500" />
+            Motor de Evaluaciones Cronometradas
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-display">
-            Simuladores de Admisión y Evaluaciones
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
+            Simuladores de Examen y Evaluaciones
           </h2>
           <p className="text-sm text-slate-500">
-            Pon a prueba tus conocimientos bajo condiciones reales de tiempo y presión académica.
+            Práctica bajo condiciones reales de tiempo y análisis estructurado de respuestas.
           </p>
         </div>
 

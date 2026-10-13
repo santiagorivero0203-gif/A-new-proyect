@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useExamSimulator } from '../../hooks/useExamSimulator';
 import { ExamRunner } from './ExamRunner';
 import { ExamResultsReport } from './ExamResultsReport';
-import { LayersIcon, PlayIcon, SparklesIcon } from '../common/Icons';
+import { LayersIcon, PlayIcon } from '../common/Icons';
 import type { AcademicSubject, ExamConfig, Question } from '../../types/exam.types';
 
 interface SimulatorEngineProps {
@@ -64,85 +64,83 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
     );
   }
 
-  // Vista de Configuración y Selección de Simulacro
+  // Vista de Selección de Evaluaciones
   return (
-    <div className="space-y-8">
-      {/* Encabezado */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-200/80 gap-4">
-        <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold mb-2">
-            <LayersIcon className="w-3.5 h-3.5" />
-            Motor de Exámenes & Pruebas Diagnósticas • Simulación Simadi
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-display">
-            Simulador de Evaluaciones Cronometradas
-          </h2>
-          <p className="text-sm text-slate-500 max-w-2xl">
-            Entrena bajo condiciones reales de presión temporal, selección algorítmica de preguntas y retroalimentación pedagógica exhaustiva.
-          </p>
+    <div className="space-y-8 max-w-5xl mx-auto">
+      {/* Encabezado Limpio sin AI Slop */}
+      <div className="pb-4 border-b border-slate-200/80">
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold mb-2">
+          <LayersIcon className="w-3.5 h-3.5" />
+          <span>Evaluaciones Académicas</span>
         </div>
+        <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
+          Exámenes y Pruebas de Práctica
+        </h2>
+        <p className="text-sm text-slate-500 mt-1">
+          Evaluaciones estructuradas con temporizador, formato de selección simple y corrección detallada paso a paso.
+        </p>
       </div>
 
-      {/* Tarjetas de Modos Preconfigurados */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Modo 1: Simulacro Tipo UCV */}
-        <div className="app-card p-6 flex flex-col justify-between hover:border-blue-400 transition-all space-y-4">
+      {/* Grid de Modelos de Examen Reales */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* Modelo 1: Examen de Carrera Universitaria */}
+        <div className="app-card p-6 flex flex-col justify-between hover:border-slate-300 transition-all space-y-4 bg-white border border-slate-200/80 shadow-soft">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                Alta Intensidad
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-brand-600 border border-blue-200">
+                Nivel Universitario
               </span>
               <span className="text-xs text-slate-400 font-mono">60 Minutos</span>
             </div>
             <h3 className="text-base font-bold text-slate-900 leading-snug">
-              Simulacro Tipo Prueba Interna UCV
+              Examen de Carrera (Física & Matemática)
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Foco riguroso en Física, Matemática avanzada, Razonamiento analítico y resolución de problemas formales.
+              Cálculo diferencial e integral, vectores tridimensionales en ℝ³, dinámica newtoniana y conservación de la energía.
             </p>
           </div>
 
           <button
             onClick={() =>
               startExam({
-                mode: 'SIMADI_UCV',
-                title: 'Simulacro Tipo Prueba Interna UCV (Ciencias & Ingeniería)',
+                mode: 'UNIVERSITY_EXAM',
+                title: 'Examen de Carrera: Física & Matemática Analítica',
                 totalQuestions: 6,
                 timeLimitSeconds: 60 * 60,
                 allowPause: true,
                 shuffleQuestions: true,
               })
             }
-            className="btn-primary w-full text-xs py-2.5 flex items-center justify-center gap-2"
+            className="btn-brand w-full text-xs py-2.5 flex items-center justify-center gap-2"
           >
             <PlayIcon className="w-3.5 h-3.5" />
-            <span>Lanzar Prueba UCV</span>
+            <span>Iniciar Examen Universitario</span>
           </button>
         </div>
 
-        {/* Modo 2: Exploración OPSU */}
-        <div className="app-card p-6 flex flex-col justify-between hover:border-purple-400 transition-all space-y-4">
+        {/* Modelo 2: Examen de Bachillerato Diversificado */}
+        <div className="app-card p-6 flex flex-col justify-between hover:border-slate-300 transition-all space-y-4 bg-white border border-slate-200/80 shadow-soft">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
-                Multidisciplinar
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                Bachillerato
               </span>
               <span className="text-xs text-slate-400 font-mono">45 Minutos</span>
             </div>
             <h3 className="text-base font-bold text-slate-900 leading-snug">
-              Prueba Diagnóstica Nacional OPSU
+              Examen de Bachillerato (Ciencias & Lenguaje)
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Evaluación equilibrada de Castellano (Analogías), Biología, Química, Matemática y razonamiento numérico.
+              Álgebra, cinemática, enlaces químicos, biología celular, genética y morfosintaxis de la oración.
             </p>
           </div>
 
           <button
             onClick={() =>
               startExam({
-                mode: 'SIMADI_OPSU',
-                title: 'Prueba Diagnóstica Integral OPSU (Todas las Materias)',
-                totalQuestions: 8,
+                mode: 'HIGH_SCHOOL_EXAM',
+                title: 'Examen de Bachillerato: Ciencias & Lenguaje',
+                totalQuestions: 6,
                 timeLimitSeconds: 45 * 60,
                 allowPause: true,
                 shuffleQuestions: true,
@@ -151,61 +149,61 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
             className="btn-brand w-full text-xs py-2.5 flex items-center justify-center gap-2"
           >
             <PlayIcon className="w-3.5 h-3.5" />
-            <span>Lanzar Prueba OPSU</span>
+            <span>Iniciar Examen de Bachillerato</span>
           </button>
         </div>
 
-        {/* Modo 3: Práctica Rápida */}
-        <div className="app-card p-6 flex flex-col justify-between hover:border-emerald-400 transition-all space-y-4">
+        {/* Modelo 3: Evaluación Diagnóstica Integral */}
+        <div className="app-card p-6 flex flex-col justify-between hover:border-slate-300 transition-all space-y-4 bg-white border border-slate-200/80 shadow-soft">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                Ágil • Autoevaluación
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+                Diagnóstico
               </span>
-              <span className="text-xs text-slate-400 font-mono">15 Minutos</span>
+              <span className="text-xs text-slate-400 font-mono">30 Minutos</span>
             </div>
             <h3 className="text-base font-bold text-slate-900 leading-snug">
-              Micro-Test de 5 Preguntas
+              Evaluación Diagnóstica Multidisciplinar
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Ideal para repasos rápidos entre bloques de estudio sin sobrecargar la jornada.
+              Exploración general de habilidades cuantitativas, razonamiento verbal, física y ciencias naturales.
             </p>
           </div>
 
           <button
             onClick={() =>
               startExam({
-                mode: 'QUICK_PRACTICE',
-                title: 'Micro-Test de Práctica Rápida',
-                totalQuestions: 5,
-                timeLimitSeconds: 15 * 60,
+                mode: 'DIAGNOSTIC_EXAM',
+                title: 'Evaluación Diagnóstica Multidisciplinar',
+                totalQuestions: 6,
+                timeLimitSeconds: 30 * 60,
                 allowPause: true,
                 shuffleQuestions: true,
               })
             }
             className="btn-secondary w-full text-xs py-2.5 flex items-center justify-center gap-2"
           >
-            <PlayIcon className="w-3.5 h-3.5 text-slate-700" />
-            <span>Iniciar Práctica Ágil</span>
+            <PlayIcon className="w-3.5 h-3.5" />
+            <span>Iniciar Diagnóstico</span>
           </button>
         </div>
       </div>
 
-      {/* Configuración Personalizada por Materia Específica */}
-      <div className="app-card p-6 space-y-4">
+      {/* Cuestionario Focalizado por Asignatura */}
+      <div className="app-card p-6 space-y-4 bg-white border border-slate-200/80 shadow-soft">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
-            <h3 className="text-base font-bold text-slate-900 font-display">
-              Examen Específico por Asignatura
+            <h3 className="text-base font-bold text-slate-900 font-sans">
+              Práctica por Asignatura
             </h3>
-            <p className="text-xs text-slate-500">
-              Selecciona una materia individual para evaluar tu dominio focalizado
+            <p className="text-xs text-slate-500 mt-0.5">
+              Evalúa una materia específica con preguntas seleccionadas de ese temario.
             </p>
           </div>
-          <SparklesIcon className="w-5 h-5 text-blue-600" />
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+        {/* Selector de Materias */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
           {(['TODAS', 'Matemática', 'Física', 'Química', 'Biología', 'Castellano'] as const).map(
             (subj) => (
               <button
@@ -213,7 +211,7 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                 onClick={() => setSelectedSubjectFilter(subj)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
                   selectedSubjectFilter === subj
-                    ? 'bg-slate-900 text-white border-slate-900'
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-soft-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                 }`}
               >
@@ -223,11 +221,11 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
           )}
         </div>
 
-        <div className="pt-2 flex items-center justify-between">
+        <div className="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-slate-100">
           <span className="text-xs text-slate-500 font-mono">
             {selectedSubjectFilter === 'TODAS'
-              ? 'Preguntas de todo el banco multidisciplinar'
-              : `Filtrando exclusivamente preguntas de ${selectedSubjectFilter}`}
+              ? 'Preguntas seleccionadas de todas las materias'
+              : `Preguntas de ${selectedSubjectFilter}`}
           </span>
           <button
             onClick={() =>
@@ -235,8 +233,8 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                 mode: 'BY_SUBJECT',
                 title:
                   selectedSubjectFilter === 'TODAS'
-                    ? 'Evaluación Multidisciplinar'
-                    : `Evaluación de ${selectedSubjectFilter}`,
+                    ? 'Cuestionario de Práctica Multidisciplinar'
+                    : `Cuestionario de ${selectedSubjectFilter}`,
                 subject: selectedSubjectFilter === 'TODAS' ? undefined : selectedSubjectFilter,
                 totalQuestions: 5,
                 timeLimitSeconds: 20 * 60,
@@ -244,9 +242,9 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                 shuffleQuestions: true,
               })
             }
-            className="btn-brand text-xs py-2 px-4"
+            className="btn-brand text-xs py-2 px-4 self-end sm:self-auto"
           >
-            Comenzar Evaluación de {selectedSubjectFilter}
+            Comenzar Cuestionario ({selectedSubjectFilter})
           </button>
         </div>
       </div>

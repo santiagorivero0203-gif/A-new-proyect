@@ -423,7 +423,7 @@ export const AiDocumentAnalysisView: React.FC<AiDocumentAnalysisViewProps> = ({
                         </button>
 
                         <span className="text-[10px] font-mono text-slate-400">
-                          Clasificación Simadi
+                          Clasificación Temática
                         </span>
                       </div>
 

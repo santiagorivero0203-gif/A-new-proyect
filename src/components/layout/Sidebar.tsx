@@ -6,12 +6,12 @@ import {
   BookOpenIcon,
   LayersIcon,
   CalculatorIcon,
-  FlameIcon,
   UploadCloudIcon,
   PaletteIcon,
+  CalendarIcon,
 } from '../common/Icons';
 
-export type MainTabType = 'PRODUCTIVITY' | 'GUIDES' | 'EXAMS' | 'STORAGE' | 'CREATIVE_BOARD' | 'TOOLS';
+export type MainTabType = 'PRODUCTIVITY' | 'PLANNER' | 'GUIDES' | 'EXAMS' | 'STORAGE' | 'CREATIVE_BOARD' | 'TOOLS';
 
 interface SidebarProps {
   currentTab: MainTabType;
@@ -31,39 +31,41 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const navigationTabs: { id: MainTabType; name: string; icon: React.ReactNode; badge?: string }[] = [
     {
       id: 'PRODUCTIVITY',
-      name: 'Workspace Modular',
+      name: 'Workspace',
       icon: <TimerIcon className="w-4 h-4 text-brand-500" />,
-      badge: 'Universal',
     },
     {
-      id: 'GUIDES',
-      name: 'Guías & Ejercicios',
-      icon: <BookOpenIcon className="w-4 h-4 text-brand-500" />,
-      badge: '5 Materias',
+      id: 'PLANNER',
+      name: 'Agenda & Evaluaciones',
+      icon: <CalendarIcon className="w-4 h-4 text-brand-500" />,
+      badge: 'Cortes',
     },
     {
       id: 'EXAMS',
-      name: 'Simulador de Exámenes',
-      icon: <LayersIcon className="w-4 h-4 text-purple-600" />,
-      badge: 'Simadi',
+      name: 'Evaluaciones y Pruebas',
+      icon: <LayersIcon className="w-4 h-4 text-slate-700" />,
+      badge: 'Prácticas',
+    },
+    {
+      id: 'GUIDES',
+      name: 'Guías y Temarios',
+      icon: <BookOpenIcon className="w-4 h-4 text-slate-700" />,
+      badge: '5 Materias',
     },
     {
       id: 'STORAGE',
-      name: 'Documentos & Storage',
-      icon: <UploadCloudIcon className="w-4 h-4 text-emerald-600" />,
-      badge: 'PDF / Foto',
+      name: 'Documentos',
+      icon: <UploadCloudIcon className="w-4 h-4 text-slate-700" />,
     },
     {
       id: 'CREATIVE_BOARD',
-      name: 'Tablero de Proyectos',
-      icon: <PaletteIcon className="w-4 h-4 text-purple-600" />,
-      badge: 'Kanban',
+      name: 'Proyectos y Entregas',
+      icon: <PaletteIcon className="w-4 h-4 text-slate-700" />,
     },
     {
       id: 'TOOLS',
-      name: 'Calculadora & Ajustes',
-      icon: <CalculatorIcon className="w-4 h-4 text-slate-600" />,
-      badge: 'Científica',
+      name: 'Calculadora y Ajustes',
+      icon: <CalculatorIcon className="w-4 h-4 text-slate-700" />,
     },
   ];
 
@@ -87,15 +89,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Logo y Encabezado */}
           <div className="flex items-center justify-between px-2 pt-2 pb-1">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-2xl bg-[#1d1d1f] flex items-center justify-center text-white font-bold text-sm shadow-soft-sm">
-                ⚡
+              <div className="w-8 h-8 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-xs shadow-soft-sm">
+                CP
               </div>
               <div>
-                <h1 className="text-sm font-bold text-slate-900 tracking-tight leading-none font-display">
-                  Ecosistema de Estudio
+                <h1 className="text-sm font-bold text-slate-900 tracking-tight leading-none font-sans">
+                  Centro de Estudio
                 </h1>
                 <p className="text-[11px] text-slate-500 font-medium mt-0.5 leading-none">
-                  Productividad Integral
+                  Productividad Académica
                 </p>
               </div>
             </div>
@@ -116,12 +118,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0"
               />
               <div className="overflow-hidden">
-                <h3 className="text-xs font-bold text-slate-900 truncate">{user?.full_name}</h3>
+                <h3 className="text-xs font-bold text-slate-900 truncate font-sans">{user?.full_name}</h3>
                 <p className="text-[11px] text-slate-500 font-medium truncate">{user?.institution}</p>
-                <div className="flex items-center gap-1 mt-1 text-[10px] text-amber-600 font-semibold">
-                  <FlameIcon className="w-3 h-3 text-amber-500" />
-                  <span>{user?.streak_days} días de racha</span>
-                </div>
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{user?.email}</p>
               </div>
             </div>
           </div>
@@ -168,7 +167,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Footer del Sidebar */}
         <div className="pt-3 border-t border-slate-200/80 text-[11px] text-slate-400 flex items-center justify-between font-mono">
-          <span>v1.2.0 • Invoficlib Style</span>
+          <span>v2.0</span>
           <span>Modo Claro</span>
         </div>
       </aside>

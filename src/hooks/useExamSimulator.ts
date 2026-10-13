@@ -174,12 +174,20 @@ export function useExamSimulator() {
         pool = pool.filter((q) => q.subject === config.subject);
       }
 
-      if (config.mode === 'SIMADI_UCV') {
+      if (config.mode === 'SIMADI_UCV' || config.mode === 'UNIVERSITY_EXAM') {
         pool = pool.filter(
           (q) =>
             q.targetProfiles.includes('santiago_fisica_ucv') ||
             q.targetProfiles.includes('prima_bachillerato_5')
         );
+      } else if (config.mode === 'HIGH_SCHOOL_EXAM') {
+        pool = pool.filter(
+          (q) =>
+            q.targetProfiles.includes('andres_bachillerato_1') ||
+            q.targetProfiles.includes('prima_bachillerato_5')
+        );
+      } else if (config.mode === 'DIAGNOSTIC_EXAM' || config.mode === 'SIMADI_OPSU') {
+        // Incluye todas las materias y niveles para diagnóstico general
       }
     }
 

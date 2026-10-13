@@ -28,6 +28,9 @@ export interface Question {
 }
 
 export type ExamMode =
+  | 'UNIVERSITY_EXAM'
+  | 'HIGH_SCHOOL_EXAM'
+  | 'DIAGNOSTIC_EXAM'
   | 'SIMADI_UCV'
   | 'SIMADI_OPSU'
   | 'BY_SUBJECT'

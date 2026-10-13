@@ -4,6 +4,7 @@ import { MainLayout } from './components/layout/MainLayout';
 import type { MainTabType } from './components/layout/Sidebar';
 import { ModularWorkspaceDashboard } from './components/workspace/ModularWorkspaceDashboard';
 import { AcademicGuidesView } from './components/academic/AcademicGuidesView';
+import { AcademicPlannerView } from './components/planner/AcademicPlannerView';
 import { SimulatorEngine } from './components/exams/SimulatorEngine';
 import { StorageManagerView } from './components/storage/StorageManagerView';
 import { CreativeDeliveryBoard } from './components/dashboards/CreativeDeliveryBoard';
@@ -12,7 +13,7 @@ import type { ExamConfig, Question } from './types/exam.types';
 
 /**
  * Componente Raíz de la Aplicación
- * Centro de Productividad Estudiantil (Fase 4: Auditoría Lógica, Modularidad Universal y Refinamiento UI/UX)
+ * Centro de Productividad Estudiantil
  */
 export const App: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<MainTabType>('PRODUCTIVITY');
@@ -55,6 +56,8 @@ export const App: React.FC = () => {
             onNavigateToTab={(tab) => setCurrentTab(tab)}
           />
         );
+      case 'PLANNER':
+        return <AcademicPlannerView />;
       case 'GUIDES':
         return (
           <AcademicGuidesView

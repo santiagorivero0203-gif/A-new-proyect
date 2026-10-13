@@ -279,7 +279,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
       ],
       pastExams: [
         {
-          source: 'Prueba Simadi 2024',
+          source: 'Examen Oficial de Admisión',
           year: '2024',
           question: 'Si se lanza un objeto verticalmente hacia arriba en el vacío, ¿cuál es su aceleración en el punto más alto?',
           solutionBrief: 'Exactamente la aceleración de la gravedad g ≈ 9.8 m/s² dirigida hacia abajo.',

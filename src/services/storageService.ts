@@ -219,7 +219,7 @@ export const storageService = {
         file_path: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80',
         file_type: 'application/pdf',
         file_size_bytes: 4890000,
-        tags: ['Guía PDF', 'Química', 'Simadi'],
+        tags: ['Guía PDF', 'Química', 'Guía Oficial'],
         storage_bucket: BUCKET_NAME,
         created_at: new Date(Date.now() - 172800000).toISOString(),
         updated_at: new Date(Date.now() - 172800000).toISOString(),

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircleIcon, FlameIcon, TrophyIcon, PlusIcon } from '../../common/Icons';
+import { CheckCircleIcon, PlusIcon } from '../../common/Icons';
 import confetti from 'canvas-confetti';
 
 interface TaskItem {
@@ -205,14 +205,12 @@ export const TasksWidget: React.FC = () => {
         </div>
       </div>
 
-      <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-        <span className="flex items-center gap-1 text-amber-600 font-semibold text-[11px]">
-          <FlameIcon className="w-3.5 h-3.5 text-amber-500" />
-          Racha constante
+      <div className="pt-3 mt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span className="text-[11px] text-slate-500">
+          {completedCount === tasks.length ? 'Todas las tareas completadas' : `${tasks.length - completedCount} pendientes`}
         </span>
-        <span className="flex items-center gap-1 text-brand-600 font-semibold font-mono text-[11px]">
-          <TrophyIcon className="w-3.5 h-3.5 text-brand-500" />
-          +150 XP al completar todas
+        <span className="text-[11px] text-slate-400 font-mono">
+          {tasks.length} registradas
         </span>
       </div>
     </div>
