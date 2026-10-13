@@ -202,3 +202,68 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ==============================================================================
+-- 6. TABLA: ACADEMIC_GUIDES (Motor de Deconstrucción Académica & Guías 7 Pilares)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.academic_guides (
+    id TEXT PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    area TEXT NOT NULL,
+    content_json JSONB NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+ALTER TABLE public.academic_guides ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "academic_guides_select_policy" ON public.academic_guides
+    FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "academic_guides_insert_policy" ON public.academic_guides
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "academic_guides_update_policy" ON public.academic_guides
+    FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "academic_guides_delete_policy" ON public.academic_guides
+    FOR DELETE USING (auth.uid() = user_id);
+
+-- ==============================================================================
+-- 7. STORAGE: CREACIÓN AUTOMÁTICA DEL BUCKET 'documents' & POLÍTICAS
+-- ==============================================================================
+-- Inserta el bucket 'documents' para PDFs y fotos de pizarras
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('documents', 'documents', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- Políticas de acceso para storage.objects
+DO $$
+BEGIN
+    -- Permitir lectura pública a cualquier documento subido
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE tablename = 'objects' AND schemaname = 'storage' AND policyname = 'Public Access to documents'
+    ) THEN
+        CREATE POLICY "Public Access to documents" ON storage.objects
+            FOR SELECT USING (bucket_id = 'documents');
+    END IF;
+
+    -- Permitir subida a usuarios autenticados
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE tablename = 'objects' AND schemaname = 'storage' AND policyname = 'Allow uploads to documents'
+    ) THEN
+        CREATE POLICY "Allow uploads to documents" ON storage.objects
+            FOR INSERT WITH CHECK (bucket_id = 'documents');
+    END IF;
+
+    -- Permitir eliminar documentos propios
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies 
+        WHERE tablename = 'objects' AND schemaname = 'storage' AND policyname = 'Allow delete documents'
+    ) THEN
+        CREATE POLICY "Allow delete documents" ON storage.objects
+            FOR DELETE USING (bucket_id = 'documents');
+    END IF;
+END $$;
