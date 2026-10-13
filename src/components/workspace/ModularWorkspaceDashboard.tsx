@@ -87,7 +87,7 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
               onClick={() => setIsCustomizerOpen(true)}
               className="btn-brand py-2.5 px-4 text-xs font-semibold flex items-center gap-2 shadow-soft-sm transition-all"
             >
-              <SlidersIcon className="w-3.5 h-3.5" />
+              <SlidersIcon className="w-4.5 h-4.5" />
               <span>Personalizar Módulos</span>
               <span className="ml-1 px-1.5 py-0.2 rounded-full bg-white/20 text-white text-[10px] font-mono">
                 {activeModulesCount}/{totalModulesCount}

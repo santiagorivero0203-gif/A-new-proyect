@@ -58,8 +58,8 @@ export const PomodoroWidget: React.FC = () => {
         {/* Cabecera */}
         <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-brand-50 text-brand-500">
-              <TimerIcon className="w-4 h-4 text-brand-500" />
+            <div className="w-9 h-9 rounded-xl bg-brand-50 text-brand-500 flex items-center justify-center shrink-0">
+              <TimerIcon className="w-5 h-5 text-brand-500" />
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900 font-display">
@@ -139,11 +139,11 @@ export const PomodoroWidget: React.FC = () => {
           >
             {isRunning ? (
               <>
-                <PauseIcon className="w-3.5 h-3.5" /> Pausar
+                <PauseIcon className="w-4 h-4" /> Pausar
               </>
             ) : (
               <>
-                <PlayIcon className="w-3.5 h-3.5" /> Iniciar Sesión
+                <PlayIcon className="w-4 h-4" /> Iniciar Sesión
               </>
             )}
           </button>
@@ -152,7 +152,7 @@ export const PomodoroWidget: React.FC = () => {
             className="p-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 shadow-soft-sm transition-all"
             title="Reiniciar cronómetro"
           >
-            <RotateCcwIcon className="w-3.5 h-3.5" />
+            <RotateCcwIcon className="w-4 h-4" />
           </button>
         </div>
       </div>

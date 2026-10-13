@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
             <span>Cerrar Sesión</span>
           ) : (
             <span className="flex items-center gap-1.5">
-              <SparklesIcon className="w-3.5 h-3.5 text-blue-600" />
+              <SparklesIcon className="w-4 h-4 text-brand-500" />
               <span>Conectar</span>
             </span>
           )}

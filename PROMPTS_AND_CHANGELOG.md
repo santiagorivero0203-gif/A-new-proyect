@@ -190,4 +190,53 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/components/layout/MainLayout.tsx` | Actualizar | Montaje de `AccountManagerModal` compartido. |
 | `src/index.css` | Actualizar | Tokens de easing de Emil Kowalski y transiciones snappies < 200ms. |
 
+---
+
+### Prompt 9: Mejora Visual del Tamaño de Iconos & Conexión al Proyecto Supabase (MCP y Agent Skills)
+> **Contenido**:
+> 1. Mejorar el tamaño y presencia visual de los iconos en toda la interfaz (navegación lateral, barra móvil, encabezados de widgets y botones de acción).
+> 2. Conectar la plataforma y Antigravity al proyecto Supabase `xydqycfqiffnrfqlwxav` mediante la configuración de servidor MCP con OAuth y características (`docs,account,database,debugging,development,functions,branching`) en `mcp_config.json`.
+> 3. Instalar las skills oficiales de Supabase (`supabase/agent-skills`) para optimización y desarrollo en Postgres.
+
+#### Decisiones e Implementaciones del Prompt 9:
+1. **Mejora Óptica y Jerarquía del Tamaño de Iconos**:
+   - `Sidebar.tsx`: Iconos de navegación principal incrementados de `w-4 h-4` (16px) a `w-5 h-5` (20px), mejorando drásticamente el equilibrio con el texto y la legibilidad en pantallas de alta densidad.
+   - `MobileNavigation.tsx`: Iconos de barra inferior móvil escalados a `w-5 h-5` (20px) para ergonomía táctil óptima.
+   - `TasksWidget.tsx`: Incorporado contenedor de icono principal `w-9 h-9` con `CheckCircleIcon w-5 h-5` en la cabecera; checkbox escalado de 16px a 20px (`w-5 h-5`) con icono interior de 14px; botones de acción aumentados a `w-4 h-4`.
+   - `QuickExamWidget.tsx`: Cabecera modernizada con `LayersIcon w-5 h-5` en contenedor `w-9 h-9`; iconos de lanzamiento `PlayIcon` escalados a `w-3.5 h-3.5`.
+   - `PomodoroWidget.tsx`: Icono de temporizador en cabecera ampliado a `w-5 h-5` en contenedor de 36px; controles de reproducción (`PlayIcon`, `PauseIcon`, `RotateCcwIcon`) aumentados a `w-4 h-4`.
+   - `GeminiAiWidget.tsx`: Icono de `SparklesIcon` en cabecera ampliado a `w-5 h-5`; iconos de carga y consulta ampliados a `w-4 h-4`.
+   - `ModularWorkspaceDashboard.tsx`: Icono de personalización (`SlidersIcon`) ampliado a `w-4.5 h-4.5`.
+   - `Header.tsx` & `StudentAuthPortal.tsx`: Icono de conexión y acceso Supabase (`SparklesIcon`) escalado a `w-4 h-4`.
+2. **Configuración del Servidor MCP Supabase**:
+   - Actualizados `C:\Users\user\.gemini\antigravity-ide\mcp_config.json` y `C:\Users\user\.gemini\antigravity\mcp_config.json` con el servidor `supabase`:
+     ```json
+     "supabase": {
+       "serverUrl": "https://mcp.supabase.com/mcp?project_ref=xydqycfqiffnrfqlwxav&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching"
+     }
+     ```
+   - Configurado `.env` con la URL oficial del proyecto: `VITE_SUPABASE_URL=https://xydqycfqiffnrfqlwxav.supabase.co`.
+3. **Instalación de Agent Skills de Supabase**:
+   - Ejecutado `npx skills add supabase/agent-skills`, instalando exitosamente:
+     - `.agents/skills/supabase` (guías de cliente, auth, storage, edge functions y schemas).
+     - `.agents/skills/supabase-postgres-best-practices` (mejores prácticas de modelado relacional, RLS y optimización de índices).
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `~/.gemini/antigravity-ide/mcp_config.json` | Actualizar | Registro del servidor remoto MCP de Supabase con `project_ref=xydqycfqiffnrfqlwxav`. |
+| `~/.gemini/antigravity/mcp_config.json` | Actualizar | Sincronización del archivo de configuración global de MCP. |
+| `.agents/skills/supabase/` | Instalar | Skill oficial de Supabase con documentación y patrones de arquitectura. |
+| `.agents/skills/supabase-postgres-best-practices/` | Instalar | Skill de mejores prácticas relacionales para PostgreSQL y RLS. |
+| `.env` | Actualizar | Enlace a `https://xydqycfqiffnrfqlwxav.supabase.co`. |
+| `src/components/layout/Sidebar.tsx` | Actualizar | Iconos de navegación escalados de `w-4 h-4` a `w-5 h-5`. |
+| `src/components/layout/MobileNavigation.tsx` | Actualizar | Iconos móviles escalados de `w-4 h-4` a `w-5 h-5`. |
+| `src/components/workspace/widgets/TasksWidget.tsx` | Actualizar | Icono de cabecera a `w-5 h-5`, checkbox a `w-5 h-5` e iconos de acción a `w-4 h-4`. |
+| `src/components/workspace/widgets/QuickExamWidget.tsx` | Actualizar | Icono de cabecera a `w-5 h-5` y PlayIcon a `w-3.5 h-3.5`. |
+| `src/components/workspace/widgets/PomodoroWidget.tsx` | Actualizar | Icono de temporizador a `w-5 h-5` y controles a `w-4 h-4`. |
+| `src/components/workspace/widgets/GeminiAiWidget.tsx` | Actualizar | Icono de IA a `w-5 h-5` y botones a `w-4 h-4`. |
+| `src/components/workspace/ModularWorkspaceDashboard.tsx` | Actualizar | Icono de Sliders a `w-4.5 h-4.5`. |
+| `src/components/layout/Header.tsx` | Actualizar | Icono de conexión a `w-4 h-4`. |
+| `src/components/auth/StudentAuthPortal.tsx` | Actualizar | Icono de acceso Supabase a `w-4 h-4`. |
+
+
 

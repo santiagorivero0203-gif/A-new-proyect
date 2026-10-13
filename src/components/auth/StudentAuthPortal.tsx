@@ -65,9 +65,9 @@ export const StudentAuthPortal: React.FC<StudentAuthPortalProps> = ({
 
         <button
           onClick={onOpenSupabaseModal}
-          className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5"
+          className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-2"
         >
-          <SparklesIcon className="w-3.5 h-3.5 text-brand-500" />
+          <SparklesIcon className="w-4 h-4 text-brand-500" />
           <span>Acceso Supabase</span>
         </button>
       </div>

@@ -33,40 +33,40 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'PRODUCTIVITY',
       name: 'Workspace',
-      icon: <TimerIcon className="w-4 h-4 text-brand-500" />,
+      icon: <TimerIcon className="w-5 h-5 text-brand-500" />,
     },
     {
       id: 'PLANNER',
       name: 'Agenda & Evaluaciones',
-      icon: <CalendarIcon className="w-4 h-4 text-brand-500" />,
+      icon: <CalendarIcon className="w-5 h-5 text-brand-500" />,
       badge: 'Cortes',
     },
     {
       id: 'EXAMS',
       name: 'Evaluaciones y Pruebas',
-      icon: <LayersIcon className="w-4 h-4 text-slate-700" />,
+      icon: <LayersIcon className="w-5 h-5 text-slate-700" />,
       badge: 'Prácticas',
     },
     {
       id: 'GUIDES',
       name: 'Guías y Temarios',
-      icon: <BookOpenIcon className="w-4 h-4 text-slate-700" />,
+      icon: <BookOpenIcon className="w-5 h-5 text-slate-700" />,
       badge: '5 Materias',
     },
     {
       id: 'STORAGE',
       name: 'Documentos',
-      icon: <UploadCloudIcon className="w-4 h-4 text-slate-700" />,
+      icon: <UploadCloudIcon className="w-5 h-5 text-slate-700" />,
     },
     {
       id: 'CREATIVE_BOARD',
       name: 'Proyectos y Entregas',
-      icon: <PaletteIcon className="w-4 h-4 text-slate-700" />,
+      icon: <PaletteIcon className="w-5 h-5 text-slate-700" />,
     },
     {
       id: 'TOOLS',
       name: 'Calculadora y Ajustes',
-      icon: <CalculatorIcon className="w-4 h-4 text-slate-700" />,
+      icon: <CalculatorIcon className="w-5 h-5 text-slate-700" />,
     },
   ];
 
