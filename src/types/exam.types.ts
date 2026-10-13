@@ -37,6 +37,8 @@ export type ExamMode =
   | 'BY_SUBJECT'
   | 'QUICK_PRACTICE'
   | 'AI_GENERATED'
+  | 'SUDDEN_DEATH'
+  | 'TIME_PRESSURE'
   | 'CUSTOM';
 
 export interface ExamConfig {

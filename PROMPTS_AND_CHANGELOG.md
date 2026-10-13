@@ -321,3 +321,35 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `supabase/schema.sql` | Actualizar | Tabla `ai_processing_queue` con `processing_mode`, `academic_level`, RLS e índices. |
 | `vercel.json` | Actualizar | Cron job programado para rescate automático de documentos encolados (>30 min). |
 | `package.json` | Actualizar | Instalación de la librería oficial `@google/genai` v2.29.1. |
+
+---
+
+### Prompt 12: Implementación de Funciones Clave del Roadmap y Adaptación de Bases para las Restantes
+> **Contenido**:
+> 1. **Funciones Clave Implementadas**:
+>    - **Función 102 (Solucionador Determinista de Sistemas de Ecuaciones 2x2)**: Solucionador algebraico paso a paso con aritmética de fracciones exactas (simplificación por MCD) y 4 métodos pedagógicos en KaTeX (Reducción, Sustitución, Igualación y Regla de Cramer). Especial para nivel escolar/bachillerato (Andrés).
+>    - **Función 88 (Mezclador de Paisajes Sonoros Procedurales)**: Audio espacial y ambiental procedural mediante Web Audio API pura (sin archivos de audio pesados en el bundle). Sintetiza Lluvia suave (Pink noise), Ondas Gamma 40Hz (batimiento binaural para hiperenfoque), Fuego crepitante y Corriente de agua.
+>    - **Función 142 (Simulador What-If de Calificaciones "¿Cuánto necesito para pasar?")**: Calculadora reactiva multiescala (1-20, 1-100, 1-5) con ponderaciones por corte, cálculo del puntaje requerido en tiempo real e indicador de viabilidad matemática. Integrada en la pestaña `PLANS` del planificador académico.
+>    - **Función 193 (Respaldo y Restauración Total JSON)**: Servicio y modal de exportación/importación completa de la cuenta del estudiante (tareas, guías, calificaciones, recordatorios y estado local) para soberanía y portabilidad de datos.
+>    - **Funciones 122 y 123 (Herramientas de Color y Accesibilidad WCAG para Diseño)**: Verificador interactivo de contraste tipográfico WCAG AA/AAA y generador de armonías de color (monocromático, complementario, análogo, tríada) adaptado a María Fernanda (Diseño UCAB).
+>    - **Modos de Examen "Muerte Súbita" y "Presión Real"**: Ampliación del motor de simulación de exámenes con terminación instantánea ante error (0 margen de fallo) y cronómetro relámpago a alta velocidad (30s de promedio por reactivo).
+> 2. **Adaptación de Bases Arquitectónicas**:
+>    - Incorporación de la pestaña modular de Herramientas y Ajustes (`ToolsAndSettingsView.tsx`) para albergar los próximos módulos sin sobrecargar el flujo principal.
+>    - Preparación de tipos e interfaces extensibles en `exam.types.ts` y desacoplamiento de servicios en `src/services/`.
+>    - Verificación exitosa de compilación TypeScript estricta (`npm run build`) con 0 errores.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/components/tools/LinearEquationSolver.tsx` | Crear | Solucionador determinista de sistemas 2x2 con fracciones exactas y 4 métodos en KaTeX. |
+| `src/services/soundscapeService.ts` | Crear | Motor generativo de sonido ambiental y ondas binaurales mediante Web Audio API nativa. |
+| `src/components/productivity/FocusSoundscapeMixer.tsx` | Crear | Interfaz con sliders de ganancia independientes para mezclar paisajes sonoros. |
+| `src/components/planner/WhatIfGradeCalculator.tsx` | Crear | Simulador reactivo de metas académicas "¿Cuánto necesito para pasar?". |
+| `src/components/planner/AcademicPlannerView.tsx` | Actualizar | Integración de sub-pestaña para alternar entre Planes Oficiales y el Simulador What-If. |
+| `src/services/backupRestoreService.ts` | Crear | Servicio de snapshot y restauración JSON con sincronización opcional en Supabase. |
+| `src/components/tools/BackupRestoreModal.tsx` | Crear | Modal accesible para descargar y cargar respaldos de cuenta JSON. |
+| `src/components/dashboards/DesignPaletteTools.tsx` | Crear | Suite de color y contraste accesible WCAG para el perfil de diseño. |
+| `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Pestañas unificadas para Álgebra, Diseño, Sonidos y Respaldo. |
+| `src/types/exam.types.ts` | Actualizar | Inclusión de modos `SUDDEN_DEATH` y `TIME_PRESSURE` en `ExamMode`. |
+| `src/hooks/useExamSimulator.ts` | Actualizar | Lógica de auto-terminación inmediata en `selectAnswer` bajo modo Muerte Súbita. |
+| `src/components/exams/SimulatorEngine.tsx` | Actualizar | Nuevas tarjetas de examen para Presión Real y Muerte Súbita. |
+

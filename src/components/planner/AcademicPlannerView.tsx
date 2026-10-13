@@ -16,6 +16,7 @@ import {
 } from '../common/Icons';
 import { AcademicCalendarView } from './AcademicCalendarView';
 import { GradeProjectionCalculator } from './GradeProjectionCalculator';
+import { WhatIfGradeCalculator } from './WhatIfGradeCalculator';
 import { EmptyState } from '../common/EmptyState';
 import type { ExamConfig } from '../../types/exam.types';
 
@@ -34,6 +35,7 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
   const userId = user?.id || user?.academic_profile || 'santiago_fisica_ucv';
 
   const [activeTab, setActiveTab] = useState<PlannerTab>('CALENDAR');
+  const [plansSubTab, setPlansSubTab] = useState<'PLANS' | 'WHAT_IF'>('PLANS');
 
   // Estado del planificador
   const [events, setEvents] = useState<EvaluationEvent[]>([]);
@@ -259,11 +261,41 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
       {/* PESTAÑA 2: PLANES DE EVALUACIÓN Y CALCULADORA DE PROYECCIÓN */}
       {activeTab === 'PLANS' && (
         <div className="space-y-6">
-          <GradeProjectionCalculator
-            plans={plans}
-            onRefreshPlans={loadData}
-            onOpenCreateEvent={() => setShowEventModal(true)}
-          />
+          {/* Sub-navegación estilo Apple / Segmented Control */}
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200/80">
+            <div className="flex items-center p-1 bg-slate-100/80 rounded-xl border border-slate-200/60">
+              <button
+                onClick={() => setPlansSubTab('PLANS')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  plansSubTab === 'PLANS'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Planes Oficiales y Metas
+              </button>
+              <button
+                onClick={() => setPlansSubTab('WHAT_IF')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  plansSubTab === 'WHAT_IF'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Simulador What-If ("¿Cuánto necesito?")
+              </button>
+            </div>
+          </div>
+
+          {plansSubTab === 'PLANS' ? (
+            <GradeProjectionCalculator
+              plans={plans}
+              onRefreshPlans={loadData}
+              onOpenCreateEvent={() => setShowEventModal(true)}
+            />
+          ) : (
+            <WhatIfGradeCalculator />
+          )}
         </div>
       )}
 

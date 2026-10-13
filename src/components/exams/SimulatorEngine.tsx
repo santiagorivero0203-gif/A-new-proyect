@@ -225,6 +225,76 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
             <span>Iniciar Diagnóstico</span>
           </button>
         </div>
+
+        {/* Modelo 4: Modo Presión Real (Time Pressure) */}
+        <div className="app-card p-6 flex flex-col justify-between hover:border-amber-300 transition-all space-y-4 bg-white border border-amber-200/80 shadow-soft">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                Alta Velocidad
+              </span>
+              <span className="text-xs text-amber-700 font-mono font-bold">5 Minutos (10 Preguntas)</span>
+            </div>
+            <h3 className="text-base font-bold text-slate-900 leading-snug">
+              Modo Presión Real
+            </h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Entrena la agilidad mental ante situaciones de estrés. Solo 30 segundos de media por reactivo, sin posibilidad de pausa.
+            </p>
+          </div>
+
+          <button
+            onClick={() =>
+              startExam({
+                mode: 'TIME_PRESSURE',
+                title: 'Desafío Relámpago: Presión Real',
+                totalQuestions: 10,
+                timeLimitSeconds: 5 * 60,
+                allowPause: false,
+                shuffleQuestions: true,
+              })
+            }
+            className="btn-brand w-full text-xs py-2.5 flex items-center justify-center gap-2 !bg-amber-600 hover:!bg-amber-700 text-white"
+          >
+            <PlayIcon className="w-3.5 h-3.5" />
+            <span>Iniciar Presión Real</span>
+          </button>
+        </div>
+
+        {/* Modelo 5: Modo Muerte Súbita (Sudden Death) */}
+        <div className="app-card p-6 flex flex-col justify-between hover:border-rose-300 transition-all space-y-4 bg-white border border-rose-200/80 shadow-soft">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                Precisión Quirúrgica
+              </span>
+              <span className="text-xs text-rose-600 font-mono font-bold">0 Margen de Error</span>
+            </div>
+            <h3 className="text-base font-bold text-slate-900 leading-snug">
+              Modo Muerte Súbita
+            </h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Un solo error concluye la prueba de inmediato. Ideal para medir dominio absoluto de conceptos y cálculo exacto.
+            </p>
+          </div>
+
+          <button
+            onClick={() =>
+              startExam({
+                mode: 'SUDDEN_DEATH',
+                title: 'Muerte Súbita: Dominio Implacable',
+                totalQuestions: 12,
+                timeLimitSeconds: 20 * 60,
+                allowPause: false,
+                shuffleQuestions: true,
+              })
+            }
+            className="btn-brand w-full text-xs py-2.5 flex items-center justify-center gap-2 !bg-rose-600 hover:!bg-rose-700 text-white"
+          >
+            <PlayIcon className="w-3.5 h-3.5" />
+            <span>Iniciar Muerte Súbita</span>
+          </button>
+        </div>
       </div>
 
       {/* Cuestionario Focalizado por Asignatura */}

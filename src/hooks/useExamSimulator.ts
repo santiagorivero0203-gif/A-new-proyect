@@ -242,16 +242,31 @@ export function useExamSimulator() {
   };
 
   /**
-   * Registrar respuesta a una pregunta
+   * Registrar respuesta a una pregunta con soporte para Muerte Súbita (SUDDEN_DEATH)
    */
   const selectAnswer = (questionId: string, optionId: string) => {
-    setSession((prev) => ({
-      ...prev,
-      userAnswers: {
+    setSession((prev) => {
+      const updatedAnswers = {
         ...prev.userAnswers,
         [questionId]: optionId,
-      },
-    }));
+      };
+
+      // Si estamos en Muerte Súbita, verificar si la respuesta es incorrecta
+      if (prev.config.mode === 'SUDDEN_DEATH') {
+        const question = prev.questions.find((q) => q.id === questionId);
+        if (question && question.correctOptionId !== optionId) {
+          // Detener y auto-finalizar el examen inmediatamente
+          setTimeout(() => {
+            finishExam();
+          }, 400);
+        }
+      }
+
+      return {
+        ...prev,
+        userAnswers: updatedAnswers,
+      };
+    });
   };
 
   /**
