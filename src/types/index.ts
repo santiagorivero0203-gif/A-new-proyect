@@ -13,6 +13,8 @@ export interface UserPreferences {
   focus_duration: number; // minutos
   calculator_docked?: boolean;
   compact_mode?: boolean;
+  workspace_modules?: string[];
+  active_preset?: string;
 }
 
 export interface UserProfile {

@@ -513,3 +513,51 @@ export const MinimizeIcon: React.FC<IconProps> = ({ className = 'w-5 h-5', size,
     <line x1="10" x2="3" y1="14" y2="21" />
   </svg>
 );
+
+export const SlidersIcon: React.FC<IconProps> = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width={size || '1em'}
+    height={size || '1em'}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    className={className}
+    {...props}
+  >
+    <line x1="4" x2="4" y1="21" y2="14" />
+    <line x1="4" x2="4" y1="10" y2="3" />
+    <line x1="12" x2="12" y1="21" y2="12" />
+    <line x1="12" x2="12" y1="8" y2="3" />
+    <line x1="20" x2="20" y1="21" y2="16" />
+    <line x1="20" x2="20" y1="12" y2="3" />
+    <line x1="1" x2="7" y1="14" y2="14" />
+    <line x1="9" x2="15" y1="8" y2="8" />
+    <line x1="17" x2="23" y1="16" y2="16" />
+  </svg>
+);
+
+export const PlusIcon: React.FC<IconProps> = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width={size || '1em'}
+    height={size || '1em'}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    className={className}
+    {...props}
+  >
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+);
+

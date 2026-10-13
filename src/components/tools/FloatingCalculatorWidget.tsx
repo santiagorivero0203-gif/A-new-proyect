@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import { ScientificCalculator } from '../dashboards/ScientificCalculator';
 import {
   CalculatorIcon,
@@ -10,16 +9,12 @@ import {
 
 /**
  * Widget Flotante de Calculadora Científica (Módulo Analítico)
- * Diseñado especialmente para Santiago (Física UCV) y disponible durante
+ * Disponible universalmente para todos los estudiantes durante
  * exámenes y guías de estudio sin interrumpir el flujo ni reiniciar temporizadores.
  */
 export const FloatingCalculatorWidget: React.FC = () => {
-  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-
-  // Mostrar automáticamente o dar acceso preferente a Santiago (Física UCV)
-  const isSantiago = user?.academic_profile === 'santiago_fisica_ucv';
 
   return (
     <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 pointer-events-auto select-none print:hidden">
@@ -30,24 +25,16 @@ export const FloatingCalculatorWidget: React.FC = () => {
             setIsOpen(true);
             setIsMinimized(false);
           }}
-          className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-soft-lg font-bold text-xs transition-all transform hover:scale-105 active:scale-95 border ${
-            isSantiago
-              ? 'bg-[#1d1d1f] text-white border-slate-700 hover:bg-slate-800'
-              : 'bg-white text-slate-800 border-slate-200/90 hover:bg-slate-50'
-          }`}
+          className="flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-soft-lg font-bold text-xs transition-all transform hover:scale-105 active:scale-95 border bg-white text-slate-800 border-slate-200/90 hover:bg-slate-50"
           title="Abrir Calculadora Científica Flotante (no interrumpe el examen)"
         >
-          <div className="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center">
+          <div className="w-6 h-6 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
             <CalculatorIcon className="w-3.5 h-3.5" />
           </div>
-          <span className="font-sans">
-            {isSantiago ? 'Calculadora Analítica' : 'Calculadora'}
+          <span className="font-sans">Calculadora Científica</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-600 font-mono">
+            CODATA
           </span>
-          {isSantiago && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-blue-500/30 text-blue-200 font-mono">
-              UCV
-            </span>
-          )}
         </button>
       )}
 
@@ -61,17 +48,12 @@ export const FloatingCalculatorWidget: React.FC = () => {
           {/* Barra Superior / Header de la Ventana */}
           <div className="px-4 py-3 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                <CalculatorIcon className="w-3.5 h-3.5" />
+              <div className="w-6 h-6 rounded-lg bg-brand-50 text-brand-500 flex items-center justify-center">
+                <CalculatorIcon className="w-3.5 h-3.5 text-brand-500" />
               </div>
               <h3 className="text-xs font-bold text-slate-800 font-display">
                 Calculadora Científica
               </h3>
-              {isSantiago && (
-                <span className="text-[9px] px-1.5 py-0.2 bg-blue-100 text-blue-700 font-bold rounded">
-                  Física
-                </span>
-              )}
             </div>
 
             <div className="flex items-center gap-1">

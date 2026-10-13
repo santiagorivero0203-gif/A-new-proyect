@@ -27,19 +27,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
 }) => {
   const { user } = useAuth();
-  const isMafe = user?.academic_profile === 'mafe_diseno_ucab';
-  const isSantiago = user?.academic_profile === 'santiago_fisica_ucv';
 
   const navigationTabs: { id: MainTabType; name: string; icon: React.ReactNode; badge?: string }[] = [
     {
       id: 'PRODUCTIVITY',
-      name: 'Productividad & Tareas',
-      icon: <TimerIcon className="w-4 h-4 text-slate-600" />,
+      name: 'Workspace Modular',
+      icon: <TimerIcon className="w-4 h-4 text-brand-500" />,
+      badge: 'Universal',
     },
     {
       id: 'GUIDES',
       name: 'Guías & Ejercicios',
-      icon: <BookOpenIcon className="w-4 h-4 text-blue-600" />,
+      icon: <BookOpenIcon className="w-4 h-4 text-brand-500" />,
       badge: '5 Materias',
     },
     {
@@ -54,21 +53,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: <UploadCloudIcon className="w-4 h-4 text-emerald-600" />,
       badge: 'PDF / Foto',
     },
-    ...(isMafe
-      ? [
-          {
-            id: 'CREATIVE_BOARD' as MainTabType,
-            name: 'Tablero Creativo',
-            icon: <PaletteIcon className="w-4 h-4 text-purple-600" />,
-            badge: 'Kanban',
-          },
-        ]
-      : []),
+    {
+      id: 'CREATIVE_BOARD',
+      name: 'Tablero de Proyectos',
+      icon: <PaletteIcon className="w-4 h-4 text-purple-600" />,
+      badge: 'Kanban',
+    },
     {
       id: 'TOOLS',
       name: 'Calculadora & Ajustes',
       icon: <CalculatorIcon className="w-4 h-4 text-slate-600" />,
-      badge: isSantiago ? 'Física' : 'Extra',
+      badge: 'Científica',
     },
   ];
 

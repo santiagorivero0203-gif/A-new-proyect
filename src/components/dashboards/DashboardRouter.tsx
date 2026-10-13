@@ -1,37 +1,30 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { AndresDashboard } from './AndresDashboard';
-import { PrimaDashboard } from './PrimaDashboard';
-import { SantiagoDashboard } from './SantiagoDashboard';
-import { MafeDashboard } from './MafeDashboard';
+import { ModularWorkspaceDashboard } from '../workspace/ModularWorkspaceDashboard';
+
+interface DashboardRouterProps {
+  onStartExamWithQuestions?: (questions: any[], title: string) => void;
+  onLaunchExam?: (config: any) => void;
+  onNavigateToTab?: (tab: any) => void;
+}
 
 /**
- * Enrutador Inteligente de Dashboards
- * Determina qué vista académica montar de forma condicional basándose
- * en el academic_profile del usuario autenticado.
+ * Enrutador Unificado de Workspace (Fase 4: Modularidad Universal)
+ * Se elimina la bifurcación rígida basada en perfiles estáticos.
+ * Ahora todos los estudiantes acceden al Workspace Modular omnipotente,
+ * donde cada usuario personaliza sus propios widgets y preferencias.
  */
-export const DashboardRouter: React.FC = () => {
-  const { academicProfile, isLoading } = useAuth();
+export const DashboardRouter: React.FC<DashboardRouterProps> = (props) => {
+  const { isLoading } = useAuth();
 
   if (isLoading) {
     return (
       <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
-        <div className="w-8 h-8 rounded-full border-2 border-cobalt-600 border-t-cobalt-400 animate-spin" />
-        <p className="text-xs text-slate-400 font-mono">Cargando ecosistema académico...</p>
+        <div className="w-8 h-8 rounded-full border-2 border-brand-500 border-t-brand-300 animate-spin" />
+        <p className="text-xs text-slate-400 font-mono">Cargando ecosistema modular...</p>
       </div>
     );
   }
 
-  switch (academicProfile) {
-    case 'andres_bachillerato_1':
-      return <AndresDashboard />;
-    case 'prima_bachillerato_5':
-      return <PrimaDashboard />;
-    case 'santiago_fisica_ucv':
-      return <SantiagoDashboard />;
-    case 'mafe_diseno_ucab':
-      return <MafeDashboard />;
-    default:
-      return <SantiagoDashboard />;
-  }
+  return <ModularWorkspaceDashboard {...props} />;
 };

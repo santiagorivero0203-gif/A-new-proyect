@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type {
   ExamConfig,
   ExamSessionState,
@@ -33,118 +33,129 @@ export function useExamSimulator() {
 
   const [report, setReport] = useState<ExamReport | null>(null);
 
+  // Mantener referencia síncrona al estado actual de la sesión para evitar llamadas impuras dentro del updater
+  const sessionRef = useRef(session);
+  useEffect(() => {
+    sessionRef.current = session;
+  }, [session]);
+
   /**
    * Finaliza el examen y computa el reporte pedagógico con desglose
+   * Lógica purificada: el cálculo y persistencia se ejecutan fuera del updater de estado
    */
-  const finishExam = useCallback(async () => {
-    setSession((prev) => {
-      if (prev.status === 'FINISHED') return prev;
+  const finishExam = useCallback(() => {
+    const current = sessionRef.current;
+    if (current.status === 'FINISHED') return;
 
-      const timeTaken = prev.config.timeLimitSeconds - prev.secondsRemaining;
-      let correct = 0;
-      let incorrect = 0;
-      let unanswered = 0;
+    const timeTaken = Math.max(0, current.config.timeLimitSeconds - current.secondsRemaining);
+    let correct = 0;
+    let incorrect = 0;
+    let unanswered = 0;
 
-      const topicBreakdown: Record<string, { total: number; correct: number }> = {};
-      const subjectBreakdown: Record<string, { total: number; correct: number }> = {};
+    const topicBreakdown: Record<string, { total: number; correct: number }> = {};
+    const subjectBreakdown: Record<string, { total: number; correct: number }> = {};
 
-      prev.questions.forEach((q) => {
-        // Inicializar desglose por tema
-        if (!topicBreakdown[q.topic]) {
-          topicBreakdown[q.topic] = { total: 0, correct: 0 };
-        }
-        topicBreakdown[q.topic].total += 1;
-
-        // Inicializar desglose por materia
-        if (!subjectBreakdown[q.subject]) {
-          subjectBreakdown[q.subject] = { total: 0, correct: 0 };
-        }
-        subjectBreakdown[q.subject].total += 1;
-
-        const answer = prev.userAnswers[q.id];
-        if (!answer) {
-          unanswered += 1;
-        } else if (answer === q.correctOptionId) {
-          correct += 1;
-          topicBreakdown[q.topic].correct += 1;
-          subjectBreakdown[q.subject].correct += 1;
-        } else {
-          incorrect += 1;
-        }
-      });
-
-      const total = prev.questions.length || 1;
-      const scoreOn20 = Number(((correct / total) * 20).toFixed(2));
-      const percentage = Math.round((correct / total) * 100);
-
-      const generatedReport: ExamReport = {
-        examTitle: prev.config.title,
-        subject: prev.config.subject || 'Evaluación Multidisciplinaria',
-        score: scoreOn20,
-        percentage,
-        totalQuestions: prev.questions.length,
-        correctAnswers: correct,
-        incorrectAnswers: incorrect,
-        unansweredAnswers: unanswered,
-        timeTakenSeconds: timeTaken,
-        breakdownByTopic: topicBreakdown,
-        breakdownBySubject: subjectBreakdown,
-        questions: prev.questions,
-        userAnswers: prev.userAnswers,
-        completedAt: new Date().toISOString(),
-      };
-
-      setReport(generatedReport);
-
-      // Persistir asíncronamente en Supabase si está disponible
-      if (user?.id && isSupabaseConfigured()) {
-        (supabase.from('exam_results') as any)
-          .insert({
-            user_id: user.id,
-            exam_title: prev.config.title,
-            subject: prev.config.subject || 'Multidisciplinar',
-            score: scoreOn20,
-            total_questions: prev.questions.length,
-            correct_answers: correct,
-            time_taken_seconds: timeTaken,
-            breakdown: topicBreakdown,
-            answers: prev.userAnswers,
-          })
-          .then(({ error }: { error: any }) => {
-            if (error) console.warn('No se pudo guardar resultado en Supabase:', error.message);
-          });
+    current.questions.forEach((q) => {
+      // Inicializar desglose por tema
+      if (!topicBreakdown[q.topic]) {
+        topicBreakdown[q.topic] = { total: 0, correct: 0 };
       }
+      topicBreakdown[q.topic].total += 1;
 
-      return {
-        ...prev,
-        status: 'FINISHED',
-        completedAt: new Date().toISOString(),
-      };
+      // Inicializar desglose por materia
+      if (!subjectBreakdown[q.subject]) {
+        subjectBreakdown[q.subject] = { total: 0, correct: 0 };
+      }
+      subjectBreakdown[q.subject].total += 1;
+
+      const answer = current.userAnswers[q.id];
+      if (!answer) {
+        unanswered += 1;
+      } else if (answer === q.correctOptionId) {
+        correct += 1;
+        topicBreakdown[q.topic].correct += 1;
+        subjectBreakdown[q.subject].correct += 1;
+      } else {
+        incorrect += 1;
+      }
     });
+
+    const total = current.questions.length || 1;
+    const scoreOn20 = Number(((correct / total) * 20).toFixed(2));
+    const percentage = Math.round((correct / total) * 100);
+
+    const generatedReport: ExamReport = {
+      examTitle: current.config.title,
+      subject: current.config.subject || 'Evaluación Multidisciplinaria',
+      score: scoreOn20,
+      percentage,
+      totalQuestions: current.questions.length,
+      correctAnswers: correct,
+      incorrectAnswers: incorrect,
+      unansweredAnswers: unanswered,
+      timeTakenSeconds: timeTaken,
+      breakdownByTopic: topicBreakdown,
+      breakdownBySubject: subjectBreakdown,
+      questions: current.questions,
+      userAnswers: current.userAnswers,
+      completedAt: new Date().toISOString(),
+    };
+
+    // 1. Despachar reporte
+    setReport(generatedReport);
+
+    // 2. Transicionar estado de sesión a FINISHED
+    setSession((prev) => ({
+      ...prev,
+      status: 'FINISHED',
+      completedAt: generatedReport.completedAt,
+    }));
+
+    // 3. Persistir asíncronamente en Supabase de forma segura y desacoplada
+    if (user?.id && isSupabaseConfigured()) {
+      (supabase.from('exam_results') as any)
+        .insert({
+          user_id: user.id,
+          exam_title: current.config.title,
+          subject: current.config.subject || 'Multidisciplinar',
+          score: scoreOn20,
+          total_questions: current.questions.length,
+          correct_answers: correct,
+          time_taken_seconds: timeTaken,
+          breakdown: topicBreakdown,
+          answers: current.userAnswers,
+        })
+        .then(({ error }: { error: any }) => {
+          if (error) console.warn('No se pudo guardar resultado en Supabase:', error.message);
+        })
+        .catch((err: any) => {
+          console.warn('Excepción de red al guardar resultado de examen:', err);
+        });
+    }
   }, [user]);
 
   /**
-   * Temporizador estricto con auto-entrega al expirar el tiempo
+   * Temporizador estricto con auto-entrega desacoplada al expirar el tiempo
    */
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval> | null = null;
+    if (session.status !== 'IN_PROGRESS' || session.isPaused) return;
 
-    if (session.status === 'IN_PROGRESS' && !session.isPaused && session.secondsRemaining > 0) {
-      timer = setInterval(() => {
-        setSession((prev) => {
-          if (prev.secondsRemaining <= 1) {
-            // Tiempo agotado: entrega automática
-            finishExam();
-            return { ...prev, secondsRemaining: 0 };
-          }
-          return { ...prev, secondsRemaining: prev.secondsRemaining - 1 };
-        });
-      }, 1000);
+    // Si el tiempo llegó a 0, activar la entrega fuera del callback del temporizador
+    if (session.secondsRemaining <= 0) {
+      finishExam();
+      return;
     }
 
-    return () => {
-      if (timer) clearInterval(timer);
-    };
+    const timer = setInterval(() => {
+      setSession((prev) => {
+        if (prev.secondsRemaining <= 1) {
+          return { ...prev, secondsRemaining: 0 };
+        }
+        return { ...prev, secondsRemaining: prev.secondsRemaining - 1 };
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, [session.status, session.isPaused, session.secondsRemaining, finishExam]);
 
   /**

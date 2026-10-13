@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { MainLayout } from './components/layout/MainLayout';
 import type { MainTabType } from './components/layout/Sidebar';
-import { ProductivityDashboard } from './components/productivity/ProductivityDashboard';
+import { ModularWorkspaceDashboard } from './components/workspace/ModularWorkspaceDashboard';
 import { AcademicGuidesView } from './components/academic/AcademicGuidesView';
 import { SimulatorEngine } from './components/exams/SimulatorEngine';
 import { StorageManagerView } from './components/storage/StorageManagerView';
@@ -12,7 +12,7 @@ import type { ExamConfig, Question } from './types/exam.types';
 
 /**
  * Componente Raíz de la Aplicación
- * Centro de Productividad Estudiantil (Fase 3: Inteligencia Artificial, Automatización y Generación Dinámica)
+ * Centro de Productividad Estudiantil (Fase 4: Auditoría Lógica, Modularidad Universal y Refinamiento UI/UX)
  */
 export const App: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<MainTabType>('PRODUCTIVITY');
@@ -36,10 +36,25 @@ export const App: React.FC = () => {
     setCurrentTab('EXAMS');
   };
 
+  /**
+   * Lanzar examen preconfigurado desde el widget de inicio
+   */
+  const handleLaunchExam = (config: ExamConfig) => {
+    setAiExamConfig(config);
+    setAiExamQuestions(config.customQuestions || null);
+    setCurrentTab('EXAMS');
+  };
+
   const renderCurrentView = () => {
     switch (currentTab) {
       case 'PRODUCTIVITY':
-        return <ProductivityDashboard />;
+        return (
+          <ModularWorkspaceDashboard
+            onStartExamWithQuestions={handleStartExamWithAiQuestions}
+            onLaunchExam={handleLaunchExam}
+            onNavigateToTab={(tab) => setCurrentTab(tab)}
+          />
+        );
       case 'GUIDES':
         return (
           <AcademicGuidesView
@@ -69,7 +84,13 @@ export const App: React.FC = () => {
       case 'TOOLS':
         return <ToolsAndSettingsView />;
       default:
-        return <ProductivityDashboard />;
+        return (
+          <ModularWorkspaceDashboard
+            onStartExamWithQuestions={handleStartExamWithAiQuestions}
+            onLaunchExam={handleLaunchExam}
+            onNavigateToTab={(tab) => setCurrentTab(tab)}
+          />
+        );
     }
   };
 
