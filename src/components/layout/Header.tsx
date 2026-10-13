@@ -1,6 +1,11 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { SparklesIcon, LayersIcon } from '../common/Icons';
+import {
+  SparklesIcon,
+  LayersIcon,
+  SunIcon,
+  LogOutIcon,
+} from '../common/Icons';
 
 interface HeaderProps {
   onOpenAuth: () => void;
@@ -9,89 +14,146 @@ interface HeaderProps {
   currentTab: string;
 }
 
+/**
+ * Mapeo de títulos de migas de pan según la pestaña activa
+ */
+const TAB_BREADCRUMBS: Record<string, string> = {
+  PRODUCTIVITY: 'Panel de Control',
+  PLANNER: 'Agenda & Evaluaciones',
+  EXAMS: 'Simulador de Exámenes',
+  GUIDES: 'Guías & Deconstrucción',
+  STORAGE: 'Documentos & Vault',
+  CREATIVE_BOARD: 'Proyectos & Entregas',
+  TOOLS: 'Herramientas & Ajustes',
+};
+
+/**
+ * Header de Navegación Superior
+ * Inspirado en la arquitectura visual limpia y espaciosa de Invoficlib:
+ * Migas de pan, pills de estado en tiempo real (Gemini / Supabase), avatar y control de salida.
+ */
 export const Header: React.FC<HeaderProps> = ({
   onOpenAuth,
   onToggleMobileSidebar,
   onOpenAccountManager,
+  currentTab,
 }) => {
   const { user, isDemoMode, signOut } = useAuth();
 
+  const breadcrumbSection = TAB_BREADCRUMBS[currentTab] || 'Panel de Control';
+
+  // Iniciales del estudiante para el avatar
+  const initials = user?.full_name
+    ? user.full_name
+        .split(' ')
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    : 'SR';
+
   return (
-    <header className="sticky top-0 z-30 w-full h-16 border-b border-slate-200/80 bg-white/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
-      {/* Lado Izquierdo: Botón Menú Móvil + Título */}
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-30 w-full h-18 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between transition-colors">
+      {/* Lado Izquierdo: Botón Menú Móvil + Breadcrumbs estilo Invoficlib */}
+      <div className="flex items-center gap-4">
         <button
           onClick={onToggleMobileSidebar}
-          className="lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-          aria-label="Abrir menú"
+          className="lg:hidden p-2.5 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+          aria-label="Abrir menú de navegación"
         >
           <LayersIcon className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-xs shadow-soft-sm">
-            CP
-          </div>
-          <div className="hidden sm:block">
-            <h2 className="text-sm font-bold text-slate-900 tracking-tight leading-none font-display">
-              Centro de Productividad Estudiantil
-            </h2>
-            <p className="text-[11px] text-slate-500 font-medium mt-0.5 leading-none">
-              {user?.institution || 'Ecosistema de Estudio'}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Centro: Estudiante Activo con acción de cambio rápido */}
-      <div className="hidden md:flex items-center gap-2">
-        {user && onOpenAccountManager ? (
-          <button
-            onClick={onOpenAccountManager}
-            className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/70 border border-slate-200/60 text-xs font-medium text-slate-700 flex items-center gap-2 transition-colors duration-150 active:scale-[0.98]"
-            title="Administrar o cambiar de cuenta"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span>Estudiante: <strong className="text-slate-900">{user.full_name}</strong></span>
-            <span className="text-[10px] text-slate-400 font-mono">▾</span>
-          </button>
-        ) : (
-          <span className="text-xs font-medium text-slate-400 font-mono">
-            {user ? user.full_name : 'Sin sesión'}
+        {/* Migas de pan (Breadcrumbs) legibles y limpias */}
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm font-medium">
+          <span className="text-slate-400 hover:text-slate-600 transition-colors cursor-default">
+            Inicio
           </span>
-        )}
+          <span className="text-slate-300 font-mono text-xs">›</span>
+          <span className="text-slate-900 font-bold tracking-tight">
+            {breadcrumbSection}
+          </span>
+        </nav>
       </div>
 
-      {/* Lado Derecho: Estado y Acceso */}
-      <div className="flex items-center gap-2.5">
+      {/* Lado Derecho: Pills de estado en vivo, Toggle de Luz, Usuario y Salir */}
+      <div className="flex items-center gap-2.5 sm:gap-3.5">
+        {/* Pill 1: Estado Gemini 3.8 Flash */}
         <div
-          className={`hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono border ${
+          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200/80 text-xs font-semibold text-slate-700 transition-all shadow-soft-sm cursor-default"
+          title="Motor de Inteligencia Artificial Gemini 3.8 Flash activo"
+        >
+          <SparklesIcon className="w-4 h-4 text-brand-500" />
+          <span className="text-slate-500 font-normal">IA:</span>
+          <span className="text-slate-900 font-bold">Gemini Flash</span>
+        </div>
+
+        {/* Pill 2: Estado Supabase */}
+        <div
+          className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium transition-all shadow-soft-sm ${
             isDemoMode
-              ? 'bg-amber-50 border-amber-200 text-amber-700'
-              : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+              ? 'bg-amber-50/80 border-amber-200 text-amber-800'
+              : 'bg-emerald-50/80 border-emerald-200/90 text-emerald-800'
           }`}
-          title={isDemoMode ? 'Modo Interactivo local' : 'Conectado a la base de datos Supabase'}
+          title={isDemoMode ? 'Almacenamiento interactivo local activo' : 'Conectado a PostgreSQL y Storage en tiempo real'}
         >
           <span
-            className={`w-1.5 h-1.5 rounded-full ${isDemoMode ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`}
+            className={`w-2 h-2 rounded-full ${
+              isDemoMode ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'
+            }`}
           />
-          {isDemoMode ? 'Demo' : 'Supabase Live'}
+          <span className="text-slate-500 font-normal">DB:</span>
+          <span className="font-bold">{isDemoMode ? 'Local Cache' : 'Supabase Live'}</span>
         </div>
 
+        {/* Botón de Modo Claro / Luminosidad (como en Invoficlib) */}
         <button
-          onClick={user ? signOut : onOpenAuth}
-          className="btn-secondary text-xs py-1.5 px-3 rounded-lg"
-          title={user ? 'Cerrar sesión de esta cuenta' : 'Iniciar sesión'}
+          className="w-9 h-9 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 flex items-center justify-center text-slate-700 hover:text-slate-900 transition-all shadow-soft-sm active:scale-95"
+          title="Modo visual optimizado para estudio diurno"
+          aria-label="Alternar modo de luz"
         >
-          {user ? (
-            <span>Cerrar Sesión</span>
-          ) : (
-            <span className="flex items-center gap-1.5">
-              <SparklesIcon className="w-4 h-4 text-brand-500" />
-              <span>Conectar</span>
-            </span>
-          )}
+          <SunIcon className="w-4.5 h-4.5 text-amber-500" />
         </button>
+
+        {/* Tarjeta de Usuario en el Header (Avatar + Nombre + Carrera) */}
+        {user ? (
+          <div
+            onClick={onOpenAccountManager}
+            className="flex items-center gap-3 px-2 sm:px-3 py-1.5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/80 shadow-soft-sm cursor-pointer transition-all active:scale-[0.98] group"
+            title="Administrar cuenta o cambiar de estudiante"
+          >
+            <div className="w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0 tracking-wider shadow-soft-sm group-hover:bg-brand-500 transition-colors">
+              {initials}
+            </div>
+            <div className="hidden lg:block text-left pr-1 leading-tight">
+              <div className="text-xs font-bold text-slate-900 truncate font-sans max-w-[130px]">
+                {user.full_name}
+              </div>
+              <div className="text-[11px] text-slate-500 truncate max-w-[130px] font-medium">
+                {user.institution || 'Estudiante'}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={onOpenAuth}
+            className="btn-brand text-xs py-2 px-4 rounded-xl"
+          >
+            Conectar
+          </button>
+        )}
+
+        {/* Botón Salir / Desconectar */}
+        {user && (
+          <button
+            onClick={signOut}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200 border border-slate-200/90 text-xs font-semibold text-slate-700 transition-all shadow-soft-sm active:scale-95"
+            title="Cerrar sesión de esta cuenta"
+          >
+            <LogOutIcon className="w-4 h-4 text-slate-400 group-hover:text-rose-500" />
+            <span className="hidden sm:inline">Salir</span>
+          </button>
+        )}
       </div>
     </header>
   );

@@ -1,13 +1,14 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
-  TimerIcon,
+  GridIcon,
   BookOpenIcon,
   LayersIcon,
   CalculatorIcon,
   UploadCloudIcon,
   PaletteIcon,
   CalendarIcon,
+  PlusIcon,
 } from '../common/Icons';
 
 export type MainTabType = 'PRODUCTIVITY' | 'PLANNER' | 'GUIDES' | 'EXAMS' | 'STORAGE' | 'CREATIVE_BOARD' | 'TOOLS';
@@ -20,6 +21,12 @@ interface SidebarProps {
   onOpenAccountManager?: () => void;
 }
 
+/**
+ * Barra Lateral de Navegación (Sidebar)
+ * Inspirado en la arquitectura visual limpia y espaciosa de Invoficlib:
+ * Logo distintivo, botón destacado de acción rápida (+ Deconstruir Material),
+ * píldoras activas en fondo negro de alto contraste, e iconos nítidos.
+ */
 export const Sidebar: React.FC<SidebarProps> = ({
   currentTab,
   onSelectTab,
@@ -32,41 +39,40 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const navigationTabs: { id: MainTabType; name: string; icon: React.ReactNode; badge?: string }[] = [
     {
       id: 'PRODUCTIVITY',
-      name: 'Workspace',
-      icon: <TimerIcon className="w-5 h-5 text-brand-500" />,
-    },
-    {
-      id: 'PLANNER',
-      name: 'Agenda & Evaluaciones',
-      icon: <CalendarIcon className="w-5 h-5 text-brand-500" />,
-      badge: 'Cortes',
+      name: 'Dashboard',
+      icon: <GridIcon className="w-5 h-5" />,
     },
     {
       id: 'EXAMS',
-      name: 'Evaluaciones y Pruebas',
-      icon: <LayersIcon className="w-5 h-5 text-slate-700" />,
-      badge: 'Prácticas',
+      name: 'Simulador & Exámenes',
+      icon: <LayersIcon className="w-5 h-5" />,
+      badge: 'Simadi',
     },
     {
       id: 'GUIDES',
-      name: 'Guías y Temarios',
-      icon: <BookOpenIcon className="w-5 h-5 text-slate-700" />,
-      badge: '5 Materias',
+      name: 'Guías & Deconstrucción',
+      icon: <BookOpenIcon className="w-5 h-5" />,
+      badge: 'KaTeX',
+    },
+    {
+      id: 'PLANNER',
+      name: 'Agenda & Cortes',
+      icon: <CalendarIcon className="w-5 h-5" />,
     },
     {
       id: 'STORAGE',
-      name: 'Documentos',
-      icon: <UploadCloudIcon className="w-5 h-5 text-slate-700" />,
+      name: 'Documentos & Vault',
+      icon: <UploadCloudIcon className="w-5 h-5" />,
     },
     {
       id: 'CREATIVE_BOARD',
-      name: 'Proyectos y Entregas',
-      icon: <PaletteIcon className="w-5 h-5 text-slate-700" />,
+      name: 'Proyectos & Entregas',
+      icon: <PaletteIcon className="w-5 h-5" />,
     },
     {
       id: 'TOOLS',
-      name: 'Calculadora y Ajustes',
-      icon: <CalculatorIcon className="w-5 h-5 text-slate-700" />,
+      name: 'Herramientas & Ajustes',
+      icon: <CalculatorIcon className="w-5 h-5" />,
     },
   ];
 
@@ -76,112 +82,152 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {isOpenMobile && (
         <div
           onClick={onCloseMobile}
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs lg:hidden transition-opacity"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden transition-opacity"
+          aria-hidden="true"
         />
       )}
 
       {/* Contenedor del Sidebar */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#fafafc] border-r border-slate-200/90 flex flex-col justify-between p-4 transition-transform duration-200 ease-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#fcfcfd] border-r border-slate-200/90 flex flex-col justify-between p-5 transition-transform duration-200 ease-out lg:translate-x-0 ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="space-y-4">
-          {/* Logo y Encabezado */}
-          <div className="flex items-center justify-between px-2 pt-2 pb-1">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-xs shadow-soft-sm">
-                CP
+        <div className="space-y-6">
+          {/* Logo y Encabezado del Sistema (Estilo Invoficlib) */}
+          <div className="flex items-center justify-between px-1">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-soft">
+                {/* Isotipo geométrico limpio estilo panal / tres hexágonos concéntricos */}
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <circle cx="12" cy="7" r="3" />
+                  <circle cx="7" cy="16" r="3" />
+                  <circle cx="17" cy="16" r="3" />
+                  <path d="M12 10v4" strokeLinecap="round" />
+                </svg>
               </div>
               <div>
-                <h1 className="text-sm font-bold text-slate-900 tracking-tight leading-none font-sans">
-                  Centro de Estudio
+                <h1 className="text-base font-extrabold text-slate-900 tracking-tight leading-tight font-sans">
+                  Invoficlib CPE
                 </h1>
-                <p className="text-[11px] text-slate-500 font-medium mt-0.5 leading-none">
-                  Productividad Académica
+                <p className="text-xs text-slate-500 font-medium leading-none">
+                  Sistema de Estudio
                 </p>
               </div>
             </div>
             <button
               onClick={onCloseMobile}
-              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60"
+              className="lg:hidden p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+              aria-label="Cerrar menú"
             >
               ✕
             </button>
           </div>
 
-          {/* Tarjeta del Estudiante Activo (Interactiva para gestión de cuenta) */}
-          <div
-            onClick={onOpenAccountManager}
-            className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-soft-sm hover:border-slate-300 hover:shadow-soft cursor-pointer transition-all duration-150 active:scale-[0.99] group"
-            title="Administrar cuenta o cambiar de estudiante"
-          >
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">
-                Cuenta Activa
-              </span>
-              <span className="text-[10px] text-brand-500 font-medium group-hover:underline">
-                Cambiar ▾
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0 tracking-wider shadow-soft-sm">
-                {user?.full_name
-                  ? user.full_name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .slice(0, 2)
-                      .join('')
-                      .toUpperCase()
-                  : 'SR'}
-              </div>
-              <div className="overflow-hidden min-w-0">
-                <h3 className="text-xs font-bold text-slate-900 truncate font-sans">{user?.full_name || 'Santiago Rivero'}</h3>
-                <p className="text-[11px] text-slate-500 font-medium truncate">{user?.institution || 'UCV - Ciencias'}</p>
-                <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{user?.email || 'estudiante@ucv.ve'}</p>
-              </div>
-            </div>
+          {/* Botón Principal de Acción Destacada estilo '+ Nuevo Registro' de Invoficlib */}
+          <div>
+            <button
+              onClick={() => {
+                onSelectTab('GUIDES');
+                onCloseMobile();
+              }}
+              className="w-full py-3.5 px-4 rounded-2xl bg-slate-900 hover:bg-black active:scale-[0.98] text-white font-bold text-sm flex items-center justify-center gap-2.5 shadow-soft-md transition-all duration-150 group"
+              title="Deconstruir un nuevo tema, PDF o apunte con Gemini IA"
+            >
+              <PlusIcon className="w-4.5 h-4.5 stroke-[2.5] text-white/90 group-hover:rotate-90 transition-transform duration-200" />
+              <span>Deconstruir Material</span>
+            </button>
           </div>
 
-          {/* Menú de Navegación */}
-          <div className="pt-2">
-            <nav className="space-y-1">
-              {navigationTabs.map((tab) => {
-                const isActive = currentTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => {
-                      onSelectTab(tab.id);
-                      onCloseMobile();
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all text-left ${
-                      isActive
-                        ? 'bg-white text-slate-900 shadow-soft-sm border border-slate-200/80 font-bold'
-                        : 'text-slate-600 hover:bg-white/80 hover:text-slate-900'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="shrink-0">{tab.icon}</div>
-                      <span className="truncate">{tab.name}</span>
+          {/* Menú de Navegación Amplio y Grande */}
+          <nav className="space-y-1.5">
+            {navigationTabs.map((tab) => {
+              const isActive = currentTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    onSelectTab(tab.id);
+                    onCloseMobile();
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-sm font-semibold transition-all text-left group ${
+                    isActive
+                      ? 'bg-slate-900 text-white shadow-soft-sm font-bold'
+                      : 'text-slate-600 hover:bg-white hover:text-slate-900 hover:shadow-soft-sm'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`shrink-0 transition-transform duration-150 group-hover:scale-105 ${
+                        isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'
+                      }`}
+                    >
+                      {tab.icon}
                     </div>
-                    {tab.badge && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium font-mono">
-                        {tab.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
+                    <span className="truncate">{tab.name}</span>
+                  </div>
+                  {tab.badge && (
+                    <span
+                      className={`text-[11px] px-2 py-0.5 rounded-full font-medium font-mono ${
+                        isActive
+                          ? 'bg-white/20 text-white'
+                          : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200/80'
+                      }`}
+                    >
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* Footer del Sidebar */}
-        <div className="pt-3 border-t border-slate-200/80 text-[11px] text-slate-400 flex items-center justify-between font-mono">
-          <span>v2.0</span>
-          <span>Modo Claro</span>
+        {/* Footer del Sidebar con Switcher de Perfil y Versión */}
+        <div className="space-y-3 pt-4 border-t border-slate-200/80">
+          {/* Tarjeta de Estudiante Activo con acción para cambiar */}
+          {user && (
+            <div
+              onClick={onOpenAccountManager}
+              className="p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-slate-300 shadow-soft-sm cursor-pointer transition-all active:scale-[0.99] group"
+              title="Cambiar de perfil o administrar cuenta"
+            >
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                  Perfil Activo
+                </span>
+                <span className="text-[10px] text-brand-600 font-semibold group-hover:underline">
+                  Cambiar ▾
+                </span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-soft-sm">
+                  {user.full_name
+                    ? user.full_name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .slice(0, 2)
+                        .join('')
+                        .toUpperCase()
+                    : 'SR'}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-bold text-slate-900 truncate">
+                    {user.full_name}
+                  </div>
+                  <div className="text-[11px] text-slate-500 truncate font-medium">
+                    {user.institution || 'UCV - Ciencias'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Información de Versión y Marca */}
+          <div className="flex items-center justify-between px-1 text-xs text-slate-400 font-mono">
+            <span>v1.2.0</span>
+            <span className="text-slate-500 font-semibold">Invoficlib</span>
+          </div>
         </div>
       </aside>
     </>
