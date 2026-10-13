@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS public.certified_guides (
     category TEXT NOT NULL CHECK (category IN ('verbal', 'logico', 'ciencia')),
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    references JSONB DEFAULT '[]'::jsonb,
+    "references" JSONB DEFAULT '[]'::jsonb,
     theory TEXT,
     past_exams JSONB DEFAULT '[]'::jsonb,
     created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
