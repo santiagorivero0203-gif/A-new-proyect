@@ -11,6 +11,25 @@ const LOCAL_STORAGE_DOCS_KEY = 'cpe_user_documents_cache';
 const LOCAL_STORAGE_DECONSTRUCTED_GUIDES_KEY = 'cpe_deconstructed_guides_cache';
 const LOCAL_STORAGE_CUSTOM_QUESTIONS_KEY = 'cpe_custom_questions_cache';
 
+const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-2.5-flash'];
+
+/**
+ * Parsea un JSON generado por Gemini sanitizando secuencias de escape de LaTeX
+ */
+export function safeJsonParse<T>(rawText: string): T {
+  try {
+    return JSON.parse(rawText) as T;
+  } catch {
+    const sanitized = rawText.replace(/\\([^"\\\/bfnrtu])/g, '\\\\$1');
+    try {
+      return JSON.parse(sanitized) as T;
+    } catch {
+      const cleaned = sanitized.replace(/```json/gi, '').replace(/```/g, '').trim();
+      return JSON.parse(cleaned) as T;
+    }
+  }
+}
+
 /**
  * System Instruction Maestro Oficial para el Motor de Deconstrucción Académica
  * Inyectado obligatoriamente en cada llamada analítica a la API de Google Gemini.
@@ -265,54 +284,56 @@ ${DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION}`;
           });
         }
 
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        let resData: any = null;
+        for (const model of GEMINI_MODELS) {
+          try {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': apiKey,
+              },
+              body: JSON.stringify({
+                systemInstruction: {
+                  parts: [{ text: ACADEMIC_DECONSTRUCTION_SYSTEM_INSTRUCTION }],
+                },
+                contents: [{ parts }],
+                generationConfig: {
+                  temperature: 0.25,
+                  responseMimeType: 'application/json',
+                },
+              }),
+            });
 
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            systemInstruction: {
-              parts: [{ text: ACADEMIC_DECONSTRUCTION_SYSTEM_INSTRUCTION }],
-            },
-            contents: [{ parts }],
-            generationConfig: {
-              temperature: 0.25,
-              responseMimeType: 'application/json',
-            },
-          }),
-        });
-
-        if (response.ok) {
-          const resData = await response.json();
-          const rawText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
-
-          if (rawText) {
-            if (onProgress) onProgress('Estructurando guía hiper-compleja y KaTeX...', 75);
-
-            let parsed: DeconstructedAcademicGuide;
-            try {
-              parsed = JSON.parse(rawText) as DeconstructedAcademicGuide;
-            } catch {
-              // Limpiar delimitadores si viniesen en formato markdown
-              const cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-              parsed = JSON.parse(cleaned) as DeconstructedAcademicGuide;
+            if (response.ok) {
+              resData = await response.json();
+              break;
+            } else {
+              const errSnippet = await response.text();
+              console.warn(`Modelo ${model} retornó ${response.status}: ${errSnippet.slice(0, 100)}, probando siguiente...`);
             }
-
-            parsed.id = `guide-dec-${Date.now()}`;
-            parsed.userId = userId;
-            parsed.documentId = document?.id;
-            parsed.createdAt = new Date().toISOString();
-            parsed.sourceType = document ? 'document' : 'topic_prompt';
-
-            if (onProgress) onProgress('Persistiendo guía y actualizando banco de autoevaluación...', 90);
-            await this.persistDeconstructedGuide(parsed, userId, profile);
-
-            if (onProgress) onProgress('¡Deconstrucción académica completada!', 100);
-            return { success: true, data: parsed };
+          } catch (mErr) {
+            console.warn(`Error de red llamando a ${model}:`, mErr);
           }
-        } else {
-          const errText = await response.text();
-          console.warn('Gemini API Error:', response.status, errText);
+        }
+
+        const rawText = resData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawText) {
+          if (onProgress) onProgress('Estructurando guía hiper-compleja y KaTeX...', 75);
+
+          const parsed = safeJsonParse<DeconstructedAcademicGuide>(rawText);
+          parsed.id = `guide-dec-${Date.now()}`;
+          parsed.userId = userId;
+          parsed.documentId = document?.id;
+          parsed.createdAt = new Date().toISOString();
+          parsed.sourceType = document ? 'document' : 'topic_prompt';
+
+          if (onProgress) onProgress('Persistiendo guía y actualizando banco de autoevaluación...', 90);
+          await this.persistDeconstructedGuide(parsed, userId, profile);
+
+          if (onProgress) onProgress('¡Deconstrucción académica completada!', 100);
+          return { success: true, data: parsed };
         }
       } catch (apiError) {
         console.warn('Error en llamada a Gemini API, activando generador pedagógico de contingencia:', apiError);
