@@ -18,6 +18,11 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import { z } from 'zod';
 import { createClient } from '@supabase/supabase-js';
+import {
+  type AcademicLevel,
+  getPedagogicalGuardrails,
+  mapProfileToAcademicLevel
+} from '../lib/pedagogicalPrompts.js';
 
 // ==============================================================================
 // 1. CONFIGURACIÓN DEL CLIENTE SUPABASE (CON ROL SERVICE_ROLE PARA BYPASS RLS)
@@ -104,7 +109,7 @@ function createMcpServerInstance(): McpServer {
         const supabase = getSupabaseAdmin();
         let query = supabase
           .from('ai_processing_queue')
-          .select('id, user_id, document_url, topic_title, status, metadata, created_at')
+          .select('id, user_id, document_url, topic_title, status, metadata, academic_level, processing_mode, created_at')
           .eq('status', 'queued')
           .order('created_at', { ascending: true })
           .limit(limit);
@@ -118,7 +123,17 @@ function createMcpServerInstance(): McpServer {
           throw error;
         }
 
-        let results = data || [];
+        let results = (data || []) as Array<{
+          id: string;
+          user_id: string;
+          document_url: string;
+          topic_title: string;
+          status: string;
+          metadata: any;
+          academic_level?: string;
+          processing_mode?: string;
+          created_at: string;
+        }>;
 
         // Fallback inteligente: si no hay en la cola, consultar en user_documents
         if (results.length === 0) {
@@ -147,21 +162,65 @@ function createMcpServerInstance(): McpServer {
           }
         }
 
+        // Obtener perfiles de los usuarios para calibración pedagógica precisa
+        const uniqueUserIds = Array.from(new Set(results.map((r) => r.user_id).filter(Boolean)));
+        const userProfileMap = new Map<string, string>();
+
+        if (uniqueUserIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, academic_profile')
+            .in('id', uniqueUserIds);
+
+          if (profiles) {
+            for (const p of profiles) {
+              if (p.academic_profile) {
+                userProfileMap.set(p.id, p.academic_profile);
+              }
+            }
+          }
+        }
+
+        // Mapear cada elemento con su nivel académico y su instrucción estricta
+        const enrichedUploads = results.map((item) => {
+          const rawMetadata = item.metadata || {};
+          const subject = rawMetadata.subject || (item.topic_title?.split(':')[0] || 'General').trim();
+          const topic = rawMetadata.topic || (item.topic_title?.split(':')[1] || item.topic_title || 'Tema').trim();
+
+          // Determinar academicLevel
+          let level: AcademicLevel = (item.academic_level || rawMetadata.academic_level) as AcademicLevel;
+          if (!level) {
+            const profileKey = userProfileMap.get(item.user_id);
+            level = mapProfileToAcademicLevel(profileKey);
+          }
+
+          const strictInstruction = getPedagogicalGuardrails(level, subject, topic);
+
+          return {
+            queue_id: item.id,
+            user_id: item.user_id,
+            topic_title: item.topic_title,
+            subject: subject,
+            topic: topic,
+            document_url: item.document_url,
+            academic_level: level,
+            processing_mode: item.processing_mode || 'spark_mcp',
+            strict_instruction: strictInstruction,
+            anti_hallucination_rule:
+              'ESTÁ ESTRICTAMENTE PROHIBIDO extrapolar a física universitaria, vectores o cálculo en ejercicios de matemáticas escolares. Limítate al método escolar del nivel asignado.',
+            created_at: item.created_at,
+            metadata: item.metadata
+          };
+        });
+
         return {
           content: [
             {
               type: 'text',
               text: JSON.stringify(
                 {
-                  total_pending: results.length,
-                  uploads: results.map((item) => ({
-                    queue_id: item.id,
-                    user_id: item.user_id,
-                    topic_title: item.topic_title,
-                    document_url: item.document_url,
-                    created_at: item.created_at,
-                    metadata: item.metadata
-                  }))
+                  total_pending: enrichedUploads.length,
+                  uploads: enrichedUploads
                 },
                 null,
                 2

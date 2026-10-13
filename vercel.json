@@ -8,6 +8,12 @@
       "destination": "/index.html"
     }
   ],
+  "crons": [
+    {
+      "path": "/api/nexus-worker?rescue=true",
+      "schedule": "*/15 * * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",

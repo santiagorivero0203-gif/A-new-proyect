@@ -4,6 +4,8 @@
  * ==============================================================================
  * Archivo: UploadStation.jsx
  * Estética de Diseño: Apple-inspired (bg-slate-50, rounded-2xl, Azul Cobalto #0F52BA)
+ * Arquitectura: Motor Dual Híbrido (Carril A Auto API + Carril B Spark MCP)
+ * Calibración: Guardarraíl de Nivel Cognitivo y Anclaje Estricto Anti-Alucinación
  * ==============================================================================
  */
 
@@ -19,10 +21,18 @@ import {
   BookOpen,
   Loader2,
   RefreshCw,
+  Zap,
+  Brain,
+  ShieldCheck,
+  GraduationCap
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import {
+  mapProfileToAcademicLevel,
+  PEDAGOGICAL_GUARDRAILS
+} from '../lib/pedagogicalPrompts';
 
 const PRIMARY_BUCKET = 'user_documents';
 const FALLBACK_BUCKET = 'documents';
@@ -31,12 +41,25 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
   const { user } = useAuth();
   const fileInputRef = useRef(null);
 
-  // Estados del formulario
+  // Estados del formulario básico
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
   const [subject, setSubject] = useState('');
   const [topic, setTopic] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
+
+  // Estados del Motor Dual Híbrido y Nivel Cognitivo
+  const [routingMode, setRoutingMode] = useState('auto_api'); // 'auto_api' | 'spark_mcp'
+  const [academicLevel, setAcademicLevel] = useState(() =>
+    mapProfileToAcademicLevel(user?.academic_profile)
+  );
+
+  // Actualizar el nivel por defecto cuando cambia el perfil del usuario activo
+  useEffect(() => {
+    if (user?.academic_profile) {
+      setAcademicLevel(mapProfileToAcademicLevel(user.academic_profile));
+    }
+  }, [user?.academic_profile]);
 
   // Estados del ciclo de vida
   const [stationState, setStationState] = useState('idle'); // 'idle' | 'uploading' | 'processing' | 'completed' | 'error'
@@ -166,7 +189,7 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
       )
       .subscribe();
 
-    // Sondeo de respaldo cada 5s
+    // Sondeo de respaldo cada 4s
     const poller = setInterval(async () => {
       try {
         const { data } = await supabase
@@ -186,7 +209,7 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
       } catch {
         // Sondeo silencioso
       }
-    }, 5000);
+    }, 4000);
 
     return () => {
       supabase.removeChannel(channel);
@@ -195,7 +218,7 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
   }, [currentQueueId, stationState]);
 
   // ----------------------------------------------------------------------------
-  // SUBIDA Y COLA
+  // SUBIDA Y ENRUTAMIENTO INTELIGENTE (AUTO_API vs SPARK_MCP)
   // ----------------------------------------------------------------------------
   const handleAnalyzeWithAI = async (e) => {
     e.preventDefault();
@@ -269,7 +292,7 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
       const finalDocumentUrl = urlData?.publicUrl || storageFilePath;
       setUploadedDocUrl(finalDocumentUrl);
 
-      // Insertar en ai_processing_queue
+      // Insertar en ai_processing_queue con routing_mode y academic_level
       const combinedTitle = `${subject.trim()}: ${topic.trim()}`;
 
       const { data: queueData, error: queueError } = await supabase
@@ -279,9 +302,14 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
           topic_title: combinedTitle,
           document_url: finalDocumentUrl,
           status: 'queued',
+          processing_mode: routingMode,
+          routing_mode: routingMode,
+          academic_level: academicLevel,
           metadata: {
             subject: subject.trim(),
             topic: topic.trim(),
+            academic_level: academicLevel,
+            routing_mode: routingMode,
             file_name: selectedFile.name,
             file_size: selectedFile.size,
             file_type: selectedFile.type,
@@ -300,6 +328,29 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
       setUploadProgress(100);
       setCurrentQueueId(queueData.id);
       setStationState('processing');
+
+      // Carril A: Si es Modo Instantáneo (auto_api), disparar de inmediato /api/nexus-worker
+      if (routingMode === 'auto_api') {
+        fetch('/api/nexus-worker', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'process_queue',
+            queueId: queueData.id,
+          }),
+        })
+          .then(async (res) => {
+            if (!res.ok) {
+              const errJson = await res.json().catch(() => ({}));
+              console.warn('[UploadStation] Nexus worker retornó status no ok:', errJson);
+            }
+          })
+          .catch((workerErr) => {
+            console.warn('[UploadStation] Disparo autónomo a nexus-worker:', workerErr);
+          });
+      }
     } catch (err) {
       console.error('[UploadStation Error]:', err);
       setStationState('error');
@@ -320,6 +371,8 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
     setUploadedDocUrl(null);
   };
 
+  const activeGuardrail = PEDAGOGICAL_GUARDRAILS[academicLevel] || PEDAGOGICAL_GUARDRAILS.BASICO_ESCOLAR;
+
   return (
     <div className={`w-full max-w-2xl mx-auto ${className}`}>
       {/* Contenedor Principal Apple-inspired */}
@@ -331,19 +384,19 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#0F52BA] animate-pulse" />
               <span className="text-xs font-semibold tracking-wider uppercase text-blue-600">
-                Nexus AI Studio
+                Nexus AI Studio • Motor Dual Híbrido
               </span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-display">
               Estación de Deconstrucción
             </h2>
             <p className="text-sm text-slate-500 font-normal">
-              Sube fotos de pizarras, apuntes o guías PDF. Nexus los convertirá en teoría con LaTeX y exámenes.
+              Sube fotos de pizarras o guías PDF. Nexus las deconstruirá según tu perfil académico sin inventar asignaturas ajenas.
             </p>
           </div>
         </div>
 
-        {/* 1. SELECCIÓN DE DOCUMENTOS */}
+        {/* 1. SELECCIÓN Y CONFIGURACIÓN */}
         {(stationState === 'idle' || stationState === 'uploading') && (
           <form onSubmit={handleAnalyzeWithAI} className="p-8 space-y-6">
             {errorMessage && (
@@ -363,6 +416,118 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
               </div>
             )}
 
+            {/* SELECTOR DE MOTOR DUAL: AUTO API VS SPARK MCP */}
+            <div className="space-y-2.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
+                Carril de Procesamiento de IA
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Carril A: Instantáneo */}
+                <button
+                  type="button"
+                  onClick={() => setRoutingMode('auto_api')}
+                  className={`p-3.5 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
+                    routingMode === 'auto_api'
+                      ? 'border-[#0F52BA] bg-blue-50/50 shadow-sm ring-1 ring-[#0F52BA]'
+                      : 'border-slate-200 hover:border-slate-300 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full mb-1">
+                    <span className="flex items-center gap-1.5 font-bold text-sm text-slate-900">
+                      <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
+                      ⚡ Modo Instantáneo
+                    </span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                      3 a 8s • 0 clics
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 leading-snug">
+                    Ejecuta <span className="font-mono text-slate-600">/api/nexus-worker</span> al instante con Gemini 2.5 Flash en la nube.
+                  </p>
+                </button>
+
+                {/* Carril B: Spark Pro */}
+                <button
+                  type="button"
+                  onClick={() => setRoutingMode('spark_mcp')}
+                  className={`p-3.5 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
+                    routingMode === 'spark_mcp'
+                      ? 'border-[#0F52BA] bg-blue-50/50 shadow-sm ring-1 ring-[#0F52BA]'
+                      : 'border-slate-200 hover:border-slate-300 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full mb-1">
+                    <span className="flex items-center gap-1.5 font-bold text-sm text-slate-900">
+                      <Brain className="w-4 h-4 text-purple-600" />
+                      🧠 Análisis Profundo (Spark Pro)
+                    </span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                      MCP • Modelo 3.8
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 leading-snug">
+                    Encola para revisión manual exhaustiva en tu sesión de Gemini Spark con rescate automático a los 30 min.
+                  </p>
+                </button>
+              </div>
+            </div>
+
+            {/* SELECTOR DE NIVEL COGNITIVO DEL MATERIAL */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
+                  Nivel Cognitivo del Material
+                </label>
+                <span className="text-[11px] text-blue-600 font-medium flex items-center gap-1">
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  Perfil activo: {activeGuardrail.badge}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { id: 'BASICO_ESCOLAR', title: '1er-3er Año', subtitle: 'Escolar Básico', icon: '📘' },
+                  { id: 'BACHILLERATO_AVANZADO', title: '4to-5to Año', subtitle: 'Admisión', icon: '🎯' },
+                  { id: 'UNIVERSITARIO_EXACTAS', title: 'Exactas', subtitle: 'Física/Cálculo', icon: '🔬' },
+                  { id: 'UNIVERSITARIO_DISENO', title: 'Diseño', subtitle: 'Humanidades', icon: '🎨' },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setAcademicLevel(item.id)}
+                    className={`p-2.5 rounded-xl border text-center transition-all ${
+                      academicLevel === item.id
+                        ? 'border-[#0F52BA] bg-blue-50/70 text-blue-900 font-bold shadow-xs'
+                        : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 font-medium'
+                    }`}
+                  >
+                    <span className="text-base block mb-0.5">{item.icon}</span>
+                    <span className="text-xs block leading-tight">{item.title}</span>
+                    <span className="text-[10px] text-slate-400 block">{item.subtitle}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Guardarraíl Anti-Alucinación Activo */}
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-2.5 text-xs text-slate-600">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-slate-800">Guardarraíl Activo: </span>
+                  {activeGuardrail.description}
+                  {academicLevel === 'BASICO_ESCOLAR' && (
+                    <span className="text-blue-700 block mt-0.5 font-medium">
+                      🛡️ Prohibido extrapolar a física o cálculo. Solo métodos escolares paso a paso con aritmética limpia.
+                    </span>
+                  )}
+                  {academicLevel === 'UNIVERSITARIO_DISENO' && (
+                    <span className="text-purple-700 block mt-0.5 font-medium">
+                      🎨 Cero fórmulas numéricas inventadas. En su lugar se deconstruyen principios de composición visual.
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* MATERIA Y TEMA */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
@@ -372,7 +537,7 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Ej: Física I, Álgebra, Química"
+                  placeholder="Ej: Matemáticas, Física I, Álgebra, Diseño"
                   disabled={stationState === 'uploading'}
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0F52BA]/20 focus:border-[#0F52BA] transition-all disabled:opacity-60"
                   required
@@ -387,7 +552,7 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
                   type="text"
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
-                  placeholder="Ej: Cinemática, Leyes de Newton"
+                  placeholder="Ej: Sistemas de Ecuaciones 2x2, Cinemática"
                   disabled={stationState === 'uploading'}
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0F52BA]/20 focus:border-[#0F52BA] transition-all disabled:opacity-60"
                   required
@@ -395,9 +560,10 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
               </div>
             </div>
 
+            {/* ZONA DE DROP / SELECCIÓN DE ARCHIVOS */}
             <div className="space-y-2">
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                Material de Estudio (Foto o PDF)
+                Material de Estudio (Foto de Cuaderno/Pizarra o PDF)
               </label>
 
               {!selectedFile ? (
@@ -431,7 +597,7 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
                         <span className="text-[#0F52BA] hover:underline">explora tus carpetas</span>
                       </p>
                       <p className="text-xs text-slate-400 mt-1">
-                        Fotos de pizarra (JPG, PNG, WEBP) o documentos PDF hasta 20 MB
+                        Fotos de pizarra/cuaderno (JPG, PNG, WEBP) o guías PDF de hasta 20 MB
                       </p>
                     </div>
                   </div>
@@ -513,7 +679,9 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    Analizar con IA
+                    {routingMode === 'auto_api'
+                      ? 'Analizar de Inmediato (Modo Instantáneo)'
+                      : 'Encolar para Gemini Spark Pro (MCP)'}
                   </>
                 )}
               </button>
@@ -535,18 +703,21 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
             <div className="space-y-2 max-w-md mx-auto">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-xs font-semibold text-[#0F52BA]">
                 <span className="w-2 h-2 rounded-full bg-[#0F52BA] animate-pulse" />
-                Vigilancia Realtime Activa
+                {routingMode === 'auto_api' ? 'Carril A: Nexus Worker en Ejecución' : 'Carril B: Esperando Gemini Spark (MCP)'}
               </div>
               <h3 className="text-xl font-bold text-slate-900 font-display">
-                Nexus está analizando y deconstruyendo el material...
+                {routingMode === 'auto_api'
+                  ? 'Generando Guía y Examen con Gemini 2.5 Flash...'
+                  : 'Documento Listo en la Cola de Gemini Spark Pro'}
               </h3>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Extrayendo teoría formal en LaTeX, glosario esencial, fórmulas paso a paso y generando
-                la batería de preguntas para tu simulador.
+                {routingMode === 'auto_api'
+                  ? 'Nexus Worker está construyendo la teoría formal adaptada a tu nivel, el glosario, el paso a paso deductivo y la batería de preguntas de examen.'
+                  : 'El documento ha sido encolado para ser procesado por Gemini Spark vía MCP. Si pasas más de 30 minutos sin procesarlo, el rescate automático lo ejecutará.'}
               </p>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 max-w-sm mx-auto text-left space-y-1.5 text-xs text-slate-600">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 max-w-sm mx-auto text-left space-y-2 text-xs text-slate-600">
               <div className="flex justify-between">
                 <span className="text-slate-400">Asignatura:</span>
                 <span className="font-semibold text-slate-800">{subject}</span>
@@ -556,10 +727,14 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
                 <span className="font-semibold text-slate-800 truncate max-w-[180px]">{topic}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Estado de cola:</span>
-                <span className="font-medium text-amber-600 flex items-center gap-1">
+                <span className="text-slate-400">Nivel Calibrado:</span>
+                <span className="font-semibold text-blue-700">{activeGuardrail.badge}</span>
+              </div>
+              <div className="flex justify-between items-center pt-1 border-t border-slate-200/60">
+                <span className="text-slate-400">Estado:</span>
+                <span className="font-medium text-amber-600 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                  queued (procesando)
+                  {routingMode === 'auto_api' ? 'Procesando (3-8s)...' : 'En cola MCP (Spark Pro)'}
                 </span>
               </div>
             </div>
@@ -578,8 +753,8 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
                 ¡Guía y Examen Deconstruidos!
               </h3>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Nexus y Gemini Spark han estructurado la teoría de <strong className="text-slate-700">{topic}</strong> con
-                fórmulas matemáticas completas y cargado las preguntas al banco de exámenes.
+                Nexus ha estructurado la teoría de <strong className="text-slate-700">{topic}</strong> calibrada
+                exactamente para el nivel <strong className="text-slate-700">{activeGuardrail.badge}</strong> y ha cargado las preguntas al banco.
               </p>
             </div>
 
@@ -594,6 +769,7 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
                       documentUrl: uploadedDocUrl || '',
                       subject,
                       topic,
+                      academicLevel,
                     });
                   }
                 }}
@@ -638,12 +814,11 @@ export const UploadStation = ({ onViewGuideAndExam, className = '' }) => {
                 className="px-6 py-3 rounded-xl font-medium text-sm text-white bg-slate-900 hover:bg-slate-800 transition-all inline-flex items-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
-                Reintentar
+                Intentar Nuevamente
               </button>
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

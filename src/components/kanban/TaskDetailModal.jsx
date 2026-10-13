@@ -21,6 +21,7 @@ import {
 import confetti from 'canvas-confetti';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
+import { mapProfileToAcademicLevel } from '../../lib/pedagogicalPrompts';
 
 export const TaskDetailModal = ({
   task,
@@ -160,6 +161,7 @@ export const TaskDetailModal = ({
       }
 
       const taskId = String(currentTask.id);
+      const studentLevel = mapProfileToAcademicLevel(user?.academic_profile);
 
       // Inserción en la cola de IA
       const { error: queueError } = await supabase.from('ai_processing_queue').insert({
@@ -167,21 +169,71 @@ export const TaskDetailModal = ({
         topic_title: `Desglose de Tarea: ${currentTask.title}`,
         document_url: `internal://kanban_tasks/${taskId}`,
         status: 'queued',
+        processing_mode: 'auto_api',
+        routing_mode: 'auto_api',
+        academic_level: studentLevel,
         metadata: {
           type: 'task_breakdown',
           taskId: taskId,
           title: currentTask.title,
           subject: currentTask.subject,
           priority: currentTask.priority,
+          academic_level: studentLevel,
           requested_at: new Date().toISOString(),
         },
       });
 
       if (queueError) {
-        throw new Error(`Error al solicitar el análisis: ${queueError.message}`);
+        console.warn(`[TaskDetailModal] Error registrando en ai_processing_queue: ${queueError.message}`);
       }
 
-      console.log(`[TaskDetailModal] Petición en cola enviada para tarea ${taskId}`);
+      console.log(`[TaskDetailModal] Disparando Carril A autónomo (/api/nexus-worker) para tarea ${taskId}`);
+
+      // Carril A: Invocación autónoma directa al worker de Gemini para respuesta en 2-4s
+      try {
+        const workerResponse = await fetch('/api/nexus-worker', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'task_breakdown',
+            taskId: taskId,
+            userId: userId,
+            taskTitle: currentTask.title,
+            subject: currentTask.subject,
+            academicLevel: studentLevel,
+          }),
+        });
+
+        if (workerResponse.ok) {
+          const workerData = await workerResponse.json();
+          if (workerData?.breakdown) {
+            const updated = {
+              ...currentTask,
+              priority: workerData.breakdown.priority || currentTask.priority,
+              ai_metadata: {
+                ...workerData.breakdown,
+                analyzed_at: new Date().toISOString(),
+              },
+            };
+            setCurrentTask(updated);
+            if (onTaskUpdated) onTaskUpdated(updated);
+            setIsAnalyzing(false);
+
+            try {
+              confetti({
+                particleCount: 60,
+                spread: 50,
+                origin: { y: 0.6 },
+                colors: ['#0F52BA', '#3b82f6', '#60a5fa'],
+              });
+            } catch {
+              // Degradación suave
+            }
+          }
+        }
+      } catch (workerErr) {
+        console.warn('[TaskDetailModal] Fallback a suscripción realtime tras worker:', workerErr);
+      }
     } catch (err) {
       console.error('[TaskDetailModal Error]:', err);
       setIsAnalyzing(false);

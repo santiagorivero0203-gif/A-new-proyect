@@ -283,5 +283,41 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/components/storage/DocumentGallery.tsx` | Actualizar | Ejecución de deconstrucción académica al analizar apuntes y fotos de pizarra de Storage. |
 | `PROMPTS_AND_CHANGELOG.md` | Actualizar | Registro cronológico del Prompt 10 y documentación técnica completa. |
 
+---
 
+### Prompt 11: Motor Dual Híbrido (Auto API + Spark MCP), Calibración Cognitiva Anti-Alucinación y Arquitectura de las 200 Funciones
+> **Contenido**:
+> 1. **El Motor Dual Híbrido ("Spark MCP + Auto API Worker")**:
+>    - **Carril A: Modo Instantáneo Autónomo (`mode: 'auto_api'`) — 0 Clics**: Respuesta en 3 a 8 segundos para desgloses Notion AI del Kanban y ejercicios cortos mediante endpoint `/api/nexus-worker` usando `@google/genai`.
+>    - **Carril B: Modo Profundo Manual-Asistido (`mode: 'spark_mcp'`)**: Encolado en `ai_processing_queue` para procesamiento exhaustivo con modelo 3.8 Flash / Pro desde sesión de Gemini Spark vía MCP (`/api/mcp`).
+>    - **Carril C: Rescate Automático (Fallback)**: Cron Job en `vercel.json` que revisa cada 15 minutos documentos encolados hace más de 30 minutos y los procesa automáticamente con la API.
+> 2. **Solución Radical al Sobre-Análisis ("El Síndrome del Físico Cuántico")**:
+>    - Nivelación cognitiva por perfil (`academicLevel`) y regla de hierro de **Anclaje de Alcance Estricto**:
+>      - `BASICO_ESCOLAR` (1er-3er año - Andrés): Explicación paso a paso de aritmética y álgebra elemental (sustitución, igualación, reducción). Terminantemente prohibido extrapolar a física, cálculo universitario o matrices de Gauss-Jordan.
+>      - `BACHILLERATO_AVANZADO` (4to-5to año / Admisión - Prima): Agilidad de cálculo, trucos de examen de admisión y rigor pre-universitario.
+>      - `UNIVERSITARIO_EXACTAS` (Física / Computación - Santiago): Rigor demostrativo formal completo, cálculo diferencial/integral y notación LaTeX avanzada.
+>      - `UNIVERSITARIO_DISENO` (Diseño / Humanidades - Mafe): Cero invención de fórmulas numéricas; adaptación a Principios Rectores y Reglas de Composición visual (Ley de tercios, Gestalt, jerarquía, color).
+>      - Directriz Global Anti-Alucinación: Prohibido cambiar de asignatura. Si el material es álgebra elemental, nunca inventar problemas de cinemática o poleas.
+> 3. **Implementación de Componentes Clave**:
+>    - `lib/pedagogicalPrompts.ts` & `src/lib/pedagogicalPrompts.ts`: Guardarraíles pedagógicos dinámicos, generador de prompts adaptativos y limpiador regex tolerante a LaTeX en JSON (`cleanAndParseJsonWithLatex`).
+>    - `/api/nexus-worker.ts`: Serverless Function de Vercel con `@google/genai` (Gemini 2.5 Flash), guardado atómico en Supabase y soporte para Carril C de rescate.
+>    - `/api/mcp.ts`: Enriquecimiento de `get_pending_study_uploads` con `academic_level` y `strict_instruction` para obligar a Gemini Spark a ceñirse al nivel asignado. Herramienta `analyze_and_breakdown_task` activa.
+>    - UI Apple-style en `UploadStation.jsx` y `UploadStation.tsx`: Selectores visuales para Carril Instantáneo vs Profundo y nivel de material dinámico según la cuenta del estudiante.
+>    - `TaskDetailModal.tsx` & `.jsx`: Disparo inmediato al worker autónomo para desglose Notion AI en 2 a 4 segundos.
+>    - `supabase/schema.sql`: Definición de `ai_processing_queue` con campos `processing_mode`, `routing_mode`, `academic_level`, índices y políticas RLS activas en tiempo real.
+>    - `vercel.json`: Cron Job programado para rescate de Carril C cada 15 minutos.
+> 4. **Roadmap de las 200 Funciones**: Estructuración modular en 10 bloques de 20 funciones para escalabilidad futura continua.
 
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `lib/pedagogicalPrompts.ts` | Crear | Módulo maestro de guardarraíles cognitivos, directrices anti-alucinación y limpiador regex de LaTeX para JSON. |
+| `src/lib/pedagogicalPrompts.ts` | Crear | Re-exportación oficial para el bundle de frontend en Vite. |
+| `api/nexus-worker.ts` | Crear | Serverless Function autónoma con `@google/genai` (Carril A Instantáneo y Carril C Rescate). |
+| `api/mcp.ts` | Actualizar | Inyección de `academic_level` y `strict_instruction` en `get_pending_study_uploads` para gobernar a Gemini Spark. |
+| `src/components/UploadStation.jsx` | Actualizar | Selector Apple-style de Carril Dual (Instantáneo vs Spark Pro) y selector de nivel de estudio. |
+| `src/components/ai/UploadStation.tsx` | Actualizar | Versión TypeScript de UploadStation con soporte completo de tipos para motor dual y guardarraíles. |
+| `src/components/kanban/TaskDetailModal.tsx` | Actualizar | Conexión directa a `/api/nexus-worker` para desglose instantáneo de Notion AI en 2-4 segundos. |
+| `src/components/kanban/TaskDetailModal.jsx` | Actualizar | Paridad en JavaScript de TaskDetailModal con llamada autónoma al worker. |
+| `supabase/schema.sql` | Actualizar | Tabla `ai_processing_queue` con `processing_mode`, `academic_level`, RLS e índices. |
+| `vercel.json` | Actualizar | Cron job programado para rescate automático de documentos encolados (>30 min). |
+| `package.json` | Actualizar | Instalación de la librería oficial `@google/genai` v2.29.1. |

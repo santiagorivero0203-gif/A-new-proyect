@@ -294,6 +294,28 @@ CREATE TABLE IF NOT EXISTS public.notification_preferences (
 );
 
 -- ==============================================================================
+-- 15. TABLA: AI_PROCESSING_QUEUE (Cola del Motor Dual Híbrido: Auto API + Spark MCP)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.ai_processing_queue (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    topic_title TEXT NOT NULL,
+    document_url TEXT NOT NULL,
+    status TEXT DEFAULT 'queued' CHECK (status IN ('queued', 'processing', 'completed', 'failed')),
+    processing_mode TEXT DEFAULT 'auto_api' CHECK (processing_mode IN ('auto_api', 'spark_mcp')),
+    routing_mode TEXT DEFAULT 'auto_api' CHECK (routing_mode IN ('auto_api', 'spark_mcp')),
+    academic_level TEXT DEFAULT 'BASICO_ESCOLAR' CHECK (
+        academic_level IN ('BASICO_ESCOLAR', 'BACHILLERATO_AVANZADO', 'UNIVERSITARIO_EXACTAS', 'UNIVERSITARIO_DISENO')
+    ),
+    metadata JSONB DEFAULT '{}'::jsonb,
+    error_message TEXT,
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+COMMENT ON TABLE public.ai_processing_queue IS 'Cola inteligente del Motor Dual Híbrido: Carril A (Auto API 0 clics) vs Carril B (Spark Pro MCP).';
+
+-- ==============================================================================
 -- ÍNDICES DE ALTO RENDIMIENTO (Postgres Optimization Rules)
 -- ==============================================================================
 CREATE INDEX IF NOT EXISTS idx_profiles_academic_profile ON public.profiles(academic_profile);
@@ -734,6 +756,26 @@ CREATE POLICY "kanban_tasks_update_own" ON public.kanban_tasks
     FOR UPDATE TO authenticated USING ((select auth.uid()) = user_id) WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "kanban_tasks_delete_own" ON public.kanban_tasks
+    FOR DELETE TO authenticated USING ((select auth.uid()) = user_id);
+
+-- Índices de rendimiento para la cola de IA
+CREATE INDEX IF NOT EXISTS idx_ai_queue_user_status ON public.ai_processing_queue(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_ai_queue_mode_status ON public.ai_processing_queue(processing_mode, status);
+CREATE INDEX IF NOT EXISTS idx_ai_queue_created ON public.ai_processing_queue(created_at);
+
+-- RLS para ai_processing_queue
+ALTER TABLE public.ai_processing_queue ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "ai_queue_select_own" ON public.ai_processing_queue
+    FOR SELECT TO authenticated USING ((select auth.uid()) = user_id);
+
+CREATE POLICY "ai_queue_insert_own" ON public.ai_processing_queue
+    FOR INSERT TO authenticated WITH CHECK ((select auth.uid()) = user_id);
+
+CREATE POLICY "ai_queue_update_own" ON public.ai_processing_queue
+    FOR UPDATE TO authenticated USING ((select auth.uid()) = user_id) WITH CHECK ((select auth.uid()) = user_id);
+
+CREATE POLICY "ai_queue_delete_own" ON public.ai_processing_queue
     FOR DELETE TO authenticated USING ((select auth.uid()) = user_id);
 
 
