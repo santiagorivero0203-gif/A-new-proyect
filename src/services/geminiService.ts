@@ -11,7 +11,7 @@ const LOCAL_STORAGE_DOCS_KEY = 'cpe_user_documents_cache';
 const LOCAL_STORAGE_DECONSTRUCTED_GUIDES_KEY = 'cpe_deconstructed_guides_cache';
 const LOCAL_STORAGE_CUSTOM_QUESTIONS_KEY = 'cpe_custom_questions_cache';
 
-const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-2.5-flash'];
+const GEMINI_MODELS = ['gemini-flash-latest', 'gemini-3.8-flash'];
 
 /**
  * Parsea un JSON generado por Gemini sanitizando secuencias de escape de LaTeX
@@ -923,34 +923,47 @@ DEBES responder con un JSON estrictamente estructurado según este esquema:
           });
         }
 
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        let resData: any = null;
+        for (const model of GEMINI_MODELS) {
+          try {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': apiKey,
+              },
+              body: JSON.stringify({
+                contents: [{ parts }],
+                generationConfig: {
+                  temperature: 0.3,
+                  responseMimeType: 'application/json',
+                },
+              }),
+            });
 
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts }],
-            generationConfig: {
-              temperature: 0.3,
-              responseMimeType: 'application/json',
-            },
-          }),
-        });
-
-        if (response.ok) {
-          const resData = await response.json();
-          const rawText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
-
-          if (rawText) {
-            if (onProgress) onProgress('Parseando estructura JSON y validando preguntas KaTeX...', 80);
-            const parsed = JSON.parse(rawText) as AiAnalysisResult;
-            parsed.documentId = document.id;
-
-            await this.persistAnalysis(document.id, document.user_id, parsed);
-
-            if (onProgress) onProgress('Análisis finalizado y guardado con éxito.', 100);
-            return { success: true, data: parsed };
+            if (response.ok) {
+              resData = await response.json();
+              break;
+            } else {
+              const errSnippet = await response.text();
+              console.warn(`Modelo ${model} retornó ${response.status}: ${errSnippet.slice(0, 100)}, probando siguiente...`);
+            }
+          } catch (mErr) {
+            console.warn(`Error de red llamando a ${model}:`, mErr);
           }
+        }
+
+        const rawText = resData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawText) {
+          if (onProgress) onProgress('Parseando estructura JSON y validando preguntas KaTeX...', 80);
+          const parsed = safeJsonParse<AiAnalysisResult>(rawText);
+          parsed.documentId = document.id;
+
+          await this.persistAnalysis(document.id, document.user_id, parsed);
+
+          if (onProgress) onProgress('Análisis finalizado y guardado con éxito.', 100);
+          return { success: true, data: parsed };
         }
       } catch (apiError) {
         console.warn('Error llamando a Gemini API, activando motor pedagógico adaptativo local:', apiError);
