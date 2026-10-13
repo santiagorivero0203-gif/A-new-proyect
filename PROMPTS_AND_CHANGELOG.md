@@ -353,3 +353,31 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/hooks/useExamSimulator.ts` | Actualizar | Lógica de auto-terminación inmediata en `selectAnswer` bajo modo Muerte Súbita. |
 | `src/components/exams/SimulatorEngine.tsx` | Actualizar | Nuevas tarjetas de examen para Presión Real y Muerte Súbita. |
 
+---
+
+### Prompt 13: Ampliación de la Suite de 200 Funciones (Álgebra Vectorial ℝ²/ℝ³, Telemetría en Vivo y Selector Rápido de Perfiles)
+> **Contenido**:
+> 1. **Calculadora de Álgebra Vectorial ℝ² / ℝ³ (Función 103)**:
+>    - Archivo: `src/components/tools/VectorCalculatorWidget.tsx`
+>    - Soporte interactivo y determinista para cálculo vectorial en 2D y 3D.
+>    - Computa norma/magnitud euclidiana ($||\vec{u}||$), producto punto ($\vec{u} \cdot \vec{v}$), ángulo geométrico entre vectores en grados, producto cruz en 3D ($\vec{u} \times \vec{v}$) y proyección ortogonal ($\text{proj}_{\vec{v}}(\vec{u})$) con demostraciones KaTeX completas. Especial para Física teórica UCV (Santiago).
+> 2. **Monitor de Estado de Red y Servidor MCP en Vivo (Función 181)**:
+>    - Archivo: `src/components/layout/LiveSystemStatusWidget.tsx`
+>    - Widget interactivo en el `Header.tsx` que mide latencia en milisegundos hacia Supabase, la API de Vercel (Carril A) y el Servidor MCP (Carril B), visualizando el estado de la cola de deconstrucción en tiempo real.
+> 3. **Panel de Telemetría y Cuotas del Sistema (Función 186 - Admin Panel)**:
+>    - Archivo: `src/components/tools/AdminTelemetryPanel.tsx`
+>    - Pestaña dedicada en la suite de herramientas para supervisar peticiones del Carril A vs Carril B, cuota de Gemini Flash (TPM/RPM), uso de almacenamiento en Supabase Storage y registro reciente de la cola `ai_processing_queue`.
+> 4. **Cambio Rápido de Perfil en 1 Clic (Función 191)**:
+>    - Archivo: `src/components/layout/Sidebar.tsx`
+>    - Integración de `ProfileQuickSwitcher.tsx` en el pie de la barra lateral para alternar instantáneamente entre Santiago, Andrés, Sofía y María Fernanda sin desconectar la sesión.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/components/tools/VectorCalculatorWidget.tsx` | Crear | Calculadora analítica de vectores 2D y 3D con producto escalar, cruz, ángulo y proyecciones en KaTeX. |
+| `src/components/layout/LiveSystemStatusWidget.tsx` | Crear | Widget de telemetría de red y estado de los 3 servicios (Supabase, API, MCP) en tiempo real. |
+| `src/components/tools/AdminTelemetryPanel.tsx` | Crear | Panel de control para cuotas de IA, almacenamiento y estado de la cola. |
+| `src/components/layout/Header.tsx` | Actualizar | Reemplazo de píldora estática por el widget interactivo de estado en vivo. |
+| `src/components/layout/Sidebar.tsx` | Actualizar | Integración de cambio de estudiante en 1 clic en el pie del menú. |
+| `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Integración de Álgebra Vectorial y pestaña de Telemetría & Cuotas. |
+
+

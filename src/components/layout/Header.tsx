@@ -1,11 +1,11 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
-  SparklesIcon,
   LayersIcon,
   SunIcon,
   LogOutIcon,
 } from '../common/Icons';
+import { LiveSystemStatusWidget } from './LiveSystemStatusWidget';
 
 interface HeaderProps {
   onOpenAuth: () => void;
@@ -78,15 +78,8 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Lado Derecho: Pills de estado en vivo, Toggle de Luz, Usuario y Salir */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
-        {/* Pill 1: Estado Gemini Flash */}
-        <div
-          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200/80 text-xs font-semibold text-slate-700 transition-all shadow-soft-sm cursor-default"
-          title="Motor de Inteligencia Artificial Gemini activo"
-        >
-          <SparklesIcon className="w-4 h-4 text-brand-500" />
-          <span className="text-slate-500 font-normal">IA:</span>
-          <span className="text-slate-900 font-bold">Gemini Flash</span>
-        </div>
+        {/* Monitor de Estado de Red y Servidor MCP en Vivo */}
+        <LiveSystemStatusWidget />
 
         {/* Botón de Modo Claro / Luminosidad */}
         <button

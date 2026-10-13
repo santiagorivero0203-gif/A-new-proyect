@@ -16,9 +16,11 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { ScientificCalculator } from '../dashboards/ScientificCalculator';
 import { LinearEquationSolver } from './LinearEquationSolver';
+import { VectorCalculatorWidget } from './VectorCalculatorWidget';
 import { DesignPaletteTools } from '../dashboards/DesignPaletteTools';
 import { FocusSoundscapeMixer } from '../productivity/FocusSoundscapeMixer';
 import { BackupRestoreModal } from './BackupRestoreModal';
+import { AdminTelemetryPanel } from './AdminTelemetryPanel';
 import {
   CalculatorIcon,
   PaletteIcon,
@@ -30,10 +32,11 @@ import {
   HardDrive,
   Trash2,
   Sliders,
+  Activity,
 } from 'lucide-react';
 import { cacheCleaner } from '../../services/cacheCleaner';
 
-type ToolTab = 'MATH_ALGEBRA' | 'DESIGN_PALETTE' | 'SOUNDSCAPES' | 'SETTINGS';
+type ToolTab = 'MATH_ALGEBRA' | 'DESIGN_PALETTE' | 'SOUNDSCAPES' | 'TELEMETRY' | 'SETTINGS';
 
 export const ToolsAndSettingsView: React.FC = () => {
   const { user, updateUserPreferences, isDemoMode } = useAuth();
@@ -92,6 +95,18 @@ export const ToolsAndSettingsView: React.FC = () => {
           </button>
 
           <button
+            onClick={() => setActiveTab('TELEMETRY')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+              activeTab === 'TELEMETRY'
+                ? 'bg-white text-slate-900 shadow-soft-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Activity className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Telemetría & Cuotas</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('SETTINGS')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
               activeTab === 'SETTINGS'
@@ -123,6 +138,11 @@ export const ToolsAndSettingsView: React.FC = () => {
               <LinearEquationSolver />
             </div>
           </div>
+
+          {/* Calculadora de Álgebra Vectorial 2D / 3D para Santiago y Física */}
+          <div>
+            <VectorCalculatorWidget />
+          </div>
         </div>
       )}
 
@@ -140,7 +160,14 @@ export const ToolsAndSettingsView: React.FC = () => {
         </div>
       )}
 
-      {/* PESTAÑA 4: AJUSTES & RESPALDO */}
+      {/* PESTAÑA 4: TELEMETRÍA & CUOTAS DEL SISTEMA */}
+      {activeTab === 'TELEMETRY' && (
+        <div className="animate-in fade-in duration-200">
+          <AdminTelemetryPanel />
+        </div>
+      )}
+
+      {/* PESTAÑA 5: AJUSTES & RESPALDO */}
       {activeTab === 'SETTINGS' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start animate-in fade-in duration-200">
           {/* Ajustes de Preferencias */}

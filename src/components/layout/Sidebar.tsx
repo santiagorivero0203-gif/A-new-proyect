@@ -10,6 +10,7 @@ import {
   CalendarIcon,
   PlusIcon,
 } from '../common/Icons';
+import { ProfileQuickSwitcher } from '../auth/ProfileQuickSwitcher';
 
 export type MainTabType = 'PRODUCTIVITY' | 'PLANNER' | 'GUIDES' | 'EXAMS' | 'STORAGE' | 'CREATIVE_BOARD' | 'TOOLS';
 
@@ -185,6 +186,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Footer del Sidebar con Switcher de Perfil y Versión */}
         <div className="space-y-3 pt-4 border-t border-slate-200/80">
+          {/* Selector Rápido de Perfil en 1 Clic */}
+          <div className="space-y-1.5">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold px-1">
+              Cambio Rápido (1 Clic)
+            </span>
+            <ProfileQuickSwitcher compact={true} />
+          </div>
+
           {/* Tarjeta de Estudiante Activo con acción para cambiar */}
           {user && (
             <div
