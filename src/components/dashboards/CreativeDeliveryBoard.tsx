@@ -8,6 +8,7 @@ import {
 } from '../common/Icons';
 
 import { EmptyState } from '../common/EmptyState';
+import { CanvaStudioHub } from './CanvaStudioHub';
 
 export interface CreativeDeliveryItem {
   id: string;
@@ -62,7 +63,7 @@ export const CreativeDeliveryBoard: React.FC = () => {
     localStorage.setItem(userStorageKey, JSON.stringify(items));
   };
 
-  const [viewMode, setViewMode] = useState<'KANBAN' | 'MASONRY'>('KANBAN');
+  const [viewMode, setViewMode] = useState<'KANBAN' | 'MASONRY' | 'CANVA'>('KANBAN');
   const [userDocs, setUserDocs] = useState<UserDocument[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -181,6 +182,16 @@ export const CreativeDeliveryBoard: React.FC = () => {
             >
               Mural Visual
             </button>
+            <button
+              onClick={() => setViewMode('CANVA')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                viewMode === 'CANVA'
+                  ? 'bg-white text-slate-900 shadow-soft-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Canva Studio & Bulk
+            </button>
           </div>
 
           <button
@@ -226,7 +237,7 @@ export const CreativeDeliveryBoard: React.FC = () => {
       </div>
 
       {/* Banner de Estado Cero si no hay entregas */}
-      {deliveries.length === 0 && (
+      {viewMode !== 'CANVA' && deliveries.length === 0 && (
         <EmptyState
           title="No tienes entregas ni proyectos en el tablero"
           description="Organiza tus proyectos por etapas (Brief, Bocetos, Prototipado, Jurado Final) con imágenes de referencia y notas de entrega."
@@ -339,7 +350,7 @@ export const CreativeDeliveryBoard: React.FC = () => {
             );
           })}
         </div>
-      ) : (
+      ) : viewMode === 'MASONRY' ? (
         /* VISTA 2: MURAL VISUAL / MASONRY GRID */
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
           {deliveries.map((item) => (
@@ -383,6 +394,9 @@ export const CreativeDeliveryBoard: React.FC = () => {
             </div>
           ))}
         </div>
+      ) : (
+        /* VISTA 3: CANVA STUDIO HUB (EMBEDS Y TABLA BULK CSV) */
+        <CanvaStudioHub />
       )}
 
       {/* Modal para Crear Nueva Entrega con Vinculación a Storage */}
