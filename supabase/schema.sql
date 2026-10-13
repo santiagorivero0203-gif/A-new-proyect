@@ -681,3 +681,19 @@ CREATE TRIGGER set_ai_processing_queue_updated_at
     BEFORE UPDATE ON public.ai_processing_queue
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+-- Habilitar eventos Realtime para que la interfaz web escuche cambios en tiempo real
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_publication_tables 
+            WHERE pubname = 'supabase_realtime' 
+            AND schemaname = 'public' 
+            AND tablename = 'ai_processing_queue'
+        ) THEN
+            ALTER PUBLICATION supabase_realtime ADD TABLE public.ai_processing_queue;
+        END IF;
+    END IF;
+END $$;
+
+
