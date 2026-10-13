@@ -11,9 +11,9 @@
 
 | Estado | Significado | Cantidad | Porcentaje |
 | :--- | :--- | :---: | :---: |
-| 🟢 **100% Operativas** | Funciones con Lógica real + UI conectada de extremo a extremo sin dependencias faltantes | **69** | **34.5%** |
+| 🟢 **100% Operativas** | Funciones con Lógica real + UI conectada de extremo a extremo sin dependencias faltantes | **73** | **36.5%** |
 | 🟡 **Parciales / Solo UI** | Módulos maquetados con estado local o interfaz funcional que admiten mayor automatización | **45** | **22.5%** |
-| 🔴 **Pendientes (0%)** | Funciones no creadas aún, estructuradas en paquetes de trabajo (Sprints) | **86** | **43.0%** |
+| 🔴 **Pendientes (0%)** | Funciones no creadas aún, estructuradas en paquetes de trabajo (Sprints) | **82** | **41.0%** |
 | **TOTAL** | **Alcance del Roadmap Global** | **200** | **100%** |
 
 ---
@@ -46,13 +46,19 @@
 21. **Simulador de Genética Mendeliana & Punnett (`MendelianGeneticsSimulator`)**: Cruces monohíbridos ($2 \times 2$) y dihíbridos ($4 \times 4$) con frecuencias genotípicas/fenotípicas y leyes de Mendel.
 22. **Laboratorio de Ecuaciones LaTeX**: Renderizador en tiempo real con KaTeX seguro frente a inyecciones.
 
-### C. Diseño, Color y Canva Studio Hub
-19. **Canva Studio Hub (`CanvaStudioHub`)**: Integración con visualizador de embeds de Canva en vivo dentro del taller de diseño.
-20. **Estructurador de Tabla de 4 Columnas con Límite de Palabras**: Guardarraíles de 7 palabras en título/concepto/CTA y 15 palabras en cuerpo para evitar texto desbordado en diapositivas.
-21. **Exportador CSV para Canva Crear en Lote (Bulk Create)**: Generación de archivo `.csv` codificado en UTF-8 con BOM para inyección masiva en plantillas de Canva.
-22. **Verificador de Contraste Tipográfico WCAG AA/AAA**: Algoritmo de luminancia relativa con validación de accesibilidad universal para texto normal y grande.
-23. **Extractor y Generador de Armonías de Color**: Creación de paletas monocromáticas, complementarias, análogas y de tríada con copia rápida en formato HEX.
-24. **Tablero de Entregas Creativas con Selector Triple**: Alternancia limpia entre Tablero Kanban, Mural Visual (Masonry Grid) y Canva Studio Hub.
+### C. Módulos Humanísticos, Castellano y Técnicas de Lectura (Sprint B Completado)
+23. **Analizador Morfosintáctico de Oraciones (`SentenceSyntaxAnalyzer`)**: Desglose de Sujeto (NS, MD, MI, Aposición) y Predicado (NP, CD, CI, CC de Modo/Tiempo/Lugar/Causa) con conmutación pronominal.
+24. **Entrenador de Comprensión Lectora & Inferencia (`ReadingComprehensionTrainer`)**: Textos académicos de admisión con preguntas inferenciales, de vocabulario contextual y justificación de descarte de distractores.
+25. **Tarjetas Mnemotécnicas de Repetición Espaciada SM-2 (`SpacedRepetitionFlashcards`)**: Implementación matemática del algoritmo SuperMemo-2 con factores de facilidad ajustables e intervalos en días.
+26. **Cronómetro de Lectura Rápida & Test de Retención (`SpeedReadingTimer`)**: Medición de Palabras por Minuto (PPM), test conceptual inmediato y cálculo de Velocidad Efectiva de Asimilación.
+
+### D. Diseño, Color y Canva Studio Hub
+27. **Canva Studio Hub (`CanvaStudioHub`)**: Integración con visualizador de embeds de Canva en vivo dentro del taller de diseño.
+28. **Estructurador de Tabla de 4 Columnas con Límite de Palabras**: Guardarraíles de 7 palabras en título/concepto/CTA y 15 palabras en cuerpo para evitar texto desbordado en diapositivas.
+29. **Exportador CSV para Canva Crear en Lote (Bulk Create)**: Generación de archivo `.csv` codificado en UTF-8 con BOM para inyección masiva en plantillas de Canva.
+30. **Verificador de Contraste Tipográfico WCAG AA/AAA**: Algoritmo de luminancia relativa con validación de accesibilidad universal para texto normal y grande.
+31. **Extractor y Generador de Armonías de Color**: Creación de paletas monocromáticas, complementarias, análogas y de tríada con copia rápida en formato HEX.
+32. **Tablero de Entregas Creativas con Selector Triple**: Alternancia limpia entre Tablero Kanban, Mural Visual (Masonry Grid) y Canva Studio Hub.
 
 ### D. Enfoque, Planificación y Productividad
 25. **Mezclador de Paisajes Sonoros Procedurales (`FocusSoundscapeMixer`)**: Web Audio API nativa sin archivos pesados; síntesis de Lluvia suave, Fuego, Agua y Ondas Gamma 40Hz (batimiento binaural).

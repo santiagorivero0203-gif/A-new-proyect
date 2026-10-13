@@ -412,5 +412,38 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/components/tools/MendelianGeneticsSimulator.tsx` | Crear | Simulador de cuadros de Punnett monohíbridos y dihíbridos con leyes de Mendel. |
 | `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Pestaña `Química & Biología` (`SCIENCE_LAB`) con conmutación entre los 4 módulos. |
 
+---
+
+### Prompt 15: Sprint B — Módulos Humanísticos, Castellano y Técnicas de Lectura
+> **Contenido**:
+> Implementación del **Sprint B** de la suite de 200 funciones (Módulos de Castellano, Comprensión Lectora y Mnemotecnia):
+> 1. **Analizador Morfosintáctico de Oraciones (Función 131)**:
+>    - Archivo: `src/components/academic/SentenceSyntaxAnalyzer.tsx`
+>    - Descomposición jerárquica de oraciones compuestas en español: Sujeto (NS, MD, MI, Aposición) y Predicado (NP, CD, CI, Complementos Circunstanciales de Modo, Tiempo, Lugar y Causa).
+>    - Banco de oraciones modelo por niveles, visualizador de sintagmas coloreados, chuleta de descarte pronominal y caja de prueba heurística.
+> 2. **Entrenador de Comprensión Lectora & Inferencia (Función 132)**:
+>    - Archivo: `src/components/academic/ReadingComprehensionTrainer.tsx`
+>    - Textos académicos de admisión (Divulgación científica sobre termodinámica y ensayo filosófico sobre epistemología técnica).
+>    - Reactivos de Idea Principal, Vocabulario Contextual, Inferencia e Intención del Autor con desglose y justificación del descarte de distractores.
+> 3. **Gestor de Tarjetas Mnemotécnicas de Repetición Espaciada SM-2 (Función 133)**:
+>    - Archivo: `src/components/academic/SpacedRepetitionFlashcards.tsx`
+>    - Algoritmo matemático SuperMemo-2 (factor de facilidad $EF \ge 1.3$, cálculo de intervalos en días $I = I_{n-1} \cdot EF$).
+>    - Interfaz giratoria interactiva con mazo categorizado por materias, consejos mnemotécnicos y seguimiento del calendario de repasos.
+> 4. **Cronómetro de Lectura Rápida & Test de Retención (Función 134)**:
+>    - Archivo: `src/components/academic/SpeedReadingTimer.tsx`
+>    - Cronometraje en vivo, cálculo matemático de Palabras por Minuto (PPM), test inmediato de retención conceptual y cálculo de Velocidad Efectiva ($PPM \times \% \text{Retención}$).
+> 5. **Acoplamiento en la Suite**:
+>    - Archivo: `src/components/tools/ToolsAndSettingsView.tsx`
+>    - Pestaña `Castellano & Lectura` (`HUMANITIES_LAB`) con conmutación reactiva entre los 4 módulos.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/components/academic/SentenceSyntaxAnalyzer.tsx` | Crear | Analizador morfosintáctico de sujeto, predicado, modificadores y complementos. |
+| `src/components/academic/ReadingComprehensionTrainer.tsx` | Crear | Entrenador de comprensión inferencial y descarte razonado de distractores. |
+| `src/components/academic/SpacedRepetitionFlashcards.tsx` | Crear | Tarjetas flash mnemotécnicas con cálculo determinista de intervalos SM-2. |
+| `src/components/academic/SpeedReadingTimer.tsx` | Crear | Cronómetro de lectura con cálculo de PPM y test de retención inmediata. |
+| `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Pestaña `Castellano & Lectura` (`HUMANITIES_LAB`) con selector de 4 submódulos. |
+
+
 
 
