@@ -6,9 +6,9 @@ import type { UserProfile, AcademicProfileId } from '../types';
 export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
   andres_bachillerato_1: {
     id: 'andres-001-uuid',
-    email: 'andres.estudiante@liceo.edu.ve',
-    full_name: 'Andrés Mendoza',
-    username: 'andres_explorador',
+    email: 'andres.rivero@liceo.edu.ve',
+    full_name: 'Andrés Rivero',
+    username: 'andres_rivero',
     academic_profile: 'andres_bachillerato_1',
     institution: '1er Año de Bachillerato (Secundaria)',
     academic_goal: 'Transición a bachillerato y técnicas de estudio fundamentales',
@@ -24,9 +24,9 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
 
   prima_bachillerato_5: {
     id: 'prima-002-uuid',
-    email: 'valeria.prima@admisiones.edu.ve',
-    full_name: 'Valeria Rivas',
-    username: 'valeria_prima_5to',
+    email: 'sofia.rivero@admisiones.edu.ve',
+    full_name: 'Sofía Rivero',
+    username: 'sofia_rivero_5to',
     academic_profile: 'prima_bachillerato_5',
     institution: '5to Año de Bachillerato (Pre-Universitario)',
     academic_goal: 'Ingreso Universitario (OPSU / Prueba UCV / Admisión UCAB)',
@@ -61,9 +61,9 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
 
   mafe_diseno_ucab: {
     id: 'mafe-004-uuid',
-    email: 'maria.castillo@ucab.edu.ve',
-    full_name: 'María Fernanda Castillo',
-    username: 'mafe_diseno_ucab',
+    email: 'maria.valderrama@ucab.edu.ve',
+    full_name: 'María Fernanda Valderrama',
+    username: 'mafe_valderrama_ucab',
     academic_profile: 'mafe_diseno_ucab',
     institution: 'UCAB - Escuela de Diseño Integral',
     academic_goal: 'Taller de Identidad Visual y Ergonomía',

@@ -27,21 +27,21 @@ export const StudentAuthPortal: React.FC<StudentAuthPortalProps> = ({
       profile: MOCK_PROFILES['andres_bachillerato_1'],
       description: 'Transición a bachillerato, guías paso a paso de matemática, biología y técnicas de estudio.',
       badge: '1er Año Secundaria',
-      initials: 'AM',
+      initials: 'AR',
     },
     {
       id: 'prima_bachillerato_5' as AcademicProfileId,
       profile: MOCK_PROFILES['prima_bachillerato_5'],
       description: 'Entrenamiento intensivo para pruebas de admisión universitaria (UCV, OPSU, UCAB) con 1.111 ejercicios.',
       badge: '5to Año Pre-Universitario',
-      initials: 'VR',
+      initials: 'SR',
     },
     {
       id: 'mafe_diseno_ucab' as AcademicProfileId,
       profile: MOCK_PROFILES['mafe_diseno_ucab'],
       description: 'Diseño Integral: Tablero visual de entregas, láminas técnicas de ergonomía y retículas.',
       badge: 'Universidad (UCAB)',
-      initials: 'MC',
+      initials: 'MV',
     },
   ];
 

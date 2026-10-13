@@ -22,7 +22,7 @@ export const ProfileQuickSwitcher: React.FC<{ compact?: boolean }> = ({ compact 
     },
     {
       id: 'prima_bachillerato_5',
-      name: 'Prima',
+      name: 'Sofía',
       subtext: '5to Año / Admisión',
       icon: <TimerIcon className="w-4 h-4 text-amber-600" />,
       color: 'hover:border-amber-300',

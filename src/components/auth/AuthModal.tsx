@@ -86,7 +86,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Ej. Andrés Mendoza"
+                placeholder="Ej. Andrés Rivero, Sofía Rivero, Santiago..."
                 className="input-clean"
               />
             </div>
@@ -124,10 +124,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 onChange={(e) => setSelectedProfile(e.target.value as AcademicProfileId)}
                 className="input-clean"
               >
-                <option value="andres_bachillerato_1">Andrés - 1er Año Bachillerato</option>
-                <option value="prima_bachillerato_5">Prima - 5to Año / Admisión</option>
-                <option value="santiago_fisica_ucv">Santiago - Física UCV</option>
-                <option value="mafe_diseno_ucab">María Fernanda - Diseño UCAB</option>
+                <option value="andres_bachillerato_1">Andrés Rivero - 1er Año Bachillerato</option>
+                <option value="prima_bachillerato_5">Sofía Rivero - 5to Año / Admisión</option>
+                <option value="santiago_fisica_ucv">Santiago Rivero - Física UCV</option>
+                <option value="mafe_diseno_ucab">María Fernanda Valderrama - Diseño UCAB</option>
               </select>
             </div>
           )}
