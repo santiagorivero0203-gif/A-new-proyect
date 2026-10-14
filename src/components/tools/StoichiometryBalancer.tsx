@@ -82,18 +82,25 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
 
   const reaction = PRESET_REACTIONS[selectedPresetIndex];
 
-  // Render KaTeX seguro
+  // Helper para convertir fórmulas en subíndices Unicode para interfaces limpias (CH4 -> CH₄)
+  const formatChemicalUI = (formula: string) =>
+    formula.replace(/([A-Za-z)])(\d+)/g, (_, char, num) =>
+      char + num.split('').map((d: string) => '₀₁₂₃₄₅₆₇₈₉'[+d]).join('')
+    );
+
+  // Render KaTeX seguro con \mathrm y espaciado correcto
   const renderLatex = (formula: string): string => {
     try {
-      return katex.renderToString(formula, { throwOnError: false, displayMode: false });
+      return katex.renderToString(formula, { throwOnError: false, displayMode: true, strict: false });
     } catch {
       return formula;
     }
   };
 
-  // Convertir fórmula plana (ej: C6H12O6) en LaTeX con subíndices (C_{6}H_{12}O_{6})
+  // Convertir fórmula plana (ej: C6H12O6) en LaTeX limpio usando \mathrm con subíndices
   const toLatexFormula = (formula: string): string => {
-    return formula.replace(/(\d+)/g, '_{$1}');
+    const formatted = formula.replace(/(\d+)/g, '_{$1}');
+    return `\\mathrm{${formatted}}`;
   };
 
   // Masa molar del reactivo limitante base (primer reactivo)
@@ -101,6 +108,16 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
   const baseMolarMass = reaction.molarMasses[baseReactant] || 1;
   const molesInput = inputGrams / baseMolarMass;
   const baseCoeff = reaction.coefficients[0] || 1;
+
+  // Construir la ecuación química con sintaxis limpia en \mathrm
+  const chemicalEquationLatex = `${reaction.reactants
+    .map((r, i) => `${reaction.coefficients[i] > 1 ? reaction.coefficients[i] + '\\,' : ''}${toLatexFormula(r)}`)
+    .join(' + ')} \\longrightarrow ${reaction.products
+    .map((p, i) => {
+      const coeff = reaction.coefficients[reaction.reactants.length + i];
+      return `${coeff > 1 ? coeff + '\\,' : ''}${toLatexFormula(p)}`;
+    })
+    .join(' + ')}`;
 
   return (
     <div className={`app-card p-6 bg-white border border-slate-200/90 shadow-soft space-y-6 ${className}`}>
@@ -148,7 +165,7 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
         </div>
       </div>
 
-      {/* Visualización de la Ecuación Balanceada en KaTeX */}
+      {/* Visualización de la Ecuación Balanceada en KaTeX Blindada */}
       <div className="p-5 bg-gradient-to-r from-teal-50/60 via-slate-50 to-blue-50/60 rounded-2xl border border-teal-100/80 space-y-3">
         <div className="flex items-center justify-between text-xs font-bold text-slate-600">
           <span>Ecuación Química Balanceada (Ley de Lavoisier):</span>
@@ -159,16 +176,7 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
           <div
             className="text-base sm:text-lg font-serif text-slate-900 py-1"
             dangerouslySetInnerHTML={{
-              __html: renderLatex(
-                `${reaction.reactants
-                  .map((r, i) => `${reaction.coefficients[i] > 1 ? reaction.coefficients[i] : ''}\\text{${toLatexFormula(r)}}`)
-                  .join(' + ')} \\longrightarrow ${reaction.products
-                  .map((p, i) => {
-                    const coeff = reaction.coefficients[reaction.reactants.length + i];
-                    return `${coeff > 1 ? coeff : ''}\\text{${toLatexFormula(p)}}`;
-                  })
-                  .join(' + ')}`
-              ),
+              __html: renderLatex(chemicalEquationLatex),
             }}
           />
         </div>
@@ -182,12 +190,12 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
               Simulador Estequiométrico de Masas (Gramos y Moles)
             </h4>
             <p className="text-[11px] text-slate-500">
-              Modifica los gramos iniciales de <span className="font-bold">{baseReactant}</span> para calcular los rendimientos teóricos.
+              Modifica los gramos iniciales de <span className="font-bold">{formatChemicalUI(baseReactant)}</span> para calcular los rendimientos teóricos.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-slate-600">Gramos de {baseReactant}:</span>
+            <span className="text-xs font-semibold text-slate-600">Gramos de {formatChemicalUI(baseReactant)}:</span>
             <input
               type="number"
               min="0.1"
@@ -204,7 +212,7 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
           {/* Reactivo Base */}
           <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-xs space-y-1">
-            <div className="text-[11px] font-bold text-teal-700">{baseReactant} (Reactivo Base)</div>
+            <div className="text-[11px] font-bold text-teal-700">{formatChemicalUI(baseReactant)} (Reactivo Base)</div>
             <div className="text-lg font-bold font-mono text-slate-900">
               {inputGrams.toFixed(2)} <span className="text-xs text-slate-400">g</span>
             </div>
@@ -221,7 +229,7 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
 
             return (
               <div key={prod} className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-xs space-y-1">
-                <div className="text-[11px] font-bold text-blue-700">{prod} (Producto Producido)</div>
+                <div className="text-[11px] font-bold text-blue-700">{formatChemicalUI(prod)} (Rendimiento Teórico)</div>
                 <div className="text-lg font-bold font-mono text-slate-900">
                   {massProd.toFixed(2)} <span className="text-xs text-slate-400">g</span>
                 </div>

@@ -76,7 +76,7 @@ export const ToolsAndSettingsView: React.FC = () => {
         </div>
 
         {/* Pestañas de Herramientas */}
-        <div className="inline-flex p-1 bg-slate-200/70 rounded-2xl border border-slate-200 self-start md:self-auto overflow-x-auto max-w-full">
+        <div className="inline-flex flex-wrap p-1 bg-slate-200/70 rounded-2xl border border-slate-200 self-start md:self-auto gap-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button
             onClick={() => setActiveTab('MATH_ALGEBRA')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${

@@ -136,6 +136,7 @@ DIRECTRIZ GLOBAL ANTI-ALUCINACIÓN Y ANCLAJE DE ALCANCE ESTRICTO:
 2. Si el material es básico (ej: un sistema de 2 ecuaciones con 2 incógnitas x e y), tu deber es explicar la técnica escolar paso a paso con claridad meridiana, NO subir arbitrariamente la dificultad inventando problemas de mecánica vectorial.
 3. Si el material es de Diseño o Humanidades, NO inventes fórmulas numéricas. Sintetiza principios teóricos y metodológicos reales.
 4. Ceñirse al 100% al material original provisto. No extrapoles a ramas ajenas del conocimiento.
+5. REGLAS ESTRICTAS DE SINTAXIS LATEX/KATEX: PROHIBICIÓN ABSOLUTA de \\text{} con subíndices o superíndices (ej. NUNCA escribas \\text{CH_{4}}, \\text{O_{2}}, \\text{H_{2}O} ni \\text{m/s^{2}}). Usa exclusivamente \\mathrm{...} (ej. \\mathrm{CH_4} + 2\\,\\mathrm{O_2} \\longrightarrow \\mathrm{CO_2} + 2\\,\\mathrm{H_2O}) o \\ce{...} de mhchem.
 ================================================================================
 `.trim();
 
@@ -227,7 +228,7 @@ FORMATO ESTRICTO DE SALIDA (DEBE SER EXCLUSIVAMENTE UN OBJETO JSON VÁLIDO SIN T
       "formulas": [
         {
           "name": "${isDesignOrCreative ? 'Principio Rector / Regla de Composición' : 'Fórmula o Ecuación Fundamental'}",
-          "latex": "${isDesignOrCreative ? 'Regla Visual / Criterio' : '\\\\text{Ecuación en LaTeX con barras dobles}'}",
+          "latex": "${isDesignOrCreative ? 'Regla Visual / Criterio' : '\\\\mathrm{Ecuación en LaTeX: NUNCA uses \\\\text{X_{n}} con subíndices; usa \\\\mathrm{CH_4} o \\\\ce{...}}'}",
           "description": "Explicación de cuándo y cómo aplicarla"
         }
       ],

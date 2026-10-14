@@ -37,26 +37,10 @@ export const FloatingCalculatorWidget: React.FC<FloatingCalculatorWidgetProps> =
   };
 
   return (
-    <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 pointer-events-auto select-none print:hidden">
-      {/* Botón Flotante Disparador (Floating Action Pill) */}
-      {!isOpen && (
-        <button
-          onClick={() => {
-            handleSetOpen(true);
-            setIsMinimized(false);
-          }}
-          className="flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-soft-lg font-bold text-xs transition-all transform hover:scale-105 active:scale-95 border bg-white text-slate-800 border-slate-200/90 hover:bg-slate-50"
-          title="Abrir Calculadora Científica Flotante (no interrumpe el examen)"
-        >
-          <div className="w-6 h-6 rounded-lg bg-brand-500/10 text-brand-500 flex items-center justify-center">
-            <CalculatorIcon className="w-3.5 h-3.5" />
-          </div>
-          <span className="font-sans">Calculadora Científica</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-600 font-mono">
-            CODATA
-          </span>
-        </button>
-      )}
+    <>
+      {/* Modal / Ventana Flotante de la Calculadora Científica */}
+      {isOpen && (
+        <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 pointer-events-auto select-none print:hidden">
 
       {/* Ventana Flotante no intrusiva */}
       {isOpen && (
@@ -107,5 +91,7 @@ export const FloatingCalculatorWidget: React.FC<FloatingCalculatorWidgetProps> =
         </div>
       )}
     </div>
-  );
+  )}
+</>
+);
 };

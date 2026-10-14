@@ -476,6 +476,36 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/components/productivity/AmbientThemeNightShiftPanel.tsx` | Crear | Panel de tema oscuro Deep Slate y filtro de temperatura de color Night Shift. |
 | `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Pestaña `Horarios & Exportación` (`SMART_PLANNING`) con integración modal. |
 
+---
+
+### Prompt 17: Blindaje de Fórmulas KaTeX, Sanitizador Científico y Correcciones UI
+> **Contenido**:
+> 1. **Diagnóstico & Solución del Error KaTeX en Rojo (`\text{CH_{4}}`)**:
+>    - KaTeX prohíbe el uso de subíndices `_` y superíndices `^` dentro de `\text{...}` porque cambia al modo texto plano.
+>    - Habilitación oficial de la extensión `mhchem` (`\ce{...}`) e importación de estilos en `src/main.tsx` (`katex/dist/katex.min.css` y `katex/contrib/mhchem`).
+>    - Creación del componente `ScientificVisualizer.tsx` con función utilitaria `sanitizeScientificLatex(raw)` para reparar automáticamente cualquier fórmula mal formateada proveniente de LLMs o prompts de usuarios.
+> 2. **Refactorización del Balanceador Estequiométrico (`StoichiometryBalancer.tsx`)**:
+>    - Sustitución de `\text{...}` por `\mathrm{...}` limpio para todos los reactivos y productos.
+>    - Helper `formatChemicalUI` para renderizar subíndices Unicode en títulos de interfaz (`CH₄`, `CO₂`, `H₂O`).
+>    - Eliminación de la redundancia textual "Producto Producido", reemplazada por "Rendimiento Teórico".
+> 3. **Unificación de Disparadores Flotantes (`MainLayout.tsx`)**:
+>    - Eliminación de colisión y superposición entre la Calculadora Científica y el Scratchpad.
+>    - Agrupación en un contenedor flex único `fixed bottom-5 right-6 z-40` armonioso y sin tapar elementos del pie.
+> 4. **Limpieza Visual de la Barra de Pestañas (`ToolsAndSettingsView.tsx`)**:
+>    - Aplicación de `flex-wrap`, espaciado `gap-1` y `[scrollbar-width:none] [&::-webkit-scrollbar]:hidden` eliminando la scrollbar gris nativa que cortaba las pestañas.
+> 5. **Directrices de IA Blindadas (`lib/pedagogicalPrompts.ts`)**:
+>    - Incorporación de la regla 5 en `GLOBAL_ANTI_HALLUCINATION_DIRECTIVE` con prohibición expresa de `\text{X_{n}}` y obligatoriedad de `\mathrm{...}` y `\ce{...}`.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/main.tsx` | Actualizar | Importación de `katex.min.css` y extensión `mhchem` de KaTeX. |
+| `src/components/academic/ScientificVisualizer.tsx` | Crear | Visualizador con auto-sanitizador determinista y soporte inorgánico, orgánico y físico SVG. |
+| `src/components/tools/StoichiometryBalancer.tsx` | Actualizar | Ecuaciones con `\mathrm{...}`, subíndices Unicode y etiquetas claras sin redundancia. |
+| `src/components/layout/MainLayout.tsx` | Actualizar | Contenedor flex único para disparadores flotantes de Calculadora y Scratchpad. |
+| `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Barra de pestañas con flex-wrap y ocultamiento de scrollbar nativa. |
+| `lib/pedagogicalPrompts.ts` | Actualizar | Reglas estrictas de sintaxis KaTeX/mhchem en directivas globales de Gemini. |
+
+
 
 
 

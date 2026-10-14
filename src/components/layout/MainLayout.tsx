@@ -90,15 +90,26 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         onOpenSupabaseAuth={() => setIsAuthModalOpen(true)}
       />
 
-      {/* Botón Flotante para abrir Scratchpad (Borrador Rápido / Canvas) */}
-      <button
-        onClick={() => setIsScratchpadOpen(true)}
-        className="fixed bottom-6 right-20 z-40 p-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 shadow-soft-md hover:shadow-soft-lg transition-all active:scale-95 hidden sm:flex items-center gap-2 group"
-        title="Abrir Scratchpad de Dibujo / Bloc LaTeX"
-      >
-        <span className="text-sm font-bold text-brand-600 group-hover:rotate-12 transition-transform">✎</span>
-        <span className="text-xs font-bold text-slate-700">Scratchpad</span>
-      </button>
+      {/* Contenedor Unificado de Disparadores Flotantes (Calculadora + Scratchpad) */}
+      <div className="fixed bottom-5 right-6 z-40 hidden sm:flex items-center gap-2.5 print:hidden">
+        <button
+          onClick={() => setIsCalculatorOpen(true)}
+          className="flex items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 shadow-soft-md hover:shadow-soft-lg border border-slate-200/90 hover:bg-slate-50 transition-all active:scale-95"
+          title="Abrir Calculadora Científica (no interrumpe el examen)"
+        >
+          <span className="text-sm">🧮</span>
+          <span>Calculadora</span>
+        </button>
+
+        <button
+          onClick={() => setIsScratchpadOpen(true)}
+          className="flex items-center gap-2 rounded-2xl bg-slate-900 px-3.5 py-2.5 text-xs font-bold text-white shadow-soft-md hover:shadow-soft-lg hover:bg-slate-800 transition-all active:scale-95 group"
+          title="Abrir Scratchpad de Dibujo / Bloc LaTeX"
+        >
+          <span className="text-sm group-hover:rotate-12 transition-transform">✎</span>
+          <span>Scratchpad</span>
+        </button>
+      </div>
 
       {/* Cajón Desplegable del Scratchpad */}
       <ScratchpadDrawer
