@@ -109,9 +109,16 @@ const AppContent: React.FC = () => {
         return <CreativeDeliveryBoard />;
       case 'TOOLS':
         return <ToolsAndSettingsView />;
-      case 'UCV_COURSE':
+      case 'UCV_COURSE': {
         // El Curso Introductorio UCV es exclusivo del perfil de Santiago Rivero (Facultad de Ciencias UCV)
-        if (academicProfile !== 'santiago_fisica_ucv') {
+        const isSantiago =
+          academicProfile === 'santiago_fisica_ucv' ||
+          user?.academic_profile === 'santiago_fisica_ucv' ||
+          user?.username === 'santiago_fisica_ucv' ||
+          Boolean(user?.full_name?.toLowerCase().includes('santiago')) ||
+          Boolean(user?.email?.toLowerCase().includes('santiago'));
+
+        if (!isSantiago) {
           return (
             <ModularWorkspaceDashboard
               onStartExamWithQuestions={handleStartExamWithAiQuestions}
@@ -130,6 +137,7 @@ const AppContent: React.FC = () => {
             onNavigateToTab={(tab) => setCurrentTab(tab as MainTabType)}
           />
         );
+      }
       default:
         return (
           <ModularWorkspaceDashboard

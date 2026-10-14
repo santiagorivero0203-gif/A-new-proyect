@@ -14,6 +14,7 @@ import {
   XIcon,
   SparklesIcon,
   TrashIcon,
+  AtomIcon,
 } from '../common/Icons';
 import { EmptyState } from '../common/EmptyState';
 import type { Question } from '../../types/exam.types';
@@ -24,6 +25,7 @@ export interface AcademicGuidesViewProps {
 
 type CategoryTab =
   | 'ALL'
+  | 'ucv_ciencias'
   | 'verbal'
   | 'logico'
   | 'ciencia'
@@ -127,6 +129,17 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
             }`}
           >
             Todas ({guides.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('ucv_ciencias')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              activeTab === 'ucv_ciencias'
+                ? 'bg-[#0F52BA] text-white shadow-soft-sm font-bold'
+                : 'text-blue-700 bg-blue-50/70 hover:bg-blue-100 border border-blue-200/60'
+            }`}
+          >
+            <AtomIcon className="w-3.5 h-3.5" />
+            <span>Curso UCV (7 Módulos)</span>
           </button>
           <button
             onClick={() => setActiveTab('verbal')}

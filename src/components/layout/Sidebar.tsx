@@ -90,7 +90,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   // El Curso Introductorio UCV es exclusivo del perfil de Santiago Rivero (Facultad de Ciencias UCV)
-  const isSantiagoProfile = academicProfile === 'santiago_fisica_ucv';
+  const isSantiagoProfile =
+    academicProfile === 'santiago_fisica_ucv' ||
+    user?.academic_profile === 'santiago_fisica_ucv' ||
+    user?.username === 'santiago_fisica_ucv' ||
+    Boolean(user?.full_name?.toLowerCase().includes('santiago')) ||
+    Boolean(user?.email?.toLowerCase().includes('santiago'));
 
   // Pestañas activas para el perfil actual (filtradas dinámicamente)
   const activeTabsList = user?.preferences?.sidebar_tabs || getProfileSidebarTabs(academicProfile);
@@ -101,8 +106,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   // Redirección suave si el usuario oculta la pestaña en la que se encontraba o si cambia de perfil
   useEffect(() => {
-    if (currentTab === 'UCV_COURSE' && !isSantiagoProfile) {
-      onSelectTab('PRODUCTIVITY');
+    // Si el usuario está en el Curso UCV, validamos pertenencia de perfil pero jamás lo expulsamos si es Santiago
+    if (currentTab === 'UCV_COURSE') {
+      if (!isSantiagoProfile) {
+        onSelectTab('PRODUCTIVITY');
+      }
       return;
     }
     if (activeTabsList && activeTabsList.length > 0 && !activeTabsList.includes(currentTab)) {

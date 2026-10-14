@@ -38,23 +38,40 @@ function getHydratedProfile(profileId: AcademicProfileId): UserProfile {
     const savedPrefs = localStorage.getItem(`cpe_profile_prefs_${profileId}`);
     if (savedPrefs) {
       const parsed = JSON.parse(savedPrefs);
+      const tabs: MainTabType[] = Array.isArray(parsed.sidebar_tabs)
+        ? [...parsed.sidebar_tabs]
+        : [...DEFAULT_PROFILE_SIDEBAR_TABS[profileId]];
+      
+      // Auto-reparar caché local de Santiago para asegurar que siempre tenga acceso al Curso UCV
+      if (profileId === 'santiago_fisica_ucv' && !tabs.includes('UCV_COURSE')) {
+        tabs.splice(1, 0, 'UCV_COURSE');
+      }
+
       return {
         ...base,
         preferences: {
           ...base.preferences,
           ...parsed,
-          sidebar_tabs: parsed.sidebar_tabs || DEFAULT_PROFILE_SIDEBAR_TABS[profileId],
+          sidebar_tabs: tabs,
         },
       };
     }
   } catch (e) {
     console.warn('[AuthContext] Error recuperando preferencias de perfil:', e);
   }
+
+  const defaultTabs: MainTabType[] = [
+    ...(base.preferences.sidebar_tabs || DEFAULT_PROFILE_SIDEBAR_TABS[profileId]),
+  ];
+  if (profileId === 'santiago_fisica_ucv' && !defaultTabs.includes('UCV_COURSE')) {
+    defaultTabs.splice(1, 0, 'UCV_COURSE');
+  }
+
   return {
     ...base,
     preferences: {
       ...base.preferences,
-      sidebar_tabs: base.preferences.sidebar_tabs || DEFAULT_PROFILE_SIDEBAR_TABS[profileId],
+      sidebar_tabs: defaultTabs,
     },
   };
 }
@@ -185,13 +202,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (savedPrefs) {
         const parsed = JSON.parse(savedPrefs);
         if (Array.isArray(parsed.sidebar_tabs) && parsed.sidebar_tabs.length > 0) {
-          return parsed.sidebar_tabs;
+          const tabs = [...parsed.sidebar_tabs];
+          if (profileId === 'santiago_fisica_ucv' && !tabs.includes('UCV_COURSE')) {
+            tabs.splice(1, 0, 'UCV_COURSE');
+          }
+          return tabs;
         }
       }
     } catch (e) {
       console.warn('Error leyendo pestañas del perfil:', e);
     }
-    return DEFAULT_PROFILE_SIDEBAR_TABS[profileId] || ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'STORAGE', 'TOOLS'];
+    const defaultTabs = [
+      ...(DEFAULT_PROFILE_SIDEBAR_TABS[profileId] || [
+        'PRODUCTIVITY',
+        'GUIDES',
+        'EXAMS',
+        'PLANNER',
+        'STORAGE',
+        'TOOLS',
+      ]),
+    ];
+    if (profileId === 'santiago_fisica_ucv' && !defaultTabs.includes('UCV_COURSE')) {
+      defaultTabs.splice(1, 0, 'UCV_COURSE');
+    }
+    return defaultTabs;
   };
 
   /**

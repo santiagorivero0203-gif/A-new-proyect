@@ -2,6 +2,7 @@ import simadiGuidesRaw from '../data/simadi_guides.json';
 import simadiPreguntasRaw from '../data/simadi_preguntas.json';
 import { UCV_EXAM_BANK, UCV_CURRICULUM_MODULES } from '../data/ucv_intro_course_data';
 import type { Question, ExamOption, AcademicSubject } from '../types/exam.types';
+import { renderLatexToHtml } from '../utils/latexRenderer';
 
 export interface SimadiReference {
   guideName: string;
@@ -17,7 +18,7 @@ export interface SimadiPastExam {
 
 export interface SimadiGuide {
   id: string;
-  category: 'verbal' | 'logico' | 'ciencia';
+  category: 'verbal' | 'logico' | 'ciencia' | 'ucv_ciencias';
   categoryLabel: string;
   title: string;
   content: string;
@@ -25,6 +26,11 @@ export interface SimadiGuide {
   theory: string;
   pastExams: SimadiPastExam[];
   practiceTopics: string[];
+  keyFormulas?: { name: string; latex: string; description: string }[];
+  examTraps?: string[];
+  flashcards?: { front: string; back: string }[];
+  week?: number;
+  unitCode?: string;
 }
 
 export interface SimadiRawQuestion {
@@ -81,8 +87,65 @@ export const simadiBankService = {
   /**
    * Obtiene todas las guías de estudio organizadas por categoría
    */
-  getAllGuides(categoryFilter?: 'ALL' | 'verbal' | 'logico' | 'ciencia'): SimadiGuide[] {
+  getAllGuides(categoryFilter?: 'ALL' | 'verbal' | 'logico' | 'ciencia' | 'ucv_ciencias'): SimadiGuide[] {
     const result: SimadiGuide[] = [];
+
+    // Inyectar primero los 7 Módulos Oficiales del Curso Introductorio de la Facultad de Ciencias UCV
+    if (!categoryFilter || categoryFilter === 'ALL' || categoryFilter === 'ucv_ciencias') {
+      const ucvGuides: SimadiGuide[] = UCV_CURRICULUM_MODULES.map((mod) => {
+        const theoryHtml =
+          mod.theoryLatex.map((p) => `<p class="mb-3 leading-relaxed">${renderLatexToHtml(p)}</p>`).join('') +
+          (mod.keyFormulas && mod.keyFormulas.length > 0
+            ? `<div class="my-4 p-4 rounded-2xl bg-blue-50/70 border border-blue-200"><h4 class="font-bold text-xs uppercase text-blue-900 tracking-wider mb-2">Fórmulas Fundamentales</h4><div class="space-y-3">${mod.keyFormulas
+                .map(
+                  (f) =>
+                    `<div><span class="text-xs font-bold text-slate-800">${f.name}:</span><div class="py-1 text-sm font-bold text-[#0F52BA]">${renderLatexToHtml(f.latex, { displayMode: true })}</div><p class="text-[11px] text-slate-500">${f.description}</p></div>`
+                )
+                .join('')}</div></div>`
+            : '') +
+          (mod.examTraps && mod.examTraps.length > 0
+            ? `<div class="my-4 p-4 rounded-2xl bg-amber-50/70 border border-amber-200"><h4 class="font-bold text-xs uppercase text-amber-900 tracking-wider mb-1.5">⚠️ Trampas Frecuentes de Examen</h4><ul class="list-disc pl-4 space-y-1 text-xs text-amber-950">${mod.examTraps
+                .map((t) => `<li>${t}</li>`)
+                .join('')}</ul></div>`
+            : '');
+
+        return {
+          id: mod.id,
+          category: 'ucv_ciencias' as const,
+          categoryLabel: 'Curso Introductorio UCV',
+          title: mod.title,
+          content: mod.summary,
+          references: [
+            { guideName: 'Facultad de Ciencias UCV - Programa Oficial', pages: `Semana ${mod.week}` },
+            { guideName: mod.unitName, pages: 'Teoría, Fórmulas y Reactivos' },
+          ],
+          theory: theoryHtml,
+          pastExams: (mod.stepByStepExamples || []).map((ex) => ({
+            pregunta: `${ex.title}: ${ex.statement}`,
+            opciones: [
+              ex.answerLatex,
+              'Distractor verosímil con error de signo',
+              'Distractor con error de exponente o cálculo',
+              'Distractor de simplificación incorrecta',
+            ],
+            correcta: ex.answerLatex,
+            resolucion: ex.steps.join(' → '),
+          })),
+          practiceTopics: [mod.title, mod.unitName, ...(mod.examTraps || [])],
+          keyFormulas: mod.keyFormulas,
+          examTraps: mod.examTraps,
+          flashcards: mod.practiceFlashcards,
+          week: mod.week,
+          unitCode: mod.unit,
+        };
+      });
+
+      result.push(...ucvGuides);
+    }
+
+    if (categoryFilter === 'ucv_ciencias') {
+      return result;
+    }
 
     const categoryMap: Record<string, { label: string; cat: 'verbal' | 'logico' | 'ciencia' }> = {
       verbal: { label: 'Razonamiento Verbal & Lenguaje', cat: 'verbal' },
@@ -130,6 +193,9 @@ export const simadiBankService = {
       map.set(a, (map.get(a) || 0) + 1);
     });
 
+    // Registrar área insignia del Curso Introductorio Ciencias UCV
+    map.set('Curso Introductorio Ciencias UCV', UCV_EXAM_BANK.length);
+
     return Array.from(map.entries()).map(([area, totalQuestions]) => ({
       area,
       totalQuestions,
@@ -140,6 +206,17 @@ export const simadiBankService = {
    * Obtiene la lista de temas desglosados para un área dada
    */
   getTopicsByArea(area: string): { topic: string; count: number }[] {
+    if (area === 'Curso Introductorio Ciencias UCV') {
+      const map = new Map<string, number>();
+      UCV_EXAM_BANK.forEach((q) => {
+        const t = q.topic || 'General UCV';
+        map.set(t, (map.get(t) || 0) + 1);
+      });
+      return Array.from(map.entries())
+        .map(([topic, count]) => ({ topic, count }))
+        .sort((a, b) => b.count - a.count);
+    }
+
     const map = new Map<string, number>();
     rawQuestions
       .filter((q) => q.area === area)
@@ -172,6 +249,14 @@ export const simadiBankService = {
    * Obtiene preguntas filtradas por tema para práctica o examen
    */
   getQuestionsByTopic(topicName: string, limit: number = 10): Question[] {
+    const ucvMatches = UCV_EXAM_BANK.filter(
+      (q) => q.topic?.toLowerCase() === topicName.toLowerCase()
+    );
+    if (ucvMatches.length > 0) {
+      const shuffled = [...ucvMatches].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, limit);
+    }
+
     const filtered = rawQuestions.filter(
       (q) => q.tema.toLowerCase() === topicName.toLowerCase()
     );
@@ -185,6 +270,20 @@ export const simadiBankService = {
    * Obtiene preguntas que coincidan con la lista de practiceTopics de una guía
    */
   getQuestionsForGuide(guide: SimadiGuide, limit: number = 10): Question[] {
+    if (guide.category === 'ucv_ciencias') {
+      const matching = UCV_EXAM_BANK.filter((q) =>
+        guide.practiceTopics.some(
+          (t) =>
+            (q.topic && q.topic.toLowerCase().includes(t.toLowerCase())) ||
+            (q.sourceExam && q.sourceExam.toLowerCase().includes(guide.title.toLowerCase())) ||
+            q.questionText.toLowerCase().includes(t.toLowerCase())
+        )
+      );
+      const pool = matching.length >= 3 ? matching : UCV_EXAM_BANK;
+      const shuffled = [...pool].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, limit);
+    }
+
     const targetTopics = guide.practiceTopics.map((t) => t.toLowerCase());
 
     const matching = rawQuestions.filter((q) =>

@@ -8,6 +8,16 @@ export const ExamSimulatorsView: React.FC = () => {
 
   const exams = [
     {
+      id: 'simadi-ucv-intro-ciencias',
+      title: 'Simulacro Oficial: Curso Introductorio Facultad de Ciencias UCV',
+      subject: 'UA I (Método Científico), UA II (Lenguaje) y UA III (Lógico-Matemático)',
+      questions: 30,
+      durationMinutes: 60,
+      difficulty: 'Oficial UCV',
+      badgeColor: 'bg-blue-50 text-[#0F52BA] border-blue-200',
+      description: 'Cubre el 100% del temario oficial: Método Científico, Lectura Crítica, SI, Fracciones en Q y R, Álgebra Avanzada, Intervalos, Conjuntos y Vectores.',
+    },
+    {
       id: 'simadi-diagnostico',
       title: 'Prueba Diagnóstica Integral: Razonamiento Lógico & Verbal',
       subject: 'Exploración Vocacional & Habilidad Numérica',

@@ -48,7 +48,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onOpenScratchpad,
   onLaunchQuickExam,
 }) => {
-  const { academicProfile } = useAuth();
+  const { user, academicProfile } = useAuth();
+  const isSantiago =
+    academicProfile === 'santiago_fisica_ucv' ||
+    user?.academic_profile === 'santiago_fisica_ucv' ||
+    user?.username === 'santiago_fisica_ucv' ||
+    Boolean(user?.full_name?.toLowerCase().includes('santiago')) ||
+    Boolean(user?.email?.toLowerCase().includes('santiago'));
+
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +83,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         onNavigateToTab('GUIDES');
       },
     },
-    ...(academicProfile === 'santiago_fisica_ucv'
+    ...(isSantiago
       ? [
           {
             id: 'nav-ucv-course',
