@@ -10,6 +10,7 @@ import {
   UploadCloudIcon,
   PaletteIcon,
   CalendarIcon,
+  AtomIcon,
 } from '../common/Icons';
 import { RotateCcw, Sliders, X, Sparkles, UserCheck, Check } from 'lucide-react';
 
@@ -126,6 +127,14 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
       description: 'Laboratorio de química, genética, sintaxis, horarios adaptativos, exportación Notion y telemetría.',
       icon: <CalculatorIcon className="w-5 h-5 text-amber-600" />,
       recommendedFor: ['santiago_fisica_ucv', 'prima_bachillerato_5', 'mafe_diseno_ucab'],
+    },
+    {
+      id: 'UCV_COURSE',
+      title: 'Curso Introductorio Ciencias UCV',
+      badge: 'Oficial UCV',
+      description: 'Programa oficial de 6 semanas: UA I (Método Científico), UA II (Lenguaje) y UA III (Lógico-Matemático).',
+      icon: <AtomIcon className="w-5 h-5 text-blue-600" />,
+      recommendedFor: ['santiago_fisica_ucv', 'prima_bachillerato_5'],
     },
   ];
 

@@ -11,7 +11,11 @@ import { renderLatex } from '../../utils/latexRenderer';
  * Incluye formulario LaTeX dinámico, constantes universales y acceso rápido
  * a la calculadora científica analítica.
  */
-export const SantiagoDashboard: React.FC = () => {
+interface SantiagoDashboardProps {
+  onNavigateToTab?: (tab: string) => void;
+}
+
+export const SantiagoDashboard: React.FC<SantiagoDashboardProps> = ({ onNavigateToTab }) => {
   const { user } = useAuth();
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [customLatex, setCustomLatex] = useState<string>(
@@ -52,6 +56,33 @@ export const SantiagoDashboard: React.FC = () => {
             <p className="text-[10px] text-slate-500">Fórmulas verificadas</p>
           </div>
         </div>
+      </div>
+
+      {/* Banner Destacado: Curso Introductorio Facultad de Ciencias UCV */}
+      <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-slate-900 via-[#0F52BA] to-blue-950 text-white shadow-soft flex flex-col md:flex-row md:items-center justify-between gap-6 border border-blue-400/20">
+        <div className="space-y-2 max-w-xl">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/20 text-white font-bold">
+              Programa Oficial • Facultad de Ciencias UCV
+            </span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight font-sans">
+            Curso Introductorio Ciencias UCV (6 Semanas)
+          </h2>
+          <p className="text-xs sm:text-sm text-blue-100/90 leading-relaxed font-sans">
+            Programa oficial de nivelación que integra la UA I (Método Científico y Caja Negra), la UA II (Lectura Crítica) y la UA III (Lógico-Matemático en 5 bloques) con simuladores interactivos y evaluaciones.
+          </p>
+        </div>
+
+        <button
+          onClick={() => onNavigateToTab?.('UCV_COURSE')}
+          className="px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold transition-all shadow-soft flex items-center justify-center gap-2.5 active:scale-95 shrink-0"
+        >
+          <AtomIcon className="w-4 h-4 text-[#0F52BA]" />
+          <span>Acceder al Curso UCV</span>
+          <span>→</span>
+        </button>
       </div>
 
       {/* Grid Principal: Fórmulas Teóricas + Calculadora Científica */}

@@ -161,6 +161,34 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
         </div>
       </section>
 
+      {/* Banner Oficial: Curso Introductorio Facultad de Ciencias UCV */}
+      {(user?.academic_profile === 'santiago_fisica_ucv' || user?.academic_profile === 'prima_bachillerato_5') && (
+        <section className="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-slate-900 via-[#0F52BA] to-blue-950 text-white shadow-soft flex flex-col md:flex-row md:items-center justify-between gap-6 border border-blue-400/20">
+          <div className="space-y-2 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[11px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/20 text-white font-bold">
+                Programa Oficial • Facultad de Ciencias UCV
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight font-sans">
+              Curso Introductorio Ciencias UCV (Plan de 6 Semanas)
+            </h2>
+            <p className="text-xs sm:text-sm text-blue-100/90 leading-relaxed font-sans">
+              Laboratorios interactivos de conversión SI, recta real de intervalos, diagramas de Venn, dinámicas de la <em>Caja Negra</em> y la <em>Pregunta Inversa</em>, con cuestionarios formativos y diagnósticos oficiales.
+            </p>
+          </div>
+
+          <button
+            onClick={() => onNavigateToTab?.('UCV_COURSE')}
+            className="px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold transition-all shadow-soft flex items-center justify-center gap-2.5 active:scale-95 shrink-0"
+          >
+            <span>Entrar al Curso UCV</span>
+            <span className="text-sm">→</span>
+          </button>
+        </section>
+      )}
+
       {/* =========================================================================
           2. GRID DINÁMICO DE MÓDULOS DE ESTUDIO CON BARRAS SUPERIORES DE COLOR
           Cada cuadro funcional posee su barra superior de acento distintivo:

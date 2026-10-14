@@ -12,6 +12,7 @@ import {
   CalendarIcon,
   SparklesIcon,
   GridIcon,
+  AtomIcon,
 } from './Icons';
 
 interface CommandPaletteProps {
@@ -71,6 +72,16 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       run: () => {
         onClose();
         onNavigateToTab('GUIDES');
+      },
+    },
+    {
+      id: 'nav-ucv-course',
+      title: 'Ir al Curso Introductorio Ciencias UCV (6 Semanas)',
+      category: 'ESTUDIO',
+      icon: <AtomIcon className="w-4 h-4 text-[#0F52BA]" />,
+      run: () => {
+        onClose();
+        onNavigateToTab('UCV_COURSE');
       },
     },
     {

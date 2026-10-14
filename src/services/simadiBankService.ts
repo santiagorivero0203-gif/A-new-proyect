@@ -1,5 +1,6 @@
 import simadiGuidesRaw from '../data/simadi_guides.json';
 import simadiPreguntasRaw from '../data/simadi_preguntas.json';
+import { UCV_EXAM_BANK, UCV_CURRICULUM_MODULES } from '../data/ucv_intro_course_data';
 import type { Question, ExamOption, AcademicSubject } from '../types/exam.types';
 
 export interface SimadiReference {
@@ -213,6 +214,21 @@ export const simadiBankService = {
    * Total de preguntas disponibles en la base de datos
    */
   getTotalQuestionsCount(): number {
-    return rawQuestions.length;
+    return rawQuestions.length + UCV_EXAM_BANK.length;
+  },
+
+  /**
+   * Obtiene preguntas oficiales del Curso Introductorio de la Facultad de Ciencias UCV
+   */
+  getUcvCourseQuestions(limit: number = 30): Question[] {
+    const shuffled = [...UCV_EXAM_BANK].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, limit);
+  },
+
+  /**
+   * Retorna los 7 módulos temáticos del Curso Introductorio UCV
+   */
+  getUcvModules() {
+    return UCV_CURRICULUM_MODULES;
   },
 };

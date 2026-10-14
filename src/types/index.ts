@@ -14,7 +14,8 @@ export type MainTabType =
   | 'EXAMS'
   | 'STORAGE'
   | 'CREATIVE_BOARD'
-  | 'TOOLS';
+  | 'TOOLS'
+  | 'UCV_COURSE';
 
 export interface UserPreferences {
   theme: 'dark' | 'light' | 'system';

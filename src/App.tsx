@@ -9,6 +9,7 @@ import { SimulatorEngine } from './components/exams/SimulatorEngine';
 import { StorageManagerView } from './components/storage/StorageManagerView';
 import { CreativeDeliveryBoard } from './components/dashboards/CreativeDeliveryBoard';
 import { ToolsAndSettingsView } from './components/tools/ToolsAndSettingsView';
+import { UCVIntroCourseHub } from './components/academic/UCVIntroCourseHub';
 import { StudentAuthPortal } from './components/auth/StudentAuthPortal';
 import { AuthModal } from './components/auth/AuthModal';
 import type { ExamConfig, Question } from './types/exam.types';
@@ -108,6 +109,17 @@ const AppContent: React.FC = () => {
         return <CreativeDeliveryBoard />;
       case 'TOOLS':
         return <ToolsAndSettingsView />;
+      case 'UCV_COURSE':
+        return (
+          <UCVIntroCourseHub
+            onStartExam={(config, customQuestions) => {
+              setAiExamConfig(config);
+              setAiExamQuestions(customQuestions || null);
+              setCurrentTab('EXAMS');
+            }}
+            onNavigateToTab={(tab) => setCurrentTab(tab as MainTabType)}
+          />
+        );
       default:
         return (
           <ModularWorkspaceDashboard

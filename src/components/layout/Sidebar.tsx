@@ -10,6 +10,7 @@ import {
   PaletteIcon,
   CalendarIcon,
   PlusIcon,
+  AtomIcon,
 } from '../common/Icons';
 import { Sliders } from 'lucide-react';
 import { ProfileQuickSwitcher } from '../auth/ProfileQuickSwitcher';
@@ -79,6 +80,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'TOOLS',
       name: 'Herramientas & Ajustes',
       icon: <CalculatorIcon className="w-5 h-5" />,
+    },
+    {
+      id: 'UCV_COURSE',
+      name: 'Curso UCV Ciencias',
+      icon: <AtomIcon className="w-5 h-5 text-blue-600" />,
+      badge: '6 Semanas',
     },
   ];
 
