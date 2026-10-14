@@ -444,6 +444,39 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/components/academic/SpeedReadingTimer.tsx` | Crear | Cronómetro de lectura con cálculo de PPM y test de retención inmediata. |
 | `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Pestaña `Castellano & Lectura` (`HUMANITIES_LAB`) con selector de 4 submódulos. |
 
+---
+
+### Prompt 16: Sprint C — Inteligencia de Estudio Predictiva, Exportaciones & Modo Ambiental
+> **Contenido**:
+> Implementación del **Sprint C** de la suite de 200 funciones (Planificación adaptativa, Exportaciones PDF/Notion y Salud visual):
+> 1. **Generador de Horarios de Estudio Adaptativos (Función 151)**:
+>    - Archivo: `src/components/planner/AdaptiveStudyScheduleGenerator.tsx`
+>    - Reprogramación determinista según tareas atrasadas, fatiga cognitiva diaria (2h a 6h) y franja circadiana óptima (Mañana/Tarde/Noche).
+>    - Distribución en bloques de ritmo ultradiano de 90 minutos con desglose Pomodoro semanal.
+> 2. **Exportador Editorial de Resúmenes en Formato PDF Imprimible (Función 152)**:
+>    - Archivo: `src/components/planner/StudySummaryPdfExporter.tsx`
+>    - Plantilla editorial estilo revista académica Apple Minimalist.
+>    - Formateo de principios clave, fórmulas KaTeX y notas pedagógicas con soporte de impresión nativa `window.print()` y paginación limpia.
+> 3. **Conector y Exportador Modal a Notion Workspace (Función 153)**:
+>    - Archivo: `src/components/planner/NotionWorkspaceExporterModal.tsx`
+>    - Transformación de resúmenes y guías deconstruidas en bloques oficiales de la API de Notion (Heading, Callouts, Equations, To-Do items).
+>    - Configuración de tokens de integración y copia del payload estructurado.
+> 4. **Modo Oscuro Ambiental & Night Shift (Función 154)**:
+>    - Archivo: `src/components/productivity/AmbientThemeNightShiftPanel.tsx`
+>    - Conmutación a Dark Mode Deep Slate (`#0b0f19`) y filtro continuo de luz azul nocturna (Night Shift, 2700K a 6500K) para prevenir fatiga visual en sesiones prolongadas.
+> 5. **Acoplamiento en la Suite**:
+>    - Archivo: `src/components/tools/ToolsAndSettingsView.tsx`
+>    - Pestaña `Horarios & Exportación` (`SMART_PLANNING`) con acceso integrado a los 4 módulos y conexión modal a Notion.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/components/planner/AdaptiveStudyScheduleGenerator.tsx` | Crear | Generador de horarios adaptativos con balanceo de carga y priorización de atrasos. |
+| `src/components/planner/StudySummaryPdfExporter.tsx` | Crear | Exportador editorial de resúmenes de estudio a PDF imprimible. |
+| `src/components/planner/NotionWorkspaceExporterModal.tsx` | Crear | Modal exportador de guías a bloques oficiales de la Notion API. |
+| `src/components/productivity/AmbientThemeNightShiftPanel.tsx` | Crear | Panel de tema oscuro Deep Slate y filtro de temperatura de color Night Shift. |
+| `src/components/tools/ToolsAndSettingsView.tsx` | Actualizar | Pestaña `Horarios & Exportación` (`SMART_PLANNING`) con integración modal. |
+
+
 
 
 

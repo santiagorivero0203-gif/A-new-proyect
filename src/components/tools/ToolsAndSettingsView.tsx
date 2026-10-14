@@ -35,6 +35,7 @@ import {
   Activity,
   FlaskConical,
   BookOpen,
+  CalendarCheck,
 } from 'lucide-react';
 import { StoichiometryBalancer } from './StoichiometryBalancer';
 import { InteractivePeriodicTable } from './InteractivePeriodicTable';
@@ -44,15 +45,21 @@ import { SentenceSyntaxAnalyzer } from '../academic/SentenceSyntaxAnalyzer';
 import { ReadingComprehensionTrainer } from '../academic/ReadingComprehensionTrainer';
 import { SpacedRepetitionFlashcards } from '../academic/SpacedRepetitionFlashcards';
 import { SpeedReadingTimer } from '../academic/SpeedReadingTimer';
+import { AdaptiveStudyScheduleGenerator } from '../planner/AdaptiveStudyScheduleGenerator';
+import { StudySummaryPdfExporter } from '../planner/StudySummaryPdfExporter';
+import { AmbientThemeNightShiftPanel } from '../productivity/AmbientThemeNightShiftPanel';
+import { NotionWorkspaceExporterModal } from '../planner/NotionWorkspaceExporterModal';
 import { cacheCleaner } from '../../services/cacheCleaner';
 
-type ToolTab = 'MATH_ALGEBRA' | 'SCIENCE_LAB' | 'HUMANITIES_LAB' | 'DESIGN_PALETTE' | 'SOUNDSCAPES' | 'TELEMETRY' | 'SETTINGS';
+type ToolTab = 'MATH_ALGEBRA' | 'SCIENCE_LAB' | 'HUMANITIES_LAB' | 'SMART_PLANNING' | 'DESIGN_PALETTE' | 'SOUNDSCAPES' | 'TELEMETRY' | 'SETTINGS';
 
 export const ToolsAndSettingsView: React.FC = () => {
   const { user, updateUserPreferences, isDemoMode } = useAuth();
   const [activeTab, setActiveTab] = useState<ToolTab>('MATH_ALGEBRA');
   const [activeScienceSubTab, setActiveScienceSubTab] = useState<'STOICH' | 'PERIODIC' | 'PH_MOL' | 'GENETICS'>('STOICH');
   const [activeHumanitiesSubTab, setActiveHumanitiesSubTab] = useState<'SYNTAX' | 'COMPREHENSION' | 'FLASHCARDS' | 'SPEED_READING'>('SYNTAX');
+  const [activePlanningSubTab, setActivePlanningSubTab] = useState<'SCHEDULE' | 'PDF_EXPORT' | 'THEME_NIGHT'>('SCHEDULE');
+  const [isNotionModalOpen, setIsNotionModalOpen] = useState(false);
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
 
   return (
@@ -104,6 +111,18 @@ export const ToolsAndSettingsView: React.FC = () => {
           >
             <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
             <span>Castellano & Lectura</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('SMART_PLANNING')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+              activeTab === 'SMART_PLANNING'
+                ? 'bg-white text-slate-900 shadow-soft-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <CalendarCheck className="w-3.5 h-3.5 text-blue-600" />
+            <span>Horarios & Exportación</span>
           </button>
 
           <button
@@ -292,6 +311,60 @@ export const ToolsAndSettingsView: React.FC = () => {
         </div>
       )}
 
+      {/* PESTAÑA: PLANIFICACIÓN ADAPTATIVA, EXPORTACIONES & TEMAS (SPRINT C) */}
+      {activeTab === 'SMART_PLANNING' && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Sub-navegación de planificación */}
+          <div className="flex flex-wrap items-center justify-between gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200/80">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setActivePlanningSubTab('SCHEDULE')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  activePlanningSubTab === 'SCHEDULE'
+                    ? 'bg-white text-slate-800 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Horario Adaptativo Dinámico
+              </button>
+              <button
+                onClick={() => setActivePlanningSubTab('PDF_EXPORT')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  activePlanningSubTab === 'PDF_EXPORT'
+                    ? 'bg-white text-slate-800 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Exportador PDF Editorial
+              </button>
+              <button
+                onClick={() => setActivePlanningSubTab('THEME_NIGHT')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  activePlanningSubTab === 'THEME_NIGHT'
+                    ? 'bg-white text-slate-800 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Modo Oscuro & Night Shift
+              </button>
+            </div>
+
+            {/* Botón directo de Notion Export */}
+            <button
+              onClick={() => setIsNotionModalOpen(true)}
+              className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 transition-all flex items-center gap-1.5 shadow-xs"
+            >
+              <span>Conectar con Notion</span>
+            </button>
+          </div>
+
+          {/* Contenido de sub-pestañas */}
+          {activePlanningSubTab === 'SCHEDULE' && <AdaptiveStudyScheduleGenerator />}
+          {activePlanningSubTab === 'PDF_EXPORT' && <StudySummaryPdfExporter />}
+          {activePlanningSubTab === 'THEME_NIGHT' && <AmbientThemeNightShiftPanel />}
+        </div>
+      )}
+
       {/* PESTAÑA: DISEÑO & WCAG */}
       {activeTab === 'DESIGN_PALETTE' && (
         <div className="animate-in fade-in duration-200">
@@ -451,6 +524,12 @@ export const ToolsAndSettingsView: React.FC = () => {
       <BackupRestoreModal
         isOpen={isBackupModalOpen}
         onClose={() => setIsBackupModalOpen(false)}
+      />
+
+      {/* Modal de Exportación a Notion (Sprint C) */}
+      <NotionWorkspaceExporterModal
+        isOpen={isNotionModalOpen}
+        onClose={() => setIsNotionModalOpen(false)}
       />
     </div>
   );
