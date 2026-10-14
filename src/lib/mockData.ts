@@ -1,4 +1,14 @@
-import type { UserProfile, AcademicProfileId } from '../types';
+import type { UserProfile, AcademicProfileId, MainTabType } from '../types';
+
+/**
+ * Pestañas de la barra lateral recomendadas por perfil académico
+ */
+export const DEFAULT_PROFILE_SIDEBAR_TABS: Record<AcademicProfileId, MainTabType[]> = {
+  andres_bachillerato_1: ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'],
+  prima_bachillerato_5: ['PRODUCTIVITY', 'EXAMS', 'GUIDES', 'PLANNER', 'TOOLS'],
+  santiago_fisica_ucv: ['PRODUCTIVITY', 'EXAMS', 'GUIDES', 'PLANNER', 'STORAGE', 'TOOLS'],
+  mafe_diseno_ucab: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'STORAGE', 'TOOLS', 'GUIDES'],
+};
 
 /**
  * Perfiles base precargados con metadata personalizada según las necesidades académicas
@@ -17,6 +27,7 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
       sound_enabled: true,
       focus_duration: 25,
       compact_mode: false,
+      sidebar_tabs: ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'],
     },
     created_at: '2026-09-15T10:00:00Z',
     updated_at: '2026-10-12T14:30:00Z',
@@ -35,6 +46,7 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
       sound_enabled: true,
       focus_duration: 45,
       compact_mode: false,
+      sidebar_tabs: ['PRODUCTIVITY', 'EXAMS', 'GUIDES', 'PLANNER', 'TOOLS'],
     },
     created_at: '2026-08-01T08:00:00Z',
     updated_at: '2026-10-12T17:15:00Z',
@@ -54,6 +66,7 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
       focus_duration: 50,
       calculator_docked: true,
       compact_mode: false,
+      sidebar_tabs: ['PRODUCTIVITY', 'EXAMS', 'GUIDES', 'PLANNER', 'STORAGE', 'TOOLS'],
     },
     created_at: '2026-07-10T12:00:00Z',
     updated_at: '2026-10-12T18:00:00Z',
@@ -72,6 +85,7 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
       sound_enabled: true,
       focus_duration: 35,
       compact_mode: false,
+      sidebar_tabs: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'STORAGE', 'TOOLS', 'GUIDES'],
     },
     created_at: '2026-08-20T09:00:00Z',
     updated_at: '2026-10-12T16:45:00Z',

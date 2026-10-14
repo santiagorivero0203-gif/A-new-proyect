@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { UserProfile, AcademicProfileId } from '../types';
-import { MOCK_PROFILES } from '../lib/mockData';
+import type { UserProfile, AcademicProfileId, MainTabType } from '../types';
+import { MOCK_PROFILES, DEFAULT_PROFILE_SIDEBAR_TABS } from '../lib/mockData';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface AuthContextType {
@@ -21,11 +21,43 @@ interface AuthContextType {
   ) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   updateUserPreferences: (preferences: Partial<UserProfile['preferences']>) => void;
+  setProfileSidebarTabs: (profileId: AcademicProfileId, tabs: MainTabType[]) => void;
+  getProfileSidebarTabs: (profileId: AcademicProfileId) => MainTabType[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const LOCAL_STORAGE_KEY = 'cpe_active_profile_id';
+
+/**
+ * Obtiene las preferencias combinadas (base mock + personalizadas en localStorage)
+ */
+function getHydratedProfile(profileId: AcademicProfileId): UserProfile {
+  const base = MOCK_PROFILES[profileId] || MOCK_PROFILES['santiago_fisica_ucv'];
+  try {
+    const savedPrefs = localStorage.getItem(`cpe_profile_prefs_${profileId}`);
+    if (savedPrefs) {
+      const parsed = JSON.parse(savedPrefs);
+      return {
+        ...base,
+        preferences: {
+          ...base.preferences,
+          ...parsed,
+          sidebar_tabs: parsed.sidebar_tabs || DEFAULT_PROFILE_SIDEBAR_TABS[profileId],
+        },
+      };
+    }
+  } catch (e) {
+    console.warn('[AuthContext] Error recuperando preferencias de perfil:', e);
+  }
+  return {
+    ...base,
+    preferences: {
+      ...base.preferences,
+      sidebar_tabs: base.preferences.sidebar_tabs || DEFAULT_PROFILE_SIDEBAR_TABS[profileId],
+    },
+  };
+}
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Inicializar con la cuenta guardada en localStorage
@@ -36,10 +68,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY) as AcademicProfileId;
-    if (saved && MOCK_PROFILES[saved]) {
-      return MOCK_PROFILES[saved];
-    }
-    return MOCK_PROFILES['santiago_fisica_ucv'];
+    const targetId = saved && MOCK_PROFILES[saved] ? saved : 'santiago_fisica_ucv';
+    return getHydratedProfile(targetId);
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -66,9 +96,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const profileData = data as unknown as UserProfile | null;
 
           if (profileData && !error) {
-            setCurrentUser(profileData);
-            setSelectedProfileId(profileData.academic_profile);
-            localStorage.setItem(LOCAL_STORAGE_KEY, profileData.academic_profile);
+            const hydrated = {
+              ...profileData,
+              preferences: {
+                ...profileData.preferences,
+                sidebar_tabs:
+                  profileData.preferences?.sidebar_tabs ||
+                  DEFAULT_PROFILE_SIDEBAR_TABS[profileData.academic_profile] ||
+                  ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'STORAGE', 'TOOLS'],
+              },
+            };
+            setCurrentUser(hydrated);
+            setSelectedProfileId(hydrated.academic_profile);
+            localStorage.setItem(LOCAL_STORAGE_KEY, hydrated.academic_profile);
             setIsDemoMode(false);
           } else {
             setIsDemoMode(true);
@@ -98,9 +138,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const profileData = data as unknown as UserProfile | null;
 
           if (profileData) {
-            setCurrentUser(profileData);
-            setSelectedProfileId(profileData.academic_profile);
-            localStorage.setItem(LOCAL_STORAGE_KEY, profileData.academic_profile);
+            const hydrated = {
+              ...profileData,
+              preferences: {
+                ...profileData.preferences,
+                sidebar_tabs:
+                  profileData.preferences?.sidebar_tabs ||
+                  DEFAULT_PROFILE_SIDEBAR_TABS[profileData.academic_profile] ||
+                  ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'STORAGE', 'TOOLS'],
+              },
+            };
+            setCurrentUser(hydrated);
+            setSelectedProfileId(hydrated.academic_profile);
+            localStorage.setItem(LOCAL_STORAGE_KEY, hydrated.academic_profile);
             setIsDemoMode(false);
           }
         }
@@ -117,12 +167,56 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    */
   const switchProfileDemo = (profileId: AcademicProfileId) => {
     setSelectedProfileId(profileId);
-    setCurrentUser(MOCK_PROFILES[profileId]);
+    const hydrated = getHydratedProfile(profileId);
+    setCurrentUser(hydrated);
     localStorage.setItem(LOCAL_STORAGE_KEY, profileId);
   };
 
   const selectStudentAccount = (profileId: AcademicProfileId) => {
     switchProfileDemo(profileId);
+  };
+
+  /**
+   * Obtiene las pestañas de la barra lateral configuradas para cualquier perfil
+   */
+  const getProfileSidebarTabs = (profileId: AcademicProfileId): MainTabType[] => {
+    try {
+      const savedPrefs = localStorage.getItem(`cpe_profile_prefs_${profileId}`);
+      if (savedPrefs) {
+        const parsed = JSON.parse(savedPrefs);
+        if (Array.isArray(parsed.sidebar_tabs) && parsed.sidebar_tabs.length > 0) {
+          return parsed.sidebar_tabs;
+        }
+      }
+    } catch (e) {
+      console.warn('Error leyendo pestañas del perfil:', e);
+    }
+    return DEFAULT_PROFILE_SIDEBAR_TABS[profileId] || ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'STORAGE', 'TOOLS'];
+  };
+
+  /**
+   * Configura y guarda de forma persistente las pestañas de la barra lateral para un perfil específico
+   */
+  const setProfileSidebarTabs = (profileId: AcademicProfileId, tabs: MainTabType[]) => {
+    try {
+      const existing = localStorage.getItem(`cpe_profile_prefs_${profileId}`);
+      const currentPrefs = existing ? JSON.parse(existing) : (MOCK_PROFILES[profileId]?.preferences || {});
+      const updatedPrefs = { ...currentPrefs, sidebar_tabs: tabs };
+      localStorage.setItem(`cpe_profile_prefs_${profileId}`, JSON.stringify(updatedPrefs));
+
+      // Si el perfil que se modificó es el activo en este momento, actualizar el estado reactivo
+      if (currentUser && currentUser.academic_profile === profileId) {
+        setCurrentUser({
+          ...currentUser,
+          preferences: {
+            ...currentUser.preferences,
+            sidebar_tabs: tabs,
+          },
+        });
+      }
+    } catch (err) {
+      console.warn('Error guardando configuración de barra lateral para el perfil:', err);
+    }
   };
 
   /**
@@ -213,6 +307,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       },
     };
     setCurrentUser(updated);
+
+    try {
+      localStorage.setItem(`cpe_profile_prefs_${currentUser.academic_profile}`, JSON.stringify(updated.preferences));
+    } catch (err) {
+      console.warn('Error persistiendo preferencias de usuario:', err);
+    }
   };
 
   return (
@@ -229,6 +329,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         signUpWithEmail,
         signOut,
         updateUserPreferences,
+        setProfileSidebarTabs,
+        getProfileSidebarTabs,
       }}
     >
       {children}

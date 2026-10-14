@@ -7,6 +7,15 @@ export type AcademicProfileId =
   | 'santiago_fisica_ucv'
   | 'mafe_diseno_ucab';
 
+export type MainTabType =
+  | 'PRODUCTIVITY'
+  | 'PLANNER'
+  | 'GUIDES'
+  | 'EXAMS'
+  | 'STORAGE'
+  | 'CREATIVE_BOARD'
+  | 'TOOLS';
+
 export interface UserPreferences {
   theme: 'dark' | 'light' | 'system';
   sound_enabled: boolean;
@@ -15,6 +24,7 @@ export interface UserPreferences {
   compact_mode?: boolean;
   workspace_modules?: string[];
   active_preset?: string;
+  sidebar_tabs?: MainTabType[];
 }
 
 export interface UserProfile {

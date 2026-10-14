@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import type { MainTabType } from '../../types';
 import {
   GridIcon,
   BookOpenIcon,
@@ -10,9 +11,11 @@ import {
   CalendarIcon,
   PlusIcon,
 } from '../common/Icons';
+import { Sliders } from 'lucide-react';
 import { ProfileQuickSwitcher } from '../auth/ProfileQuickSwitcher';
+import { SidebarCustomizerModal } from './SidebarCustomizerModal';
 
-export type MainTabType = 'PRODUCTIVITY' | 'PLANNER' | 'GUIDES' | 'EXAMS' | 'STORAGE' | 'CREATIVE_BOARD' | 'TOOLS';
+export type { MainTabType } from '../../types';
 
 interface SidebarProps {
   currentTab: MainTabType;
@@ -26,7 +29,8 @@ interface SidebarProps {
  * Barra Lateral de Navegación (Sidebar)
  * Arquitectura visual limpia y espaciosa:
  * Logo distintivo, botón destacado de acción rápida (+ Deconstruir Material),
- * píldoras activas en fondo negro de alto contraste, e iconos nítidos.
+ * pestañas filtradas dinámicamente según el perfil activo (personalizables por estudiante),
+ * botón de configuración de barra lateral por perfil y switcher de 1 clic.
  */
 export const Sidebar: React.FC<SidebarProps> = ({
   currentTab,
@@ -35,7 +39,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   onOpenAccountManager,
 }) => {
-  const { user } = useAuth();
+  const { user, academicProfile, getProfileSidebarTabs } = useAuth();
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
 
   const navigationTabs: { id: MainTabType; name: string; icon: React.ReactNode; badge?: string }[] = [
     {
@@ -76,6 +81,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: <CalculatorIcon className="w-5 h-5" />,
     },
   ];
+
+  // Pestañas activas para el perfil actual (filtradas dinámicamente)
+  const activeTabsList = user?.preferences?.sidebar_tabs || getProfileSidebarTabs(academicProfile);
+  const visibleTabs = navigationTabs.filter((tab) => activeTabsList.includes(tab.id));
+
+  // Redirección suave si el usuario oculta la pestaña en la que se encontraba
+  useEffect(() => {
+    if (activeTabsList && activeTabsList.length > 0 && !activeTabsList.includes(currentTab)) {
+      onSelectTab(activeTabsList[0]);
+    }
+  }, [activeTabsList, currentTab, onSelectTab]);
 
   return (
     <>
@@ -140,48 +156,78 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           </div>
 
-          {/* Menú de Navegación Amplio y Grande */}
-          <nav className="space-y-1.5">
-            {navigationTabs.map((tab) => {
-              const isActive = currentTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    onSelectTab(tab.id);
-                    onCloseMobile();
-                  }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-sm font-semibold transition-all text-left group ${
-                    isActive
-                      ? 'bg-slate-900 text-white shadow-soft-sm font-bold'
-                      : 'text-slate-600 hover:bg-white hover:text-slate-900 hover:shadow-soft-sm'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`shrink-0 transition-transform duration-150 group-hover:scale-105 ${
-                        isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'
-                      }`}
-                    >
-                      {tab.icon}
+          {/* Menú de Navegación Personalizado por Perfil */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between px-2 pb-1 text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+              <span>Navegación</span>
+              <button
+                onClick={() => setIsCustomizerOpen(true)}
+                className="hover:text-slate-900 flex items-center gap-1 transition-colors normal-case font-sans font-semibold text-brand-600"
+                title="Configurar qué secciones mostrar en la barra lateral para este perfil"
+              >
+                <Sliders className="w-3 h-3" />
+                <span>Personalizar</span>
+              </button>
+            </div>
+
+            <nav className="space-y-1.5">
+              {visibleTabs.map((tab) => {
+                const isActive = currentTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      onSelectTab(tab.id);
+                      onCloseMobile();
+                    }}
+                    className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-sm font-semibold transition-all text-left group ${
+                      isActive
+                        ? 'bg-slate-900 text-white shadow-soft-sm font-bold'
+                        : 'text-slate-600 hover:bg-white hover:text-slate-900 hover:shadow-soft-sm'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`shrink-0 transition-transform duration-150 group-hover:scale-105 ${
+                          isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'
+                        }`}
+                      >
+                        {tab.icon}
+                      </div>
+                      <span className="truncate">{tab.name}</span>
                     </div>
-                    <span className="truncate">{tab.name}</span>
-                  </div>
-                  {tab.badge && (
-                    <span
-                      className={`text-[11px] px-2 py-0.5 rounded-full font-medium font-mono ${
-                        isActive
-                          ? 'bg-white/20 text-white'
-                          : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200/80'
-                      }`}
-                    >
-                      {tab.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
+                    {tab.badge && (
+                      <span
+                        className={`text-[11px] px-2 py-0.5 rounded-full font-medium font-mono ${
+                          isActive
+                            ? 'bg-white/20 text-white'
+                            : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200/80'
+                        }`}
+                      >
+                        {tab.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Acceso directo a personalizar si hay pestañas ocultas */}
+            {visibleTabs.length < navigationTabs.length && (
+              <button
+                onClick={() => setIsCustomizerOpen(true)}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-700 hover:bg-white border border-dashed border-slate-200 transition-all mt-2 group"
+                title="Añadir o remover pestañas de la barra lateral"
+              >
+                <span className="text-[11px] text-slate-500">
+                  +{navigationTabs.length - visibleTabs.length} sección(es) oculta(s)
+                </span>
+                <span className="text-[10px] text-brand-600 font-bold group-hover:underline">
+                  Editar ▾
+                </span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Footer del Sidebar con Switcher de Perfil y Versión */}
@@ -239,6 +285,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </aside>
+
+      {/* Modal para Personalizar Pestañas de la Barra Lateral por Perfil */}
+      <SidebarCustomizerModal
+        isOpen={isCustomizerOpen}
+        onClose={() => setIsCustomizerOpen(false)}
+      />
     </>
   );
 };

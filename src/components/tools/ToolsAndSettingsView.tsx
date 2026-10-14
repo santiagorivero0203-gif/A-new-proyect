@@ -49,6 +49,7 @@ import { AdaptiveStudyScheduleGenerator } from '../planner/AdaptiveStudySchedule
 import { StudySummaryPdfExporter } from '../planner/StudySummaryPdfExporter';
 import { AmbientThemeNightShiftPanel } from '../productivity/AmbientThemeNightShiftPanel';
 import { NotionWorkspaceExporterModal } from '../planner/NotionWorkspaceExporterModal';
+import { SidebarCustomizerModal } from '../layout/SidebarCustomizerModal';
 import { cacheCleaner } from '../../services/cacheCleaner';
 
 type ToolTab = 'MATH_ALGEBRA' | 'SCIENCE_LAB' | 'HUMANITIES_LAB' | 'SMART_PLANNING' | 'DESIGN_PALETTE' | 'SOUNDSCAPES' | 'TELEMETRY' | 'SETTINGS';
@@ -61,6 +62,7 @@ export const ToolsAndSettingsView: React.FC = () => {
   const [activePlanningSubTab, setActivePlanningSubTab] = useState<'SCHEDULE' | 'PDF_EXPORT' | 'THEME_NIGHT'>('SCHEDULE');
   const [isNotionModalOpen, setIsNotionModalOpen] = useState(false);
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
+  const [isSidebarCustomizerOpen, setIsSidebarCustomizerOpen] = useState(false);
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -458,6 +460,33 @@ export const ToolsAndSettingsView: React.FC = () => {
 
           {/* Respaldo Total y Estado Cero */}
           <div className="space-y-6">
+            {/* Personalización de la Barra Lateral por Perfil */}
+            <div className="app-card p-6 bg-white border border-slate-200/80 shadow-soft rounded-2xl space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <Sliders className="w-4 h-4 text-indigo-600" />
+                  <h3 className="text-sm font-bold text-slate-900 font-display">
+                    Navegación y Barra Lateral por Perfil
+                  </h3>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-bold">
+                  Personalizable
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Configura qué secciones (Dashboard, Simulador, Guías KaTeX, Agenda, Vault, Entregas Creativas, Herramientas) deben aparecer en la barra lateral para cada perfil de estudiante.
+              </p>
+
+              <button
+                onClick={() => setIsSidebarCustomizerOpen(true)}
+                className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+              >
+                <Sliders className="w-3.5 h-3.5" />
+                <span>Personalizar Secciones de la Barra Lateral</span>
+              </button>
+            </div>
+
             {/* Tarjeta de Respaldo JSON */}
             <div className="app-card p-6 bg-white border border-slate-200/80 shadow-soft rounded-2xl space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -530,6 +559,12 @@ export const ToolsAndSettingsView: React.FC = () => {
       <NotionWorkspaceExporterModal
         isOpen={isNotionModalOpen}
         onClose={() => setIsNotionModalOpen(false)}
+      />
+
+      {/* Modal de Personalización de Barra Lateral por Perfil */}
+      <SidebarCustomizerModal
+        isOpen={isSidebarCustomizerOpen}
+        onClose={() => setIsSidebarCustomizerOpen(false)}
       />
     </div>
   );
