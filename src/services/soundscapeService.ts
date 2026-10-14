@@ -35,7 +35,7 @@ class SoundscapeService {
   private isMasterPlaying: boolean = false;
   private masterGain: GainNode | null = null;
 
-  private initContext() {
+  private async initContext(): Promise<void> {
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       this.ctx = new AudioCtx();
@@ -43,8 +43,12 @@ class SoundscapeService {
       this.masterGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
       this.masterGain.connect(this.ctx.destination);
     }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+    if (this.ctx && this.ctx.state === 'suspended') {
+      try {
+        await this.ctx.resume();
+      } catch (err) {
+        console.warn('[SoundscapeService] No se pudo reanudar AudioContext:', err);
+      }
     }
   }
 

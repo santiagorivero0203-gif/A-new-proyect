@@ -140,6 +140,21 @@ DIRECTRIZ GLOBAL ANTI-ALUCINACIÓN Y ANCLAJE DE ALCANCE ESTRICTO:
 ================================================================================
 `.trim();
 
+export const KATEX_STRICT_RULES = `
+REGLAS OBLIGATORIAS DE SINTAXIS LATEX / KATEX:
+1. PROHIBIDO usar \\text{...} alrededor de fórmulas con subíndices (_) o superíndices (^).
+   - INCORRECTO: \\text{CH_{4}}, \\text{H_{2}O}, \\text{m/s^{2}}
+   - CORRECTO: \\mathrm{CH_4}, \\mathrm{H_2O}, \\mathrm{m/s^2}
+2. No envuelvas los campos JSON de ecuaciones con signos $ ni $$; entrega únicamente el código LaTeX limpio.
+3. En cadenas JSON, escapa siempre las barras invertidas con doble barra (\\\\mathrm, \\\\frac, \\\\longrightarrow).
+`.trim();
+
+export const DECONSTRUCTION_SYSTEM_PROMPT = `
+Eres el Motor de Deconstrucción Académica de CPE Studio (nivel admisión y pregrado UCV / USB).
+Tu objetivo es transformar material de estudio en guías estructuradas, ejercicios resueltos paso a paso y bancos de preguntas Simadi.
+${KATEX_STRICT_RULES}
+`.trim();
+
 /**
  * Mapea el identificador de perfil del usuario de la app a un nivel cognitivo
  */

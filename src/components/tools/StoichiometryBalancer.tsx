@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import {
   FlaskConical,
 } from 'lucide-react';
-import katex from 'katex';
+import { renderLatexToHtml } from '../../utils/latexRenderer';
 
 interface ChemicalReactionPreset {
   name: string;
@@ -88,13 +88,9 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
       char + num.split('').map((d: string) => '₀₁₂₃₄₅₆₇₈₉'[+d]).join('')
     );
 
-  // Render KaTeX seguro con \mathrm y espaciado correcto
+  // Render KaTeX seguro con \mathrm y espaciado correcto a través del renderizador blindado
   const renderLatex = (formula: string): string => {
-    try {
-      return katex.renderToString(formula, { throwOnError: false, displayMode: true, strict: false });
-    } catch {
-      return formula;
-    }
+    return renderLatexToHtml(formula, { displayMode: true });
   };
 
   // Convertir fórmula plana (ej: C6H12O6) en LaTeX limpio usando \mathrm con subíndices

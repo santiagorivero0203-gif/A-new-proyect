@@ -134,10 +134,14 @@ export const storageService = {
         updated_at: new Date().toISOString(),
       };
 
-      // Guardar en cache local
+      // Guardar en cache local con salvaguarda de cuota
       const existing = this.getLocalDocuments(userId);
-      const updated = [mockDoc, ...existing];
-      localStorage.setItem(`${LOCAL_STORAGE_DOCS_KEY}_${userId}`, JSON.stringify(updated));
+      const updated = [mockDoc, ...existing].slice(0, 50);
+      try {
+        localStorage.setItem(`${LOCAL_STORAGE_DOCS_KEY}_${userId}`, JSON.stringify(updated));
+      } catch (storageErr) {
+        console.warn('[storageService] Advertencia de cuota de almacenamiento local:', storageErr);
+      }
 
       if (onProgress) onProgress(100);
       return { success: true, document: mockDoc };
