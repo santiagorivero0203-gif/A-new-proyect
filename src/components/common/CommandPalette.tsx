@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { MainTabType } from '../layout/Sidebar';
+import { useAuth } from '../../context/AuthContext';
 import { notificationService } from '../../services/notificationService';
 import {
   SearchIcon,
@@ -47,6 +48,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onOpenScratchpad,
   onLaunchQuickExam,
 }) => {
+  const { academicProfile } = useAuth();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -74,16 +76,20 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         onNavigateToTab('GUIDES');
       },
     },
-    {
-      id: 'nav-ucv-course',
-      title: 'Ir al Curso Introductorio Ciencias UCV (6 Semanas)',
-      category: 'ESTUDIO',
-      icon: <AtomIcon className="w-4 h-4 text-[#0F52BA]" />,
-      run: () => {
-        onClose();
-        onNavigateToTab('UCV_COURSE');
-      },
-    },
+    ...(academicProfile === 'santiago_fisica_ucv'
+      ? [
+          {
+            id: 'nav-ucv-course',
+            title: 'Ir al Curso Introductorio Ciencias UCV (6 Semanas)',
+            category: 'ESTUDIO' as const,
+            icon: <AtomIcon className="w-4 h-4 text-[#0F52BA]" />,
+            run: () => {
+              onClose();
+              onNavigateToTab('UCV_COURSE');
+            },
+          },
+        ]
+      : []),
     {
       id: 'scratchpad',
       title: 'Abrir Scratchpad (Lienzo Canvas & Bloc LaTeX)',

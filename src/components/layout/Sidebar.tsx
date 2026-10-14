@@ -89,16 +89,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
   ];
 
+  // El Curso Introductorio UCV es exclusivo del perfil de Santiago Rivero (Facultad de Ciencias UCV)
+  const isSantiagoProfile = academicProfile === 'santiago_fisica_ucv';
+
   // Pestañas activas para el perfil actual (filtradas dinámicamente)
   const activeTabsList = user?.preferences?.sidebar_tabs || getProfileSidebarTabs(academicProfile);
-  const visibleTabs = navigationTabs.filter((tab) => activeTabsList.includes(tab.id));
+  const visibleTabs = navigationTabs.filter((tab) => {
+    if (tab.id === 'UCV_COURSE' && !isSantiagoProfile) return false;
+    return activeTabsList.includes(tab.id);
+  });
 
-  // Redirección suave si el usuario oculta la pestaña en la que se encontraba
+  // Redirección suave si el usuario oculta la pestaña en la que se encontraba o si cambia de perfil
   useEffect(() => {
+    if (currentTab === 'UCV_COURSE' && !isSantiagoProfile) {
+      onSelectTab('PRODUCTIVITY');
+      return;
+    }
     if (activeTabsList && activeTabsList.length > 0 && !activeTabsList.includes(currentTab)) {
       onSelectTab(activeTabsList[0]);
     }
-  }, [activeTabsList, currentTab, onSelectTab]);
+  }, [activeTabsList, currentTab, onSelectTab, isSantiagoProfile]);
 
   return (
     <>

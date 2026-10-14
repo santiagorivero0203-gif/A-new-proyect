@@ -134,7 +134,7 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
       badge: 'Oficial UCV',
       description: 'Programa oficial de 6 semanas: UA I (Método Científico), UA II (Lenguaje) y UA III (Lógico-Matemático).',
       icon: <AtomIcon className="w-5 h-5 text-blue-600" />,
-      recommendedFor: ['santiago_fisica_ucv', 'prima_bachillerato_5'],
+      recommendedFor: ['santiago_fisica_ucv'],
     },
   ];
 
@@ -142,6 +142,14 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
 
   // Tabs actualmente activos para el perfil seleccionado en el modal
   const currentProfileTabs = getProfileSidebarTabs(editingProfileId);
+
+  // El Curso Introductorio UCV solo está disponible para configurar en el perfil de Santiago
+  const availableSections = allSections.filter((section) => {
+    if (section.id === 'UCV_COURSE' && editingProfileId !== 'santiago_fisica_ucv') {
+      return false;
+    }
+    return true;
+  });
 
   const toggleSection = (sectionId: MainTabType) => {
     const isCurrentlyActive = currentProfileTabs.includes(sectionId);
@@ -249,7 +257,7 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
         <div className="p-6 overflow-y-auto space-y-3 flex-1 divide-y divide-slate-100/80">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold text-slate-600">
-              {currentProfileTabs.length} de {allSections.length} secciones visibles en la barra lateral
+              {currentProfileTabs.filter(id => id !== 'UCV_COURSE' || editingProfileId === 'santiago_fisica_ucv').length} de {availableSections.length} secciones visibles en la barra lateral
             </span>
             <button
               onClick={handleResetToDefaults}
@@ -262,7 +270,7 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
           </div>
 
           <div className="space-y-2.5 pt-2">
-            {allSections.map((section) => {
+            {availableSections.map((section) => {
               const isChecked = currentProfileTabs.includes(section.id);
               const isRecommended = section.recommendedFor.includes(editingProfileId);
 

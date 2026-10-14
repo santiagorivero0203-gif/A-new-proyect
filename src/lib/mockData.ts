@@ -5,7 +5,7 @@ import type { UserProfile, AcademicProfileId, MainTabType } from '../types';
  */
 export const DEFAULT_PROFILE_SIDEBAR_TABS: Record<AcademicProfileId, MainTabType[]> = {
   andres_bachillerato_1: ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'],
-  prima_bachillerato_5: ['PRODUCTIVITY', 'UCV_COURSE', 'EXAMS', 'GUIDES', 'PLANNER', 'TOOLS'],
+  prima_bachillerato_5: ['PRODUCTIVITY', 'EXAMS', 'GUIDES', 'PLANNER', 'TOOLS'],
   santiago_fisica_ucv: ['PRODUCTIVITY', 'UCV_COURSE', 'EXAMS', 'GUIDES', 'PLANNER', 'STORAGE', 'TOOLS'],
   mafe_diseno_ucab: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'STORAGE', 'TOOLS', 'GUIDES'],
 };

@@ -19,7 +19,7 @@ import type { ExamConfig, Question } from './types/exam.types';
  * Con control de sesión y aislamiento por cuenta de estudiante
  */
 const AppContent: React.FC = () => {
-  const { user } = useAuth();
+  const { user, academicProfile } = useAuth();
   const [currentTab, setCurrentTab] = useState<MainTabType>('PRODUCTIVITY');
   const [aiExamConfig, setAiExamConfig] = useState<ExamConfig | null>(null);
   const [aiExamQuestions, setAiExamQuestions] = useState<Question[] | null>(null);
@@ -110,6 +110,16 @@ const AppContent: React.FC = () => {
       case 'TOOLS':
         return <ToolsAndSettingsView />;
       case 'UCV_COURSE':
+        // El Curso Introductorio UCV es exclusivo del perfil de Santiago Rivero (Facultad de Ciencias UCV)
+        if (academicProfile !== 'santiago_fisica_ucv') {
+          return (
+            <ModularWorkspaceDashboard
+              onStartExamWithQuestions={handleStartExamWithAiQuestions}
+              onLaunchExam={handleLaunchExam}
+              onNavigateToTab={(tab) => setCurrentTab(tab)}
+            />
+          );
+        }
         return (
           <UCVIntroCourseHub
             onStartExam={(config, customQuestions) => {
