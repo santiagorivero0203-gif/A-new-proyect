@@ -170,9 +170,9 @@ export const UCV_CURRICULUM_MODULES: UCVModuleTopic[] = [
     unitName: 'Unidad de Aprendizaje I: Autogestión',
     summary: 'Construcción de hábitos de estudio universitarios, formulación rigurosa de hipótesis y el Problema de la Caja Negra.',
     theoryLatex: [
-      'El método científico no es una receta estricta, sino un ciclo epistémico iterativo: \\text{Observación} \\longrightarrow \\text{Pregunta} \\longrightarrow \\text{Hipótesis} \\longrightarrow \\text{Experimentación} \\longrightarrow \\text{Conclusión}.',
+      'El método científico no es una receta estricta, sino un ciclo epistémico iterativo: Observación $\\longrightarrow$ Pregunta $\\longrightarrow$ Hipótesis $\\longrightarrow$ Experimentación $\\longrightarrow$ Conclusión.',
       'Una hipótesis científica debe ser necesariamente falsable (criterio de Popper): debe existir al menos un experimento conceptualmente posible cuyo resultado la contradiga.',
-      'En el \\textit{Problema de la Caja Negra}, un sistema $S$ recibe un vector de entrada $\\vec{x} \\in \\mathbb{R}^n$ y devuelve una salida $\\vec{y} = f(\\vec{x})$. El objetivo es deducir la ley $f$ minimizando el número de pruebas empíricas.',
+      'En el **Problema de la Caja Negra**, un sistema $S$ recibe un vector de entrada $\\vec{x} \\in \\mathbb{R}^n$ y devuelve una salida $\\vec{y} = f(\\vec{x})$. El objetivo es deducir la ley $f$ minimizando el número de pruebas empíricas.',
     ],
     keyFormulas: [
       {

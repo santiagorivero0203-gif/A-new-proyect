@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
-import { renderLatexToHtml } from '../../utils/latexRenderer';
+import { renderLatex, renderLatexToHtml } from '../../utils/latexRenderer';
 import {
   UCV_6_WEEKS_SYLLABUS,
   UCV_CURRICULUM_MODULES,
@@ -529,9 +529,9 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
                     {currentModule.theoryLatex.map((paragraph, idx) => (
                       <div
                         key={idx}
-                        className="text-xs sm:text-sm text-slate-700 leading-relaxed p-4 rounded-2xl bg-slate-50/70 border border-slate-200/60"
+                        className="text-xs sm:text-sm text-slate-700 leading-relaxed p-4 rounded-2xl bg-slate-50/70 border border-slate-200/60 font-sans"
                         dangerouslySetInnerHTML={{
-                          __html: renderLatexToHtml(paragraph, { displayMode: false }),
+                          __html: renderLatex(paragraph),
                         }}
                       />
                     ))}

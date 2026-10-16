@@ -1,3 +1,9 @@
+/**
+ * @file latexRenderer.ts
+ * @description Motor de renderizado de LaTeX, KaTeX y texto mixto para fórmulas científicas y pedagógicas.
+ * Diseñado con protección total contra letras pegadas, símbolos huérfanos y texto rojo de error.
+ */
+
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -15,7 +21,7 @@ function escapeHtml(text: string): string {
 
 /**
  * Sanitiza determinísticamente cualquier expresión LaTeX/Química/Física
- * proveniente de JSON estático (simadi_guides.json / simadi_preguntas.json) o de geminiService.ts
+ * proveniente de JSON estático o generación dinámica.
  */
 export function sanitizeLatex(raw: string): string {
   if (!raw || typeof raw !== 'string') return '';
@@ -60,12 +66,37 @@ export function sanitizeLatex(raw: string): string {
 }
 
 /**
+ * Detecta si una cadena corresponde a un párrafo de texto en lenguaje natural
+ * en lugar de una fórmula matemática pura.
+ */
+function isNaturalLanguageParagraph(text: string): boolean {
+  if (!text) return false;
+  // Si contiene múltiples palabras en español separadas por espacios y no está envuelto en $
+  const words = text.trim().split(/\s+/);
+  const hasMultipleWords = words.length >= 4;
+  const isWrappedInMath =
+    (text.startsWith('$') && text.endsWith('$')) ||
+    (text.startsWith('\\[') && text.endsWith('\\]')) ||
+    (text.startsWith('\\(') && text.endsWith('\\)'));
+
+  return hasMultipleWords && !isWrappedInMath;
+}
+
+/**
  * Renderizador de LaTeX a HTML con fallback semántico libre de errores rojos
  */
 export function renderLatexToHtml(
   latex: string,
   options: { displayMode?: boolean } = { displayMode: true }
 ): string {
+  if (!latex) return '';
+
+  // PROTECCIÓN VITAL: Si se pasa un párrafo de texto en prosa en vez de una fórmula pura,
+  // delegar a renderLatex para evitar que KaTeX una todas las letras en cursiva matemática.
+  if (isNaturalLanguageParagraph(latex)) {
+    return renderLatex(latex, options.displayMode ?? false);
+  }
+
   const safeLatex = sanitizeLatex(latex);
   if (!safeLatex) return '';
 
@@ -77,7 +108,7 @@ export function renderLatexToHtml(
       trust: true,
     });
   } catch {
-    // Fallback automático: convierte a HTML semántico limpio con <sub> y <sup> (CERO texto rojo)
+    // Fallback semántico limpio con <sub> y <sup> (CERO texto rojo)
     return safeLatex
       .replace(/\\(?:mathrm|text|textbf)\{([^{}]+)\}/g, '$1')
       .replace(/\\longrightarrow|\\rightarrow|\\to/g, ' &rarr; ')
@@ -94,8 +125,58 @@ const latexCache = new Map<string, string>();
 const MAX_CACHE_SIZE = 1500;
 
 /**
- * Renderizador Inteligente de Texto y Fórmulas Matemáticas
- * Mantiene la compatibilidad global para renderLatex(...) en todo el proyecto.
+ * Sanitiza texto plano sustituyendo comandos LaTeX de estilo y símbolos
+ * comunes sueltos por su correspondiente HTML/Unicode.
+ */
+function formatPlainTextSegment(rawText: string): string {
+  if (!rawText) return '';
+
+  let t = rawText;
+
+  // 1. Comandos de formato tipo LaTeX en texto
+  t = t.replace(/\\textit\{([^}]+)\}/g, '<em>$1</em>');
+  t = t.replace(/\\textbf\{([^}]+)\}/g, '<strong>$1</strong>');
+  t = t.replace(/\\emph\{([^}]+)\}/g, '<em>$1</em>');
+  t = t.replace(/\\underline\{([^}]+)\}/g, '<u>$1</u>');
+
+  // 2. Markdown común dentro del texto
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  // 3. Reemplazo de flechas y símbolos matemáticos que hayan quedado sueltos en texto plano
+  t = t.replace(/\\longrightarrow/g, ' &rarr; ');
+  t = t.replace(/\\longleftarrow/g, ' &larr; ');
+  t = t.replace(/\\rightarrow/g, ' &rarr; ');
+  t = t.replace(/\\leftarrow/g, ' &larr; ');
+  t = t.replace(/\\implies/g, ' &rArr; ');
+  t = t.replace(/\\iff/g, ' &hArr; ');
+  t = t.replace(/\\pm/g, '&plusmn;');
+  t = t.replace(/\\times/g, '&times;');
+  t = t.replace(/\\approx/g, '&asymp;');
+  t = t.replace(/\\neq/g, '&ne;');
+  t = t.replace(/\\le(?:q)?/g, '&le;');
+  t = t.replace(/\\ge(?:q)?/g, '&ge;');
+  t = t.replace(/\\in\b/g, '&isin;');
+  t = t.replace(/\\notin\b/g, '&notin;');
+  t = t.replace(/\\subset\b/g, '&sub;');
+  t = t.replace(/\\cup\b/g, '&cup;');
+  t = t.replace(/\\cap\b/g, '&cap;');
+  t = t.replace(/\\emptyset\b/g, '&empty;');
+  t = t.replace(/\\Delta\b/g, '&Delta;');
+  t = t.replace(/\\Sigma\b/g, '&Sigma;');
+  t = t.replace(/\\pi\b/g, '&pi;');
+  t = t.replace(/\\theta\b/g, '&theta;');
+
+  // 4. Limpieza de secuencias anómalas de dólares ($$$ -> $)
+  t = t.replace(/\${3,}/g, '$');
+
+  return t;
+}
+
+/**
+ * Renderizador Inteligente de Texto y Fórmulas Matemáticas.
+ * Conserva el texto en español con espaciado natural, tildes y formato,
+ * procesando exclusivamente las expresiones matemáticas delimitadas ($...$ o $$...$$).
  */
 export function renderLatex(content: string | undefined | null, displayMode: boolean = false): string {
   if (!content) return '';
@@ -110,54 +191,78 @@ export function renderLatex(content: string | undefined | null, displayMode: boo
   }
 
   const computeResult = (): string => {
-    // Caso A: Modo bloque explícito para campos dedicados a fórmulas (ej. latexFormula)
-    if (displayMode) {
+    // Caso A: Modo bloque explícito para fórmulas puras
+    if (displayMode && !isNaturalLanguageParagraph(trimmed)) {
       return renderLatexToHtml(trimmed, { displayMode: true });
     }
 
+    // Normalizar triples signos de dólar accidentales
+    const normalized = trimmed.replace(/\${3,}/g, '$');
+
     // Caso B: Verificación de presencia de fórmulas matemáticas
-    const hasDollarMath = trimmed.includes('$');
-    const hasBracketMath = trimmed.includes('\\(') || trimmed.includes('\\[');
-    const startsWithLatexMacro = trimmed.startsWith('\\') && !trimmed.startsWith('\\n') && !trimmed.startsWith('\\t');
+    const hasDollarMath = normalized.includes('$');
+    const hasBracketMath = normalized.includes('\\(') || normalized.includes('\\[');
 
-    // Si no hay delimitadores ni comandos LaTeX, es texto plano natural en español
-    if (!hasDollarMath && !hasBracketMath && !startsWithLatexMacro) {
-      return escapeHtml(trimmed);
+    // Si no contiene delimitadores de fórmula matemática
+    if (!hasDollarMath && !hasBracketMath) {
+      // Si comienza directamente con un macro de fórmula pura sin texto en español (ej: "\frac{a}{b}")
+      const isPureLatexFormula =
+        normalized.startsWith('\\') &&
+        !normalized.startsWith('\\text') &&
+        !normalized.startsWith('\\textit') &&
+        !normalized.startsWith('\\textbf') &&
+        !isNaturalLanguageParagraph(normalized);
+
+      if (isPureLatexFormula) {
+        return renderLatexToHtml(normalized, { displayMode: false });
+      }
+
+      // De lo contrario es texto plano enriquecido
+      return formatPlainTextSegment(escapeHtml(normalized));
     }
 
-    // Si comienza con un comando de fórmula pura pero no tiene delimitadores $ (ej. \vec{u} \cdot \vec{v})
-    if (startsWithLatexMacro && !hasDollarMath && !hasBracketMath) {
-      return renderLatexToHtml(trimmed, { displayMode: false });
-    }
-
-    // Caso C: Contenido mixto con delimitadores ($...$ o $$...$$)
+    // Caso C: Contenido mixto con delimitadores ($...$, $$...$$, \[...\], \(...\))
     try {
       let htmlResult = '';
-      const mathRegex = /(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$)/g;
+      const mathRegex = /(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g;
       let lastIndex = 0;
       let match: RegExpExecArray | null;
 
-      while ((match = mathRegex.exec(trimmed)) !== null) {
-        const plainTextSegment = trimmed.slice(lastIndex, match.index);
+      while ((match = mathRegex.exec(normalized)) !== null) {
+        const plainTextSegment = normalized.slice(lastIndex, match.index);
         if (plainTextSegment) {
-          htmlResult += escapeHtml(plainTextSegment);
+          htmlResult += formatPlainTextSegment(escapeHtml(plainTextSegment));
         }
 
         const rawToken = match[0];
-        const isBlock = rawToken.startsWith('$$');
-        const mathExpr = isBlock ? rawToken.slice(2, -2).trim() : rawToken.slice(1, -1).trim();
+        let mathExpr = '';
+        let isBlock = false;
+
+        if (rawToken.startsWith('$$') && rawToken.endsWith('$$')) {
+          mathExpr = rawToken.slice(2, -2).trim();
+          isBlock = true;
+        } else if (rawToken.startsWith('$') && rawToken.endsWith('$')) {
+          mathExpr = rawToken.slice(1, -1).trim();
+          isBlock = false;
+        } else if (rawToken.startsWith('\\[') && rawToken.endsWith('\\]')) {
+          mathExpr = rawToken.slice(2, -2).trim();
+          isBlock = true;
+        } else if (rawToken.startsWith('\\(') && rawToken.endsWith('\\)')) {
+          mathExpr = rawToken.slice(2, -2).trim();
+          isBlock = false;
+        }
 
         htmlResult += renderLatexToHtml(mathExpr, { displayMode: isBlock });
         lastIndex = match.index + rawToken.length;
       }
 
-      if (lastIndex < trimmed.length) {
-        htmlResult += escapeHtml(trimmed.slice(lastIndex));
+      if (lastIndex < normalized.length) {
+        htmlResult += formatPlainTextSegment(escapeHtml(normalized.slice(lastIndex)));
       }
 
       return htmlResult;
     } catch {
-      return escapeHtml(trimmed);
+      return formatPlainTextSegment(escapeHtml(normalized));
     }
   };
 
