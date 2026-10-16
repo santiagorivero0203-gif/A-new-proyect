@@ -38,7 +38,7 @@ export function sanitizeLatex(raw: string): string {
   // 2. Recuperar comandos LaTeX dañados por secuencias de escape JSON (\t, \f, \r, \b)
   cleaned = cleaned
     .replace(/\text\{/g, '\\text{')
-    .replace(/\mathrm\{/g, '\\mathrm{')
+    .replace(/mathrm\{/g, '\\mathrm{')
     .replace(/\frac\{/g, '\\frac{')
     .replace(/\rightarrow/g, '\\rightarrow')
     .replace(/\rightleftharpoons/g, '\\rightleftharpoons')
@@ -224,7 +224,7 @@ export function renderLatex(content: string | undefined | null, displayMode: boo
     // Caso C: Contenido mixto con delimitadores ($...$, $$...$$, \[...\], \(...\))
     try {
       let htmlResult = '';
-      const mathRegex = /(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g;
+      const mathRegex = /(\$\$[\s\S]*?\$\$|\$[^$\n]+?\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g;
       let lastIndex = 0;
       let match: RegExpExecArray | null;
 
