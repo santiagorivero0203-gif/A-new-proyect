@@ -32,6 +32,7 @@ import {
   SparklesIcon,
   PlusIcon,
 } from '../common/Icons';
+import { Palette, FlaskConical, BookOpen, Calculator, Layers, Calendar, ChevronRight } from 'lucide-react';
 import type { ExamConfig, Question } from '../../types/exam.types';
 import type { MainTabType } from '../layout/Sidebar';
 
@@ -161,6 +162,199 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
         </div>
       </section>
 
+      {/* Dock de Módulos & Laboratorios Especializados Fijados por Perfil */}
+      <section className="app-card p-5 bg-white border border-slate-200/80 shadow-soft rounded-3xl space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-brand-500 animate-pulse" />
+            <h3 className="text-xs font-bold uppercase tracking-wider font-mono text-slate-800">
+              Laboratorios & Funciones Especializadas Fijadas
+            </h3>
+          </div>
+          <span className="text-[11px] text-slate-500 font-medium">
+            Acceso rápido para {user?.full_name?.split(' ')[0] || 'tu perfil'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {user?.academic_profile === 'mafe_diseno_ucab' ? (
+            <>
+              <button
+                onClick={() => onNavigateToTab?.('DESIGN_PALETTE')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-rose-50/60 border border-slate-200/80 hover:border-rose-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-pink-100 text-pink-700 flex items-center justify-center">
+                    <Palette className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900 group-hover:text-rose-950">Paletas & WCAG</div>
+                <div className="text-[10px] text-slate-500 group-hover:text-rose-700">Accesibilidad & Color</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('CREATIVE_BOARD')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-pink-50/60 border border-slate-200/80 hover:border-pink-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-pink-100 text-pink-700 flex items-center justify-center">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-pink-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900 group-hover:text-pink-950">Entregas & Canva</div>
+                <div className="text-[10px] text-slate-500 group-hover:text-pink-700">Mural Visual & Kanban</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('HUMANITIES_LAB')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-purple-50/60 border border-slate-200/80 hover:border-purple-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900 group-hover:text-purple-950">Humanidades & Lenguaje</div>
+                <div className="text-[10px] text-slate-500 group-hover:text-purple-700">Sintaxis & Leitner</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('PLANNER')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-blue-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                    <Calendar className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900 group-hover:text-blue-950">Agenda & Cortes</div>
+                <div className="text-[10px] text-slate-500 group-hover:text-blue-700">Alertas de Evaluación</div>
+              </button>
+            </>
+          ) : user?.academic_profile === 'santiago_fisica_ucv' ? (
+            <>
+              <button
+                onClick={() => onNavigateToTab?.('MATH_LAB')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-blue-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                    <Calculator className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900">Cálculo & Vectores</div>
+                <div className="text-[10px] text-slate-500">Ecuaciones & Álgebra 3D</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('SCIENCE_LAB')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 border border-slate-200/80 hover:border-emerald-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <FlaskConical className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900">Ciencias Naturales</div>
+                <div className="text-[10px] text-slate-500">Estequiometría & pH</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('EXAMS')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/80 hover:border-indigo-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900">Simulador de Pruebas</div>
+                <div className="text-[10px] text-slate-500">Simadi & OPSU</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('PLANNER')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-blue-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                    <Calendar className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900">Agenda & Horario</div>
+                <div className="text-[10px] text-slate-500">Clases & Entregas</div>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => onNavigateToTab?.('MATH_LAB')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-blue-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                    <Calculator className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900">Cálculo & Álgebra</div>
+                <div className="text-[10px] text-slate-500">Ecuaciones & Prácticas</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('SCIENCE_LAB')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 border border-slate-200/80 hover:border-emerald-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <FlaskConical className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900">Ciencias Naturales</div>
+                <div className="text-[10px] text-slate-500">Química & Genética</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('HUMANITIES_LAB')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-purple-50/60 border border-slate-200/80 hover:border-purple-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900">Humanidades & Lenguaje</div>
+                <div className="text-[10px] text-slate-500">Sintaxis & Lectura</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateToTab?.('EXAMS')}
+                className="p-3.5 rounded-2xl bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/80 hover:border-indigo-300 text-left transition-all group active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="text-xs font-bold text-slate-900">Simulador de Exámenes</div>
+                <div className="text-[10px] text-slate-500">Diagnósticos & Admisión</div>
+              </button>
+            </>
+          )}
+        </div>
+      </section>
+
       {/* Banner Oficial: Curso Introductorio Facultad de Ciencias UCV */}
       {(user?.academic_profile === 'santiago_fisica_ucv' || user?.academic_profile === 'prima_bachillerato_5') && (
         <section className="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-slate-900 via-[#0F52BA] to-blue-950 text-white shadow-soft flex flex-col md:flex-row md:items-center justify-between gap-6 border border-blue-400/20">
@@ -190,35 +384,26 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
       )}
 
       {/* =========================================================================
-          2. GRID DINÁMICO DE MÓDULOS DE ESTUDIO CON BARRAS SUPERIORES DE COLOR
-          Cada cuadro funcional posee su barra superior de acento distintivo:
-          - Tareas: Azul Cobalto (#0F52BA)
-          - Pomodoro: Frambuesa (rose-500)
-          - Asistente Gemini: Púrpura (purple-500)
-          - Evaluaciones: Esmeralda (emerald-500)
-          - Guías: Azul Cielo (sky-500)
-          - Calculadora: Ámbar (amber-500)
-          - Kanban: Rosa (pink-500)
-          - LaTeX Lab: Teal (teal-500)
+          2. GRID DINÁMICO DE MÓDULOS DE ESTUDIO (MINIMALISTA, CON ELEVACIÓN DIFUSA)
           ========================================================================= */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Módulo: Tareas (Barra Azul Cobalto) */}
+        {/* Módulo: Tareas */}
         {isModuleActive('tasks') && (
-          <div className={`${isModuleActive('pomodoro') ? 'lg:col-span-7' : 'lg:col-span-12'} rounded-3xl overflow-hidden border-t-4 border-t-[#0F52BA] shadow-soft transition-all`}>
+          <div className={`${isModuleActive('pomodoro') ? 'lg:col-span-7' : 'lg:col-span-12'} rounded-3xl overflow-hidden shadow-soft transition-all`}>
             <TasksWidget />
           </div>
         )}
 
-        {/* Módulo: Pomodoro (Barra Frambuesa) */}
+        {/* Módulo: Pomodoro */}
         {isModuleActive('pomodoro') && (
-          <div className={`${isModuleActive('tasks') ? 'lg:col-span-5' : 'lg:col-span-12'} rounded-3xl overflow-hidden border-t-4 border-t-rose-500 shadow-soft transition-all`}>
+          <div className={`${isModuleActive('tasks') ? 'lg:col-span-5' : 'lg:col-span-12'} rounded-3xl overflow-hidden shadow-soft transition-all`}>
             <PomodoroWidget />
           </div>
         )}
 
-        {/* Módulo: Asistente Multimodal IA Gemini (Barra Púrpura) */}
+        {/* Módulo: Asistente Multimodal IA Gemini */}
         {isModuleActive('gemini_assistant') && (
-          <div className="lg:col-span-12 rounded-3xl overflow-hidden border-t-4 border-t-purple-500 shadow-soft transition-all">
+          <div className="lg:col-span-12 rounded-3xl overflow-hidden shadow-soft transition-all">
             <GeminiAiWidget
               onStartExamWithQuestions={onStartExamWithQuestions}
               onNavigateToStorage={onNavigateToTab ? () => onNavigateToTab('STORAGE') : undefined}
@@ -226,9 +411,9 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
           </div>
         )}
 
-        {/* Módulo: Lanzador Rápido de Evaluaciones (Barra Verde Esmeralda) */}
+        {/* Módulo: Lanzador Rápido de Evaluaciones */}
         {isModuleActive('quick_exam') && (
-          <div className={`${isModuleActive('guides_quick') ? 'lg:col-span-6' : 'lg:col-span-12'} rounded-3xl overflow-hidden border-t-4 border-t-emerald-500 shadow-soft transition-all`}>
+          <div className={`${isModuleActive('guides_quick') ? 'lg:col-span-6' : 'lg:col-span-12'} rounded-3xl overflow-hidden shadow-soft transition-all`}>
             <QuickExamWidget
               onLaunchExam={onLaunchExam}
               onNavigateToExams={onNavigateToTab ? () => onNavigateToTab('EXAMS') : undefined}
@@ -236,32 +421,32 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
           </div>
         )}
 
-        {/* Módulo: Guías Rápidas de Estudio (Barra Azul Cielo) */}
+        {/* Módulo: Guías Rápidas de Estudio */}
         {isModuleActive('guides_quick') && (
-          <div className={`${isModuleActive('quick_exam') ? 'lg:col-span-6' : 'lg:col-span-12'} rounded-3xl overflow-hidden border-t-4 border-t-sky-500 shadow-soft transition-all`}>
+          <div className={`${isModuleActive('quick_exam') ? 'lg:col-span-6' : 'lg:col-span-12'} rounded-3xl overflow-hidden shadow-soft transition-all`}>
             <GuidesQuickWidget
               onNavigateToGuides={onNavigateToTab ? () => onNavigateToTab('GUIDES') : undefined}
             />
           </div>
         )}
 
-        {/* Módulo: Calculadora Científica (Barra Ámbar Cálido) */}
+        {/* Módulo: Calculadora Científica */}
         {isModuleActive('calculator') && (
-          <div className="lg:col-span-12 rounded-3xl overflow-hidden border-t-4 border-t-amber-500 shadow-soft transition-all">
+          <div className="lg:col-span-12 rounded-3xl overflow-hidden shadow-soft transition-all">
             <CalculatorWidget />
           </div>
         )}
 
-        {/* Módulo: Tablero Visual de Proyectos Kanban (Barra Rosa) */}
+        {/* Módulo: Tablero Visual de Proyectos Kanban */}
         {isModuleActive('kanban') && (
-          <div className="lg:col-span-12 rounded-3xl overflow-hidden border-t-4 border-t-pink-500 shadow-soft transition-all">
+          <div className="lg:col-span-12 rounded-3xl overflow-hidden shadow-soft transition-all">
             <KanbanWidget />
           </div>
         )}
 
-        {/* Módulo: Laboratorio Vectorial & KaTeX (Barra Verde Agua Teal) */}
+        {/* Módulo: Laboratorio Vectorial & KaTeX */}
         {isModuleActive('latex_lab') && (
-          <div className="lg:col-span-12 rounded-3xl overflow-hidden border-t-4 border-t-teal-500 shadow-soft transition-all">
+          <div className="lg:col-span-12 rounded-3xl overflow-hidden shadow-soft transition-all">
             <LatexLabWidget />
           </div>
         )}

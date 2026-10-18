@@ -25,7 +25,12 @@ const TAB_BREADCRUMBS: Record<string, string> = {
   GUIDES: 'Guías & Deconstrucción',
   STORAGE: 'Documentos & Vault',
   CREATIVE_BOARD: 'Proyectos & Entregas',
-  TOOLS: 'Herramientas & Ajustes',
+  DESIGN_PALETTE: 'Laboratorio de Color & WCAG',
+  MATH_LAB: 'Cálculo, Álgebra & Vectores',
+  SCIENCE_LAB: 'Laboratorio de Ciencias Naturales',
+  HUMANITIES_LAB: 'Humanidades & Lenguaje',
+  SETTINGS: 'Configuración & Sistema',
+  TOOLS: 'Configuración & Sistema',
   UCV_COURSE: 'Curso Introductorio Ciencias UCV',
 };
 

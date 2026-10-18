@@ -9,7 +9,7 @@
 // 4. Recepción de Notificaciones Push nativas.
 // ==============================================================================
 
-const CACHE_VERSION = 'cpe-v3-rose-agenda-notifications';
+const CACHE_VERSION = 'cpe-v4-rose-atelier-specialized-labs';
 const STATIC_CACHE = `cpe-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `cpe-dynamic-${CACHE_VERSION}`;
 

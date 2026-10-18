@@ -14,6 +14,11 @@ export type MainTabType =
   | 'EXAMS'
   | 'STORAGE'
   | 'CREATIVE_BOARD'
+  | 'SCIENCE_LAB'
+  | 'HUMANITIES_LAB'
+  | 'DESIGN_PALETTE'
+  | 'MATH_LAB'
+  | 'SETTINGS'
   | 'TOOLS'
   | 'UCV_COURSE';
 

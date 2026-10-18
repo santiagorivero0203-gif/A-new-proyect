@@ -70,7 +70,7 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
     },
   ];
 
-  // Definición completa de las 7 secciones del sistema
+  // Definición completa de las secciones y módulos del sistema
   const allSections: SectionDefinition[] = [
     {
       id: 'PRODUCTIVITY',
@@ -98,11 +98,51 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
     },
     {
       id: 'PLANNER',
-      title: 'Agenda & Cortes Académicos',
+      title: 'Agenda & Evaluaciones',
       badge: 'Ponderado',
-      description: 'Calendario de evaluaciones, fechas límite, pesos porcentuales y simulador "Cuánto necesito para pasar".',
+      description: 'Calendario de evaluaciones, horario semanal de clases, alertas de entregas y cálculo ponderado de notas.',
       icon: <CalendarIcon className="w-5 h-5 text-blue-600" />,
+      recommendedFor: ['santiago_fisica_ucv', 'prima_bachillerato_5', 'andres_bachillerato_1', 'mafe_diseno_ucab'],
+    },
+    {
+      id: 'CREATIVE_BOARD',
+      title: 'Proyectos & Entregas Creativas',
+      badge: 'Canva Hub',
+      description: 'Tablero Kanban, mural visual de entregas tipo Pinterest y Canva Studio Hub para diseño integral.',
+      icon: <PaletteIcon className="w-5 h-5 text-pink-600" />,
+      recommendedFor: ['mafe_diseno_ucab'],
+    },
+    {
+      id: 'DESIGN_PALETTE',
+      title: 'Laboratorio de Color & WCAG',
+      badge: 'Diseño',
+      description: 'Extracción de paletas cromáticas, rueda de colores, armonías y verificación de accesibilidad WCAG AAA.',
+      icon: <PaletteIcon className="w-5 h-5 text-rose-600" />,
+      recommendedFor: ['mafe_diseno_ucab'],
+    },
+    {
+      id: 'MATH_LAB',
+      title: 'Cálculo, Álgebra & Vectores',
+      badge: 'Vectores',
+      description: 'Calculadora científica de alta precisión, solucionador de ecuaciones 2x2 y visualizador vectorial 2D/3D.',
+      icon: <CalculatorIcon className="w-5 h-5 text-blue-600" />,
+      recommendedFor: ['santiago_fisica_ucv', 'andres_bachillerato_1'],
+    },
+    {
+      id: 'SCIENCE_LAB',
+      title: 'Laboratorio de Ciencias Naturales',
+      badge: 'Química & Bio',
+      description: 'Balanceo estequiométrico, tabla periódica interactiva, simulador de pH y genética mendeliana.',
+      icon: <AtomIcon className="w-5 h-5 text-emerald-600" />,
       recommendedFor: ['santiago_fisica_ucv', 'prima_bachillerato_5', 'andres_bachillerato_1'],
+    },
+    {
+      id: 'HUMANITIES_LAB',
+      title: 'Humanidades & Lenguaje',
+      badge: 'Sintaxis',
+      description: 'Analizador sintáctico de oraciones, comprensión lectora, flashcards espaciadas y velocímetro de lectura.',
+      icon: <BookOpenIcon className="w-5 h-5 text-purple-600" />,
+      recommendedFor: ['mafe_diseno_ucab', 'prima_bachillerato_5', 'andres_bachillerato_1'],
     },
     {
       id: 'STORAGE',
@@ -113,20 +153,12 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
       recommendedFor: ['santiago_fisica_ucv', 'andres_bachillerato_1', 'mafe_diseno_ucab'],
     },
     {
-      id: 'CREATIVE_BOARD',
-      title: 'Proyectos & Entregas Creativas',
-      badge: 'Canva Hub',
-      description: 'Tablero Kanban, mural visual de entregas tipo Pinterest y Canva Studio Hub para diseño gráfico.',
-      icon: <PaletteIcon className="w-5 h-5 text-purple-600" />,
-      recommendedFor: ['mafe_diseno_ucab'],
-    },
-    {
-      id: 'TOOLS',
-      title: 'Herramientas & Ajustes',
-      badge: 'Suite Científica',
-      description: 'Laboratorio de química, genética, sintaxis, horarios adaptativos, exportación Notion y telemetría.',
-      icon: <CalculatorIcon className="w-5 h-5 text-amber-600" />,
-      recommendedFor: ['santiago_fisica_ucv', 'prima_bachillerato_5', 'mafe_diseno_ucab'],
+      id: 'SETTINGS',
+      title: 'Configuración & Preferencias',
+      badge: 'Sistema',
+      description: 'Selector visual de temas (Rose Pastel, OLED, Claro), exportación a Notion y purga de caché local.',
+      icon: <Sliders className="w-5 h-5 text-slate-700" />,
+      recommendedFor: ['santiago_fisica_ucv', 'prima_bachillerato_5', 'andres_bachillerato_1', 'mafe_diseno_ucab'],
     },
     {
       id: 'UCV_COURSE',

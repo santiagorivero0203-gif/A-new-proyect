@@ -44,7 +44,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] flex flex-col font-sans selection:bg-brand-500 selection:text-white">
+    <div className="min-h-screen bg-[var(--bg-canvas,#f5f5f7)] text-[var(--text-primary,#1d1d1f)] flex flex-col font-sans selection:bg-brand-500 selection:text-white transition-colors duration-200">
       {/* Sidebar para pantallas de escritorio y cajón desplegable en móvil */}
       <Sidebar
         currentTab={currentTab}

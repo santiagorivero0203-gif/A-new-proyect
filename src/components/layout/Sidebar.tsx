@@ -12,7 +12,7 @@ import {
   PlusIcon,
   AtomIcon,
 } from '../common/Icons';
-import { Sliders } from 'lucide-react';
+import { Sliders, Settings, FlaskConical } from 'lucide-react';
 import { ProfileQuickSwitcher } from '../auth/ProfileQuickSwitcher';
 import { SidebarCustomizerModal } from './SidebarCustomizerModal';
 
@@ -50,10 +50,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: <GridIcon className="w-5 h-5" />,
     },
     {
-      id: 'EXAMS',
-      name: 'Simulador & Exámenes',
-      icon: <LayersIcon className="w-5 h-5" />,
-      badge: 'Simadi',
+      id: 'CREATIVE_BOARD',
+      name: 'Proyectos & Entregas',
+      icon: <PaletteIcon className="w-5 h-5" />,
+    },
+    {
+      id: 'DESIGN_PALETTE',
+      name: 'Paletas & Color WCAG',
+      icon: <PaletteIcon className="w-5 h-5 text-rose-500" />,
+      badge: 'WCAG',
+    },
+    {
+      id: 'PLANNER',
+      name: 'Agenda & Evaluaciones',
+      icon: <CalendarIcon className="w-5 h-5" />,
     },
     {
       id: 'GUIDES',
@@ -62,9 +72,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: 'KaTeX',
     },
     {
-      id: 'PLANNER',
-      name: 'Agenda & Cortes',
-      icon: <CalendarIcon className="w-5 h-5" />,
+      id: 'EXAMS',
+      name: 'Simulador & Exámenes',
+      icon: <LayersIcon className="w-5 h-5" />,
+      badge: 'Simadi',
+    },
+    {
+      id: 'MATH_LAB',
+      name: 'Cálculo & Vectores',
+      icon: <CalculatorIcon className="w-5 h-5" />,
+      badge: '2D/3D',
+    },
+    {
+      id: 'SCIENCE_LAB',
+      name: 'Ciencias Naturales',
+      icon: <FlaskConical className="w-5 h-5" />,
+      badge: 'Lab',
+    },
+    {
+      id: 'HUMANITIES_LAB',
+      name: 'Humanidades & Lenguaje',
+      icon: <BookOpenIcon className="w-5 h-5" />,
+      badge: 'Letras',
     },
     {
       id: 'STORAGE',
@@ -72,20 +101,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: <UploadCloudIcon className="w-5 h-5" />,
     },
     {
-      id: 'CREATIVE_BOARD',
-      name: 'Proyectos & Entregas',
-      icon: <PaletteIcon className="w-5 h-5" />,
-    },
-    {
-      id: 'TOOLS',
-      name: 'Herramientas & Ajustes',
-      icon: <CalculatorIcon className="w-5 h-5" />,
-    },
-    {
       id: 'UCV_COURSE',
       name: 'Curso UCV Ciencias',
       icon: <AtomIcon className="w-5 h-5 text-blue-600" />,
       badge: '6 Semanas',
+    },
+    {
+      id: 'SETTINGS',
+      name: 'Ajustes & Sistema',
+      icon: <Settings className="w-5 h-5" />,
     },
   ];
 
@@ -101,6 +125,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const activeTabsList = user?.preferences?.sidebar_tabs || getProfileSidebarTabs(academicProfile);
   const visibleTabs = navigationTabs.filter((tab) => {
     if (tab.id === 'UCV_COURSE' && !isSantiagoProfile) return false;
+    // Soporte bidireccional para TOOLS y SETTINGS
+    if (tab.id === 'SETTINGS' && (activeTabsList.includes('SETTINGS') || activeTabsList.includes('TOOLS'))) {
+      return true;
+    }
     return activeTabsList.includes(tab.id);
   });
 

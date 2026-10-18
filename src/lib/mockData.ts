@@ -4,10 +4,10 @@ import type { UserProfile, AcademicProfileId, MainTabType } from '../types';
  * Pestañas de la barra lateral recomendadas por perfil académico
  */
 export const DEFAULT_PROFILE_SIDEBAR_TABS: Record<AcademicProfileId, MainTabType[]> = {
-  andres_bachillerato_1: ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'],
-  prima_bachillerato_5: ['PRODUCTIVITY', 'EXAMS', 'GUIDES', 'PLANNER', 'TOOLS'],
-  santiago_fisica_ucv: ['PRODUCTIVITY', 'UCV_COURSE', 'EXAMS', 'GUIDES', 'PLANNER', 'STORAGE', 'TOOLS'],
-  mafe_diseno_ucab: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'STORAGE', 'TOOLS', 'GUIDES'],
+  andres_bachillerato_1: ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'MATH_LAB', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
+  prima_bachillerato_5: ['PRODUCTIVITY', 'EXAMS', 'PLANNER', 'GUIDES', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
+  santiago_fisica_ucv: ['PRODUCTIVITY', 'UCV_COURSE', 'MATH_LAB', 'SCIENCE_LAB', 'EXAMS', 'PLANNER', 'GUIDES', 'STORAGE', 'SETTINGS'],
+  mafe_diseno_ucab: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'DESIGN_PALETTE', 'HUMANITIES_LAB', 'PLANNER', 'STORAGE', 'SETTINGS'],
 };
 
 /**
@@ -27,7 +27,7 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
       sound_enabled: true,
       focus_duration: 25,
       compact_mode: false,
-      sidebar_tabs: ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'],
+      sidebar_tabs: ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'MATH_LAB', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
     },
     created_at: '2026-09-15T10:00:00Z',
     updated_at: '2026-10-12T14:30:00Z',
@@ -46,7 +46,7 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
       sound_enabled: true,
       focus_duration: 45,
       compact_mode: false,
-      sidebar_tabs: ['PRODUCTIVITY', 'EXAMS', 'GUIDES', 'PLANNER', 'TOOLS'],
+      sidebar_tabs: ['PRODUCTIVITY', 'EXAMS', 'PLANNER', 'GUIDES', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
     },
     created_at: '2026-08-01T08:00:00Z',
     updated_at: '2026-10-12T17:15:00Z',
@@ -61,12 +61,12 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
     institution: 'UCV - Facultad de Ciencias (Física)',
     academic_goal: 'Licenciatura en Física & Cálculo Analítico',
     preferences: {
-      theme: 'light',
+      theme: 'dark',
       sound_enabled: false,
       focus_duration: 50,
       calculator_docked: true,
       compact_mode: false,
-      sidebar_tabs: ['PRODUCTIVITY', 'EXAMS', 'GUIDES', 'PLANNER', 'STORAGE', 'TOOLS'],
+      sidebar_tabs: ['PRODUCTIVITY', 'UCV_COURSE', 'MATH_LAB', 'SCIENCE_LAB', 'EXAMS', 'PLANNER', 'GUIDES', 'STORAGE', 'SETTINGS'],
     },
     created_at: '2026-07-10T12:00:00Z',
     updated_at: '2026-10-12T18:00:00Z',
@@ -81,11 +81,11 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
     institution: 'UCAB - Escuela de Diseño Integral',
     academic_goal: 'Taller de Identidad Visual y Ergonomía',
     preferences: {
-      theme: 'light',
+      theme: 'rose_pastel',
       sound_enabled: true,
       focus_duration: 35,
       compact_mode: false,
-      sidebar_tabs: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'STORAGE', 'TOOLS', 'GUIDES'],
+      sidebar_tabs: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'DESIGN_PALETTE', 'HUMANITIES_LAB', 'PLANNER', 'STORAGE', 'SETTINGS'],
     },
     created_at: '2026-08-20T09:00:00Z',
     updated_at: '2026-10-12T16:45:00Z',

@@ -9,6 +9,10 @@ import { SimulatorEngine } from './components/exams/SimulatorEngine';
 import { StorageManagerView } from './components/storage/StorageManagerView';
 import { CreativeDeliveryBoard } from './components/dashboards/CreativeDeliveryBoard';
 import { ToolsAndSettingsView } from './components/tools/ToolsAndSettingsView';
+import { ScienceLabView } from './components/academic/ScienceLabView';
+import { HumanitiesLabView } from './components/academic/HumanitiesLabView';
+import { DesignPaletteView } from './components/design/DesignPaletteView';
+import { MathAlgebraView } from './components/tools/MathAlgebraView';
 import { UCVIntroCourseHub } from './components/academic/UCVIntroCourseHub';
 import { StudentAuthPortal } from './components/auth/StudentAuthPortal';
 import { AuthModal } from './components/auth/AuthModal';
@@ -107,6 +111,15 @@ const AppContent: React.FC = () => {
         );
       case 'CREATIVE_BOARD':
         return <CreativeDeliveryBoard />;
+      case 'DESIGN_PALETTE':
+        return <DesignPaletteView />;
+      case 'SCIENCE_LAB':
+        return <ScienceLabView />;
+      case 'HUMANITIES_LAB':
+        return <HumanitiesLabView />;
+      case 'MATH_LAB':
+        return <MathAlgebraView />;
+      case 'SETTINGS':
       case 'TOOLS':
         return <ToolsAndSettingsView />;
       case 'UCV_COURSE': {

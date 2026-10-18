@@ -7,9 +7,12 @@
     --bg-canvas: #f8fafc;
     --card-surface: #ffffff;
     --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --border-color: rgba(15, 23, 42, 0.07);
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --border-color: rgba(15, 23, 42, 0.08);
     --brand-cobalt: #0F52BA;
+    --accent-active-bg: #0f172a;
+    --accent-active-text: #ffffff;
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-spring: cubic-bezier(0.23, 1, 0.32, 1);
   }
@@ -18,17 +21,34 @@
     --bg-canvas: #0b0f19;
     --card-surface: #111827;
     --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --border-color: rgba(255, 255, 255, 0.08);
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.09);
+    --brand-cobalt: #6366f1;
+    --accent-active-bg: #4f46e5;
+    --accent-active-text: #ffffff;
   }
 
+  /* ==============================================================================
+     ATMÓSFERA EDITORIAL ROSE ATELIER & VELVET BERRY (MARÍA FERNANDA VALDERRAMA)
+     Teoría del color de alto contraste (WCAG AAA) con subtonos ricos y saturación:
+     - Fondo: Porcelana Cálida Rosácea (#FFF0F3)
+     - Texto Primario: Baya Obsidiana (#3B0516) - Ratio > 14:1 contra blanco
+     - Texto Secundario: Ciruela Aterciopelada (#701031)
+     - Acento de Acción Primaria: Carmesí Rosa Vibrante (#D91B5C)
+     - Elementos Activos / Seleccionados: Borgoña Regio (#831038)
+     - Superficies Elevadas: Blanco Puro con Sombra Difusa Frambuesa
+     ============================================================================== */
   .theme-rose-pastel {
-    --bg-canvas: #fff5f7;
+    --bg-canvas: #fff0f3;
     --card-surface: #ffffff;
-    --text-primary: #3b0718;
-    --text-secondary: #881337;
-    --border-color: rgba(244, 114, 182, 0.22);
-    --brand-cobalt: #db2777;
+    --text-primary: #3b0516;
+    --text-secondary: #701031;
+    --text-muted: #9f1239;
+    --border-color: rgba(225, 29, 72, 0.22);
+    --brand-cobalt: #d91b5c;
+    --accent-active-bg: #831038;
+    --accent-active-text: #ffffff;
   }
 
   * {
@@ -54,22 +74,73 @@
   }
 
   .theme-rose-pastel body {
-    background-color: #fff5f7;
-    color: #3b0718;
+    background-color: #fff0f3 !important;
+    color: #3b0516 !important;
   }
 
   .theme-rose-pastel aside {
     background-color: #fff5f7 !important;
-    border-color: rgba(244, 114, 182, 0.25) !important;
+    border-color: rgba(225, 29, 72, 0.22) !important;
   }
 
   .theme-rose-pastel header {
-    background-color: rgba(255, 245, 247, 0.92) !important;
-    border-color: rgba(244, 114, 182, 0.25) !important;
+    background-color: rgba(255, 240, 243, 0.94) !important;
+    border-color: rgba(225, 29, 72, 0.22) !important;
+  }
+
+  /* Adaptación de Contraste Profundo y Coherencia en Rose Atelier */
+  .theme-rose-pastel .bg-slate-900,
+  .theme-rose-pastel .bg-black {
+    background-color: #831038 !important;
+    color: #ffffff !important;
+  }
+
+  .theme-rose-pastel .hover\:bg-black:hover,
+  .theme-rose-pastel .hover\:bg-slate-900:hover {
+    background-color: #690a2c !important;
+  }
+
+  .theme-rose-pastel .text-slate-900,
+  .theme-rose-pastel .text-slate-800 {
+    color: #3b0516 !important;
+  }
+
+  .theme-rose-pastel .text-slate-700,
+  .theme-rose-pastel .text-slate-600 {
+    color: #701031 !important;
+  }
+
+  .theme-rose-pastel .text-slate-500,
+  .theme-rose-pastel .text-slate-400 {
+    color: #9f1239 !important;
+  }
+
+  .theme-rose-pastel .bg-slate-50,
+  .theme-rose-pastel .bg-slate-100 {
+    background-color: #fff5f7 !important;
+  }
+
+  .theme-rose-pastel .border-slate-100,
+  .theme-rose-pastel .border-slate-200 {
+    border-color: rgba(225, 29, 72, 0.18) !important;
+  }
+
+  .theme-rose-pastel .bg-brand-50 {
+    background-color: #ffe4ea !important;
+  }
+
+  .theme-rose-pastel .text-brand-500,
+  .theme-rose-pastel .text-brand-600 {
+    color: #d91b5c !important;
+  }
+
+  .theme-rose-pastel ::selection {
+    background-color: #d91b5c !important;
+    color: #ffffff !important;
   }
 }
 
-/* Sistema de Diseño Minimalista Premium: Tonos Claros, Deep Slate & Azul Cobalto (#0F52BA) */
+/* Sistema de Diseño Minimalista Premium: Tonos Claros, Deep Slate & Rose Atelier */
 @layer components {
   .app-card {
     @apply bg-white border border-slate-200/80 rounded-2xl;
@@ -85,9 +156,9 @@
   }
 
   .theme-rose-pastel .app-card {
-    background-color: #ffffff;
-    border-color: rgba(244, 114, 182, 0.22);
-    box-shadow: 0 2px 10px -2px rgba(219, 39, 119, 0.05);
+    background-color: #ffffff !important;
+    border-color: rgba(225, 29, 72, 0.20) !important;
+    box-shadow: 0 4px 20px -2px rgba(225, 29, 72, 0.08), 0 1px 4px -1px rgba(225, 29, 72, 0.04) !important;
   }
 
   .app-card-interactive {
@@ -101,8 +172,8 @@
     box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.6);
   }
   .theme-rose-pastel .app-card-interactive:hover {
-    border-color: rgba(244, 114, 182, 0.45);
-    box-shadow: 0 6px 20px -4px rgba(219, 39, 119, 0.12);
+    border-color: rgba(225, 29, 72, 0.45) !important;
+    box-shadow: 0 8px 24px -4px rgba(217, 27, 92, 0.16) !important;
   }
 
   .app-badge {
@@ -112,10 +183,12 @@
     @apply bg-slate-800 text-slate-300 border-slate-700;
   }
   .theme-rose-pastel .app-badge {
-    @apply bg-rose-50 text-rose-800 border-rose-200/70;
+    background-color: #ffe4ea !important;
+    color: #831038 !important;
+    border-color: rgba(225, 29, 72, 0.30) !important;
   }
 
-  /* Botón Principal: Azul Cobalto (#0F52BA) con micro-interacción Emil Kowalski (< 200ms) */
+  /* Botón Principal: Azul Cobalto (#0F52BA) / Carmesí Rosa (#D91B5C) con micro-interacción (< 200ms) */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm text-white bg-[#0F52BA] hover:bg-[#0d459d] active:scale-[0.98];
     box-shadow: 0 2px 6px -1px rgba(15, 82, 186, 0.25);
@@ -124,12 +197,13 @@
 
   .theme-rose-pastel .btn-primary,
   .theme-rose-pastel .btn-brand {
-    background-color: #db2777;
-    box-shadow: 0 2px 8px -1px rgba(219, 39, 119, 0.35);
+    background-color: #d91b5c !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 10px -1px rgba(217, 27, 92, 0.40) !important;
   }
   .theme-rose-pastel .btn-primary:hover,
   .theme-rose-pastel .btn-brand:hover {
-    background-color: #be185d;
+    background-color: #be1249 !important;
   }
 
   .btn-brand {
@@ -147,7 +221,12 @@
     @apply bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700;
   }
   .theme-rose-pastel .btn-secondary {
-    @apply bg-white text-rose-900 border-rose-200 hover:bg-rose-50;
+    background-color: #ffffff !important;
+    color: #831038 !important;
+    border-color: rgba(225, 29, 72, 0.30) !important;
+  }
+  .theme-rose-pastel .btn-secondary:hover {
+    background-color: #fff0f3 !important;
   }
 
   .input-clean {
@@ -161,14 +240,34 @@
   .dark .input-clean {
     @apply bg-slate-800/80 border-slate-700 text-white placeholder:text-slate-500 focus:bg-slate-800;
   }
+  .theme-rose-pastel .input-clean {
+    background-color: #fff5f7 !important;
+    border-color: rgba(225, 29, 72, 0.25) !important;
+    color: #3b0516 !important;
+  }
+  .theme-rose-pastel .input-clean:focus {
+    background-color: #ffffff !important;
+    border-color: #d91b5c !important;
+    box-shadow: 0 0 0 2px rgba(217, 27, 92, 0.20) !important;
+  }
 
   /* Clases Pedagógicas para Guías Académicas y Fórmulas KaTeX */
   .formula-box {
     @apply p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-900/50 text-[#0F52BA] dark:text-blue-300 font-serif my-3 text-center text-sm shadow-soft-sm overflow-x-auto;
   }
+  .theme-rose-pastel .formula-box {
+    background-color: #fff0f3 !important;
+    border-color: rgba(225, 29, 72, 0.30) !important;
+    color: #831038 !important;
+  }
 
   .guide-example-box {
     @apply p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 my-3 text-xs leading-relaxed space-y-2;
+  }
+  .theme-rose-pastel .guide-example-box {
+    background-color: #fff5f7 !important;
+    border-color: rgba(225, 29, 72, 0.22) !important;
+    color: #701031 !important;
   }
 
   .step-list {
@@ -200,7 +299,7 @@
   }
 }
 
-/* Scrollbars sutiles para modo claro y modo oscuro */
+/* Scrollbars sutiles para modo claro, oscuro y rose pastel */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -224,6 +323,16 @@
 }
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #475569;
+}
+
+.theme-rose-pastel ::-webkit-scrollbar-track {
+  background: #fff0f3;
+}
+.theme-rose-pastel ::-webkit-scrollbar-thumb {
+  background: #f472b6;
+}
+.theme-rose-pastel ::-webkit-scrollbar-thumb:hover {
+  background: #d91b5c;
 }
 
 @keyframes fadeIn {

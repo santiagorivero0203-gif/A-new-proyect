@@ -34,8 +34,18 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ currentTab, 
   }[] = [
     {
       id: 'PRODUCTIVITY',
-      label: 'Workspace',
+      label: 'Lienzo',
       icon: <TimerIcon className="w-4.5 h-4.5" />,
+    },
+    {
+      id: 'CREATIVE_BOARD',
+      label: 'Entregas',
+      icon: <PaletteIcon className="w-4.5 h-4.5" />,
+    },
+    {
+      id: 'DESIGN_PALETTE',
+      label: 'Paletas',
+      icon: <PaletteIcon className="w-4.5 h-4.5 text-pink-500" />,
     },
     {
       id: 'PLANNER',
@@ -43,13 +53,28 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ currentTab, 
       icon: <CalendarIcon className="w-4.5 h-4.5" />,
     },
     {
+      id: 'GUIDES',
+      label: 'Guías',
+      icon: <BookOpenIcon className="w-4.5 h-4.5" />,
+    },
+    {
       id: 'EXAMS',
       label: 'Simulador',
       icon: <LayersIcon className="w-4.5 h-4.5" />,
     },
     {
-      id: 'GUIDES',
-      label: 'Guías',
+      id: 'MATH_LAB',
+      label: 'Cálculo',
+      icon: <CalculatorIcon className="w-4.5 h-4.5" />,
+    },
+    {
+      id: 'SCIENCE_LAB',
+      label: 'Ciencias',
+      icon: <AtomIcon className="w-4.5 h-4.5" />,
+    },
+    {
+      id: 'HUMANITIES_LAB',
+      label: 'Letras',
       icon: <BookOpenIcon className="w-4.5 h-4.5" />,
     },
     {
@@ -58,17 +83,12 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ currentTab, 
       icon: <UploadCloudIcon className="w-4.5 h-4.5" />,
     },
     {
-      id: 'CREATIVE_BOARD',
-      label: 'Entregas',
-      icon: <PaletteIcon className="w-4.5 h-4.5" />,
-    },
-    {
       id: 'UCV_COURSE',
       label: 'Curso UCV',
       icon: <AtomIcon className="w-4.5 h-4.5 text-[#0F52BA]" />,
     },
     {
-      id: 'TOOLS',
+      id: 'SETTINGS',
       label: 'Ajustes',
       icon: <CalculatorIcon className="w-4.5 h-4.5" />,
     },
@@ -78,6 +98,9 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ currentTab, 
 
   const visibleTabs = allPossibleTabs.filter((tab) => {
     if (tab.id === 'UCV_COURSE' && !isSantiagoProfile) return false;
+    if (tab.id === 'SETTINGS' && (activeTabsList.includes('SETTINGS') || activeTabsList.includes('TOOLS'))) {
+      return true;
+    }
     return activeTabsList.includes(tab.id);
   });
 
@@ -102,7 +125,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ currentTab, 
             >
               {tab.icon}
             </div>
-            <span className="text-[10px] mt-0.5 tracking-tight truncate max-w-[64px]">{tab.label}</span>
+            <span className="text-[10px] tracking-tight">{tab.label}</span>
           </button>
         );
       })}
