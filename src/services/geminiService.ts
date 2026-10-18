@@ -390,7 +390,7 @@ ${DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION}`;
 
     // Si hay API Key disponible, llamar a Google Gemini con responseMimeType JSON
     if (apiKey) {
-      if (onProgress) onProgress('Procesando con Google Gemini (Motor de Deconstrucción)...', 45);
+      if (onProgress) onProgress('Procesando con Google Gemini e IA...', 45);
 
       try {
         const parts: Array<
@@ -458,7 +458,7 @@ ${DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION}`;
           if (onProgress) onProgress('Persistiendo guía y actualizando banco de autoevaluación...', 90);
           await this.persistDeconstructedGuide(parsed, userId, profile);
 
-          if (onProgress) onProgress('¡Deconstrucción académica completada!', 100);
+          if (onProgress) onProgress('¡Análisis de estudio completado!', 100);
           return { success: true, data: parsed };
         }
       } catch (apiError) {
@@ -467,7 +467,7 @@ ${DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION}`;
     }
 
     // Fallback pedagógico estructurado de alta fidelidad (para pruebas sin API key o sin conexión)
-    if (onProgress) onProgress('Generando deconstrucción pedagógica rigurosa...', 70);
+    if (onProgress) onProgress('Generando guía y material de estudio...', 70);
     await new Promise((r) => setTimeout(r, 800));
 
     const simulatedGuide = this.generateAdaptiveDeconstruction(titleContext, topicOrText, userId, profile, document);
@@ -475,7 +475,7 @@ ${DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION}`;
     if (onProgress) onProgress('Guardando guía hiper-compleja y banco de evaluación...', 90);
     await this.persistDeconstructedGuide(simulatedGuide, userId, profile);
 
-    if (onProgress) onProgress('¡Deconstrucción completada!', 100);
+    if (onProgress) onProgress('¡Análisis completado!', 100);
     return { success: true, data: simulatedGuide };
   },
 

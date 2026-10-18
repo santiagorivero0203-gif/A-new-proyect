@@ -164,7 +164,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     },
     {
       id: 'nav-guides',
-      title: 'Ir a Guías de Estudio & Deconstrucción',
+      title: 'Ir a Guías de Estudio & Análisis IA',
       category: 'NAVEGACIÓN',
       icon: <BookOpenIcon className="w-4 h-4 text-slate-600" />,
       run: () => {

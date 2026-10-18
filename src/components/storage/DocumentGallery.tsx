@@ -112,7 +112,7 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
     setProcessingDocTitle(doc.title);
     setIsAiProcessing(true);
     setAiProgressPercent(15);
-    setAiProgressMessage('Iniciando Motor de Deconstrucción Académica (7 Pilares)...');
+    setAiProgressMessage('Iniciando Análisis de Estudio con IA (7 Pilares)...');
 
     try {
       const result = await geminiService.deconstructAcademicContent({

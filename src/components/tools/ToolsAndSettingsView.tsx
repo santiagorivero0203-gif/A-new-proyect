@@ -322,7 +322,7 @@ export const ToolsAndSettingsView: React.FC = () => {
             </div>
 
             <p className="text-xs text-slate-600 leading-relaxed">
-              Exporta tus calificaciones, planes de evaluación, notas de deconstrucción y horarios en formato JSON estándar o genera un workspace estructurado para Notion.
+              Exporta tus calificaciones, planes de evaluación, notas de estudio con IA y horarios en formato JSON estándar o genera un workspace estructurado para Notion.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -794,7 +794,7 @@ export const UploadStation: React.FC<UploadStationProps> = ({
 
             <div className="space-y-2 max-w-md mx-auto">
               <h3 className="text-2xl font-bold text-slate-900 font-display">
-                ¡Guía y Examen Deconstruidos!
+                ¡Guía y Examen Listos con IA!
               </h3>
               <p className="text-sm text-slate-500 leading-relaxed">
                 Nexus ha estructurado la teoría de <strong className="text-slate-700">{topic}</strong> calibrada
