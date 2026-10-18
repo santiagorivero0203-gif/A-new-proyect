@@ -74,9 +74,9 @@ export const cacheCleaner = {
 
   /**
    * Restablecimiento total explícito del caché local solicitado por el usuario.
-   * Deja la aplicación en Estado Cero absoluto (0 registros).
+   * Deja la aplicación en Estado Cero absoluto y purga la memoria caché PWA.
    */
-  resetAllLocalCache(): { purgedKeysCount: number } {
+  async resetAllLocalCache(): Promise<{ purgedKeysCount: number }> {
     if (typeof window === 'undefined') return { purgedKeysCount: 0 };
 
     let count = 0;
@@ -84,7 +84,7 @@ export const cacheCleaner = {
       const keysToRemove: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && (key.startsWith('cpe_') || key.startsWith('mock_') || key.includes('cache'))) {
+        if (key && (key.startsWith('cpe_') || key.startsWith('mock_') || key.includes('cache') || key.startsWith('studynexus_'))) {
           keysToRemove.push(key);
         }
       }
@@ -93,6 +93,20 @@ export const cacheCleaner = {
         localStorage.removeItem(key);
         count++;
       });
+
+      // Purgar CacheStorage del Service Worker
+      if ('caches' in window) {
+        const cacheKeys = await window.caches.keys();
+        await Promise.all(cacheKeys.map((k) => window.caches.delete(k)));
+      }
+
+      // Desregistrar Service Workers activos
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const reg of registrations) {
+          await reg.unregister();
+        }
+      }
     } catch (err) {
       console.error('Error al restablecer caché local:', err);
     }

@@ -648,10 +648,10 @@ export const ToolsAndSettingsView: React.FC = () => {
               </p>
 
               <button
-                onClick={() => {
+                onClick={async () => {
                   if (window.confirm('¿Deseas restablecer el caché local y purgar todos los datos de prueba? Esta acción dejará las tablas limpias para iniciar en producción.')) {
-                    const res = cacheCleaner.resetAllLocalCache();
-                    alert(`Caché purgado con éxito (${res.purgedKeysCount} registros limpiados). La plataforma está en Estado Cero.`);
+                    const res = await cacheCleaner.resetAllLocalCache();
+                    alert(`Caché purgado con éxito (${res.purgedKeysCount} registros limpiados). La plataforma se reiniciará en Estado Cero.`);
                     window.location.reload();
                   }
                 }}
