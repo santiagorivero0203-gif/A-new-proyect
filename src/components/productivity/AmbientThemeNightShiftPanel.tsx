@@ -9,10 +9,6 @@ import React, { useState, useEffect } from 'react';
 import { Moon, Sun, Eye, Sliders, Shield } from 'lucide-react';
 
 export const AmbientThemeNightShiftPanel: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    return document.documentElement.classList.contains('dark');
-  });
-
   const [nightShiftIntensity, setNightShiftIntensity] = useState<number>(() => {
     const saved = localStorage.getItem('studynexus_night_shift');
     return saved ? parseInt(saved, 10) : 0;
@@ -53,15 +49,25 @@ export const AmbientThemeNightShiftPanel: React.FC = () => {
     };
   }, [nightShiftIntensity]);
 
-  // Toggle de Dark Mode
-  const toggleDarkMode = (enable: boolean) => {
-    setIsDarkMode(enable);
-    if (enable) {
+  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark' | 'rose_pastel'>(() => {
+    if (typeof document !== 'undefined') {
+      if (document.documentElement.classList.contains('theme-rose-pastel')) return 'rose_pastel';
+      if (document.documentElement.classList.contains('dark')) return 'dark';
+    }
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('cpe_theme') : null;
+    return saved === 'rose_pastel' ? 'rose_pastel' : saved === 'dark' ? 'dark' : 'light';
+  });
+
+  // Toggle de Dark Mode y Rose Pastel
+  const selectTheme = (theme: 'light' | 'dark' | 'rose_pastel') => {
+    setCurrentTheme(theme);
+    localStorage.setItem('cpe_theme', theme);
+    localStorage.setItem('studynexus_theme', theme);
+    document.documentElement.classList.remove('dark', 'theme-rose-pastel');
+    if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('studynexus_theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('studynexus_theme', 'light');
+    } else if (theme === 'rose_pastel') {
+      document.documentElement.classList.add('theme-rose-pastel');
     }
   };
 
@@ -75,36 +81,47 @@ export const AmbientThemeNightShiftPanel: React.FC = () => {
           </div>
           <div>
             <h3 className="text-base font-semibold text-slate-800 tracking-tight">
-              Modo Oscuro Ambiental & Night Shift (Filtro Luz Azul)
+              Sistema de Temas Ambientales & Night Shift
             </h3>
             <p className="text-xs text-slate-500">
-              Reducción del estrés visual y ajuste de temperatura cromática para sesiones de estudio nocturno
+              Modo Claro editorial, Modo Oscuro Deep Slate y Tema Rose Atelier Pastel suave para María Fernanda
             </p>
           </div>
         </div>
 
-        <div className="flex items-center bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
+        <div className="flex items-center bg-slate-100 p-1 rounded-xl self-start sm:self-auto gap-1">
           <button
-            onClick={() => toggleDarkMode(false)}
+            onClick={() => selectTheme('light')}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
-              !isDarkMode
+              currentTheme === 'light'
                 ? 'bg-white text-slate-800 shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-800'
             }`}
           >
             <Sun className="w-3.5 h-3.5 text-amber-500" />
-            <span>Claro Apple</span>
+            <span>Claro</span>
           </button>
           <button
-            onClick={() => toggleDarkMode(true)}
+            onClick={() => selectTheme('dark')}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
-              isDarkMode
+              currentTheme === 'dark'
                 ? 'bg-slate-900 text-white shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-800'
             }`}
           >
             <Moon className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Deep Slate</span>
+            <span>Oscuro</span>
+          </button>
+          <button
+            onClick={() => selectTheme('rose_pastel')}
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
+              currentTheme === 'rose_pastel'
+                ? 'bg-rose-100 text-rose-800 shadow-xs font-semibold border border-rose-200'
+                : 'text-rose-600 hover:text-rose-800'
+            }`}
+          >
+            <span className="text-xs">🌸</span>
+            <span>Rose Pastel</span>
           </button>
         </div>
       </div>

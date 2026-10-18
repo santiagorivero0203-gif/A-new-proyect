@@ -18,7 +18,7 @@ export type MainTabType =
   | 'UCV_COURSE';
 
 export interface UserPreferences {
-  theme: 'dark' | 'light' | 'system';
+  theme: 'dark' | 'light' | 'system' | 'rose_pastel';
   sound_enabled: boolean;
   focus_duration: number; // minutos
   calculator_docked?: boolean;

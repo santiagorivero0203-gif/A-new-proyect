@@ -41,21 +41,25 @@ export const Header: React.FC<HeaderProps> = ({
   currentTab,
 }) => {
   const { user, signOut } = useAuth();
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark' | 'rose_pastel'>(() => {
+    if (typeof document !== 'undefined') {
+      if (document.documentElement.classList.contains('theme-rose-pastel')) return 'rose_pastel';
+      if (document.documentElement.classList.contains('dark')) return 'dark';
+    }
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('cpe_theme') : null;
+    return saved === 'rose_pastel' ? 'rose_pastel' : saved === 'dark' ? 'dark' : 'light';
   });
 
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    if (next) {
+  const cycleTheme = () => {
+    const nextTheme = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'rose_pastel' : 'light';
+    setCurrentTheme(nextTheme);
+    localStorage.setItem('cpe_theme', nextTheme);
+    localStorage.setItem('studynexus_theme', nextTheme);
+    document.documentElement.classList.remove('dark', 'theme-rose-pastel');
+    if (nextTheme === 'dark') {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('cpe_theme', 'dark');
-      localStorage.setItem('studynexus_theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('cpe_theme', 'light');
-      localStorage.setItem('studynexus_theme', 'light');
+    } else if (nextTheme === 'rose_pastel') {
+      document.documentElement.classList.add('theme-rose-pastel');
     }
   };
 
@@ -100,14 +104,26 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Monitor de Estado de Red y Servidor MCP en Vivo */}
         <LiveSystemStatusWidget />
 
-        {/* Botón de Modo Claro / Luminosidad */}
+        {/* Botón de Selector de Tema: Claro / Oscuro / Rose Atelier Pastel */}
         <button
-          onClick={toggleTheme}
-          className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200/90 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all shadow-soft-sm active:scale-95"
-          title={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro (Deep Slate)"}
-          aria-label="Alternar modo de luz"
+          onClick={cycleTheme}
+          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-soft-sm active:scale-95 ${
+            currentTheme === 'rose_pastel'
+              ? 'bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-700'
+              : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-200'
+          }`}
+          title={
+            currentTheme === 'light'
+              ? 'Tema actual: Claro Apple. Clic para cambiar a Oscuro Deep Slate'
+              : currentTheme === 'dark'
+              ? 'Tema actual: Oscuro Deep Slate. Clic para cambiar a Rose Atelier Pastel (María Fernanda)'
+              : 'Tema actual: Rose Atelier Pastel (María Fernanda). Clic para cambiar a Claro Apple'
+          }
+          aria-label="Alternar tema de interfaz"
         >
-          {isDark ? (
+          {currentTheme === 'rose_pastel' ? (
+            <span className="text-sm select-none">🌸</span>
+          ) : currentTheme === 'dark' ? (
             <Moon className="w-4 h-4 text-indigo-400" />
           ) : (
             <SunIcon className="w-4.5 h-4.5 text-amber-500" />

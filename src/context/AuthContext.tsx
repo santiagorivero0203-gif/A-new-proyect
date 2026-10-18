@@ -179,6 +179,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
+  // Sincronizar tema visual guardado al montar la aplicación
+  useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem('cpe_theme');
+      if (savedTheme === 'rose_pastel') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('theme-rose-pastel');
+      } else if (savedTheme === 'dark') {
+        document.documentElement.classList.remove('theme-rose-pastel');
+        document.documentElement.classList.add('dark');
+      } else if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark', 'theme-rose-pastel');
+      } else {
+        const savedProfile = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedProfile === 'mafe_diseno_ucab') {
+          document.documentElement.classList.add('theme-rose-pastel');
+          localStorage.setItem('cpe_theme', 'rose_pastel');
+        }
+      }
+    } catch (e) {
+      console.warn('Error sincronizando tema inicial:', e);
+    }
+  }, []);
+
   /**
    * Cambiar o seleccionar una cuenta de estudiante de forma segura y aislada
    */
@@ -187,6 +211,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const hydrated = getHydratedProfile(profileId);
     setCurrentUser(hydrated);
     localStorage.setItem(LOCAL_STORAGE_KEY, profileId);
+
+    // Si cambia al perfil de María Fernanda y no tiene tema fijado, activar la atmósfera Rose Pastel
+    if (profileId === 'mafe_diseno_ucab') {
+      const current = localStorage.getItem('cpe_theme');
+      if (!current || current === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('theme-rose-pastel');
+        localStorage.setItem('cpe_theme', 'rose_pastel');
+        localStorage.setItem('studynexus_theme', 'rose_pastel');
+      }
+    }
   };
 
   const selectStudentAccount = (profileId: AcademicProfileId) => {
