@@ -274,4 +274,80 @@ export const notificationService = {
 
     return newEvents;
   },
+
+  /**
+   * Monitor Inteligente de Plazos (Deadlines):
+   * Escanea evaluaciones y entregas pendientes. Si el plazo vence hoy o en las próximas 48h,
+   * emite una notificación nativa deduplicada para no perder ninguna entrega ni parcial.
+   */
+  checkAndNotifyUpcomingDeadlines(params: {
+    events?: EvaluationEvent[];
+    deliveries?: { id: string; title: string; course?: string; dueDate: string }[];
+  }): { notifiedCount: number; upcomingCount: number } {
+    if (!this.isNotificationSupported() || Notification.permission !== 'granted') {
+      return { notifiedCount: 0, upcomingCount: 0 };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const in48Hours = new Date(today.getTime() + 48 * 60 * 60 * 1000);
+    let notifiedCount = 0;
+    let upcomingCount = 0;
+
+    // 1. Notificar Evaluaciones & Parciales Próximos
+    if (params.events && params.events.length > 0) {
+      params.events.forEach((ev) => {
+        if (!ev.date) return;
+        const evDate = new Date(ev.date + 'T00:00:00');
+        if (evDate >= today && evDate <= in48Hours) {
+          upcomingCount++;
+          const dedupKey = `cpe_notif_sent_event_${ev.id}_${ev.date}`;
+          if (!localStorage.getItem(dedupKey)) {
+            const isToday = evDate.getTime() === today.getTime();
+            const timeTag = isToday ? '¡Hoy mismo!' : 'Mañana o en 48 horas';
+            this.sendNativeNotification(`📅 Recordatorio de Examen: ${ev.title}`, {
+              body: `${timeTag} tienes ${ev.type || 'evaluación'} de ${ev.subject} (${ev.weightPercentage}%). Puntos clave: ${(ev.topics || []).slice(0, 2).join(', ') || 'Revisa tus apuntes'}.`,
+              tag: `exam-${ev.id}`,
+            });
+            localStorage.setItem(dedupKey, new Date().toISOString());
+            notifiedCount++;
+          }
+        }
+      });
+    }
+
+    // 2. Notificar Entregas Creativas & Proyectos
+    if (params.deliveries && params.deliveries.length > 0) {
+      params.deliveries.forEach((del) => {
+        if (!del.dueDate) return;
+        const dueDate = new Date(del.dueDate + 'T00:00:00');
+        if (dueDate >= today && dueDate <= in48Hours) {
+          upcomingCount++;
+          const dedupKey = `cpe_notif_sent_delivery_${del.id}_${del.dueDate}`;
+          if (!localStorage.getItem(dedupKey)) {
+            const isToday = dueDate.getTime() === today.getTime();
+            const timeTag = isToday ? '¡Vence Hoy!' : 'Vence en menos de 48 horas';
+            this.sendNativeNotification(`🎨 Recordatorio de Entrega: ${del.title}`, {
+              body: `${timeTag} para ${del.course || 'tu materia'}. Recuerda revisar tus archivos y bocetos antes de enviar.`,
+              tag: `delivery-${del.id}`,
+            });
+            localStorage.setItem(dedupKey, new Date().toISOString());
+            notifiedCount++;
+          }
+        }
+      });
+    }
+
+    return { notifiedCount, upcomingCount };
+  },
+
+  /**
+   * Programa una confirmación o alerta inmediata para una entrega específica
+   */
+  scheduleDeliveryNotification(delivery: { id: string; title: string; course?: string; dueDate: string }): boolean {
+    return this.sendNativeNotification(`🔔 Alerta de Entrega Programada`, {
+      body: `"${delivery.title}" (${delivery.course || 'Materia'}) registrada para el ${delivery.dueDate}. Te avisaremos 48h antes del cierre.`,
+      tag: `schedule-${delivery.id}`,
+    });
+  },
 };

@@ -20,6 +20,8 @@ import { WhatIfGradeCalculator } from './WhatIfGradeCalculator';
 import { WeeklyClassScheduleView } from './WeeklyClassScheduleView';
 import { EvaluationPlanAiImporterModal } from './EvaluationPlanAiImporterModal';
 import { EmptyState } from '../common/EmptyState';
+import { notificationService } from '../../services/notificationService';
+import { Bell, BellOff } from 'lucide-react';
 import type { ExamConfig } from '../../types/exam.types';
 
 type PlannerTab = 'CALENDAR' | 'SCHEDULE' | 'PLANS' | 'REMINDERS' | 'NOTES';
@@ -71,12 +73,34 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
   // Filtro de notas
   const [noteSearch, setNoteSearch] = useState('');
 
+  // Estado del permiso de notificaciones nativas
+  const [notificationStatus, setNotificationStatus] = useState<NotificationPermission>(() => {
+    return notificationService.getPermissionStatus();
+  });
+
+  const handleRequestNotifications = async () => {
+    const granted = await notificationService.requestNotificationPermission();
+    setNotificationStatus(notificationService.getPermissionStatus());
+    if (granted) {
+      notificationService.sendNativeNotification('🔔 Alertas de Exámenes Activadas', {
+        body: 'El sistema monitoreará tus parciales y te alertará 48h y 24h antes de cada prueba.',
+      });
+      notificationService.checkAndNotifyUpcomingDeadlines({ events });
+    }
+  };
+
   // Cargar datos aislados por cuenta
   const loadData = useCallback(() => {
-    setEvents(plannerService.getEvents(userId));
+    const evs = plannerService.getEvents(userId);
+    setEvents(evs);
     setReminders(plannerService.getReminders(userId));
     setNotes(plannerService.getNotes(userId));
     setPlans(plannerService.getPlansBySubject(userId));
+
+    // Monitoreo automático de plazos si las notificaciones están permitidas
+    if (notificationService.getPermissionStatus() === 'granted') {
+      notificationService.checkAndNotifyUpcomingDeadlines({ events: evs });
+    }
   }, [userId]);
 
   useEffect(() => {
@@ -92,7 +116,7 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
     e.preventDefault();
     if (!newEventTitle.trim()) return;
 
-    plannerService.addEvent(userId, {
+    const eventPayload = {
       title: newEventTitle.trim(),
       subject: newEventSubject,
       date: newEventDate,
@@ -100,7 +124,16 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
       type: newEventType,
       weightPercentage: Number(newEventWeight) || 20,
       location: newEventLocation,
-    });
+    };
+
+    plannerService.addEvent(userId, eventPayload);
+
+    // Confirmación nativa de alarma configurada
+    if (notificationService.getPermissionStatus() === 'granted') {
+      notificationService.sendNativeNotification('📅 Evaluación Programada', {
+        body: `Recordatorio establecido para ${newEventTitle.trim()} (${newEventSubject}) el ${newEventDate}.`,
+      });
+    }
 
     setShowEventModal(false);
     setNewEventTitle('');
@@ -268,6 +301,32 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
               Cronograma Mensual & Agenda de Evaluaciones
             </h3>
             <div className="flex items-center gap-2">
+              <button
+                onClick={handleRequestNotifications}
+                className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1.5 shadow-soft-sm active:scale-95 ${
+                  notificationStatus === 'granted'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                    : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                }`}
+                title={
+                  notificationStatus === 'granted'
+                    ? 'Notificaciones de evaluaciones y entregas activas (alertas 48h y 24h antes)'
+                    : 'Haz clic para activar recordatorios nativos en tu pantalla/móvil'
+                }
+              >
+                {notificationStatus === 'granted' ? (
+                  <>
+                    <Bell className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Alertas Activas ✓</span>
+                  </>
+                ) : (
+                  <>
+                    <BellOff className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Activar Alertas</span>
+                  </>
+                )}
+              </button>
+
               <button
                 onClick={() => setShowAiPlanModal(true)}
                 className="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 transition-all flex items-center gap-1.5 shadow-soft-sm active:scale-95"

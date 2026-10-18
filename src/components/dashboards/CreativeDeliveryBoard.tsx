@@ -10,6 +10,8 @@ import {
 import { EmptyState } from '../common/EmptyState';
 import { CanvaStudioHub } from './CanvaStudioHub';
 import { CreativeStudioCanvas, type MafeThemeMode } from './CreativeStudioCanvas';
+import { notificationService } from '../../services/notificationService';
+import { Bell, BellOff } from 'lucide-react';
 
 export interface CreativeDeliveryItem {
   id: string;
@@ -129,6 +131,44 @@ export const CreativeDeliveryBoard: React.FC = () => {
 
   const activePalette = themeMode === 'ROSE_ATELIER' ? roseAtelierPalette : studioPalette;
 
+  const [notifGranted, setNotifGranted] = useState<boolean>(() => {
+    return notificationService.getPermissionStatus() === 'granted';
+  });
+
+  const handleRequestDeliveryNotifications = async () => {
+    const granted = await notificationService.requestNotificationPermission();
+    setNotifGranted(granted);
+    if (granted) {
+      notificationService.sendNativeNotification('🎨 Alertas de Entregas Activadas', {
+        body: 'El sistema monitoreará tus fechas de jurado y te notificará 48h antes de cada entrega.',
+      });
+      if (deliveries.length > 0) {
+        notificationService.checkAndNotifyUpcomingDeadlines({
+          deliveries: deliveries.map((d) => ({
+            id: d.id,
+            title: d.title,
+            course: d.course,
+            dueDate: d.dueDate,
+          })),
+        });
+      }
+    }
+  };
+
+  // Monitoreo automático de plazos de entregas próximas (< 48h)
+  useEffect(() => {
+    if (notificationService.getPermissionStatus() === 'granted' && deliveries.length > 0) {
+      notificationService.checkAndNotifyUpcomingDeadlines({
+        deliveries: deliveries.map((d) => ({
+          id: d.id,
+          title: d.title,
+          course: d.course,
+          dueDate: d.dueDate,
+        })),
+      });
+    }
+  }, [deliveries]);
+
   // Cargar documentos del usuario desde Supabase Storage para poder vincularlos
   useEffect(() => {
     if (!user) return;
@@ -176,6 +216,16 @@ export const CreativeDeliveryBoard: React.FC = () => {
     };
 
     saveDeliveries([newItem, ...deliveries]);
+
+    if (newDueDate && notifGranted) {
+      notificationService.scheduleDeliveryNotification({
+        id: newItem.id,
+        title: newItem.title,
+        course: newItem.course,
+        dueDate: newItem.dueDate,
+      });
+    }
+
     setNewTitle('');
     setNewDueDate('');
     setNewTag('');
@@ -285,6 +335,32 @@ export const CreativeDeliveryBoard: React.FC = () => {
               Canva & Bulk
             </button>
           </div>
+
+          <button
+            onClick={handleRequestDeliveryNotifications}
+            className={`px-3 py-2 rounded-2xl text-xs font-semibold border transition-all flex items-center gap-1.5 shadow-soft-xs active:scale-95 ${
+              notifGranted
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+            }`}
+            title={
+              notifGranted
+                ? 'Alertas de entrega activas (notificaciones nativas 48h y 24h antes de fechas de jurado)'
+                : 'Haz clic para activar recordatorios nativos de entregas'
+            }
+          >
+            {notifGranted ? (
+              <>
+                <Bell className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="hidden sm:inline">Alertas Activas ✓</span>
+              </>
+            ) : (
+              <>
+                <BellOff className="w-3.5 h-3.5 text-rose-600" />
+                <span className="hidden sm:inline">Activar Alertas</span>
+              </>
+            )}
+          </button>
 
           <button
             onClick={() => setShowAddModal(true)}
@@ -409,9 +485,26 @@ export const CreativeDeliveryBoard: React.FC = () => {
 
                         {/* Pie de Tarjeta: Fecha de Jurado y Flechas de Movimiento */}
                         <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400 font-mono">
-                            📅 {item.dueDate}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-slate-400 font-mono">
+                              📅 {item.dueDate}
+                            </span>
+                            <button
+                              onClick={() => {
+                                notificationService.scheduleDeliveryNotification({
+                                  id: item.id,
+                                  title: item.title,
+                                  course: item.course,
+                                  dueDate: item.dueDate,
+                                });
+                                alert(`Alerta programada para "${item.title}". Te notificaremos 48h antes del cierre.`);
+                              }}
+                              className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                              title="Configurar recordatorio nativo para esta entrega"
+                            >
+                              <Bell className="w-3 h-3" />
+                            </button>
+                          </div>
 
                           <div className="flex items-center gap-1">
                             {col.id !== 'brief' && (
