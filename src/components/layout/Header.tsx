@@ -6,7 +6,6 @@ import {
   LogOutIcon,
 } from '../common/Icons';
 import { Moon } from 'lucide-react';
-import { LiveSystemStatusWidget } from './LiveSystemStatusWidget';
 
 interface HeaderProps {
   onOpenAuth: () => void;
@@ -104,11 +103,8 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
       </div>
 
-      {/* Lado Derecho: Pills de estado en vivo, Toggle de Luz, Usuario y Salir */}
+      {/* Lado Derecho: Toggle de Luz, Usuario y Salir */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
-        {/* Monitor de Estado de Red y Servidor MCP en Vivo */}
-        <LiveSystemStatusWidget />
-
         {/* Botón de Selector de Tema: Claro / Oscuro / Rose Atelier Pastel */}
         <button
           onClick={cycleTheme}
