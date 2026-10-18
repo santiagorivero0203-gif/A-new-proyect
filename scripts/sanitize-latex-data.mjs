@@ -26,14 +26,25 @@ const TARGET_FILES = [
 ];
 
 /**
- * Sanitiza una cadena que contiene expresiones LaTeX
+ * Sanitiza una cadena que contiene expresiones LaTeX o números con artefactos de coma flotante
  */
 function sanitizeString(str) {
   if (!str || typeof str !== 'string') return str;
 
   let cleaned = str;
 
-  // 1. REPARACIÓN CRÍTICA: KaTeX prohíbe _ y ^ dentro de \text{...}
+  // 1. Reparar números con artefactos de coma flotante IEEE-754 (ej. 881.9999999999999 -> 882, 2.0000000000000004 -> 2)
+  cleaned = cleaned.replace(/(\d+)\.99999999\d*/g, (_, p1) => String(Number(p1) + 1));
+  cleaned = cleaned.replace(/(\d+)\.00000000\d*/g, '$1');
+  cleaned = cleaned.replace(/(\d+\.\d{1,3})00000000\d*/g, '$1');
+  cleaned = cleaned.replace(/(\d+\.\d{1,3})99999999\d*/g, (_, p1) => {
+    const parts = p1.split('.');
+    const decimals = parts[1].length;
+    return (Number(p1) + Math.pow(10, -decimals)).toFixed(decimals);
+  });
+  cleaned = cleaned.replace(/6\.666666666666667/g, '6.67');
+
+  // 2. REPARACIÓN CRÍTICA: KaTeX prohíbe _ y ^ dentro de \text{...}
   let previous = '';
   while (previous !== cleaned) {
     previous = cleaned;
@@ -43,9 +54,17 @@ function sanitizeString(str) {
     );
   }
 
-  // 2. Si aún queda algún \text{ en una expresión que contiene subíndices o superíndices químicos
+  // 3. Si aún queda algún \text{ en una expresión que contiene subíndices o superíndices químicos
   if (cleaned.includes('_') || cleaned.includes('^')) {
-    cleaned = cleaned.replace(/\\text\{([A-Za-z0-9_{}^+\-\/ ]+)\}/g, '\\mathrm{$1}');
+    cleaned = cleaned.replace(/\\text\{([A-Za-z0-9_{}^+\-/ ]+)\}/g, '\\mathrm{$1}');
+  }
+
+  // 4. Reparar signos mal formados (ej. +- -> -, + - -> -)
+  cleaned = cleaned.replace(/\+-\s*/g, '- ').replace(/\+\s*-\s*/g, '- ');
+
+  // 5. Envolver expresiones con \log o \sqrt sueltas que carecen de $...$
+  if ((cleaned.startsWith('\\log') || cleaned.startsWith('\\sqrt') || /^\d+\\sqrt/.test(cleaned) || /^\d+\s*\\sqrt/.test(cleaned)) && !cleaned.includes('$')) {
+    cleaned = `$${cleaned}$`;
   }
 
   return cleaned;
@@ -91,6 +110,15 @@ function processFile(filePath) {
   let data;
   try {
     data = JSON.parse(rawContent);
+    // Reparar pregunta 1003 con opciones desalineadas
+    if (Array.isArray(data)) {
+      const q1003 = data.find((q) => q && q.id === 1003);
+      if (q1003) {
+        q1003.opciones = ['$110.00', '$110.25', '$105.00', '$115.50'];
+        q1003.correcta = '$110.25';
+        q1003.justificacion = 'Monto = 100 × (1 + 0.05)² = 100 × 1.1025 = 110.25 USD. Opciones bajo 100 USD se descartan.';
+      }
+    }
   } catch (err) {
     console.error(`❌ Error al parsear JSON en ${filePath}:`, err.message);
     return;

@@ -11,7 +11,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { renderLatexToHtml } from '../../utils/latexRenderer';
+import { renderLatex, renderLatexToHtml } from '../../utils/latexRenderer';
 import { ArrowRightIcon, CheckCircleIcon } from '../common/Icons';
 import {
   Scale,
@@ -191,7 +191,7 @@ export const UCVInteractiveLabs: React.FC<{ initialTab?: LabTabId }> = ({
   const IRRATIONAL_CASES = [
     {
       id: 'case_1',
-      title: 'Caso 1: \\sqrt{2x + 3} = x',
+      title: 'Caso 1: $\\sqrt{2x + 3} = x$',
       description: 'Una raíz válida y una raíz extraña introducida por elevar al cuadrado.',
       latexEquation: '\\sqrt{2x + 3} = x',
       step1Latex: '2x + 3 = x^2 \\implies x^2 - 2x - 3 = 0',
@@ -208,14 +208,14 @@ export const UCVInteractiveLabs: React.FC<{ initialTab?: LabTabId }> = ({
         lhs: '\\sqrt{2(-1) + 3} = \\sqrt{1} = 1',
         rhs: '-1',
         isValid: false,
-        reason: '¡Raíz Extraña! 1 \\neq -1. La función raíz cuadrada aritmética siempre produce valores \\ge 0.',
+        reason: '¡Raíz Extraña! $1 \\neq -1$. La función raíz cuadrada aritmética siempre produce valores $\\ge 0$.',
       },
       conclusionLatex: 'S = \\{3\\}',
     },
     {
       id: 'case_2',
-      title: 'Caso 2: \\sqrt{x + 2} = x - 4',
-      description: 'Condición de contorno: el miembro derecho debe ser x - 4 \\ge 0 \\implies x \\ge 4.',
+      title: 'Caso 2: $\\sqrt{x + 2} = x - 4$',
+      description: 'Condición de contorno: el miembro derecho debe ser $x - 4 \\ge 0 \\implies x \\ge 4$.',
       latexEquation: '\\sqrt{x + 2} = x - 4',
       step1Latex: 'x + 2 = (x - 4)^2 = x^2 - 8x + 16 \\implies x^2 - 9x + 14 = 0',
       step2Latex: '(x - 7)(x - 2) = 0 \\implies x_1 = 7,\\; x_2 = 2',
@@ -231,13 +231,13 @@ export const UCVInteractiveLabs: React.FC<{ initialTab?: LabTabId }> = ({
         lhs: '\\sqrt{2 + 2} = \\sqrt{4} = 2',
         rhs: '2 - 4 = -2',
         isValid: false,
-        reason: '¡Raíz Extraña! 2 \\neq -2. Viola la restricción x \\ge 4 del miembro derecho.',
+        reason: '¡Raíz Extraña! $2 \\neq -2$. Viola la restricción $x \\ge 4$ del miembro derecho.',
       },
       conclusionLatex: 'S = \\{7\\}',
     },
     {
       id: 'case_3',
-      title: 'Caso 3: \\sqrt{5x - 6} = x',
+      title: 'Caso 3: $\\sqrt{5x - 6} = x$',
       description: 'Ambas soluciones son reales y válidas.',
       latexEquation: '\\sqrt{5x - 6} = x',
       step1Latex: '5x - 6 = x^2 \\implies x^2 - 5x + 6 = 0',
@@ -1017,9 +1017,10 @@ export const UCVInteractiveLabs: React.FC<{ initialTab?: LabTabId }> = ({
                       ),
                     }}
                   />
-                  <p className="text-[11px] leading-relaxed opacity-90">
-                    {currentIrrational.candidate1.reason}
-                  </p>
+                  <div
+                    className="text-[11px] leading-relaxed opacity-90"
+                    dangerouslySetInnerHTML={{ __html: renderLatex(currentIrrational.candidate1.reason, false) }}
+                  />
                 </div>
 
                 {/* Candidato 2 */}
@@ -1053,9 +1054,10 @@ export const UCVInteractiveLabs: React.FC<{ initialTab?: LabTabId }> = ({
                       ),
                     }}
                   />
-                  <p className="text-[11px] leading-relaxed opacity-90">
-                    {currentIrrational.candidate2.reason}
-                  </p>
+                  <div
+                    className="text-[11px] leading-relaxed opacity-90"
+                    dangerouslySetInnerHTML={{ __html: renderLatex(currentIrrational.candidate2.reason, false) }}
+                  />
                 </div>
               </div>
 
@@ -1743,7 +1745,7 @@ export const UCVInteractiveLabs: React.FC<{ initialTab?: LabTabId }> = ({
                     <div
                       className="text-xs font-bold text-[#0F52BA]"
                       dangerouslySetInnerHTML={{
-                        __html: renderLatexToHtml(`f(x) = ${currentBb.latexFormula}`, { displayMode: false }),
+                        __html: renderLatexToHtml(currentBb.latexFormula, { displayMode: false }),
                       }}
                     />
                   )}

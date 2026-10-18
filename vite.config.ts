@@ -13,7 +13,7 @@ export default defineConfig({
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'vendor-react';
           }
-          if (id.includes('node_modules/katex')) {
+          if (id.includes('node_modules/katex') || id.includes('katex')) {
             return 'vendor-katex';
           }
           if (id.includes('node_modules/@supabase')) {
@@ -24,6 +24,12 @@ export default defineConfig({
           }
           if (id.includes('node_modules/canvas-confetti')) {
             return 'vendor-ui';
+          }
+          if (id.includes('simadi_preguntas.json') || id.includes('simadi_guides.json')) {
+            return 'data-simadi';
+          }
+          if (id.includes('UCVInteractiveLabs')) {
+            return 'academic-labs';
           }
         },
       },

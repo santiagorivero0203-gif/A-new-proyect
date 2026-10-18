@@ -83,7 +83,7 @@ async function processTaskBreakdown(params: {
   notes?: string;
   academicLevel?: AcademicLevel;
 }) {
-  const { taskId, userId, taskTitle, subject, notes, academicLevel = 'BASICO_ESCOLAR' } = params;
+  const { taskId, userId: _userId, taskTitle, subject, notes, academicLevel = 'BASICO_ESCOLAR' } = params;
   const ai = getGeminiClient();
   const supabase = getSupabaseAdmin();
 
@@ -181,7 +181,7 @@ async function processGuideDeconstruction(params: {
   documentText?: string;
   academicLevel: AcademicLevel;
 }) {
-  const { queueId, userId, topicTitle, subject, topic, documentUrl, documentText, academicLevel } = params;
+  const { queueId, userId, topicTitle: _topicTitle, subject, topic, documentUrl, documentText, academicLevel } = params;
   const ai = getGeminiClient();
   const supabase = getSupabaseAdmin();
 

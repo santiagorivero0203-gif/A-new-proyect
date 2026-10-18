@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { taskService, type TaskItem } from '../../../services/taskService';
 import { CheckCircleIcon, PlusIcon, TrashIcon } from '../../common/Icons';
+import { Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { TaskDetailModal } from '../../kanban/TaskDetailModal';
+import type { TaskItemData } from '../../kanban/TaskCard';
 
 export const TasksWidget: React.FC = () => {
   const { user } = useAuth();
   const userId = user?.id || 'santiago-003-uuid';
 
   const [tasks, setTasks] = useState<TaskItem[]>(() => taskService.getTasks(userId));
+  const [selectedDetailTask, setSelectedDetailTask] = useState<TaskItemData | null>(null);
   const [newTitle, setNewTitle] = useState('');
   const [newSubject, setNewSubject] = useState('Matemática');
   const [newPriority, setNewPriority] = useState<'ALTA' | 'MEDIA' | 'BAJA'>('MEDIA');
@@ -190,6 +194,25 @@ export const TasksWidget: React.FC = () => {
                   </span>
 
                   <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedDetailTask({
+                        id: task.id,
+                        title: task.title,
+                        subject: task.subject,
+                        priority: task.priority,
+                        due_date: task.dueDate,
+                        completed: task.completed,
+                      });
+                    }}
+                    className="p-1.5 text-slate-400 hover:text-[#0F52BA] hover:bg-blue-50 transition-all rounded-lg"
+                    title="Desglosar y enriquecer con IA (Notion AI)"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#0F52BA]" />
+                  </button>
+
+                  <button
                     onClick={(e) => handleDeleteTask(e, task.id)}
                     className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all rounded-lg"
                     title="Eliminar tarea"
@@ -211,6 +234,28 @@ export const TasksWidget: React.FC = () => {
           {tasks.length} registradas
         </span>
       </div>
+
+      {/* Modal de Desglose Inteligente con IA (Notion AI Style) */}
+      <TaskDetailModal
+        task={selectedDetailTask}
+        isOpen={Boolean(selectedDetailTask)}
+        onClose={() => setSelectedDetailTask(null)}
+        onTaskUpdated={(updated) => {
+          const currentList = taskService.getTasks(userId);
+          const updatedList = currentList.map((t) =>
+            t.id === Number(updated.id)
+              ? {
+                  ...t,
+                  title: updated.title,
+                  priority: updated.priority,
+                  completed: updated.completed,
+                }
+              : t
+          );
+          taskService.saveTasks(userId, updatedList);
+          setTasks(updatedList);
+        }}
+      />
     </div>
   );
 };

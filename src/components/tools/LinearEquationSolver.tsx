@@ -132,22 +132,22 @@ export const LinearEquationSolver: React.FC<{ className?: string }> = ({ classNa
   const solveSystem = () => {
     if (dimension === 2) {
       const det = a1 * b2 - a2 * b1;
+      const detX = c1 * b2 - c2 * b1;
+      const detY = a1 * c2 - a2 * c1;
+
       if (det === 0) {
-        const detX = c1 * b2 - c2 * b1;
-        if (detX === 0) {
+        if (detX === 0 && detY === 0) {
+          // Si ambas ecuaciones tienen al menos un coeficiente no nulo proporcional
           return {
             type: 'INFINITAS',
-            message: 'El sistema es compatible indeterminado: tiene infinitas soluciones.',
+            message: 'El sistema es compatible indeterminado: tiene infinitas soluciones (rectas coincidentes).',
           };
         }
         return {
           type: 'INCOMPATIBLE',
-          message: 'El sistema es incompatible: no tiene solución (las rectas son paralelas).',
+          message: 'El sistema es incompatible: no tiene solución (rectas paralelas disjuntas).',
         };
       }
-
-      const detX = c1 * b2 - c2 * b1;
-      const detY = a1 * c2 - a2 * c1;
 
       return {
         type: 'UNICAS',
@@ -160,16 +160,22 @@ export const LinearEquationSolver: React.FC<{ className?: string }> = ({ classNa
     } else {
       // Sistema 3x3 por Regla de Cramer (Matriz Sarrus)
       const det = det3x3(a1, b1, d1, a2, b2, d2, a3, b3, d3);
-      if (det === 0) {
-        return {
-          type: 'INCOMPATIBLE',
-          message: 'El determinante principal es cero (Δ = 0): el sistema 3x3 no tiene solución única.',
-        };
-      }
-
       const detX = det3x3(c1, b1, d1, c2, b2, d2, c3, b3, d3);
       const detY = det3x3(a1, c1, d1, a2, c2, d2, a3, c3, d3);
       const detZ = det3x3(a1, b1, c1, a2, b2, c2, a3, b3, c3);
+
+      if (det === 0) {
+        if (detX === 0 && detY === 0 && detZ === 0) {
+          return {
+            type: 'INFINITAS',
+            message: 'El sistema 3x3 es compatible indeterminado: infinitas soluciones (Δ = Δx = Δy = Δz = 0).',
+          };
+        }
+        return {
+          type: 'INCOMPATIBLE',
+          message: 'El determinante principal es cero (Δ = 0) y los términos independientes no son coincidentes: el sistema no tiene solución.',
+        };
+      }
 
       return {
         type: 'UNICAS',

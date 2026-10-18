@@ -510,3 +510,262 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 
 
 
+
+### Prompt 18: Auditoría Forense Integral, Cumplimiento de las 200 Funciones, Aislamiento Multi-Cuenta y Optimización de Producción
+> **Contenido**:
+> 1. **Reparación Exhaustiva de Renderizado Matemático LaTeX / KaTeX**:
+>    - `ExamResultsReport.tsx`: Renderizado formal de `userOpt.text` y `correctOpt.text` mediante `renderLatex` dentro de `dangerouslySetInnerHTML`.
+>    - `AcademicGuidesView.tsx`: Compilación KaTeX de teoría, preguntas y resoluciones detalladas con `renderLatexToHtml`.
+>    - `UCVIntroCourseHub.tsx`: Corregida pestaña rota `'EXAM_SIMULATOR'` a `'EXAMS'` (evitando redirección errónea); compilación KaTeX en descripciones, ejercicios, trampas y flashcards; reemplazada clave muerta `cpe_events_cache` por inyección directa en `plannerService` y `taskService`.
+>    - `UCVInteractiveLabs.tsx`: Envoltorio de casos irracionales en `$ ... $` y corrección de fórmula duplicada `f(x) = f(x) =`.
+>    - `VectorAndGraphInteractive.tsx`: Agregada fórmula analítica de derivada para función cúbica (`f(x) = 0.1x^3 - x \implies f'(x) = 0.3x^2 - 1`).
+> 2. **Aislamiento Estricto de Estado y Almacenamiento por Usuario (`userId`)**:
+>    - `WhatIfGradeCalculator.tsx`: Conectado a `useAuth()`, escenarios guardados bajo `cpe_${userId}_whatif_scenarios_v1`, y presets evaluativos según el perfil activo (Andrés, Santiago, Sofía, Mafe).
+>    - `GradeProjectionCalculator.tsx`: Efecto de sincronización de `selectedSubject` al cambiar de plan o estudiante.
+>    - `AdaptiveStudyScheduleGenerator.tsx`: Tareas dinámicas y exámenes próximos cargados directamente de `taskService` y `plannerService` aislados por `userId`.
+>    - `SpacedRepetitionFlashcards.tsx`: Barajas, repeticiones e intervalos SM-2 aislados bajo `cpe_${userId}_sm2_flashcards_v1`.
+>    - `PomodoroWidget.tsx`: Conectado a `useAuth()`, inicializado con `user.preferences.focus_duration`, y contador diario guardado en `cpe_${userId}_pomodoros_today`.
+>    - `sessionRecoveryService.ts`: Claves de respaldo de examen activo aisladas por `cpe_${userId}_active_exam_backup_v1`.
+>    - `useExamSimulator.ts`: Recuperación de examen por `userId` y preservación de preguntas personalizadas de IA en reintentos.
+>    - `backupRestoreService.ts`: Filtrado de snapshot para que las exportaciones JSON contengan exclusivamente datos del usuario autenticado.
+>    - `AcademicPlannerView.tsx`: Reseteo de selección y campos de notas al cambiar de cuenta.
+> 3. **Modo Oscuro, Navegación, Header y Reglas de Diseño (`rulesofdesign.md`)**:
+>    - `index.css`: Reglas de tema `.dark` (Deep Slate `#0b0f19`, tarjetas `#111827`, bordes e inputs contrastados) y clases de ayuda para cajas de fórmulas.
+>    - `Header.tsx`: Agregado `UCV_COURSE` a `TAB_BREADCRUMBS` y conectado el botón de sol/luna con `onClick` para alternar la clase `.dark` y persistir en `localStorage`.
+>    - `MobileNavigation.tsx`: Filtrado dinámico de pestañas inferiores según los permisos del perfil activo (incluyendo `PLANNER`, `UCV_COURSE`, `CREATIVE_BOARD`).
+>    - `MainLayout.tsx` & `CommandPalette.tsx`: Eliminación total de emojis en botones de interfaz reemplazados por SVG limpios de `lucide-react` (`Calculator`, `PenTool`), e indexación en vivo de tareas del estudiante en `Cmd + K`.
+> 4. **Conexión de Módulos de Alto Valor & Correcciones Científicas**:
+>    - `TasksWidget.tsx`: Conectado `TaskDetailModal` (Notion-AI style breakdown) con botón de destellos en cada ítem y sincronización Supabase Realtime.
+>    - `StorageManagerView.tsx`: Conectado `UploadStation` con carril dual y guardarraíles cognitivos en la nueva pestaña `'AI_STATION'`.
+>    - `ExamRunner.tsx`: Conectado `useProctoringCamera.ts` con vista previa de cámara supervisora y desmontaje seguro de hardware.
+>    - `LinearEquationSolver.tsx`: Corrección del determinante nulo ($\det = 0$) para diferenciar sistemas incompatibles de sistemas con infinitas soluciones mediante el Teorema de Rouché-Frobenius.
+>    - `StoichiometryBalancer.tsx`: Desglose cuantitativo de reactivos secundarios requeridos además de los productos teóricos.
+>    - `InteractivePeriodicTable.tsx`: Corrección de clasificación química del Aluminio ($Z=13$) a `'post-transicion'` (metal del bloque p / representativo) con estilos visuales dedicados.
+>    - `LatexLabWidget.tsx`: Incorporados presets rápidos de fórmulas físicas fundamentales (Hamilton, Maxwell-Ampère, Schrödinger, Relatividad).
+> 5. **Depuración de Código Muerto y Optimización de Producción**:
+>    - Eliminados 7 dashboards heredados y no utilizados (`AndresDashboard.tsx`, `PrimaDashboard.tsx`, `SantiagoDashboard.tsx`, `MafeDashboard.tsx`, `DashboardRouter.tsx`, `ProductivityDashboard.tsx`, `ExamSimulatorsView.tsx`).
+>    - Configurada división de chunks (`manualChunks`) en `vite.config.ts` para aislar `data-simadi` y `academic-labs`.
+>    - **Resultado Final**: 0 errores en `oxlint`, 0 errores en `tsc -b && vite build`, y todos los paquetes generados por debajo de los 1000 kB.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/components/tools/InteractivePeriodicTable.tsx` | Actualizar | Clasificación de Aluminio a `post-transicion` y paleta de colores teal correspondiente. |
+| `src/components/dashboards/*` | Eliminar | Retiro de 5 dashboards legacy no referenciados (`Andres`, `Prima`, `Santiago`, `Mafe`, `DashboardRouter`). |
+| `src/components/productivity/ProductivityDashboard.tsx` | Eliminar | Retiro de dashboard legacy sustituido por el workspace modular. |
+| `src/components/exams/ExamSimulatorsView.tsx` | Eliminar | Retiro de vista estática legacy reemplazada por `ExamHub.tsx`. |
+| `src/components/workspace/widgets/LatexLabWidget.tsx` | Actualizar | Agregado selector de fórmulas preestablecidas de física teórica. |
+| `vite.config.ts` | Actualizar | Configuración de `manualChunks` para `data-simadi` y `academic-labs`. |
+| `src/services/sessionRecoveryService.ts` | Corregir | Eliminación de llaves duplicadas huérfanas tras refactorización. |
+| `src/components/planner/AdaptiveStudyScheduleGenerator.tsx` | Corregir | Sincronización de referencias de tareas a `dynamicTasks`. |
+| `src/components/tools/ScratchpadDrawer.tsx` | Corregir | Conexión de `handleTextChange` al textarea para autoguardado persistente. |
+| `src/components/tools/MendelianGeneticsSimulator.tsx` | Optimizar | Extracción de `TRAIT_A` y `TRAIT_B` a constantes de nivel superior para estabilidad de `useMemo`. |
+| `src/components/kanban/TaskDetailModal.tsx` | Optimizar | Reordenamiento de `handleRealtimeUpdate` con `useCallback` previo a la suscripción Realtime. |
+| `src/components/planner/AcademicPlannerView.tsx` | Optimizar | Envoltorio de `loadData` en `useCallback` para estabilidad de dependencias del efecto. |
+| `src/components/storage/DocumentGallery.tsx` | Optimizar | Envoltorio de `fetchDocuments` en `useCallback`. |
+| `src/components/academic/ScientificVisualizer.tsx` | Optimizar | Remoción de re-export secundario para cumplimiento estricto de React Fast Refresh. |
+| `src/components/tools/StoichiometryBalancer.tsx` | Optimizar | Declaración local de `PRESET_REACTIONS`. |
+| `src/utils/latexRenderer.ts` | Optimizar | Corrección de escape de barra en expresiones regulares y anotación para caracteres de control. |
+| `lib/pedagogicalPrompts.ts` | Optimizar | Limpieza de variables catch no leídas y sanitización regex. |
+| `src/services/geminiService.ts` | Optimizar | Corrección de escapes `\Delta` en template string y supresión de parámetros no leídos. |
+| `api/nexus-worker.ts` & `api/mcp.ts` | Optimizar | Prefijado con guión bajo de variables de firma no utilizadas (`_userId`, `_topicTitle`, `_jsonrpc`). |
+| `ARCHITECTURE_200.md` | Actualizar | Certificación oficial de las 200 funciones al 100% operativas. |
+
+---
+
+### Prompt 19: Atelier Creativo (Temas Personalizados & Lienzo con Formas), Calibración Cognitiva de Andrés (0 Física Universitaria), Guías Didácticas UCV y Evaluaciones Individuales por Perfil
+> **Contenido**:
+> 1. **Atelier Creativo & Temas Personalizados para María Fernanda (`mafe_diseno_ucab`)**:
+>    - **Conmutador de Temas Dinámico**: Implementación de conmutación entre el tema neutro profesional (`STUDIO_MODERNO`) y el tema pastel editorial (`ROSE_ATELIER`). Basado en una paleta de rosas pastel suaves, desaturadas (`#FFF7F9`, `#FCE7F3`, `#E29578`, `#FBCFE8`) que respetan la directriz `rulesofdesign.md` ("Menos, pero mejor", sin saturación infantil ni fatiga visual).
+>    - **Lienzo Creativo Interactivo (`CreativeStudioCanvas.tsx`)**:
+>      - Inserción y manipulación de figuras geométricas (Rectángulo, Círculo concéntrico, Triángulo equilátero, Estrella de acento, Píldora de estado, Post-it editorial y Conector ortogonal).
+>      - Inspector de propiedades en tiempo real (color de relleno, trazo, grosor, rotación, opacidad, tipografía, tamaño y orden de capas `zIndex`).
+>      - Guardado persistente multi-proyecto en `localStorage` (`cpe_${userId}_canvas_projects_v1`) con selector rápido de proyectos y exportación nativa a JSON y PNG.
+>    - **Motor de Crítica Proyectual por IA (`generateDesignCritique`)**:
+>      - Análisis de ideas de diseño con evaluación estructurada: Jerarquía visual (60-30-10), cumplimiento de contraste WCAG 2.1 (mínimo 4.5:1), leyes de Gestalt y preguntas trampa para la defensa ante el jurado UCAB con inserción de notas adhesivas reactivas en el lienzo.
+>    - **Generador de Concept Art / Mockups**:
+>      - Generación conceptual de presets estilísticos (Pastel Editorial, Glassmorphic UI, Bauhaus Abstract, Clay 3D y Arquitectónico Minimalista) con incorporación directa al lienzo de trabajo.
+>    - **Integración en el Tablero de Entregas (`CreativeDeliveryBoard.tsx`)**:
+>      - Nueva vista `CANVAS` (Lienzo & Formas Creativas) junto al Tablero Kanban, Mural Visual y Canva Studio Hub. Selector de tema en el encabezado y paleta cromática reactiva.
+> 2. **Calibración Pedagógica Estricta para Andrés (`andres_bachillerato_1`)**:
+>    - **Resolución de la Incongruencia de Nivel**: Erradicación definitiva de análisis universitarios con derivadas, integrales, relatividad o matrices de Gauss-Jordan en el perfil de primer año.
+>    - **Inyección de Guardarraíles Cognitivos (`buildCalibratedSystemInstruction`)**: Calibración estricta del LLM y de los motores de fallback (`generateAndresSchoolGuide`) empleando la analogía cotidiana de la balanza en equilibrio para ecuaciones lineales, fracciones de pizza, ejemplos tangibles y tono cordial sin tecnicismos universitarios.
+> 3. **Guías Didácticas de Alta Visibilidad para el Curso Introductorio UCV (`santiago_fisica_ucv`)**:
+>    - **Barra de Controles de Lectura Didáctica (`UCVIntroCourseHub.tsx`)**:
+>      - Selector de escala tipográfica: `Aa Estándar` (14px), `Aa+ Didáctico` (17px con interlineado ampliado) y `👁️ Alto Contraste` (18px, tipografía seminegrita contrastada para sesiones de estudio exigentes).
+>    - **Desglose Didáctico Modular por Capas**:
+>      - Reestructuración de la teoría con tarjetas en 3 capas pedagógicas:
+>        1. 💡 **La Intuición Práctica**: Razonamiento físico y analógico antes del cálculo.
+>        2. 📐 **Fórmula Clave KaTeX**: Expresión matemática depurada sin errores de sintaxis.
+>        3. ⚠️ **Trampa del Examen UCV**: Alerta específica sobre los distractores más comunes en los parciales de la Facultad de Ciencias.
+> 4. **Batería de Evaluaciones Individuales por Perfil**:
+>    - **Ampliación del Banco de Preguntas (`questionBank.ts`)**: Adición de reactivos reales para diseño (WCAG 2.1, Gestalt, regla 60-30-10, leading vs tracking), bachillerato inicial (ecuaciones de balanza, fracciones homogéneas, célula vegetal vs animal) y ciencias universitarias (cinemática diferencial, límites trigonométricos notables).
+>    - **Registro y Selector de Exámenes Individuales (`PROFILE_TAILORED_EXAMS`)**:
+>      - Santiago: Exámenes específicos para Física General I UCV, Cálculo Diferencial I UCV y Álgebra Lineal en ℝ³.
+>      - Andrés: Álgebra Inicial de 1er Año Básico y Ciencias Naturales / Lengua Materna.
+>      - Mafe: Accesibilidad WCAG & Colorimetría y Percepción Visual & Gestalt.
+>      - Prima: Examen de Admisión Universitaria (Química Estequiométrica y Aptitud Cuantitativa).
+>    - Integración en `SimulatorEngine.tsx` con sección destacada de inicio directo y en `UCVIntroCourseHub.tsx`.
+> 5. **Validación de Calidad y Rendimiento**:
+>    - `npx oxlint`: 0 errores en todos los archivos.
+>    - `npx tsc -b`: 0 errores de compilación TypeScript.
+>    - `npx vite build`: 0 errores, bundle optimizado y fragmentado en chunks controlados.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/components/dashboards/CreativeStudioCanvas.tsx` | Crear | Lienzo interactivo con figuras geométricas, inspector de propiedades, temas, crítica IA y mockups. |
+| `src/components/dashboards/CreativeDeliveryBoard.tsx` | Actualizar | Integración de vista `CANVAS`, conmutador de tema Rose Atelier / Estudio y paleta reactiva. |
+| `src/services/geminiService.ts` | Actualizar | Guardarraíles pedagógicos por perfil, `generateDesignCritique`, `generateAndresSchoolGuide` y `buildCalibratedSystemInstruction`. |
+| `src/components/academic/UCVIntroCourseHub.tsx` | Actualizar | Controles de visibilidad de texto didáctico (Aa, Aa+, Alto Contraste), desglose en 3 capas y parciales individuales UCV. |
+| `src/lib/questionBank.ts` | Actualizar | Reactivos de diseño, 1er año y física UCV; registro `PROFILE_TAILORED_EXAMS` y función `getQuestionsForProfile`. |
+| `src/components/exams/SimulatorEngine.tsx` | Actualizar | Sección destacada de evaluaciones individuales calibradas por perfil con inicio directo. |
+| `PROMPTS_AND_CHANGELOG.md` | Actualizar | Bitácora técnica completa del Prompt 19. |
+
+---
+
+### Prompt 20: Generación del Documento Canónico de Arquitectura y Mapeo de Funciones para Auditorías con Opus 5.5 sin Agente de Navegador (`SYSTEM_ARCHITECTURE_AND_FUNCTIONS_MAP.md`)
+> **Contenido**:
+> 1. **Diseño del Documento de Auditoría de Ultra-Alta Densidad**:
+>    - Creación de [`SYSTEM_ARCHITECTURE_AND_FUNCTIONS_MAP.md`](file:///c:/Users/user/Desktop/video%20proyectos/A%20new%20proyect/SYSTEM_ARCHITECTURE_AND_FUNCTIONS_MAP.md), diseñado específicamente para que modelos de razonamiento avanzado (como Claude Opus 5.5) puedan ejecutar una auditoría integral del 100% de la plataforma en un solo turno, sin necesidad de comandos de exploración de directorios ni costosas sesiones de agentes de navegador.
+> 2. **Mapeo Completo de Subsistemas, Componentes y Relaciones**:
+>    - Diagrama Mermaid de topología de capas y flujo de control global desde `index.html` hasta Vercel Serverless y Supabase Postgres.
+>    - Mapeo de las 8 pestañas activas del enrutador central de [`App.tsx`](file:///c:/Users/user/Desktop/video%20proyectos/A%20new%20proyect/src/App.tsx) y widgets desacoplados en [`MainLayout.tsx`](file:///c:/Users/user/Desktop/video%20proyectos/A%20new%20proyect/src/components/layout/MainLayout.tsx).
+>    - Matriz de los 4 perfiles académicos (`santiago_fisica_ucv`, `andres_bachillerato_1`, `mafe_diseno_ucab`, `prima_bachillerato_5`) con sus guardarraíles cognitivos, restricciones de nivel y enlaces a código.
+> 3. **Trazabilidad Exhaustiva de las 200 Funciones**:
+>    - Tabla de trazabilidad de las 200 funciones operativas con ID (1 a 200), nombre, archivo fuente principal y símbolo / export o línea clave para auditoría instantánea.
+> 4. **Mapeo de Persistencia Local Aislada por `userId`**:
+>    - Inventario exhaustivo de todas las claves de `localStorage` y `sessionStorage` parametrizadas bajo `cpe_${userId}_*`.
+> 5. **Mapeo de Endpoints Serverless & Servidor MCP**:
+>    - Detalle de `api/nexus-worker.ts` (Carril A Instantáneo) y `api/mcp.ts` (Carril B Modo Profundo con SSE y JSON-RPC 2.0).
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `SYSTEM_ARCHITECTURE_AND_FUNCTIONS_MAP.md` | Crear | Documento canónico de arquitectura, mapa de dependencias, trazabilidad de 200 funciones y protocolo de auditoría para Opus 5.5. |
+| `ARCHITECTURE_200.md` | Actualizar | Incorporación de enlace de referencia hacia el documento canónico de auditoría para LLMs. |
+| `PROMPTS_AND_CHANGELOG.md` | Actualizar | Registro y documentación del Prompt 20. |
+
+---
+
+### Prompt 21: Arreglos Arquitectónicos, Aislamiento Multi-Cuenta Estricto y Calibración Pedagógica Post-Auditoría
+> **Contenido**:
+> 1. **Aislamiento Multi-Cuenta & Multi-Tenant**:
+>    - `sessionRecoveryService.ts` & `useExamSimulator.ts`:
+>      - Aislamiento estricto de la cola offline (`cpe_${userId}_pending_exam_sync_queue_v1`) y métodos de encolado/sincronización con `userId`.
+>      - Invocación de `sessionRecoveryService.clearActiveExamSession(user?.id)` pasando explícitamente el ID del usuario al finalizar el examen o cancelarlo.
+>      - Sincronización offline `initNetworkSyncListener(user?.id)`.
+>    - `UCVIntroCourseHub.tsx`:
+>      - Eliminación del fallback genérico `'demo-user-id'` en `handleInjectSchedule`. Ahora requiere autenticación con perfil activo, impidiendo contaminación de estado entre cuentas.
+>    - `CreativeDeliveryBoard.tsx` & `CreativeStudioCanvas.tsx`:
+>      - Recarga reactiva de `themeMode` y `projects` cuando `user?.id` cambia (evitando que un usuario herede proyectos o el tema seleccionado por otra cuenta en la misma terminal).
+> 2. **Calibración Pedagógica del Banco de Preguntas (`questionBank.ts`)**:
+>    - Firma refactorizada de `getQuestionsForProfile(profileId, subject?, topicKeyword?, limit?)`:
+>      - Filtrado estricto por `targetProfiles.includes(profileId)`, impidiendo que reactivos universitarios de física y cálculo analítico caigan en exámenes de primer año escolar (Andrés).
+>      - Filtrado por materia (`subject`) y palabra clave temática (`topicKeyword`), resolviendo el problema de colisión donde todos los exámenes de un mismo perfil arrojaban exactamente el mismo conjunto inicial de preguntas.
+>    - Inclusión de reactivos especializados:
+>      - Santiago: Torque y producto cruz en $\mathbb{R}^3$, regla de la cadena con logaritmo natural, determinantes $3 \times 3$.
+>      - Andrés: Regla de signos en multiplicación de enteros, jerarquía de operaciones básica, estructura atómica (protones en el núcleo) y clasificación de palabras agudas con tilde.
+>      - Mafe: WCAG 2.1 ratio para texto grande (3:1), principio Gestalt de Figura y Fondo, y directriz de diseño inclusivo sin dependencia exclusiva del color.
+>    - Adición del examen individual de Álgebra Lineal & Geometría Analítica para Santiago en `PROFILE_TAILORED_EXAMS`.
+> 3. **Calibración del Hub UCV (`UCVIntroCourseHub.tsx` & `ucv_intro_course_data.ts`)**:
+>    - Creación de la interfaz `DidacticLayer` (Intuición, KaTeX Formula, Exam Trap, Fast Strategy) y población estructurada en los 7 módulos curriculares oficiales.
+>    - `UCVIntroCourseHub.tsx`: Sustitución de textos estáticos genéricos por el desglose por capas conceptuales reactivo en la vista de teoría con 4 columnas didácticas adaptativas.
+>    - Aislamiento de cuestionarios modulares (`handleLaunchModuleQuiz`): Ahora filtra `UCV_EXAM_BANK` específicamente por el tema y unidad correspondiente al módulo seleccionado.
+>    - `SimulatorEngine.tsx`: Sincronización reactiva de `activeProfileTab` con `academicProfile` mediante `useEffect` y calibración de modo de examen (`HIGH_SCHOOL_EXAM` para Andrés vs `UNIVERSITY_EXAM` para universitarios).
+> 4. **Mantenimiento del Documento de Arquitectura (`SYSTEM_ARCHITECTURE_AND_FUNCTIONS_MAP.md`)**:
+>    - Actualización de la clave de almacenamiento `cpe_${userId}_pending_exam_sync_queue_v1` en la Sección 6.
+>    - Verificación y actualización de firmas en la tabla de 200 funciones (Sección 7).
+> 5. **Verificación de Calidad**:
+>    - `oxlint`: 0 errores.
+>    - `tsc -b`: 0 errores.
+>    - `vite build`: 0 errores (3.78s de compilación).
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/services/sessionRecoveryService.ts` | Actualizar | Aislamiento de cola offline por `userId` (`cpe_${userId}_pending_exam_sync_queue_v1`) y fallback seguro. |
+| `src/hooks/useExamSimulator.ts` | Actualizar | Paso explícito de `user?.id` a `clearActiveExamSession` e inicialización aislada del listener de red. |
+| `src/lib/questionBank.ts` | Actualizar | Refactorización de `getQuestionsForProfile(profileId, subject, topicKeyword, limit)`, blindaje de Andrés y 10 reactivos nuevos. |
+| `src/components/exams/SimulatorEngine.tsx` | Actualizar | Sincronización reactiva de `activeProfileTab`, modo escolar vs universitario y filtrado temático en exámenes de módulo. |
+| `src/data/ucv_intro_course_data.ts` | Actualizar | Interfaz `DidacticLayer` y desglose didáctico estructurado (Intuición, KaTeX, Trampa, Estrategia) para los 7 módulos. |
+| `src/components/academic/UCVIntroCourseHub.tsx` | Actualizar | Remoción de `demo-user-id`, tipado estricto en cuestionarios modulares y renderizado de las 4 capas pedagógicas. |
+| `src/components/dashboards/CreativeDeliveryBoard.tsx` | Actualizar | Recarga reactiva de `themeMode` y entregas en cambio de usuario sin persistencia cruzada. |
+| `src/components/dashboards/CreativeStudioCanvas.tsx` | Actualizar | Recarga reactiva de proyectos de lienzo y tema al alternar cuentas de usuario. |
+| `SYSTEM_ARCHITECTURE_AND_FUNCTIONS_MAP.md` | Actualizar | Reflejo de claves de sincronización offline aisladas y funciones de persistencia actualizadas. |
+| `PROMPTS_AND_CHANGELOG.md` | Actualizar | Registro exhaustivo de los arreglos técnicos del Prompt 21. |
+
+---
+
+### Prompt 22: Sistema de Digitalización de Planes de Evaluación con Foto/IA, Horario Escolar Semanal y Documento Canónico de Auditoría
+> **Contenido**:
+> 1. **Documento Canónico de Arquitectura y Auditoría (`CALENDAR_AND_EVALUATION_PLAN_SYSTEM.md`)**:
+>    - Elaboración de un documento de especificación técnica forense para la Agenda Académica, Horarios y Recordatorios de Exámenes, complementario a `SYSTEM_ARCHITECTURE_AND_FUNCTIONS_MAP.md`.
+>    - Mapeo de subsistemas, topología de datos, esquemas canónicos JSON (`cpe-evaluation-plan-v1` y `cpe-class-schedule-v1`), matriz de aislamiento multi-cuenta (`cpe_${userId}_*`), catálogo de funciones y protocolo de auditoría rápida para modelos LLM (Opus 5.5).
+> 2. **Esquema y Prompt Maestro para Ingesta de Planes de Evaluación (`cpe-evaluation-plan-v1`)**:
+>    - Definición del esquema determinista JSON para planes de evaluación oficiales con desglose de cortes, tipo de evaluación (`PARCIAL`, `QUIZ`, `TALLER`, `PROYECTO`, `ENTREGA`, `RECUPERACION`), fecha ISO, ponderación porcentual y temas probables que evalúa cada corte.
+>    - Creación del prompt maestro oficial embebido en la aplicación (`MASTER_EVALUATION_PLAN_PROMPT`) para que el estudiante suba una fotografía o PDF de su plan a Gemini / Claude / ChatGPT y reciba el JSON listo para pegar.
+> 3. **Modal de Importación Inteligente (`EvaluationPlanAiImporterModal.tsx`)**:
+>    - Modal de dos pasos: Paso 1 con instrucción guiada, copiado del prompt en 1 clic y botón a Gemini; Paso 2 con validador interactivo de JSON, verificación de suma porcentual ($\sum = 100\%$), chips de temas probables y selección de generación automática de recordatorios y tareas Kanban.
+> 4. **Motor de Digitalización y Automatización (`plannerService.importEvaluationPlan`)**:
+>    - Ingesta atómica que crea eventos en el calendario, alertas escalonadas de estudio (T-7 días y T-3 días previos calculados automáticamente) y tareas de estudio en el tablero Kanban a través de `taskService`.
+> 5. **Horario Escolar y Universitario Semanal (`WeeklyClassScheduleView.tsx`)**:
+>    - Grilla semanal visual de 6 columnas (Lunes a Sábado) con bloques de asignaturas, horarios de inicio/fin, aula, docente y modalidad (Presencial, Virtual, Híbrido).
+>    - Motor en tiempo real con detección dinámica de *"En clase ahora"* y *"Próxima clase"* basado en la hora del sistema.
+>    - Ingestor de horarios por foto/IA con su respectivo esquema `cpe-class-schedule-v1` y prompt maestro.
+>    - Presets de 1 clic calibrados para Andrés (1er año), Santiago (UCV Ciencias) y Mafe (UCAB Diseño).
+> 6. **Integración en `AcademicPlannerView.tsx`**:
+>    - Incorporación de la pestaña `SCHEDULE` ("Horario Escolar") en la barra de navegación.
+>    - Botón de acceso rápido `"✨ Importar Plan con Foto / IA"` en el encabezado general y en las vistas de Calendario y Planes de Evaluación.
+> 7. **Verificación de Calidad y Cero Regresiones**:
+>    - `tsc -b`: 0 errores.
+>    - `oxlint`: 0 errores.
+>    - `vite build`: 0 errores, bundles optimizados.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `CALENDAR_AND_EVALUATION_PLAN_SYSTEM.md` | Crear | Documento canónico de arquitectura, esquemas JSON, prompts de Gemini y trazabilidad del sistema de calendario, horario y recordatorios. |
+| `src/types/academicPlanner.types.ts` | Actualizar | Nuevos tipos `EvaluationPlanImportPayload`, `ImportedEvaluationItem`, `DayOfWeek`, `ClassScheduleBlock` y `ClassScheduleImportPayload`. |
+| `src/services/plannerService.ts` | Actualizar | Métodos de horario escolar (`getClassSchedule`, `addClassBlock`, etc.) y motor `importEvaluationPlan` con recordatorios escalonados y tareas. |
+| `src/components/planner/EvaluationPlanAiImporterModal.tsx` | Crear | Modal de importación con Prompt Maestro de Gemini, validador de ponderaciones y chips de temas probables. |
+| `src/components/planner/WeeklyClassScheduleView.tsx` | Crear | Vista de horario semanal con detección en vivo de clase actual, presets por perfil e importador de horario con foto. |
+| `src/components/planner/AcademicPlannerView.tsx` | Actualizar | Inclusión de pestaña de horario escolar, botones de importación con IA y conexión reactiva del modal. |
+| `PROMPTS_AND_CHANGELOG.md` | Actualizar | Registro y documentación completa del Prompt 22. |
+
+---
+
+### Prompt 23: Resolución Integral de Errores de Auditoría en Agenda, Horarios y Documentación Canónica
+> **Contenido**:
+> 1. **Módulo de Validación y Normalización (`src/utils/academicImportValidator.ts`)**:
+>    - `extractJsonFromAiResponse`: Extracción segura de bloques JSON ignorando texto conversacional introductorio ("Aquí tienes tu JSON:") o bloques markdown imperfectos.
+>    - `normalizeDayOfWeek`: Normalización automática de tildes y mayúsculas/minúsculas (`MIÉRCOLES` $\to$ `MIERCOLES`, `Sábado` $\to$ `SABADO`).
+>    - `validateAndNormalizeEvaluationPlan`: Aceptación de alias flexibles (`professor`/`teacher`, `academicPeriod`/`term`), validación de fechas ISO y rango de ponderaciones.
+>    - `validateAndNormalizeClassSchedule`: Aceptación de alias (`dayOfWeek`/`day`), formato 24h `HH:MM` y modalidad.
+>    - `calculatePreAlertDate`: Aritmética local de calendario sin conversión a UTC para prevenir desfase de días en alertas escalonadas.
+> 2. **Deduplicación y Aislamiento en `plannerService.ts`**:
+>    - En `importEvaluationPlan`: Deduplicación estricta de eventos (por materia, título y fecha), recordatorios escalonados y tareas Kanban.
+>    - Inclusión de los temas probables en el título y descripción de las tareas Kanban creadas.
+>    - En `importClassSchedule`: Soporte del parámetro `replaceExisting: boolean` y fusión inteligente que omite clases idénticas (mismo día, hora y materia).
+> 3. **Reloj Activo y Detección de Solapamientos en `WeeklyClassScheduleView.tsx`**:
+>    - Ticker activo de 30 segundos (`setInterval`) para que el estado *"En clase ahora"* y *"Próxima clase"* se actualice dinámicamente en tiempo real sin congelarse.
+>    - Detección de solapamiento de horarios entre materias del mismo día (`checkIsOverlapping`) con advertencia visual `⚠️ Solapada`.
+>    - Reemplazo limpio de horario al cargar presets por perfil (Andrés, Santiago, Mafe) eliminando clases duplicadas.
+>    - Opción interactiva "Reemplazar horario existente" en el modal de importación con IA.
+> 4. **Ajustes en `EvaluationPlanAiImporterModal.tsx`**:
+>    - Prompt maestro dinámico con cálculo del año actual (`new Date().getFullYear()`).
+>    - Integración de `academicImportValidator` y renderizado de observaciones de validación.
+>    - Aviso informativo de modo invitado si no hay sesión autenticada.
+> 5. **Sincronización Total del Documento Canónico (`CALENDAR_AND_EVALUATION_PLAN_SYSTEM.md` v2.0.0)**:
+>    - Corrección de los 9 puntos detectados en la auditoría (D1 a D9): esquemas con soporte dual de nombres de campo, claves de persistencia reales (`reminders_clean_v1`, `notes_clean_v1`), especificación de cálculo dinámico de planes en memoria, y eliminación de supuestos inexactos.
+>    - Corrección de sintaxis Mermaid (`-->>` corregido a `-->`) y bloques markdown de código anidados.
+> 6. **Garantía de Calidad**:
+>    - `tsc -b`: 0 errores.
+>    - `oxlint`: 0 errores.
+>    - `vite build`: 0 errores (bundle de producción compilado en 8.3s).
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/utils/academicImportValidator.ts` | Crear | Utilidades de extracción JSON de IA, normalización de días con tilde, validación de esquemas y fechas seguras. |
+| `src/services/plannerService.ts` | Actualizar | Deduplicación de eventos, recordatorios y tareas; inclusión de temas en Kanban; soporte de replaceExisting en horario. |
+| `src/components/planner/EvaluationPlanAiImporterModal.tsx` | Actualizar | Integración de normalizador, prompt con año dinámico, avisos de validación y modo invitado. |
+| `src/components/planner/WeeklyClassScheduleView.tsx` | Actualizar | Ticker en vivo de 30s, detector de solapamiento de clases, importación con toggle de reemplazo y presets sin duplicados. |
+| `CALENDAR_AND_EVALUATION_PLAN_SYSTEM.md` | Actualizar | Versión 2.0.0 con 100% de coherencia con el código, corrección de Mermaid, claves reales y schemas universales. |
+| `PROMPTS_AND_CHANGELOG.md` | Actualizar | Documentación y registro del Prompt 23. |
+
+

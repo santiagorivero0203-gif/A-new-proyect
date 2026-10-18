@@ -30,6 +30,13 @@ export const GradeProjectionCalculator: React.FC<GradeProjectionCalculatorProps>
   const [selectedSubject, setSelectedSubject] = useState<string>(
     plans[0]?.subject || ''
   );
+
+  React.useEffect(() => {
+    if (plans.length > 0 && (!selectedSubject || !plans.some((p) => p.subject === selectedSubject))) {
+      setSelectedSubject(plans[0].subject);
+    }
+  }, [plans, selectedSubject]);
+
   const [targetGoal, setTargetGoal] = useState<number>(16.0); // Meta deseada sobre 20
 
   // Modal para agregar nueva evaluación a la materia

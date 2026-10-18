@@ -376,6 +376,8 @@ export const VectorAndGraphInteractive: React.FC = () => {
                         ? 'f(x) = ax^2 + bx + c \\implies \\frac{df}{dx} = 2ax + b'
                         : selectedFunc === 'seno'
                         ? 'f(x) = A\\sin(kx) \\implies \\frac{df}{dx} = Ak\\cos(kx)'
+                        : selectedFunc === 'cubica'
+                        ? 'f(x) = 0.1x^3 - x \\implies \\frac{df}{dx} = 0.3x^2 - 1'
                         : 'f(x) = mx + b \\implies \\text{Pendiente } m = 0.8',
                       true
                     ),

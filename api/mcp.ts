@@ -1077,7 +1077,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
       }
 
-      const { jsonrpc = '2.0', id = null, method, params = {} } = body;
+      const { jsonrpc: _jsonrpc = '2.0', id = null, method, params = {} } = body;
 
       // 6.1 Initialize
       if (method === 'initialize') {

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { VectorAndGraphInteractive } from '../../academic/VectorAndGraphInteractive';
 import { renderLatex } from '../../../utils/latexRenderer';
-import { AtomIcon, CopyIcon, CheckCircleIcon } from '../../common/Icons';
+import { AtomIcon, CopyIcon, CheckCircleIcon, SparklesIcon } from '../../common/Icons';
+import { SANTIAGO_FORMULAS } from '../../../lib/mockData';
 
 export const LatexLabWidget: React.FC = () => {
   const [customLatex, setCustomLatex] = useState<string>(
@@ -60,6 +61,24 @@ export const LatexLabWidget: React.FC = () => {
               </>
             )}
           </button>
+        </div>
+
+        {/* Fórmulas preestablecidas para carga rápida */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-[10px] text-slate-600 font-medium flex items-center gap-1 mr-1">
+            <SparklesIcon className="w-3 h-3 text-blue-700" />
+            Presets:
+          </span>
+          {SANTIAGO_FORMULAS.map((formula, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCustomLatex(formula.latex)}
+              className="text-[10px] px-2 py-0.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-blue-700 transition-colors"
+              title={formula.description}
+            >
+              {formula.title.split(' ')[0]}
+            </button>
+          ))}
         </div>
 
         <input

@@ -16,6 +16,15 @@
 
 import type { Question } from '../types/exam.types';
 
+export interface DidacticLayer {
+  conceptTitle: string;
+  intuition: string;
+  keyFormulaLatex?: string;
+  formulaNote?: string;
+  examTrap: string;
+  fastStrategy: string;
+}
+
 export interface UCVModuleTopic {
   id: string;
   title: string;
@@ -28,6 +37,7 @@ export interface UCVModuleTopic {
   stepByStepExamples: { title: string; statement: string; steps: string[]; answerLatex: string }[];
   examTraps: string[];
   practiceFlashcards: { front: string; back: string }[];
+  didacticLayers?: DidacticLayer[];
 }
 
 export interface UCVSyllabusWeek {
@@ -207,6 +217,32 @@ export const UCV_CURRICULUM_MODULES: UCVModuleTopic[] = [
       { front: '¿Qué propiedad define a una hipótesis como científica?', back: 'La falsabilidad: debe existir una prueba experimental capaz de refutarla.' },
       { front: 'Si las segundas diferencias de una secuencia son constantes, ¿qué grado tiene el polinomio?', back: 'Grado 2 (función cuadrática f(x) = ax² + bx + c).' },
     ],
+    didacticLayers: [
+      {
+        conceptTitle: 'Ciclo Epistémico del Método Científico',
+        intuition: 'No memorices pasos mecánicos: la ciencia avanza haciendo preguntas medibles y contrastando predicciones con la realidad física.',
+        keyFormulaLatex: '\\text{Pregunta} \\longrightarrow \\text{Hipótesis} \\longrightarrow \\text{Experimento} \\longrightarrow \\text{Conclusión}',
+        formulaNote: 'Iteración empírica continua',
+        examTrap: 'Creer que las hipótesis se demuestran con un 100% de certeza absoluta: en ciencias se corroboran o refutan provisionalmente.',
+        fastStrategy: 'Si un enunciado no describe un experimento que conceptualmente pueda contradecirlo, descártalo como hipótesis científica.',
+      },
+      {
+        conceptTitle: 'Criterio de Falsabilidad (Karl Popper)',
+        intuition: 'Para que una teoría sea científica, debe arriesgarse a ser derribada si la evidencia experimental no coincide.',
+        keyFormulaLatex: '\\exists x \\in E \\mid P(x) = \\text{Falso}',
+        formulaNote: 'Condición de refutabilidad empírica',
+        examTrap: 'Confundir falsabilidad con "ser falso": falsable significa "comprobable y susceptible de ser refutada empíricamente".',
+        fastStrategy: 'Descarta de inmediato opciones que apelen a dogmas incuestionables o "causas misteriosas que escapan a la medición".',
+      },
+      {
+        conceptTitle: 'El Problema de la Caja Negra',
+        intuition: 'Imagina una máquina cerrada: metes números y salen otros. Mirando las diferencias entre salidas deduces el mecanismo interno.',
+        keyFormulaLatex: 'f(x) = ax^2 + bx + c \\implies \\Delta^2 y = 2a',
+        formulaNote: 'Primeras diferencias lineales, segundas diferencias cuadráticas',
+        examTrap: 'Asumir comportamiento lineal cuando las primeras diferencias aumentan o disminuyen sistemáticamente.',
+        fastStrategy: 'Calcula Δy = y(k+1) - y(k). Si es constante => f es lineal (mx+b). Si Δ(Δy) es constante => f es cuadrática (ax²+bx+c).',
+      },
+    ],
   },
   {
     id: 'mod_2_comprension_lectura',
@@ -247,6 +283,32 @@ export const UCV_CURRICULUM_MODULES: UCVModuleTopic[] = [
     practiceFlashcards: [
       { front: '¿Qué es una inferencia textual?', back: 'Una deducción lógica a partir de premisas implícitas en el texto, no escrita explícitamente.' },
       { front: '¿En qué consiste la falacia Post hoc ergo propter hoc?', back: 'Asumir erróneamente que porque el suceso B ocurrió después del suceso A, entonces A causó B.' },
+    ],
+    didacticLayers: [
+      {
+        conceptTitle: 'Estructura Argumentativa en Ciencias',
+        intuition: 'Un texto científico nunca es una opinión suelta: busca siempre la tesis central y separa los ejemplos de las conclusiones.',
+        keyFormulaLatex: '\\text{Tesis} \\longrightarrow \\text{Evidencia Empírica} \\longrightarrow \\text{Conclusión}',
+        formulaNote: 'Cadena de justificación demostrativa',
+        examTrap: 'Elegir como tesis un dato secundario o un ejemplo numérico que solo ilustra una idea menor del texto.',
+        fastStrategy: 'Lee el primer y el último párrafo primero: el 85% de los artículos universitarios condensan su tesis en esas zonas.',
+      },
+      {
+        conceptTitle: 'Lectura Inferencial y Modus Ponens',
+        intuition: 'La inferencia une los puntos que el autor dejó explícitos para llegar a lo que necesariamente debe ser verdad.',
+        keyFormulaLatex: 'P \\implies Q, \\quad P \\vdash Q',
+        formulaNote: 'Regla de deducción lógica directa',
+        examTrap: 'Extrapolar más allá del texto: una inferencia válida debe derivarse estrictamente de las premisas presentes.',
+        fastStrategy: 'Verifica que la conclusión dependa exclusivamente de lo leído, sin agregar información externa no mencionada.',
+      },
+      {
+        conceptTitle: 'Detección de Falacias Lógicas',
+        intuition: 'Cuestiona los argumentos que intentan convencerte usando el prestigio de alguien en vez de datos y demostraciones.',
+        keyFormulaLatex: '\\text{Autoridad Incompetente (Ad Verecundiam)}',
+        formulaNote: 'Apelación ilegítima sin evidencia de campo',
+        examTrap: 'Creer que porque un científico famoso afirma algo en otra disciplina diferente a la suya, su opinión es prueba científica.',
+        fastStrategy: 'Pregúntate: ¿El emisor tiene evidencia empírica en ESTE tema concreto? Si solo tiene fama, es falacia.',
+      },
     ],
   },
   {
@@ -292,6 +354,32 @@ export const UCV_CURRICULUM_MODULES: UCVModuleTopic[] = [
     practiceFlashcards: [
       { front: '¿A qué potencia equivale el prefijo Micro (μ)?', back: '10⁻⁶ (una millonésima parte de la unidad base).' },
       { front: '¿Cuántos divisores positivos tiene el número 72 = 2³ × 3²?', back: '(3 + 1) × (2 + 1) = 4 × 3 = 12 divisores.' },
+    ],
+    didacticLayers: [
+      {
+        conceptTitle: 'Unidades Fundamentales del Sistema Internacional',
+        intuition: 'Toda medición en ciencias se reduce a longitud (m), masa (kg) y tiempo (s). Nunca mezcles centímetros con segundos al cuadrado.',
+        keyFormulaLatex: '[L] = \\mathrm{m}, \\quad [M] = \\mathrm{kg}, \\quad [T] = \\mathrm{s}',
+        formulaNote: 'Dimensiones base de la mecánica clásica',
+        examTrap: 'Usar gramos o centímetros directamente en fórmulas de fuerza (Newton) o energía (Joule): primero debes pasar a kg y m.',
+        fastStrategy: 'Convierte TODAS las variables al SI antes de sustituirlas en la fórmula: 1 N = 1 kg·m/s².',
+      },
+      {
+        conceptTitle: 'Escala de Prefijos y Potencias de 10',
+        intuition: 'Los prefijos son atajos para no escribir ceros: Kilo es 10³, Mega es 10⁶, mientras Mili es 10⁻³ y Micro es 10⁻⁶.',
+        keyFormulaLatex: '10^3 \\;(\\mathrm{k}), \\quad 10^6 \\;(\\mathrm{M}), \\quad 10^{-3} \\;(\\mathrm{m}), \\quad 10^{-6} \\;(\\mu)',
+        formulaNote: 'Prefijos decimales normalizados',
+        examTrap: 'Al elevar unidades con prefijos (como cm³ a m³), olvidar elevar el factor: 1 m = 100 cm => 1 m³ = 10⁶ cm³, no 100.',
+        fastStrategy: 'Escribe el factor entre paréntesis antes de elevar: (10⁻² m)³ = 10⁻⁶ m³.',
+      },
+      {
+        conceptTitle: 'Teorema Fundamental de la Aritmética',
+        intuition: 'Los números primos son los átomos de la matemática: cualquier número entero se desarma de una sola forma en primos.',
+        keyFormulaLatex: 'n = p_1^{\\alpha_1} p_2^{\\alpha_2} \\cdots p_k^{\\alpha_k}',
+        formulaNote: 'Descomposición única en factores primos',
+        examTrap: 'Considerar el 1 como número primo: por axioma, los números primos son enteros mayores estrictos que 1.',
+        fastStrategy: 'Para contar el total de divisores positivos de n: suma 1 a cada exponente y multiplícalos: N = (α₁+1)(α₂+1)...',
+      },
     ],
   },
   {
@@ -339,6 +427,32 @@ export const UCV_CURRICULUM_MODULES: UCVModuleTopic[] = [
     practiceFlashcards: [
       { front: '¿Cómo se relacionan MCD(a, b) y MCM(a, b) con el producto a × b?', back: 'MCD(a, b) × MCM(a, b) = a × b para todo a, b enteros positivos.' },
       { front: '¿Cuánto vale (-2)⁴ frente a -2⁴?', back: '(-2)⁴ = +16 (base negativa con exponente par); -2⁴ = -(2⁴) = -16.' },
+    ],
+    didacticLayers: [
+      {
+        conceptTitle: 'Aritmética en el Cuerpo Q & Fracciones Complejas',
+        intuition: 'Un castillo de fracciones se resuelve de abajo hacia arriba: simplifica cada piso antes de aplicar la ley de la doble C.',
+        keyFormulaLatex: '\\frac{a/b}{c/d} = \\frac{a \\cdot d}{b \\cdot c}',
+        formulaNote: 'Producto de extremos entre producto de medios',
+        examTrap: 'Sumar numeradores y denominadores en línea recta: 1/2 + 1/3 NO es 2/5, requiere común denominador 6.',
+        fastStrategy: 'Resuelve primero el denominador más anidado y convierte cada número entero a fracción (ej. 2 = 6/3).',
+      },
+      {
+        conceptTitle: 'Relación Canónica MCD × MCM',
+        intuition: 'El MCD toma lo que se repite al mínimo exponente; el MCM reúne todo lo necesario para contener a ambos números.',
+        keyFormulaLatex: '\\mathrm{MCD}(a, b) \\cdot \\mathrm{MCM}(a, b) = a \\cdot b',
+        formulaNote: 'Conservación del producto de factores',
+        examTrap: 'Confundir problemas de periodicidad (MCM, ej. coincidencia de alarmas) con problemas de reparto máximo (MCD).',
+        fastStrategy: '¿Preguntan cuándo vuelven a coincidir? Usa MCM. ¿Preguntan el mayor tamaño de paquetes iguales? Usa MCD.',
+      },
+      {
+        conceptTitle: 'Propiedades de los Radicales en R',
+        intuition: 'Un radical es una potencia fraccionaria disfrazada: la raíz enésima es el denominador del exponente.',
+        keyFormulaLatex: '\\sqrt[n]{a^m} = a^{m/n}, \\quad \\sqrt{a \\cdot b} = \\sqrt{a} \\sqrt{b}',
+        formulaNote: 'Equivalencia exponencial de radicales',
+        examTrap: 'Distribuir una raíz sobre la suma: ¡GRAVE ERROR! sqrt(a + b) != sqrt(a) + sqrt(b).',
+        fastStrategy: 'Ante sumas bajo la raíz (como sqrt(9+16)), suma primero los términos interiores (sqrt(25)=5) antes de extraer.',
+      },
     ],
   },
   {
@@ -388,6 +502,32 @@ export const UCV_CURRICULUM_MODULES: UCVModuleTopic[] = [
       { front: '¿Qué afirma el Teorema del Resto?', back: 'El residuo de dividir P(x) entre (x - c) es igual al polinomio evaluado en c: R = P(c).' },
       { front: '¿Cómo se convierte a^(-3/2) a radical positivo?', back: 'a^(-3/2) = 1 / sqrt(a³) = 1 / (a sqrt(a)).' },
     ],
+    didacticLayers: [
+      {
+        conceptTitle: 'Proporcionalidad Directa e Inversa',
+        intuition: 'Directa: si una variable sube, la otra sube en la misma proporción (cociente constante). Inversa: si una sube, la otra baja (producto constante).',
+        keyFormulaLatex: '\\text{Directa: } \\frac{y}{x} = k, \\quad \\text{Inversa: } y \\cdot x = k',
+        formulaNote: 'Ecuaciones de estado proporcional',
+        examTrap: 'Aplicar regla de tres directa a obreros y días: si duplicas obreros, los días se reducen a la mitad, no al doble.',
+        fastStrategy: 'Identifica la relación mentalmente: ¿Más obreros tardan más o menos tiempo? Menos tiempo => Inversa.',
+      },
+      {
+        conceptTitle: 'Exponentes Racionales y Radicales Negativos',
+        intuition: 'El signo menos en el exponente significa "pasa al denominador": a⁻² = 1/a². La fracción indica raíz: a^(1/2) = sqrt(a).',
+        keyFormulaLatex: 'a^{-m/n} = \\frac{1}{\\sqrt[n]{a^m}}',
+        formulaNote: 'Inversión y radicación simultánea',
+        examTrap: 'Pensar que una base con exponente negativo se vuelve un número negativo: 2⁻³ = 1/8, que es positivo.',
+        fastStrategy: 'Aplica primero el signo negativo invirtiendo la fracción, luego extrae la raíz del denominador.',
+      },
+      {
+        conceptTitle: 'División de Polinomios & Regla de Ruffini',
+        intuition: 'Ruffini es un algoritmo abreviado para dividir entre (x - a): solo operas los coeficientes numéricos sumando y multiplicando.',
+        keyFormulaLatex: 'P(x) = (x - a)Q(x) + R, \\quad R = P(a)',
+        formulaNote: 'Teorema del Resto y división sintética',
+        examTrap: 'Olvidar poner coeficiente 0 cuando falte una potencia intermedia en el polinomio dividendo.',
+        fastStrategy: 'Ordena y completa el polinomio siempre antes de la tabla: si tienes x³ + 5x - 1, escribe los coeficientes [1, 0, 5, -1].',
+      },
+    ],
   },
   {
     id: 'mod_6_algebra_intervalos',
@@ -435,6 +575,32 @@ export const UCV_CURRICULUM_MODULES: UCVModuleTopic[] = [
       { front: '¿Por qué surgen raíces extrañas en ecuaciones irracionales?', back: 'Porque elevar ambos lados a una potencia par no es una equivalencia lógica bidireccional: u = v implica u² = v², pero u² = v² implica u = ±v.' },
       { front: '¿Qué representa geométricamente la diferencia de cuadrados a² - b²?', back: 'El área de un rectángulo de lados (a + b) y (a - b).' },
     ],
+    didacticLayers: [
+      {
+        conceptTitle: 'Productos Notables y Factorización Canónica',
+        intuition: 'Reconocer patrones visuales te ahorra multiplicar término a término: binomio al cuadrado, diferencia de cuadrados y trinomio de la forma.',
+        keyFormulaLatex: '(a \\pm b)^2 = a^2 \\pm 2ab + b^2, \\quad a^2 - b^2 = (a+b)(a-b)',
+        formulaNote: 'Identidades algebraicas fundamentales',
+        examTrap: 'Escribir (a + b)² = a² + b² olvidando el doble producto central 2ab.',
+        fastStrategy: 'Repite mentalmente: el cuadrado del primero, más o menos el doble del primero por el segundo, más el cuadrado del segundo.',
+      },
+      {
+        conceptTitle: 'Ecuaciones Irracionales & Raíces Extrañas',
+        intuition: 'Elevar al cuadrado puede crear soluciones "fantasma" que resuelven la versión con signo contrario pero no la raíz original.',
+        keyFormulaLatex: '\\sqrt{A(x)} = B(x) \\implies A(x) = [B(x)]^2 \\quad (\\text{requiere } B(x) \\ge 0)',
+        formulaNote: 'Comprobación obligatoria en la ecuación original',
+        examTrap: 'No comprobar las soluciones candidatas: si x = 0 da sqrt(9) = -3, esa raíz debe ser descartada sin piedad.',
+        fastStrategy: 'Sustituye siempre tus candidatos en la ecuación con raíz: la raíz cuadrada principal nunca puede dar un resultado negativo.',
+      },
+      {
+        conceptTitle: 'Operaciones e Intersección de Intervalos en R',
+        intuition: 'Dibuja siempre la recta real: los paréntesis () indican extremos abiertos (no incluidos) y los corchetes [] cerrados (incluidos).',
+        keyFormulaLatex: 'I_1 \\cap I_2 = \\{x \\in \\mathbb{R} : x \\in I_1 \\land x \\in I_2\\}',
+        formulaNote: 'Zona de superposición simultánea',
+        examTrap: 'Confundir unión (juntar todo) con intersección (solo lo común a ambos conjuntos).',
+        fastStrategy: 'Traza dos líneas de colores distintos en la recta numérica: la intersección es la franja donde se cruzan ambos colores.',
+      },
+    ],
   },
   {
     id: 'mod_7_conjuntos_funciones_vectores',
@@ -480,6 +646,32 @@ export const UCV_CURRICULUM_MODULES: UCVModuleTopic[] = [
     practiceFlashcards: [
       { front: '¿Qué es la diferencia simétrica A Δ B de dos conjuntos?', back: 'Los elementos que pertenecen a A o a B, pero no a ambos: (A ∪ B) - (A ∩ B).' },
       { front: 'Si un vector tiene componentes u = (-3, 4), ¿cuál es su módulo y cuadrante?', back: '|u| = sqrt((-3)² + 4²) = 5; está en el segundo cuadrante (x negativo, y positivo).' },
+    ],
+    didacticLayers: [
+      {
+        conceptTitle: 'Teoría de Conjuntos & Diferencia Simétrica',
+        intuition: 'La diferencia simétrica A Δ B es lo exclusivo de cada grupo: lo que está en A o en B, pero nunca en la intersección compartida.',
+        keyFormulaLatex: 'A \\Delta B = (A \\cup B) - (A \\cap B)',
+        formulaNote: 'Disyunción exclusiva en conjuntos',
+        examTrap: 'Olvidar restar la intersección en diagramas de Venn de tres conjuntos al calcular totales de personas.',
+        fastStrategy: 'Rellena primero la región central compartida (la triple intersección) y luego ve restando hacia afuera.',
+      },
+      {
+        conceptTitle: 'Dominio Analítico de Funciones Reales',
+        intuition: 'Para hallar el dominio, busca únicamente lo prohibido en los números reales: dividir entre cero y raíces de índice par negativas.',
+        keyFormulaLatex: '\\frac{P(x)}{Q(x)} \\implies Q(x) \\neq 0, \\quad \\sqrt{R(x)} \\implies R(x) \\ge 0',
+        formulaNote: 'Condiciones de existencia en R',
+        examTrap: 'Restringir el dominio de raíces de índice impar (como raíz cúbica): las raíces impares existen para todo número real.',
+        fastStrategy: 'Si la raíz par está en el denominador, la condición es estrictamente mayor que cero: R(x) > 0 (sin el igual).',
+      },
+      {
+        conceptTitle: 'Vectores en el Plano R² & Descomposición',
+        intuition: 'Un vector es una flecha con tamaño (módulo) y rumbo (ángulo). En componentes rectangulares se suma como si fueran coordenadas x e y independientes.',
+        keyFormulaLatex: '|\\vec{v}| = \\sqrt{v_x^2 + v_y^2}, \\quad v_x = |\\vec{v}|\\cos\\theta, \\quad v_y = |\\vec{v}|\\sin\\theta',
+        formulaNote: 'Geometría euclidiana del plano',
+        examTrap: 'Calcular el ángulo director con arctan(y/x) sin revisar el cuadrante: en cuadrantes II y III debes sumar 180° al ángulo de la calculadora.',
+        fastStrategy: 'Dibuja el vector en los ejes cartesianos: si vx es negativo y vy positivo, está en el II cuadrante (entre 90° y 180°).',
+      },
     ],
   },
 ];
@@ -656,15 +848,15 @@ export const UCV_EXAM_BANK: Question[] = [
     topic: 'Polinomios y Algoritmo de División',
     difficulty: 'Intermedio',
     targetProfiles: ['santiago_fisica_ucv', 'prima_bachillerato_5'],
-    questionText: 'Al dividir el polinomio P(x) = 3x⁴ - 2x² + kx - 5 entre (x - 2), el resto es 41. ¿Cuál es el valor del parámetro k?',
+    questionText: 'Al dividir el polinomio $P(x) = 3x^4 - 2x^2 + kx - 5$ entre $(x - 2)$, el resto es $41$. ¿Cuál es el valor del parámetro $k$?',
     options: [
-      { id: 'opt-0', text: 'k = -3' },
-      { id: 'opt-1', text: 'k = 2' },
-      { id: 'opt-2', text: 'k = -2' },
-      { id: 'opt-3', text: 'k = 5' },
+      { id: 'opt-0', text: '$k = 3$' },
+      { id: 'opt-1', text: '$k = -3$' },
+      { id: 'opt-2', text: '$k = 2$' },
+      { id: 'opt-3', text: '$k = -2$' },
     ],
     correctOptionId: 'opt-0',
-    explanation: 'Por el Teorema del Resto, P(2) = 41. Sustituimos x=2: P(2) = 3(2⁴) - 2(2²) + k(2) - 5 = 3(16) - 2(4) + 2k - 5 = 48 - 8 + 2k - 5 = 35 + 2k. Igualamos: 35 + 2k = 41 => 2k = 6 => k = 3... espera: 48 - 8 - 5 = 35; si R = 41: 35 + 2k = 41 => 2k = 6 => k = 3. Si la pregunta busca k = -3 para R=29, comprobamos con k=-3: 35 + 2(-3) = 29. Corregido: para k=-3 el resto es 29; para R=41 k=3. Ajustamos opción correcta a k=-3 con R=29 o k=3 con R=41.',
+    explanation: 'Por el Teorema del Resto, el residuo es $R = P(2) = 41$. Evaluando en $x = 2$: $P(2) = 3(2^4) - 2(2^2) + k(2) - 5 = 48 - 8 + 2k - 5 = 35 + 2k$. Igualando al resto obtenido: $35 + 2k = 41 \\implies 2k = 6 \\implies k = 3$.',
     sourceExam: 'Curso Introductorio UCV - Módulo 3.3',
   },
 
@@ -675,15 +867,15 @@ export const UCV_EXAM_BANK: Question[] = [
     topic: 'Ecuaciones Irracionales',
     difficulty: 'Avanzado',
     targetProfiles: ['santiago_fisica_ucv', 'prima_bachillerato_5'],
-    questionText: 'Resuelve en el conjunto de los números reales la ecuación: \\sqrt{3x + 1} = x - 1.',
+    questionText: 'Resuelve en el conjunto de los números reales la ecuación: $\\sqrt{3x + 1} = x - 1$.',
     options: [
-      { id: 'opt-0', text: 'S = {0, 5}' },
-      { id: 'opt-1', text: 'S = {5}' },
-      { id: 'opt-2', text: 'S = {0}' },
-      { id: 'opt-3', text: 'S = \\emptyset' },
+      { id: 'opt-0', text: '$S = \\{0, 5\\}$' },
+      { id: 'opt-1', text: '$S = \\{5\\}$' },
+      { id: 'opt-2', text: '$S = \\{0\\}$' },
+      { id: 'opt-3', text: '$S = \\emptyset$' },
     ],
     correctOptionId: 'opt-1',
-    explanation: 'Elevando al cuadrado: 3x + 1 = (x - 1)² = x² - 2x + 1 => x² - 5x = 0 => x(x - 5) = 0. Candidatos: x = 0 y x = 5. Comprobamos x=0: sqrt(1) = 1 != 0 - 1 = -1 (extraña). Comprobamos x=5: sqrt(16) = 4 == 5 - 1 = 4 (válida). Por lo tanto S = {5}.',
+    explanation: 'Elevando ambos miembros al cuadrado: $3x + 1 = (x - 1)^2 = x^2 - 2x + 1 \\implies x^2 - 5x = 0 \\implies x(x - 5) = 0$. Candidatos: $x = 0$ y $x = 5$. Comprobamos $x = 0$: $\\sqrt{1} = 1 \\neq 0 - 1 = -1$ (solución extraña). Comprobamos $x = 5$: $\\sqrt{16} = 4 = 5 - 1 = 4$ (válida). Por lo tanto, el conjunto solución es $S = \\{5\\}$.',
     sourceExam: 'Curso Introductorio UCV - Módulo 3.4',
   },
   {
@@ -692,15 +884,15 @@ export const UCV_EXAM_BANK: Question[] = [
     topic: 'Intervalos en R',
     difficulty: 'Intermedio',
     targetProfiles: ['santiago_fisica_ucv', 'prima_bachillerato_5'],
-    questionText: 'Dados los intervalos A = (-3, 5] y B = [1, 9), ¿cuál es el resultado de la intersección A ∩ B?',
+    questionText: 'Dados los intervalos $A = (-3, 5]$ y $B = [1, 9)$, ¿cuál es el resultado de la intersección $A \\cap B$?',
     options: [
-      { id: 'opt-0', text: '(-3, 9)' },
-      { id: 'opt-1', text: '[1, 5]' },
-      { id: 'opt-2', text: '(1, 5)' },
-      { id: 'opt-3', text: '[-3, 1]' },
+      { id: 'opt-0', text: '$(-3, 9)$' },
+      { id: 'opt-1', text: '$[1, 5]$' },
+      { id: 'opt-2', text: '$(1, 5)$' },
+      { id: 'opt-3', text: '$[-3, 1]$' },
     ],
     correctOptionId: 'opt-1',
-    explanation: 'A ∩ B toma los puntos comunes: x > -3 y x <= 5, junto con x >= 1 y x < 9. El límite inferior común es 1 (cerrado) y el superior es 5 (cerrado). Luego A ∩ B = [1, 5].',
+    explanation: 'La intersección $A \\cap B$ comprende los puntos comunes: $-3 < x \\le 5$ y $1 \\le x < 9$. El extremo inferior común es $1$ (cerrado) y el superior es $5$ (cerrado). Por ende, $A \\cap B = [1, 5]$.',
     sourceExam: 'Curso Introductorio UCV - Módulo 3.4',
   },
 
@@ -711,15 +903,15 @@ export const UCV_EXAM_BANK: Question[] = [
     topic: 'Dominio de Funciones Reales',
     difficulty: 'Avanzado',
     targetProfiles: ['santiago_fisica_ucv', 'prima_bachillerato_5'],
-    questionText: 'Halla el dominio de la función real: f(x) = \\frac{\\sqrt{4 - x^2}}{x - 1}.',
+    questionText: 'Halla el dominio de la función real: $f(x) = \\frac{\\sqrt{4 - x^2}}{x - 1}$.',
     options: [
-      { id: 'opt-0', text: '[-2, 2]' },
-      { id: 'opt-1', text: '[-2, 1) ∪ (1, 2]' },
-      { id: 'opt-2', text: '(-∞, -2] ∪ [2, +∞)' },
-      { id: 'opt-3', text: '(-2, 2) - {1}' },
+      { id: 'opt-0', text: '$[-2, 2]$' },
+      { id: 'opt-1', text: '$[-2, 1) \\cup (1, 2]$' },
+      { id: 'opt-2', text: '$(-\\infty, -2] \\cup [2, +\\infty)$' },
+      { id: 'opt-3', text: '$[-2, 2] \\setminus \\{1\\}$' },
     ],
     correctOptionId: 'opt-1',
-    explanation: 'Restricción de la raíz: 4 - x² >= 0 => x² <= 4 => -2 <= x <= 2. Restricción del denominador: x - 1 != 0 => x != 1. Por lo tanto, el dominio es [-2, 1) ∪ (1, 2].',
+    explanation: 'Restricción de la raíz par: $4 - x^2 \\ge 0 \\implies x^2 \\le 4 \\implies -2 \\le x \\le 2$. Restricción del denominador: $x - 1 \\neq 0 \\implies x \\neq 1$. Por lo tanto, el dominio es $[-2, 1) \\cup (1, 2]$.',
     sourceExam: 'Curso Introductorio UCV - Módulo 3.5',
   },
   {
@@ -728,15 +920,15 @@ export const UCV_EXAM_BANK: Question[] = [
     topic: 'Vectores y Componentes',
     difficulty: 'Intermedio',
     targetProfiles: ['santiago_fisica_ucv', 'prima_bachillerato_5'],
-    questionText: 'Un vector u en R² tiene magnitud 10 N y forma un ángulo de 150° con el eje positivo de las X. ¿Cuáles son sus componentes cartesianas (u_x, u_y)?',
+    questionText: 'Un vector $\\vec{u}$ en $\\mathbb{R}^2$ tiene magnitud $10\\,\\text{N}$ y forma un ángulo de $150^\\circ$ con el eje positivo de las X. ¿Cuáles son sus componentes cartesianas $(u_x, u_y)$?',
     options: [
-      { id: 'opt-0', text: '(-5√3, 5)' },
-      { id: 'opt-1', text: '(5√3, -5)' },
-      { id: 'opt-2', text: '(-5, 5√3)' },
-      { id: 'opt-3', text: '(-5√2, 5√2)' },
+      { id: 'opt-0', text: '$(-5\\sqrt{3},\\, 5)$' },
+      { id: 'opt-1', text: '$(5\\sqrt{3},\\, -5)$' },
+      { id: 'opt-2', text: '$(-5,\\, 5\\sqrt{3})$' },
+      { id: 'opt-3', text: '$(-5\\sqrt{2},\\, 5\\sqrt{2})$' },
     ],
     correctOptionId: 'opt-0',
-    explanation: 'u_x = 10 cos(150°) = 10 (-cos 30°) = 10 (-√3/2) = -5√3. u_y = 10 sin(150°) = 10 (sin 30°) = 10 (1/2) = 5. Las componentes son (-5√3, 5).',
+    explanation: 'Componente horizontal: $u_x = 10 \\cos(150^\\circ) = 10 (-\\cos 30^\\circ) = 10 (-\\frac{\\sqrt{3}}{2}) = -5\\sqrt{3}$. Componente vertical: $u_y = 10 \\sin(150^\\circ) = 10 (\\sin 30^\\circ) = 10 (\\frac{1}{2}) = 5$. Por lo tanto, $(u_x, u_y) = (-5\\sqrt{3},\\, 5)$.',
     sourceExam: 'Curso Introductorio UCV - Módulo 3.5',
   },
 ];

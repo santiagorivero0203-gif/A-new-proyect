@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { renderLatex } from '../../utils/latexRenderer';
 import { XIcon, TrashIcon, DownloadIcon, CopyIcon } from '../common/Icons';
 
@@ -14,6 +15,8 @@ interface ScratchpadDrawerProps {
  * probar fórmulas LaTeX con renderizado KaTeX en vivo sin salirse de su flujo de estudio.
  */
 export const ScratchpadDrawer: React.FC<ScratchpadDrawerProps> = ({ isOpen, onClose }) => {
+  const { user } = useAuth();
+  const userId = user?.id || 'default';
   const [activeTab, setActiveTab] = useState<'CANVAS' | 'LATEX'>('CANVAS');
 
   // Estado del Canvas
@@ -23,10 +26,41 @@ export const ScratchpadDrawer: React.FC<ScratchpadDrawerProps> = ({ isOpen, onCl
   const [strokeWidth, setStrokeWidth] = useState(3);
   const [isEraser, setIsEraser] = useState(false);
 
-  // Estado del Bloc LaTeX
-  const [latexText, setLatexText] = useState(
-    '# Borrador de Fórmulas\n\nDespeje de velocidad angular:\n$$\\omega = \\frac{d\\theta}{dt} = 2\\pi f$$\n\nEnergía cinética relativista:\n$$E_k = (\\gamma - 1)mc^2$$'
-  );
+  // Estado del Bloc LaTeX persistido por usuario
+  const [latexText, setLatexText] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`cpe_${userId}_scratchpad_latex`);
+      if (saved) return saved;
+    } catch {
+      // Ignorar
+    }
+    return '# Borrador de Fórmulas\n\nDespeje de velocidad angular:\n$$\\omega = \\frac{d\\theta}{dt} = 2\\pi f$$\n\nEnergía cinética relativista:\n$$E_k = (\\gamma - 1)mc^2$$';
+  });
+
+  // Recargar texto al cambiar de usuario
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`cpe_${userId}_scratchpad_latex`);
+      if (saved) {
+        setLatexText(saved);
+      } else {
+        setLatexText(
+          '# Borrador de Fórmulas\n\nDespeje de velocidad angular:\n$$\\omega = \\frac{d\\theta}{dt} = 2\\pi f$$\n\nEnergía cinética relativista:\n$$E_k = (\\gamma - 1)mc^2$$'
+        );
+      }
+    } catch {
+      // Fallback
+    }
+  }, [userId]);
+
+  const handleTextChange = (text: string) => {
+    setLatexText(text);
+    try {
+      localStorage.setItem(`cpe_${userId}_scratchpad_latex`, text);
+    } catch {
+      // Ignorar
+    }
+  };
 
   // Inicializar Canvas al abrir
   useEffect(() => {
@@ -36,8 +70,8 @@ export const ScratchpadDrawer: React.FC<ScratchpadDrawerProps> = ({ isOpen, onCl
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Configurar alta resolución si está limpio
-      if (canvas.width !== canvas.offsetWidth) {
+      // Configurar dimensiones si no están inicializadas
+      if (canvas.width !== canvas.offsetWidth && canvas.offsetWidth > 0) {
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
         ctx.fillStyle = '#ffffff';
@@ -245,7 +279,7 @@ export const ScratchpadDrawer: React.FC<ScratchpadDrawerProps> = ({ isOpen, onCl
               <label className="text-xs font-bold text-slate-700">Editor de Expresiones:</label>
               <textarea
                 value={latexText}
-                onChange={(e) => setLatexText(e.target.value)}
+                onChange={(e) => handleTextChange(e.target.value)}
                 rows={6}
                 className="w-full p-3 rounded-2xl bg-slate-50 border border-slate-200 font-mono text-xs focus:bg-white focus:outline-none focus:border-brand-500"
                 placeholder="Escribe texto o fórmulas entre $...$ o $$...$$"

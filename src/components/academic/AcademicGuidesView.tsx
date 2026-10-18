@@ -18,6 +18,7 @@ import {
 } from '../common/Icons';
 import { EmptyState } from '../common/EmptyState';
 import type { Question } from '../../types/exam.types';
+import { renderLatex, renderLatexToHtml } from '../../utils/latexRenderer';
 
 export interface AcademicGuidesViewProps {
   onStartExamWithQuestions?: (questions: Question[], title: string) => void;
@@ -501,7 +502,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
               {detailTab === 'THEORY' && (
                 <div
                   className="prose prose-sm max-w-none text-slate-700 text-xs leading-relaxed font-sans space-y-3"
-                  dangerouslySetInnerHTML={{ __html: selectedGuide.theory }}
+                  dangerouslySetInnerHTML={{ __html: renderLatexToHtml(selectedGuide.theory) }}
                 />
               )}
 
@@ -512,9 +513,10 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                       key={idx}
                       className="p-4 rounded-xl border border-slate-200/90 bg-slate-50/50 space-y-3 text-xs"
                     >
-                      <div className="font-semibold text-slate-900 leading-relaxed">
-                        {exam.pregunta}
-                      </div>
+                      <div
+                        className="font-semibold text-slate-900 leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: renderLatex(exam.pregunta, false) }}
+                      />
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {exam.opciones.map((opt, oIdx) => {
@@ -522,15 +524,17 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                           return (
                             <div
                               key={oIdx}
-                              className={`p-2.5 rounded-lg border text-xs font-mono ${
+                              className={`p-2.5 rounded-lg border text-xs font-mono flex items-center justify-between ${
                                 isCorrect
                                   ? 'bg-emerald-50 border-emerald-300 text-emerald-800 font-bold'
                                   : 'bg-white border-slate-200 text-slate-600'
                               }`}
                             >
-                              <span>{String.fromCharCode(65 + oIdx)}) </span>
-                              <span>{opt}</span>
-                              {isCorrect && <span className="ml-1 text-emerald-600">✓</span>}
+                              <div className="flex items-center gap-1.5 flex-1">
+                                <span className="font-semibold">{String.fromCharCode(65 + oIdx)})</span>
+                                <span dangerouslySetInnerHTML={{ __html: renderLatex(opt, false) }} />
+                              </div>
+                              {isCorrect && <span className="ml-1 text-emerald-600 font-bold">✓</span>}
                             </div>
                           );
                         })}
@@ -538,7 +542,10 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
 
                       <div className="p-3 bg-white border border-slate-200 rounded-lg text-slate-600 space-y-1">
                         <strong className="text-slate-800">Resolución Paso a Paso:</strong>
-                        <p className="leading-relaxed text-[11px]">{exam.resolucion}</p>
+                        <div
+                          className="leading-relaxed text-[11px]"
+                          dangerouslySetInnerHTML={{ __html: renderLatex(exam.resolucion, false) }}
+                        />
                       </div>
                     </div>
                   ))}

@@ -150,7 +150,20 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <MainLayout currentTab={currentTab} onSelectTab={setCurrentTab}>
+    <MainLayout
+      currentTab={currentTab}
+      onSelectTab={setCurrentTab}
+      onLaunchQuickExam={() =>
+        handleLaunchExam({
+          mode: 'QUICK_PRACTICE',
+          title: 'Simulacro Express (Cmd + K)',
+          totalQuestions: 5,
+          timeLimitSeconds: 15 * 60,
+          allowPause: true,
+          shuffleQuestions: true,
+        })
+      }
+    >
       {renderCurrentView()}
     </MainLayout>
   );

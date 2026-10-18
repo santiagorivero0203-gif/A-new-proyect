@@ -23,7 +23,7 @@ export interface ChemicalElement {
   symbol: string;
   name: string;
   mass: number;
-  category: 'alcalino' | 'alcalinoterreo' | 'transicion' | 'no-metal' | 'gas-noble' | 'halogeno' | 'metaloide';
+  category: 'alcalino' | 'alcalinoterreo' | 'transicion' | 'post-transicion' | 'no-metal' | 'gas-noble' | 'halogeno' | 'metaloide';
   electronegativity: number | null;
   electronConfig: string;
   atomicRadiusPm: number;
@@ -31,7 +31,7 @@ export interface ChemicalElement {
   col: number;
 }
 
-export const PERIODIC_ELEMENTS: ChemicalElement[] = [
+const PERIODIC_ELEMENTS: ChemicalElement[] = [
   // Periodo 1
   { z: 1, symbol: 'H', name: 'Hidrógeno', mass: 1.008, category: 'no-metal', electronegativity: 2.20, electronConfig: '1s¹', atomicRadiusPm: 53, row: 1, col: 1 },
   { z: 2, symbol: 'He', name: 'Helio', mass: 4.0026, category: 'gas-noble', electronegativity: null, electronConfig: '1s²', atomicRadiusPm: 31, row: 1, col: 18 },
@@ -49,7 +49,7 @@ export const PERIODIC_ELEMENTS: ChemicalElement[] = [
   // Periodo 3
   { z: 11, symbol: 'Na', name: 'Sodio', mass: 22.990, category: 'alcalino', electronegativity: 0.93, electronConfig: '[Ne] 3s¹', atomicRadiusPm: 190, row: 3, col: 1 },
   { z: 12, symbol: 'Mg', name: 'Magnesio', mass: 24.305, category: 'alcalinoterreo', electronegativity: 1.31, electronConfig: '[Ne] 3s²', atomicRadiusPm: 145, row: 3, col: 2 },
-  { z: 13, symbol: 'Al', name: 'Aluminio', mass: 26.982, category: 'transicion', electronegativity: 1.61, electronConfig: '[Ne] 3s² 3p¹', atomicRadiusPm: 118, row: 3, col: 13 },
+  { z: 13, symbol: 'Al', name: 'Aluminio', mass: 26.982, category: 'post-transicion', electronegativity: 1.61, electronConfig: '[Ne] 3s² 3p¹', atomicRadiusPm: 118, row: 3, col: 13 },
   { z: 14, symbol: 'Si', name: 'Silicio', mass: 28.085, category: 'metaloide', electronegativity: 1.90, electronConfig: '[Ne] 3s² 3p²', atomicRadiusPm: 111, row: 3, col: 14 },
   { z: 15, symbol: 'P', name: 'Fósforo', mass: 30.974, category: 'no-metal', electronegativity: 2.19, electronConfig: '[Ne] 3s² 3p³', atomicRadiusPm: 98, row: 3, col: 15 },
   { z: 16, symbol: 'S', name: 'Azufre', mass: 32.06, category: 'no-metal', electronegativity: 2.58, electronConfig: '[Ne] 3s² 3p⁴', atomicRadiusPm: 88, row: 3, col: 16 },
@@ -71,6 +71,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string
   alcalino: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
   alcalinoterreo: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
   transicion: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  'post-transicion': { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200' },
   'no-metal': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
   'gas-noble': { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' },
   halogeno: { bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-cyan-200' },

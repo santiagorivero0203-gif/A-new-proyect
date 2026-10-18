@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { plannerService } from '../../services/plannerService';
 import type {
@@ -17,10 +17,12 @@ import {
 import { AcademicCalendarView } from './AcademicCalendarView';
 import { GradeProjectionCalculator } from './GradeProjectionCalculator';
 import { WhatIfGradeCalculator } from './WhatIfGradeCalculator';
+import { WeeklyClassScheduleView } from './WeeklyClassScheduleView';
+import { EvaluationPlanAiImporterModal } from './EvaluationPlanAiImporterModal';
 import { EmptyState } from '../common/EmptyState';
 import type { ExamConfig } from '../../types/exam.types';
 
-type PlannerTab = 'CALENDAR' | 'PLANS' | 'REMINDERS' | 'NOTES';
+type PlannerTab = 'CALENDAR' | 'SCHEDULE' | 'PLANS' | 'REMINDERS' | 'NOTES';
 
 interface AcademicPlannerViewProps {
   onLaunchExam?: (config: ExamConfig) => void;
@@ -36,6 +38,7 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
 
   const [activeTab, setActiveTab] = useState<PlannerTab>('CALENDAR');
   const [plansSubTab, setPlansSubTab] = useState<'PLANS' | 'WHAT_IF'>('PLANS');
+  const [showAiPlanModal, setShowAiPlanModal] = useState(false);
 
   // Estado del planificador
   const [events, setEvents] = useState<EvaluationEvent[]>([]);
@@ -69,16 +72,20 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
   const [noteSearch, setNoteSearch] = useState('');
 
   // Cargar datos aislados por cuenta
-  const loadData = () => {
+  const loadData = useCallback(() => {
     setEvents(plannerService.getEvents(userId));
     setReminders(plannerService.getReminders(userId));
     setNotes(plannerService.getNotes(userId));
     setPlans(plannerService.getPlansBySubject(userId));
-  };
+  }, [userId]);
 
   useEffect(() => {
     loadData();
-  }, [userId]);
+    setSelectedNote(null);
+    setNewNoteTitle('');
+    setNewNoteContent('');
+    setShowEventModal(false);
+  }, [loadData]);
 
   // Handlers de Eventos
   const handleCreateEvent = (e: React.FormEvent) => {
@@ -188,65 +195,93 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
           </p>
         </div>
 
-        {/* Pestañas de Navegación */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-2xl border border-slate-200/70">
+        {/* Acciones y Pestañas de Navegación */}
+        <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => setActiveTab('CALENDAR')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'CALENDAR'
-                ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            onClick={() => setShowAiPlanModal(true)}
+            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 text-indigo-700 border border-indigo-200/80 transition-all flex items-center gap-1.5 shadow-soft-sm active:scale-95"
+            title="Sube una foto de tu plan de evaluación a Gemini y cárgalo aquí automáticamente"
           >
-            Calendario ({events.length})
+            <span>✨ Plan con Foto / IA</span>
           </button>
-          <button
-            onClick={() => setActiveTab('PLANS')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'PLANS'
-                ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Planes de Evaluación
-          </button>
-          <button
-            onClick={() => setActiveTab('REMINDERS')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'REMINDERS'
-                ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Recordatorios ({reminders.filter((r) => !r.completed).length})
-          </button>
-          <button
-            onClick={() => setActiveTab('NOTES')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'NOTES'
-                ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Apuntes ({notes.length})
-          </button>
+
+          <div className="flex items-center gap-1 p-1 bg-slate-100/90 rounded-2xl border border-slate-200/70">
+            <button
+              onClick={() => setActiveTab('CALENDAR')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'CALENDAR'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Calendario ({events.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('SCHEDULE')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'SCHEDULE'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Horario Escolar
+            </button>
+            <button
+              onClick={() => setActiveTab('PLANS')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'PLANS'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Planes de Evaluación
+            </button>
+            <button
+              onClick={() => setActiveTab('REMINDERS')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'REMINDERS'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Recordatorios ({reminders.filter((r) => !r.completed).length})
+            </button>
+            <button
+              onClick={() => setActiveTab('NOTES')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'NOTES'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Apuntes ({notes.length})
+            </button>
+          </div>
         </div>
       </div>
 
       {/* PESTAÑA 1: CALENDARIO EDITORIAL Y EVALUACIONES */}
       {activeTab === 'CALENDAR' && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <h3 className="text-sm font-bold text-slate-900 font-sans">
               Cronograma Mensual & Agenda de Evaluaciones
             </h3>
-            <button
-              onClick={() => setShowEventModal(true)}
-              className="btn-brand text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-soft-sm"
-            >
-              <PlusIcon className="w-3.5 h-3.5" />
-              <span>Programar Nueva Evaluación</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowAiPlanModal(true)}
+                className="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 transition-all flex items-center gap-1.5 shadow-soft-sm active:scale-95"
+              >
+                <span>✨ Importar Plan con Foto / IA</span>
+              </button>
+              <button
+                onClick={() => setShowEventModal(true)}
+                className="btn-brand text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-soft-sm"
+              >
+                <PlusIcon className="w-3.5 h-3.5" />
+                <span>Programar Nueva Evaluación</span>
+              </button>
+            </div>
           </div>
 
           <AcademicCalendarView
@@ -258,11 +293,16 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
         </div>
       )}
 
-      {/* PESTAÑA 2: PLANES DE EVALUACIÓN Y CALCULADORA DE PROYECCIÓN */}
+      {/* PESTAÑA 2: HORARIO ESCOLAR Y UNIVERSITARIO */}
+      {activeTab === 'SCHEDULE' && (
+        <WeeklyClassScheduleView />
+      )}
+
+      {/* PESTAÑA 3: PLANES DE EVALUACIÓN Y CALCULADORA DE PROYECCIÓN */}
       {activeTab === 'PLANS' && (
         <div className="space-y-6">
           {/* Sub-navegación estilo Apple / Segmented Control */}
-          <div className="flex items-center justify-between pb-2 border-b border-slate-200/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200/80">
             <div className="flex items-center p-1 bg-slate-100/80 rounded-xl border border-slate-200/60">
               <button
                 onClick={() => setPlansSubTab('PLANS')}
@@ -285,6 +325,13 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
                 Simulador What-If ("¿Cuánto necesito?")
               </button>
             </div>
+
+            <button
+              onClick={() => setShowAiPlanModal(true)}
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 transition-all flex items-center gap-1.5 shadow-soft-sm self-start sm:self-auto active:scale-95"
+            >
+              <span>✨ Digitalizar Plan con Foto / Gemini</span>
+            </button>
           </div>
 
           {plansSubTab === 'PLANS' ? (
@@ -741,6 +788,16 @@ export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal de importación de plan de evaluación con Foto / IA */}
+      <EvaluationPlanAiImporterModal
+        isOpen={showAiPlanModal}
+        onClose={() => setShowAiPlanModal(false)}
+        onPlanImported={() => {
+          loadData();
+          setActiveTab('PLANS');
+        }}
+      />
     </div>
   );
 };

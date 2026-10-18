@@ -21,6 +21,9 @@ import { SpeedReadingTimer } from './SpeedReadingTimer';
 import { VectorAndGraphInteractive } from './VectorAndGraphInteractive';
 import { ScientificVisualizer } from './ScientificVisualizer';
 import { LinearEquationSolver } from '../tools/LinearEquationSolver';
+import { plannerService } from '../../services/plannerService';
+import { taskService } from '../../services/taskService';
+import { getQuestionsForProfile } from '../../lib/questionBank';
 import type { ExamConfig, Question } from '../../types/exam.types';
 import {
   AtomIcon,
@@ -58,6 +61,10 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
   >('THEORY');
   const [selectedUnitFilter, setSelectedUnitFilter] = useState<'ALL' | 'UA_I' | 'UA_II' | 'UA_III'>('ALL');
 
+  // Controles de Visibilidad y Desglose Didáctico de Guías Teóricas
+  const [theoryTextSize, setTheoryTextSize] = useState<'NORMAL' | 'LARGE' | 'HIGH_CONTRAST'>('LARGE');
+  const [didacticDeconstruction, setDidacticDeconstruction] = useState<boolean>(true);
+
   // Control de sub-laboratorio activo
   const [activeSpecialLab, setActiveSpecialLab] = useState<
     'INTERACTIVE_LABS' | 'READING' | 'SYNTAX' | 'SPEED_READING' | 'GRAPH_VECTORS' | 'EQUATIONS' | 'VISUALIZER'
@@ -93,30 +100,61 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
     setIsInjectingSchedule(true);
     setScheduleInjectedMessage(null);
 
+    if (!user?.id) {
+      setScheduleInjectedMessage('Debes iniciar sesión con tu perfil académico para vincular tu cronograma.');
+      setIsInjectingSchedule(false);
+      setTimeout(() => setScheduleInjectedMessage(null), 4000);
+      return;
+    }
+
     const now = new Date();
-    const targetUserId = user?.id || 'demo-user-id';
+    const targetUserId = user.id;
 
     const eventsToCreate = UCV_6_WEEKS_SYLLABUS.map((week, idx) => {
       const eventDate = new Date(now.getTime() + (idx + 1) * 7 * 24 * 60 * 60 * 1000);
       return {
-        user_id: targetUserId,
         title: `Hito Semanal: ${week.title}`,
-        description: `Enfoque: ${week.focus}. Horas estimadas: ${week.hours}h. Evaluaciones: ${week.evaluations.join(', ')}.`,
-        event_type: 'exam',
         subject: 'Curso Introductorio UCV',
-        due_date: eventDate.toISOString().split('T')[0],
-        academic_profile: user?.academic_profile || 'santiago_fisica_ucv',
-        priority: 'high',
+        date: eventDate.toISOString().split('T')[0],
+        type: 'PARCIAL' as const,
+        weightPercentage: 15,
+        notes: `Enfoque: ${week.focus}. Horas estimadas: ${week.hours}h. Evaluaciones: ${week.evaluations.join(', ')}.`,
       };
     });
 
     try {
+      // 1. Inyectar eventos en plannerService
+      for (const ev of eventsToCreate) {
+        plannerService.addEvent(targetUserId, ev);
+      }
+
+      // 2. Inyectar tareas en taskService
+      UCV_6_WEEKS_SYLLABUS.forEach((week, idx) => {
+        const dueDate = new Date(now.getTime() + (idx + 1) * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        taskService.addTask(targetUserId, {
+          title: `Meta Semanal UCV: ${week.title}`,
+          subject: 'Curso Introductorio UCV',
+          priority: 'ALTA',
+          dueDate,
+        });
+      });
+
+      // 3. Sincronización opcional con Supabase si está disponible
       if (isSupabaseConfigured() && user?.id) {
-        await (supabase.from('events_and_deadlines') as any).insert(eventsToCreate);
-      } else {
-        // Modo local
-        const existing = JSON.parse(localStorage.getItem('cpe_events_cache') || '[]');
-        localStorage.setItem('cpe_events_cache', JSON.stringify([...eventsToCreate, ...existing]));
+        const supabaseEvents = UCV_6_WEEKS_SYLLABUS.map((week, idx) => {
+          const eventDate = new Date(now.getTime() + (idx + 1) * 7 * 24 * 60 * 60 * 1000);
+          return {
+            user_id: targetUserId,
+            title: `Hito Semanal: ${week.title}`,
+            description: `Enfoque: ${week.focus}. Horas estimadas: ${week.hours}h. Evaluaciones: ${week.evaluations.join(', ')}.`,
+            event_type: 'exam',
+            subject: 'Curso Introductorio UCV',
+            due_date: eventDate.toISOString().split('T')[0],
+            academic_profile: user?.academic_profile || 'santiago_fisica_ucv',
+            priority: 'high',
+          };
+        });
+        await (supabase.from('events_and_deadlines') as any).insert(supabaseEvents);
       }
 
       setScheduleInjectedMessage(
@@ -151,19 +189,28 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
   };
 
   /**
-   * Inicia el cuestionario de un módulo específico
+   * Inicia el cuestionario de un módulo específico con reactivos aislados del tema
    */
-  const handleLaunchModuleQuiz = (moduleTitle: string) => {
+  const handleLaunchModuleQuiz = (moduleTitle: string, moduleId?: string) => {
     if (onStartExam) {
+      const targetMod = UCV_CURRICULUM_MODULES.find((m) => m.id === moduleId || m.title === moduleTitle);
+      const unitClean = targetMod ? targetMod.unit.replace('_', ' ') : '';
+      const matching = UCV_EXAM_BANK.filter(
+        (q) =>
+          (targetMod && q.sourceExam && q.sourceExam.includes(unitClean)) ||
+          q.topic.toLowerCase().includes(moduleTitle.toLowerCase()) ||
+          (targetMod && targetMod.summary.toLowerCase().includes(q.topic.toLowerCase()))
+      );
+      const questionsToUse = matching.length >= 3 ? matching : UCV_EXAM_BANK;
       const config: ExamConfig = {
         mode: 'QUICK_PRACTICE',
         title: `Cuestionario Formativo: ${moduleTitle}`,
-        totalQuestions: 5,
+        totalQuestions: Math.min(5, questionsToUse.length),
         timeLimitSeconds: 20 * 60,
         allowPause: true,
         shuffleQuestions: true,
       };
-      onStartExam(config, UCV_EXAM_BANK);
+      onStartExam(config, questionsToUse);
     }
   };
 
@@ -296,7 +343,7 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
 
         {onNavigateToTab && (
           <button
-            onClick={() => onNavigateToTab('EXAM_SIMULATOR')}
+            onClick={() => onNavigateToTab('EXAMS')}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[#0F52BA] hover:bg-blue-50 transition-colors"
           >
             <span>Simulador SIMADI</span>
@@ -491,7 +538,7 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
                   </h2>
                 </div>
                 <button
-                  onClick={() => handleLaunchModuleQuiz(currentModule.title)}
+                  onClick={() => handleLaunchModuleQuiz(currentModule.title, currentModule.id)}
                   className="px-3.5 py-2 rounded-xl bg-[#0F52BA] hover:bg-[#0c4194] text-white text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 shadow-soft-xs"
                 >
                   <PlayIcon className="w-3 h-3" />
@@ -525,16 +572,165 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
               {/* Contenido de la Subpestaña */}
               <div className="pt-2">
                 {selectedModuleSubTab === 'THEORY' && (
-                  <div className="space-y-4">
-                    {currentModule.theoryLatex.map((paragraph, idx) => (
-                      <div
-                        key={idx}
-                        className="text-xs sm:text-sm text-slate-700 leading-relaxed p-4 rounded-2xl bg-slate-50/70 border border-slate-200/60 font-sans"
-                        dangerouslySetInnerHTML={{
-                          __html: renderLatex(paragraph),
-                        }}
-                      />
-                    ))}
+                  <div className="space-y-5">
+                    {/* Barra de Controles de Lectura Didáctica & Alto Contraste */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-soft-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wide">
+                          Visibilidad del Texto:
+                        </span>
+                        <div className="inline-flex p-0.5 rounded-xl bg-white border border-slate-200">
+                          <button
+                            onClick={() => setTheoryTextSize('NORMAL')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                              theoryTextSize === 'NORMAL'
+                                ? 'bg-slate-900 text-white shadow-soft-xs'
+                                : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                          >
+                            Aa Estándar
+                          </button>
+                          <button
+                            onClick={() => setTheoryTextSize('LARGE')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                              theoryTextSize === 'LARGE'
+                                ? 'bg-[#0F52BA] text-white shadow-soft-xs'
+                                : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                          >
+                            Aa+ Didáctico
+                          </button>
+                          <button
+                            onClick={() => setTheoryTextSize('HIGH_CONTRAST')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                              theoryTextSize === 'HIGH_CONTRAST'
+                                ? 'bg-amber-500 text-slate-950 font-extrabold shadow-soft-xs'
+                                : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                          >
+                            👁️ Alto Contraste
+                          </button>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => setDidacticDeconstruction(!didacticDeconstruction)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                          didacticDeconstruction
+                            ? 'bg-blue-50 text-[#0F52BA] border-blue-200 shadow-soft-xs'
+                            : 'bg-white text-slate-600 border-slate-200'
+                        }`}
+                      >
+                        <span>💡</span>
+                        <span>Desglose por Capas: {didacticDeconstruction ? 'Activado' : 'Básico'}</span>
+                      </button>
+                    </div>
+
+                    {/* Bloques de Contenido Teórico con Desglose Pedagógico */}
+                    <div className="space-y-4">
+                      {currentModule.theoryLatex.map((paragraph, idx) => (
+                        <div
+                          key={idx}
+                          className={`rounded-3xl border transition-all duration-200 p-5 space-y-4 shadow-soft-xs ${
+                            theoryTextSize === 'HIGH_CONTRAST'
+                              ? 'bg-white border-slate-900 text-slate-950 shadow-soft'
+                              : theoryTextSize === 'LARGE'
+                              ? 'bg-slate-50/80 border-slate-200/90 text-slate-900'
+                              : 'bg-white border-slate-200/70 text-slate-700'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                            <span className="text-[11px] font-mono font-bold text-slate-400">
+                              Concepto #{idx + 1} • {currentModule.title}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-50 text-[#0F52BA] font-semibold border border-blue-100">
+                              Semana {currentModule.week}
+                            </span>
+                          </div>
+
+                          {/* Párrafo Teórico en KaTeX */}
+                          <div
+                            className={`font-sans ${
+                              theoryTextSize === 'HIGH_CONTRAST'
+                                ? 'text-base sm:text-lg font-semibold text-slate-950 leading-loose'
+                                : theoryTextSize === 'LARGE'
+                                ? 'text-sm sm:text-base font-medium text-slate-900 leading-relaxed'
+                                : 'text-xs sm:text-sm text-slate-700 leading-normal'
+                            }`}
+                            dangerouslySetInnerHTML={{
+                              __html: renderLatex(paragraph),
+                            }}
+                          />
+
+                          {/* Desglose Pedagógico Didáctico en Capas Específicas */}
+                          {didacticDeconstruction && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 pt-3 border-t border-slate-200/70 text-xs">
+                              {/* Capa 1: La Intuición */}
+                              <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 space-y-1">
+                                <div className="flex items-center gap-1.5 font-bold text-[#0F52BA]">
+                                  <span>💡</span>
+                                  <span>La Intuición</span>
+                                </div>
+                                <p className="text-[11px] text-slate-700 leading-relaxed">
+                                  {currentModule.didacticLayers?.[idx]?.intuition ||
+                                    'Visualiza el fenómeno físicamente antes del cálculo. Comprender el orden de magnitud evita errores de signos y unidades.'}
+                                </p>
+                              </div>
+
+                              {/* Capa 2: Fórmula Clave / Modelo */}
+                              <div className="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-100 space-y-1">
+                                <div className="flex items-center gap-1.5 font-bold text-purple-700">
+                                  <span>📐</span>
+                                  <span>Fórmula Clave</span>
+                                </div>
+                                {currentModule.didacticLayers?.[idx]?.keyFormulaLatex ? (
+                                  <div
+                                    className="text-[11px] text-purple-900 font-mono py-0.5 overflow-x-auto"
+                                    dangerouslySetInnerHTML={{
+                                      __html: renderLatexToHtml(currentModule.didacticLayers[idx].keyFormulaLatex!, { displayMode: false }),
+                                    }}
+                                  />
+                                ) : (
+                                  <p className="text-[11px] text-slate-600 leading-relaxed font-mono">
+                                    {currentModule.keyFormulas[idx % currentModule.keyFormulas.length]?.name || 'Expresión Analítica Formal'}
+                                  </p>
+                                )}
+                                {currentModule.didacticLayers?.[idx]?.formulaNote && (
+                                  <span className="text-[10px] text-purple-600 block">
+                                    {currentModule.didacticLayers[idx].formulaNote}
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Capa 3: Trampa UCV */}
+                              <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-1">
+                                <div className="flex items-center gap-1.5 font-bold text-amber-800">
+                                  <span>⚠️</span>
+                                  <span>Trampa UCV</span>
+                                </div>
+                                <p className="text-[11px] text-slate-700 leading-relaxed">
+                                  {currentModule.didacticLayers?.[idx]?.examTrap ||
+                                    currentModule.examTraps[idx % currentModule.examTraps.length] ||
+                                    'Verifica el dominio antes de simplificar factores.'}
+                                </p>
+                              </div>
+
+                              {/* Capa 4: Estrategia de Resolución */}
+                              <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1">
+                                <div className="flex items-center gap-1.5 font-bold text-emerald-800">
+                                  <span>⚡</span>
+                                  <span>Estrategia Rápida</span>
+                                </div>
+                                <p className="text-[11px] text-slate-700 leading-relaxed">
+                                  {currentModule.didacticLayers?.[idx]?.fastStrategy ||
+                                    'Comprueba el resultado sustituyendo valores sencillos como x = 0 o x = 1.'}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -549,7 +745,10 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
                             __html: renderLatexToHtml(form.latex, { displayMode: true }),
                           }}
                         />
-                        <p className="text-xs text-slate-500">{form.description}</p>
+                        <p
+                          className="text-xs text-slate-500"
+                          dangerouslySetInnerHTML={{ __html: renderLatex(form.description, false) }}
+                        />
                       </div>
                     ))}
                   </div>
@@ -560,10 +759,16 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
                     {currentModule.stepByStepExamples.map((ex, idx) => (
                       <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
                         <span className="text-xs font-bold text-slate-900 block">{ex.title}</span>
-                        <p className="text-xs text-slate-700 font-medium">{ex.statement}</p>
+                        <div
+                          className="text-xs text-slate-700 font-medium"
+                          dangerouslySetInnerHTML={{ __html: renderLatex(ex.statement, false) }}
+                        />
                         <div className="space-y-1 text-xs text-slate-600 pl-3 border-l-2 border-indigo-400">
                           {ex.steps.map((st, i) => (
-                            <div key={i}>{st}</div>
+                            <div
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: renderLatex(st, false) }}
+                            />
                           ))}
                         </div>
                         <div
@@ -582,7 +787,10 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
                     {currentModule.examTraps.map((trap, idx) => (
                       <div key={idx} className="p-4 rounded-2xl bg-rose-50/60 border border-rose-200 text-xs text-rose-900 flex items-start gap-2.5">
                         <span className="text-rose-600 font-bold shrink-0">⚠️ Trampa #{idx + 1}:</span>
-                        <p className="leading-relaxed">{trap}</p>
+                        <div
+                          className="leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: renderLatex(trap, false) }}
+                        />
                       </div>
                     ))}
                   </div>
@@ -595,10 +803,14 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
                         <span className="text-[11px] uppercase font-mono font-bold text-slate-400 block">
                           Pregunta de Repetición Espaciada:
                         </span>
-                        <p className="text-xs font-bold text-slate-800">{flash.front}</p>
-                        <div className="pt-2 border-t border-slate-200 text-xs text-indigo-700 font-medium">
-                          {flash.back}
-                        </div>
+                        <div
+                          className="text-xs font-bold text-slate-800"
+                          dangerouslySetInnerHTML={{ __html: renderLatex(flash.front, false) }}
+                        />
+                        <div
+                          className="pt-2 border-t border-slate-200 text-xs text-indigo-700 font-medium"
+                          dangerouslySetInnerHTML={{ __html: renderLatex(flash.back, false) }}
+                        />
                       </div>
                     ))}
                   </div>
@@ -773,6 +985,136 @@ export const UCVIntroCourseHub: React.FC<UCVIntroCourseHubProps> = ({
                 <Award className="w-3.5 h-3.5" />
                 <span>Comenzar Prueba de Salida</span>
               </button>
+            </div>
+          </div>
+
+          {/* SECCIÓN ESPECIAL: EVALUACIONES INDIVIDUALES POR ASIGNATURA UCV */}
+          <div className="pt-4 border-t border-slate-200/80 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <div>
+                <span className="text-[11px] font-mono font-bold uppercase text-[#0F52BA]">
+                  Plan de Estudio Individual • Licenciatura en Física & Ciencias UCV
+                </span>
+                <h3 className="text-base font-bold text-slate-900 font-sans">
+                  Pruebas Parciales Específicas por Asignatura
+                </h3>
+              </div>
+              <span className="text-xs font-mono font-semibold text-slate-400">
+                Calibrado con el programa oficial
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between space-y-3">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-[#0F52BA] font-bold">
+                    Física General I
+                  </span>
+                  <h4 className="text-sm font-bold text-slate-900">
+                    Cinemática & Dinámica de la Partícula
+                  </h4>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Vectores de velocidad y aceleración instantánea, DCL, fricción y trabajo-energía.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    if (onStartExam) {
+                      const questions = getQuestionsForProfile('santiago_fisica_ucv', 'Física', 'Física', 6);
+                      onStartExam(
+                        {
+                          mode: 'UNIVERSITY_EXAM',
+                          title: 'Física General I: Cinemática y Dinámica de la Partícula (UCV)',
+                          totalQuestions: questions.length,
+                          timeLimitSeconds: 45 * 60,
+                          allowPause: true,
+                          shuffleQuestions: true,
+                          subject: 'Física',
+                        },
+                        questions
+                      );
+                    }
+                  }}
+                  className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-soft-xs"
+                >
+                  <PlayIcon className="w-3 h-3 text-blue-400" />
+                  <span>Evaluar Física I (45 min)</span>
+                </button>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between space-y-3">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-bold">
+                    Cálculo I
+                  </span>
+                  <h4 className="text-sm font-bold text-slate-900">
+                    Límites Notables & Derivadas
+                  </h4>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Indeterminaciones, teorema del sándwich, continuidad y regla de la cadena.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    if (onStartExam) {
+                      const questions = getQuestionsForProfile('santiago_fisica_ucv', 'Matemática', 'Cálculo', 6);
+                      onStartExam(
+                        {
+                          mode: 'UNIVERSITY_EXAM',
+                          title: 'Cálculo I: Límites Notables y Derivadas (UCV)',
+                          totalQuestions: questions.length,
+                          timeLimitSeconds: 45 * 60,
+                          allowPause: true,
+                          shuffleQuestions: true,
+                          subject: 'Matemática',
+                        },
+                        questions
+                      );
+                    }
+                  }}
+                  className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-soft-xs"
+                >
+                  <PlayIcon className="w-3 h-3 text-indigo-400" />
+                  <span>Evaluar Cálculo I (45 min)</span>
+                </button>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between space-y-3">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold">
+                    Álgebra Lineal
+                  </span>
+                  <h4 className="text-sm font-bold text-slate-900">
+                    Vectores en ℝ³ & Geometría Analítica
+                  </h4>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Producto punto, producto cruz, planos en el espacio y sistemas de ecuaciones lineales.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    if (onStartExam) {
+                      const questions = getQuestionsForProfile('santiago_fisica_ucv', 'Matemática', 'Álgebra Lineal', 6);
+                      onStartExam(
+                        {
+                          mode: 'UNIVERSITY_EXAM',
+                          title: 'Álgebra Lineal: Vectores en R3 y Geometría (UCV)',
+                          totalQuestions: questions.length,
+                          timeLimitSeconds: 40 * 60,
+                          allowPause: true,
+                          shuffleQuestions: true,
+                          subject: 'Matemática',
+                        },
+                        questions
+                      );
+                    }
+                  }}
+                  className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-soft-xs"
+                >
+                  <PlayIcon className="w-3 h-3 text-purple-400" />
+                  <span>Evaluar Álgebra (40 min)</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

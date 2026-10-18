@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { useExamSimulator } from '../../hooks/useExamSimulator';
 import { ExamRunner } from './ExamRunner';
 import { ExamResultsReport } from './ExamResultsReport';
 import { LayersIcon, PlayIcon, AtomIcon } from '../common/Icons';
 import { UCV_EXAM_BANK, UCV_CURRICULUM_MODULES } from '../../data/ucv_intro_course_data';
+import { PROFILE_TAILORED_EXAMS, getQuestionsForProfile } from '../../lib/questionBank';
 import type { AcademicSubject, ExamConfig, Question } from '../../types/exam.types';
 
 interface SimulatorEngineProps {
@@ -34,8 +36,19 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
     resetExam,
   } = useExamSimulator();
 
+  const { academicProfile } = useAuth();
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<AcademicSubject | 'TODAS'>('TODAS');
   const [selectedUcvModuleId, setSelectedUcvModuleId] = useState<string>(UCV_CURRICULUM_MODULES[0].id);
+  const [activeProfileTab, setActiveProfileTab] = useState<
+    'santiago_fisica_ucv' | 'andres_bachillerato_1' | 'mafe_diseno_ucab' | 'prima_bachillerato_5'
+  >(academicProfile || 'santiago_fisica_ucv');
+
+  // Sincronización reactiva de la pestaña activa cuando el usuario conmuta su perfil académico
+  useEffect(() => {
+    if (academicProfile) {
+      setActiveProfileTab(academicProfile);
+    }
+  }, [academicProfile]);
 
   useEffect(() => {
     if (initialConfig && initialQuestions && initialQuestions.length > 0) {
@@ -63,7 +76,7 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
     return (
       <ExamResultsReport
         report={report}
-        onRetake={() => startExam(session.config)}
+        onRetake={() => startExam(session.config, session.questions)}
         onNewExam={resetExam}
       />
     );
@@ -119,6 +132,100 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
         <p className="text-sm text-slate-500 mt-1">
           Evaluaciones estructuradas con temporizador, formato de selección simple y corrección detallada paso a paso.
         </p>
+      </div>
+
+      {/* SECCIÓN NOVEDOSA: EVALUACIONES INDIVIDUALES CALIBRADAS POR PERFIL */}
+      <div className="app-card p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 text-white shadow-soft-lg space-y-5 border border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-white/10 gap-3">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/10 text-rose-200 border border-white/15 text-xs font-bold font-sans">
+              <span>🎯</span>
+              <span>Evaluaciones Individuales Calibradas por Estudiante</span>
+            </div>
+            <h3 className="text-lg font-bold text-white tracking-tight font-sans">
+              Pruebas Calibradas para tu Nivel Real
+            </h3>
+            <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Exámenes diseñados para cada estudiante: Nivel 1er año básico para Andrés (0 física universitaria), diseño y WCAG para Mafe, admisión universitaria para Prima, y cálculo/física UCV para Santiago.
+            </p>
+          </div>
+
+          {/* Selector de Perfil */}
+          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-white/10 rounded-2xl border border-white/10 self-start sm:self-auto">
+            {[
+              { id: 'santiago_fisica_ucv', label: 'Santiago (UCV)' },
+              { id: 'andres_bachillerato_1', label: 'Andrés (1er Año)' },
+              { id: 'mafe_diseno_ucab', label: 'Mafe (Diseño)' },
+              { id: 'prima_bachillerato_5', label: 'Prima (Admisión)' },
+            ].map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setActiveProfileTab(p.id as any)}
+                className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all ${
+                  activeProfileTab === p.id
+                    ? 'bg-white text-slate-900 shadow-soft-xs'
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tarjetas de Exámenes del Perfil Activo */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {PROFILE_TAILORED_EXAMS.filter((ex) => ex.profileId === activeProfileTab).map((ex) => (
+            <div
+              key={ex.id}
+              className="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between space-y-4 hover:bg-white/[0.08] transition-all"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/10 text-indigo-200 border border-white/10">
+                    {ex.badge} • {ex.questionCount} Reactivos
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono">
+                    ⏱️ {ex.durationMinutes} min
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-white leading-snug">
+                  {ex.title}
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {ex.description}
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  const questions = getQuestionsForProfile(
+                    ex.profileId,
+                    ex.targetSubject,
+                    ex.targetTopicKeyword,
+                    ex.questionCount
+                  );
+                  startExam(
+                    {
+                      mode: ex.profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
+                      title: ex.title,
+                      totalQuestions: Math.min(ex.questionCount, questions.length),
+                      timeLimitSeconds: ex.durationMinutes * 60,
+                      allowPause: true,
+                      shuffleQuestions: true,
+                      subject: ex.targetSubject,
+                    },
+                    questions
+                  );
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-soft-xs active:scale-95"
+              >
+                <PlayIcon className="w-3 h-3 text-indigo-600" />
+                <span>Comenzar Examen Individual</span>
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* SECCIÓN ESPECÍFICA: CURSO INTRODUCTORIO FACULTAD DE CIENCIAS UCV */}
@@ -241,16 +348,24 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                 const targetMod =
                   UCV_CURRICULUM_MODULES.find((m) => m.id === selectedUcvModuleId) ||
                   UCV_CURRICULUM_MODULES[0];
+                const unitClean = targetMod.unit.replace('_', ' ');
+                const matchingQuestions = UCV_EXAM_BANK.filter(
+                  (q) =>
+                    (q.sourceExam && q.sourceExam.includes(unitClean)) ||
+                    targetMod.title.toLowerCase().includes(q.topic.toLowerCase()) ||
+                    targetMod.summary.toLowerCase().includes(q.topic.toLowerCase())
+                );
+                const modularQuestions = matchingQuestions.length >= 3 ? matchingQuestions : UCV_EXAM_BANK;
                 startExam(
                   {
                     mode: 'QUICK_PRACTICE',
                     title: `Cuestionario Oficial: ${targetMod.title}`,
-                    totalQuestions: 5,
+                    totalQuestions: Math.min(5, modularQuestions.length),
                     timeLimitSeconds: 15 * 60,
                     allowPause: true,
                     shuffleQuestions: true,
                   },
-                  UCV_EXAM_BANK
+                  modularQuestions
                 );
               }}
               className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-soft-xs"

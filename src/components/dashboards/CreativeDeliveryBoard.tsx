@@ -9,6 +9,7 @@ import {
 
 import { EmptyState } from '../common/EmptyState';
 import { CanvaStudioHub } from './CanvaStudioHub';
+import { CreativeStudioCanvas, type MafeThemeMode } from './CreativeStudioCanvas';
 
 export interface CreativeDeliveryItem {
   id: string;
@@ -30,11 +31,33 @@ const COLUMNS = [
 
 /**
  * Tablero Visual de Entregas Creativas (Directriz Estado Cero)
- * Estilo Kanban y Masonry Grid sin datos hardcodeados ni ficticios.
+ * Estilo Kanban, Mural Masonry y Lienzo Creativo con Temas Personalizables.
  */
 export const CreativeDeliveryBoard: React.FC = () => {
   const { user } = useAuth();
   const userStorageKey = `cpe_${user?.id || 'default'}_creative_deliveries_clean_v1`;
+  const themeStorageKey = `cpe_${user?.id || 'default'}_mafe_theme_mode_v1`;
+
+  const [themeMode, setThemeMode] = useState<MafeThemeMode>(() => {
+    try {
+      const saved = localStorage.getItem(themeStorageKey);
+      if (saved === 'STUDIO_MODERNO' || saved === 'ROSE_ATELIER') {
+        return saved;
+      }
+      return 'ROSE_ATELIER';
+    } catch {
+      return 'ROSE_ATELIER';
+    }
+  });
+
+  const handleToggleTheme = (newTheme: MafeThemeMode) => {
+    setThemeMode(newTheme);
+    try {
+      localStorage.setItem(themeStorageKey, newTheme);
+    } catch {
+      // Ignorar fallo de almacenamiento
+    }
+  };
 
   const [deliveries, setDeliveries] = useState<CreativeDeliveryItem[]>(() => {
     try {
@@ -49,21 +72,33 @@ export const CreativeDeliveryBoard: React.FC = () => {
     }
   });
 
-  useEffect(() => {
+  const [prevUserId, setPrevUserId] = useState(user?.id);
+  if (user?.id !== prevUserId) {
+    setPrevUserId(user?.id);
     try {
       const saved = localStorage.getItem(userStorageKey);
       setDeliveries(saved ? JSON.parse(saved) : []);
     } catch {
       setDeliveries([]);
     }
-  }, [userStorageKey, user?.id]);
+    try {
+      const savedTheme = localStorage.getItem(themeStorageKey);
+      if (savedTheme === 'STUDIO_MODERNO' || savedTheme === 'ROSE_ATELIER') {
+        setThemeMode(savedTheme);
+      } else {
+        setThemeMode('ROSE_ATELIER');
+      }
+    } catch {
+      setThemeMode('ROSE_ATELIER');
+    }
+  }
 
   const saveDeliveries = (items: CreativeDeliveryItem[]) => {
     setDeliveries(items);
     localStorage.setItem(userStorageKey, JSON.stringify(items));
   };
 
-  const [viewMode, setViewMode] = useState<'KANBAN' | 'MASONRY' | 'CANVA'>('KANBAN');
+  const [viewMode, setViewMode] = useState<'KANBAN' | 'MASONRY' | 'CANVAS' | 'CANVA'>('CANVAS');
   const [userDocs, setUserDocs] = useState<UserDocument[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -73,8 +108,8 @@ export const CreativeDeliveryBoard: React.FC = () => {
   const [selectedStorageDocUrl, setSelectedStorageDocUrl] = useState('');
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
 
-  // Paleta de Color Curada de Diseño UCAB
-  const palette = [
+  // Paletas Curadas según el Tema Activo
+  const studioPalette = [
     { name: 'Cobalto Puro', hex: '#0047AB', usage: 'Identidad' },
     { name: 'Azul Eléctrico', hex: '#2D72F9', usage: 'Acento UI' },
     { name: 'Naranja Cítrico', hex: '#FF6B35', usage: 'Contraste' },
@@ -82,6 +117,17 @@ export const CreativeDeliveryBoard: React.FC = () => {
     { name: 'Nieve Cálido', hex: '#F8FAFC', usage: 'Fondos' },
     { name: 'Verde Éxito', hex: '#10B981', usage: 'Aprobaciones' },
   ];
+
+  const roseAtelierPalette = [
+    { name: 'Rosa Cenizo', hex: '#E29578', usage: 'Acento Suave' },
+    { name: 'Blush Atelier', hex: '#FBCFE8', usage: 'Base Lumínica' },
+    { name: 'Vino Grafito', hex: '#4A2835', usage: 'Jerarquía Tipográfica' },
+    { name: 'Melocotón Desaturado', hex: '#F4ACB7', usage: 'Identidad' },
+    { name: 'Salvia Silencioso', hex: '#839788', usage: 'Contrapunto' },
+    { name: 'Marfil Crema', hex: '#FFF8F6', usage: 'Lienzo Neutro' },
+  ];
+
+  const activePalette = themeMode === 'ROSE_ATELIER' ? roseAtelierPalette : studioPalette;
 
   // Cargar documentos del usuario desde Supabase Storage para poder vincularlos
   useEffect(() => {
@@ -145,23 +191,69 @@ export const CreativeDeliveryBoard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Barra de Encabezado y Selector de Vista */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold mb-2">
-            <PaletteIcon className="w-3.5 h-3.5 text-brand-500" />
-            Entregas & Proyectos
+            <PaletteIcon className={`w-3.5 h-3.5 ${themeMode === 'ROSE_ATELIER' ? 'text-rose-500' : 'text-brand-500'}`} />
+            <span>Entregas & Proyectos Creativos</span>
+            <span className={`px-1.5 py-0.2 rounded-md text-[10px] font-mono uppercase ${
+              themeMode === 'ROSE_ATELIER' ? 'bg-rose-100/80 text-rose-800' : 'bg-slate-200 text-slate-800'
+            }`}>
+              {themeMode === 'ROSE_ATELIER' ? 'Tema Rose Atelier' : 'Tema Estudio'}
+            </span>
           </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
-            Tablero de Proyectos y Entregas
+            Atelier de Diseño & Tablero de Entregas
           </h2>
           <p className="text-sm text-slate-500">
-            Organiza etapas de trabajo, entregas académicas y fechas de presentación.
+            Lienzo interactivo, objetos geométricos, análisis crítico por IA y gestión de entregas académicas UCAB.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 self-start sm:self-auto">
-          {/* Selector Kanban / Masonry */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Conmutador de Temas Personalizados */}
+          <div className="inline-flex p-1 bg-slate-100/90 rounded-2xl border border-slate-200/90 shadow-soft-xs">
+            <button
+              onClick={() => handleToggleTheme('STUDIO_MODERNO')}
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                themeMode === 'STUDIO_MODERNO'
+                  ? 'bg-slate-900 text-white shadow-soft-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+              title="Tema Estudio Minimalista Neutro"
+            >
+              <span className="w-2 h-2 rounded-full bg-indigo-400" />
+              <span>Estudio</span>
+            </button>
+            <button
+              onClick={() => handleToggleTheme('ROSE_ATELIER')}
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                themeMode === 'ROSE_ATELIER'
+                  ? 'bg-rose-500 text-white shadow-soft-sm'
+                  : 'text-rose-700 hover:text-rose-900'
+              }`}
+              title="Tema Rose Atelier Pastel (Paleta no saturada, tono rosado editorial)"
+            >
+              <span className="w-2 h-2 rounded-full bg-rose-200" />
+              <span>Rose Atelier</span>
+            </button>
+          </div>
+
+          {/* Selector de Modos de Vista */}
           <div className="inline-flex p-1 bg-slate-200/70 rounded-2xl border border-slate-200">
+            <button
+              onClick={() => setViewMode('CANVAS')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                viewMode === 'CANVAS'
+                  ? themeMode === 'ROSE_ATELIER'
+                    ? 'bg-white text-rose-800 shadow-soft-sm ring-1 ring-rose-200'
+                    : 'bg-white text-slate-900 shadow-soft-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <span>📐</span>
+              <span>Lienzo & Formas</span>
+            </button>
             <button
               onClick={() => setViewMode('KANBAN')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
@@ -180,7 +272,7 @@ export const CreativeDeliveryBoard: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Mural Visual
+              Mural
             </button>
             <button
               onClick={() => setViewMode('CANVA')}
@@ -190,13 +282,17 @@ export const CreativeDeliveryBoard: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Canva Studio & Bulk
+              Canva & Bulk
             </button>
           </div>
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-soft"
+            className={`text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-soft rounded-2xl font-bold transition-all ${
+              themeMode === 'ROSE_ATELIER'
+                ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                : 'btn-primary'
+            }`}
           >
             <span>+</span>
             <span>Nueva Entrega</span>
@@ -217,7 +313,7 @@ export const CreativeDeliveryBoard: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {palette.map((swatch) => (
+          {activePalette.map((swatch) => (
             <button
               key={swatch.hex}
               onClick={() => copyColor(swatch.hex)}
@@ -236,8 +332,8 @@ export const CreativeDeliveryBoard: React.FC = () => {
         </div>
       </div>
 
-      {/* Banner de Estado Cero si no hay entregas */}
-      {viewMode !== 'CANVA' && deliveries.length === 0 && (
+      {/* Banner de Estado Cero si no hay entregas y estamos en vistas de entrega */}
+      {(viewMode === 'KANBAN' || viewMode === 'MASONRY') && deliveries.length === 0 && (
         <EmptyState
           title="No tienes entregas ni proyectos en el tablero"
           description="Organiza tus proyectos por etapas (Brief, Bocetos, Prototipado, Jurado Final) con imágenes de referencia y notas de entrega."
@@ -246,8 +342,10 @@ export const CreativeDeliveryBoard: React.FC = () => {
         />
       )}
 
-      {/* VISTA 1: TABLERO KANBAN */}
-      {viewMode === 'KANBAN' ? (
+      {/* VISTA 0: LIENZO CREATIVO INTERACTIVO CON FORMAS, IA Y EXPORTACIÓN */}
+      {viewMode === 'CANVAS' ? (
+        <CreativeStudioCanvas themeMode={themeMode} onThemeChange={handleToggleTheme} />
+      ) : viewMode === 'KANBAN' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {COLUMNS.map((col) => {
             const itemsInCol = deliveries.filter((item) => item.column === col.id);

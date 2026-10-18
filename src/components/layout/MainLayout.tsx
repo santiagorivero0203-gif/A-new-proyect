@@ -8,16 +8,19 @@ import { AccountManagerModal } from '../auth/AccountManagerModal';
 import { FloatingCalculatorWidget } from '../tools/FloatingCalculatorWidget';
 import { CommandPalette } from '../common/CommandPalette';
 import { ScratchpadDrawer } from '../tools/ScratchpadDrawer';
+import { Calculator, PenTool } from 'lucide-react';
 
 interface MainLayoutProps {
   currentTab: MainTabType;
   onSelectTab: (tab: MainTabType) => void;
+  onLaunchQuickExam?: () => void;
   children: React.ReactNode;
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({
   currentTab,
   onSelectTab,
+  onLaunchQuickExam,
   children,
 }) => {
   const [isOpenMobileSidebar, setIsOpenMobileSidebar] = useState(false);
@@ -97,7 +100,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           className="flex items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 shadow-soft-md hover:shadow-soft-lg border border-slate-200/90 hover:bg-slate-50 transition-all active:scale-95"
           title="Abrir Calculadora Científica (no interrumpe el examen)"
         >
-          <span className="text-sm">🧮</span>
+          <Calculator className="w-4 h-4 text-[#0F52BA]" />
           <span>Calculadora</span>
         </button>
 
@@ -106,7 +109,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           className="flex items-center gap-2 rounded-2xl bg-slate-900 px-3.5 py-2.5 text-xs font-bold text-white shadow-soft-md hover:shadow-soft-lg hover:bg-slate-800 transition-all active:scale-95 group"
           title="Abrir Scratchpad de Dibujo / Bloc LaTeX"
         >
-          <span className="text-sm group-hover:rotate-12 transition-transform">✎</span>
+          <PenTool className="w-4 h-4 text-white group-hover:rotate-12 transition-transform" />
           <span>Scratchpad</span>
         </button>
       </div>
@@ -124,6 +127,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         onNavigateToTab={onSelectTab}
         onOpenCalculator={() => setIsCalculatorOpen(true)}
         onOpenScratchpad={() => setIsScratchpadOpen(true)}
+        onLaunchQuickExam={onLaunchQuickExam}
       />
     </div>
   );

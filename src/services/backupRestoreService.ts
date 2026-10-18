@@ -50,6 +50,11 @@ class BackupRestoreService {
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && (key.startsWith('cpe_') || key.startsWith('simadi_') || key.startsWith('app_'))) {
+          // Aislar estrictamente los datos: ignorar claves que pertenezcan a otros usuarios
+          const isOtherUserKey = key.includes('cpe_') && !key.includes(user.id) && /cpe_[a-zA-Z0-9_-]+_/.test(key);
+          if (isOtherUserKey) {
+            continue;
+          }
           try {
             payload.localStorageSnapshot[key] = JSON.parse(localStorage.getItem(key) || 'null');
           } catch {

@@ -25,7 +25,7 @@ interface ChemicalReactionPreset {
   molarMasses: { [compound: string]: number };
 }
 
-export const PRESET_REACTIONS: ChemicalReactionPreset[] = [
+const PRESET_REACTIONS: ChemicalReactionPreset[] = [
   {
     name: 'Combustión del Metano',
     category: 'Química Orgánica',
@@ -206,25 +206,41 @@ export const StoichiometryBalancer: React.FC<{ className?: string }> = ({ classN
 
         {/* Tabla de Rendimientos Molares */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-          {/* Reactivo Base */}
-          <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-xs space-y-1">
-            <div className="text-[11px] font-bold text-teal-700">{formatChemicalUI(baseReactant)} (Reactivo Base)</div>
-            <div className="text-lg font-bold font-mono text-slate-900">
-              {inputGrams.toFixed(2)} <span className="text-xs text-slate-400">g</span>
-            </div>
-            <div className="text-[11px] font-mono text-slate-500">
-              {molesInput.toFixed(3)} moles (M: {baseMolarMass} g/mol)
-            </div>
-          </div>
+          {/* Reactivos */}
+          {reaction.reactants.map((react, i) => {
+            const isBase = react === baseReactant;
+            const rCoeff = reaction.coefficients[i];
+            const molesR = isBase ? molesInput : (molesInput / baseCoeff) * rCoeff;
+            const massR = isBase ? inputGrams : molesR * (reaction.molarMasses[react] || 1);
 
-          {/* Demás reactivos y productos calculados */}
+            return (
+              <div
+                key={react}
+                className={`p-3 bg-white rounded-xl border shadow-xs space-y-1 ${
+                  isBase ? 'border-teal-300 ring-1 ring-teal-200' : 'border-slate-200/80'
+                }`}
+              >
+                <div className={`text-[11px] font-bold ${isBase ? 'text-teal-700' : 'text-slate-700'}`}>
+                  {formatChemicalUI(react)} {isBase ? '(Reactivo Base)' : '(Reactivo Requerido)'}
+                </div>
+                <div className="text-lg font-bold font-mono text-slate-900">
+                  {massR.toFixed(2)} <span className="text-xs text-slate-400">g</span>
+                </div>
+                <div className="text-[11px] font-mono text-slate-500">
+                  {molesR.toFixed(3)} moles (M: {reaction.molarMasses[react] || baseMolarMass} g/mol)
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Productos calculados */}
           {reaction.products.map((prod, i) => {
             const prodCoeff = reaction.coefficients[reaction.reactants.length + i];
             const molesProd = (molesInput / baseCoeff) * prodCoeff;
             const massProd = molesProd * (reaction.molarMasses[prod] || 1);
 
             return (
-              <div key={prod} className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-xs space-y-1">
+              <div key={prod} className="p-3 bg-white rounded-xl border border-blue-200/80 shadow-xs space-y-1">
                 <div className="text-[11px] font-bold text-blue-700">{formatChemicalUI(prod)} (Rendimiento Teórico)</div>
                 <div className="text-lg font-bold font-mono text-slate-900">
                   {massProd.toFixed(2)} <span className="text-xs text-slate-400">g</span>

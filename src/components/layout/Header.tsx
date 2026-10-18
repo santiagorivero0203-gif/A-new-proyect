@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
   LayersIcon,
   SunIcon,
   LogOutIcon,
 } from '../common/Icons';
+import { Moon } from 'lucide-react';
 import { LiveSystemStatusWidget } from './LiveSystemStatusWidget';
 
 interface HeaderProps {
@@ -25,6 +26,7 @@ const TAB_BREADCRUMBS: Record<string, string> = {
   STORAGE: 'Documentos & Vault',
   CREATIVE_BOARD: 'Proyectos & Entregas',
   TOOLS: 'Herramientas & Ajustes',
+  UCV_COURSE: 'Curso Introductorio Ciencias UCV',
 };
 
 /**
@@ -39,6 +41,23 @@ export const Header: React.FC<HeaderProps> = ({
   currentTab,
 }) => {
   const { user, signOut } = useAuth();
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+  });
+
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    if (next) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('cpe_theme', 'dark');
+      localStorage.setItem('studynexus_theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('cpe_theme', 'light');
+      localStorage.setItem('studynexus_theme', 'light');
+    }
+  };
 
   const breadcrumbSection = TAB_BREADCRUMBS[currentTab] || 'Panel de Control';
 
@@ -83,11 +102,16 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Botón de Modo Claro / Luminosidad */}
         <button
-          className="w-9 h-9 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 flex items-center justify-center text-slate-700 hover:text-slate-900 transition-all shadow-soft-sm active:scale-95"
-          title="Modo visual optimizado para estudio diurno"
+          onClick={toggleTheme}
+          className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200/90 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all shadow-soft-sm active:scale-95"
+          title={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro (Deep Slate)"}
           aria-label="Alternar modo de luz"
         >
-          <SunIcon className="w-4.5 h-4.5 text-amber-500" />
+          {isDark ? (
+            <Moon className="w-4 h-4 text-indigo-400" />
+          ) : (
+            <SunIcon className="w-4.5 h-4.5 text-amber-500" />
+          )}
         </button>
 
         {/* Tarjeta de Usuario en el Header (Avatar + Nombre + Carrera) */}

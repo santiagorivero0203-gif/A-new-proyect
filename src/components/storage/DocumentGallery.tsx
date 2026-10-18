@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { storageService } from '../../services/storageService';
 import { geminiService } from '../../services/geminiService';
@@ -58,7 +58,7 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
   const [activeAnalysisResult, setActiveAnalysisResult] = useState<AiAnalysisResult | null>(null);
   const [activeDeconstructedGuide, setActiveDeconstructedGuide] = useState<DeconstructedAcademicGuide | null>(null);
 
-  const fetchDocuments = async () => {
+  const fetchDocuments = useCallback(async () => {
     if (!user) return;
     setIsLoading(true);
     try {
@@ -69,11 +69,11 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchDocuments();
-  }, [user, refreshTrigger]);
+  }, [fetchDocuments, refreshTrigger]);
 
   const handleDelete = async (docId: string) => {
     if (!user) return;

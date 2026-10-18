@@ -6,9 +6,7 @@
  */
 
 import React, { useMemo, useState } from 'react';
-import { renderLatexToHtml, sanitizeLatex } from '../../utils/latexRenderer';
-
-export { sanitizeLatex as sanitizeScientificLatex };
+import { renderLatexToHtml } from '../../utils/latexRenderer';
 
 export interface PhysicsVector {
   id: string;

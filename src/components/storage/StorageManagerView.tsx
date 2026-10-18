@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { storageService } from '../../services/storageService';
 import { DocumentUploader } from './DocumentUploader';
 import { DocumentGallery } from './DocumentGallery';
+import { UploadStation } from '../ai/UploadStation';
 import type { UserDocument } from '../../types';
 import type { Question } from '../../types/exam.types';
 import {
@@ -26,7 +27,7 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
   onNavigateToGuides,
 }) => {
   const { user, isDemoMode } = useAuth();
-  const [activeTab, setActiveTab] = useState<'GALLERY' | 'UPLOAD'>('GALLERY');
+  const [activeTab, setActiveTab] = useState<'GALLERY' | 'AI_STATION' | 'UPLOAD'>('GALLERY');
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
   const [stats, setStats] = useState({
@@ -92,8 +93,19 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <FileTextIcon className="w-3.5 h-3.5 text-blue-600" />
+              <FileTextIcon className="w-3.5 h-3.5 text-[#0F52BA]" />
               <span>Mis Documentos ({stats.totalDocs})</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('AI_STATION')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                activeTab === 'AI_STATION'
+                  ? 'bg-white text-slate-900 shadow-soft-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <SparklesIcon className="w-3.5 h-3.5 text-blue-600" />
+              <span>Estación IA (Motor Dual)</span>
             </button>
             <button
               onClick={() => setActiveTab('UPLOAD')}
@@ -103,8 +115,8 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <UploadCloudIcon className="w-3.5 h-3.5 text-blue-600" />
-              <span>Subir Archivo</span>
+              <UploadCloudIcon className="w-3.5 h-3.5 text-slate-600" />
+              <span>Subida Directa</span>
             </button>
           </div>
         </div>
@@ -113,8 +125,8 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
       {/* Tarjetas de Métricas de Almacenamiento */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="app-card p-4 flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0">
-            📁
+          <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#0F52BA] flex items-center justify-center font-bold text-sm shrink-0">
+            <FileTextIcon className="w-5 h-5 text-[#0F52BA]" />
           </div>
           <div>
             <p className="text-[11px] text-slate-500 font-medium">Archivos Totales</p>
@@ -125,8 +137,8 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
         </div>
 
         <div className="app-card p-4 flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-sm shrink-0">
-            💾
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm shrink-0">
+            <UploadCloudIcon className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
             <p className="text-[11px] text-slate-500 font-medium">Espacio Utilizado</p>
@@ -138,7 +150,7 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
 
         <div className="app-card p-4 flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm shrink-0">
-            🖼️
+            <SparklesIcon className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
             <p className="text-[11px] text-slate-500 font-medium">Fotos de Pizarra</p>
@@ -149,8 +161,8 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
         </div>
 
         <div className="app-card p-4 flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-sm shrink-0">
-            📑
+          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm shrink-0">
+            <FileTextIcon className="w-5 h-5 text-amber-600" />
           </div>
           <div>
             <p className="text-[11px] text-slate-500 font-medium">Guías en PDF</p>
@@ -167,8 +179,17 @@ export const StorageManagerView: React.FC<StorageManagerViewProps> = ({
           refreshTrigger={refreshTrigger}
           onStartExamWithQuestions={onStartExamWithQuestions}
           onNavigateToGuides={onNavigateToGuides}
-          onUploadClick={() => setActiveTab('UPLOAD')}
+          onUploadClick={() => setActiveTab('AI_STATION')}
         />
+      ) : activeTab === 'AI_STATION' ? (
+        <div className="max-w-4xl mx-auto">
+          <UploadStation
+            onViewGuideAndExam={() => {
+              setRefreshTrigger((prev) => prev + 1);
+              if (onNavigateToGuides) onNavigateToGuides();
+            }}
+          />
+        </div>
       ) : (
         <div className="max-w-2xl mx-auto">
           <DocumentUploader onDocumentUploaded={handleUploadSuccess} />

@@ -9,6 +9,8 @@
 import React, { useState, useMemo } from 'react';
 import { Calendar, Sparkles, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { taskService } from '../../services/taskService';
+import { plannerService } from '../../services/plannerService';
 
 interface StudyTask {
   id: string;
@@ -72,7 +74,40 @@ const INITIAL_TASKS: StudyTask[] = [
 
 export const AdaptiveStudyScheduleGenerator: React.FC = () => {
   const { user } = useAuth();
-  const [tasks] = useState<StudyTask[]>(INITIAL_TASKS);
+  const userId = user?.id || user?.academic_profile || 'santiago_fisica_ucv';
+
+  // Obtener tareas reales del estudiante o fallback a las tareas base
+  const dynamicTasks = useMemo<StudyTask[]>(() => {
+    const userTasks = taskService.getTasks(userId);
+    const userEvents = plannerService.getEvents(userId);
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    const mappedFromTasks: StudyTask[] = userTasks
+      .filter((t) => !t.completed)
+      .map((t) => ({
+        id: `task-${t.id}`,
+        subject: t.subject || 'Materia General',
+        title: t.title,
+        priority: t.priority,
+        estimatedHours: t.priority === 'ALTA' ? 2.5 : t.priority === 'MEDIA' ? 1.5 : 1.0,
+        dueDate: t.dueDate || todayStr,
+        isOverdue: t.dueDate ? t.dueDate < todayStr : false,
+      }));
+
+    const mappedFromEvents: StudyTask[] = userEvents.map((e) => ({
+      id: `event-${e.id}`,
+      subject: e.subject || 'Evaluación',
+      title: `Preparación: ${e.title} (${e.weightPercentage}% ponderado)`,
+      priority: e.weightPercentage >= 25 ? 'ALTA' : 'MEDIA',
+      estimatedHours: e.weightPercentage >= 25 ? 3.0 : 2.0,
+      dueDate: e.date || todayStr,
+      isOverdue: e.date ? e.date < todayStr : false,
+    }));
+
+    const combined = [...mappedFromTasks, ...mappedFromEvents];
+    return combined.length > 0 ? combined : INITIAL_TASKS;
+  }, [userId]);
+
   const [dailyMaxHours, setDailyMaxHours] = useState<number>(4);
   const [focusTimeOfDay, setFocusTimeOfDay] = useState<'MAÑANA' | 'TARDE' | 'NOCHE'>('TARDE');
   const [includeOverduePriority, setIncludeOverduePriority] = useState<boolean>(true);
@@ -84,7 +119,7 @@ export const AdaptiveStudyScheduleGenerator: React.FC = () => {
     ];
 
     // Ordenar tareas: atrasadas primero (si está activo el flag), luego por prioridad, luego por dueDate
-    const sortedTasks = [...tasks].sort((a, b) => {
+    const sortedTasks = [...dynamicTasks].sort((a, b) => {
       if (includeOverduePriority) {
         if (a.isOverdue && !b.isOverdue) return -1;
         if (!a.isOverdue && b.isOverdue) return 1;
@@ -140,10 +175,10 @@ export const AdaptiveStudyScheduleGenerator: React.FC = () => {
     });
 
     return blocks;
-  }, [tasks, dailyMaxHours, focusTimeOfDay, includeOverduePriority]);
+  }, [dynamicTasks, dailyMaxHours, focusTimeOfDay, includeOverduePriority]);
 
-  const overdueCount = tasks.filter((t) => t.isOverdue).length;
-  const totalEstimatedHours = tasks.reduce((acc, t) => acc + t.estimatedHours, 0);
+  const overdueCount = dynamicTasks.filter((t) => t.isOverdue).length;
+  const totalEstimatedHours = dynamicTasks.reduce((acc, t) => acc + t.estimatedHours, 0);
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6">

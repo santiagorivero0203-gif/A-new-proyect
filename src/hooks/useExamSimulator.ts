@@ -35,24 +35,26 @@ export function useExamSimulator() {
   const [report, setReport] = useState<ExamReport | null>(null);
   const [recoverableSession, setRecoverableSession] = useState<ExamSessionState | null>(null);
 
-  // Escuchar reconexión y detectar sesiones pendientes de recuperación
+  // Escuchar reconexión y detectar sesiones pendientes de recuperación aisladas por cuenta
   useEffect(() => {
-    const cleanupSync = sessionRecoveryService.initNetworkSyncListener();
-    const backup = sessionRecoveryService.getActiveExamSession();
+    const cleanupSync = sessionRecoveryService.initNetworkSyncListener(user?.id);
+    const backup = sessionRecoveryService.getActiveExamSession(user?.id);
     if (backup && backup.status === 'IN_PROGRESS' && backup.questions.length > 0) {
       setRecoverableSession(backup);
+    } else {
+      setRecoverableSession(null);
     }
     return cleanupSync;
-  }, []);
+  }, [user?.id]);
 
   // Mantener referencia síncrona al estado actual de la sesión para evitar llamadas impuras dentro del updater
   const sessionRef = useRef(session);
   useEffect(() => {
     sessionRef.current = session;
     if (session.status === 'IN_PROGRESS') {
-      sessionRecoveryService.saveActiveExamSession(session);
+      sessionRecoveryService.saveActiveExamSession(session, user?.id);
     }
-  }, [session]);
+  }, [session, user?.id]);
 
   /**
    * Finaliza el examen y computa el reporte pedagógico con desglose
@@ -127,7 +129,7 @@ export function useExamSimulator() {
     }));
 
     // 3. Limpiar respaldo de sesión en curso
-    sessionRecoveryService.clearActiveExamSession();
+    sessionRecoveryService.clearActiveExamSession(user?.id);
 
     // 4. Persistir en Supabase o encolar para sincronización offline
     if (user?.id) {
@@ -227,10 +229,22 @@ export function useExamSimulator() {
 
     const selectedQuestions: Question[] = pool.slice(0, Math.min(config.totalQuestions, pool.length));
 
+    const finalCustom =
+      customQuestions && customQuestions.length > 0
+        ? customQuestions
+        : config.customQuestions && config.customQuestions.length > 0
+        ? config.customQuestions
+        : undefined;
+
+    const enrichedConfig: ExamConfig = {
+      ...config,
+      customQuestions: finalCustom,
+    };
+
     setReport(null);
     setSession({
       status: 'IN_PROGRESS',
-      config,
+      config: enrichedConfig,
       questions: selectedQuestions,
       currentIndex: 0,
       userAnswers: {},
@@ -309,6 +323,7 @@ export function useExamSimulator() {
   };
 
   const resetExam = () => {
+    sessionRecoveryService.clearActiveExamSession(user?.id);
     setReport(null);
     setSession((prev) => ({
       ...prev,
@@ -327,7 +342,7 @@ export function useExamSimulator() {
   };
 
   const discardRecoveredSession = () => {
-    sessionRecoveryService.clearActiveExamSession();
+    sessionRecoveryService.clearActiveExamSession(user?.id);
     setRecoverableSession(null);
   };
 

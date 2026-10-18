@@ -4,6 +4,10 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 const ACTIVE_EXAM_STORAGE_KEY = 'cpe_active_exam_backup_v1';
 const PENDING_SYNC_STORAGE_KEY = 'cpe_pending_exam_sync_queue_v1';
 
+function getActiveExamKey(userId?: string): string {
+  return userId ? `cpe_${userId}_active_exam_backup_v1` : ACTIVE_EXAM_STORAGE_KEY;
+}
+
 export interface PendingSyncItem {
   id: string;
   userId: string;
@@ -20,11 +24,15 @@ export interface PendingSyncItem {
  * 3. Cola offline (Outbox Pattern) para reportes de examen terminados sin internet,
  *    sincronizándolos automáticamente con Supabase al recuperar la conexión.
  */
+function getPendingSyncKey(userId?: string): string {
+  return userId ? `cpe_${userId}_pending_exam_sync_queue_v1` : PENDING_SYNC_STORAGE_KEY;
+}
+
 export const sessionRecoveryService = {
   /**
-   * Guarda el estado actual del simulacro en curso
+   * Guarda el estado actual del simulacro en curso aislado por estudiante
    */
-  saveActiveExamSession(session: ExamSessionState): void {
+  saveActiveExamSession(session: ExamSessionState, userId?: string): void {
     if (session.status !== 'IN_PROGRESS' || !session.questions || session.questions.length === 0) {
       return;
     }
@@ -33,25 +41,34 @@ export const sessionRecoveryService = {
       const payload = JSON.stringify({
         ...session,
         savedAt: new Date().toISOString(),
+        userId: userId || 'anonymous',
       });
-      sessionStorage.setItem(ACTIVE_EXAM_STORAGE_KEY, payload);
-      localStorage.setItem(ACTIVE_EXAM_STORAGE_KEY, payload);
+      const key = getActiveExamKey(userId);
+      sessionStorage.setItem(key, payload);
+      localStorage.setItem(key, payload);
     } catch (err) {
       console.warn('[RecoveryService] No se pudo respaldar sesión activa:', err);
     }
   },
 
   /**
-   * Obtiene la sesión activa respaldada si existe
+   * Obtiene la sesión activa respaldada si existe para el usuario actual
    */
-  getActiveExamSession(): ExamSessionState | null {
+  getActiveExamSession(userId?: string): ExamSessionState | null {
     try {
+      const key = getActiveExamKey(userId);
       const raw =
-        sessionStorage.getItem(ACTIVE_EXAM_STORAGE_KEY) ||
-        localStorage.getItem(ACTIVE_EXAM_STORAGE_KEY);
+        sessionStorage.getItem(key) ||
+        localStorage.getItem(key) ||
+        (!userId ? (sessionStorage.getItem(ACTIVE_EXAM_STORAGE_KEY) || localStorage.getItem(ACTIVE_EXAM_STORAGE_KEY)) : null);
       if (!raw) return null;
 
-      const parsed = JSON.parse(raw) as ExamSessionState & { savedAt?: string };
+      const parsed = JSON.parse(raw) as ExamSessionState & { savedAt?: string; userId?: string };
+      // Si la sesión guardada pertenece a otro usuario, no restaurar
+      if (userId && parsed.userId && parsed.userId !== 'anonymous' && parsed.userId !== userId) {
+        return null;
+      }
+
       if (
         parsed.status === 'IN_PROGRESS' &&
         Array.isArray(parsed.questions) &&
@@ -68,12 +85,17 @@ export const sessionRecoveryService = {
   /**
    * Limpia el respaldo de la sesión activa tras finalizar o descartar
    */
-  clearActiveExamSession(): void {
+  clearActiveExamSession(userId?: string): void {
     try {
-      sessionStorage.removeItem(ACTIVE_EXAM_STORAGE_KEY);
-      localStorage.removeItem(ACTIVE_EXAM_STORAGE_KEY);
+      const key = getActiveExamKey(userId);
+      sessionStorage.removeItem(key);
+      localStorage.removeItem(key);
+      if (userId) {
+        sessionStorage.removeItem(ACTIVE_EXAM_STORAGE_KEY);
+        localStorage.removeItem(ACTIVE_EXAM_STORAGE_KEY);
+      }
     } catch {
-      // Ignorar fallos de acceso a storage
+      // Ignore
     }
   },
 
@@ -81,8 +103,10 @@ export const sessionRecoveryService = {
    * Encola un reporte de examen finalizado para sincronización cuando no hay conexión
    */
   queuePendingReport(report: ExamReport, userId: string): void {
+    if (!userId || userId === 'anonymous') return;
     try {
-      const queue = this.getPendingReports();
+      const key = getPendingSyncKey(userId);
+      const queue = this.getPendingReports(userId);
       const newItem: PendingSyncItem = {
         id: `sync-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         userId,
@@ -90,18 +114,19 @@ export const sessionRecoveryService = {
         timestamp: new Date().toISOString(),
       };
       const updatedQueue = [...queue, newItem];
-      localStorage.setItem(PENDING_SYNC_STORAGE_KEY, JSON.stringify(updatedQueue));
+      localStorage.setItem(key, JSON.stringify(updatedQueue));
     } catch (err) {
       console.error('[RecoveryService] Error encolando reporte offline:', err);
     }
   },
 
   /**
-   * Obtiene la lista de reportes pendientes por sincronizar
+   * Obtiene la lista de reportes pendientes por sincronizar para un usuario específico
    */
-  getPendingReports(): PendingSyncItem[] {
+  getPendingReports(userId?: string): PendingSyncItem[] {
     try {
-      const raw = localStorage.getItem(PENDING_SYNC_STORAGE_KEY);
+      const key = getPendingSyncKey(userId);
+      const raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw) : [];
     } catch {
       return [];
@@ -111,18 +136,25 @@ export const sessionRecoveryService = {
   /**
    * Sincroniza los reportes pendientes con Supabase tan pronto hay conexión
    */
-  async syncPendingReports(): Promise<number> {
-    if (!navigator.onLine || !isSupabaseConfigured()) {
+  async syncPendingReports(userId?: string): Promise<number> {
+    if (!navigator.onLine || !isSupabaseConfigured() || !userId) {
       return 0;
     }
 
-    const queue = this.getPendingReports();
+    const key = getPendingSyncKey(userId);
+    const queue = this.getPendingReports(userId);
     if (queue.length === 0) return 0;
 
     let syncedCount = 0;
     const remainingQueue: PendingSyncItem[] = [];
 
     for (const item of queue) {
+      // Asegurar que el reporte coincida con el usuario autenticado
+      if (item.userId !== userId) {
+        remainingQueue.push(item);
+        continue;
+      }
+
       try {
         const { error } = await (supabase.from('exam_results') as any).insert({
           user_id: item.userId,
@@ -146,25 +178,26 @@ export const sessionRecoveryService = {
       }
     }
 
-    localStorage.setItem(PENDING_SYNC_STORAGE_KEY, JSON.stringify(remainingQueue));
+    localStorage.setItem(key, JSON.stringify(remainingQueue));
     return syncedCount;
   },
 
   /**
    * Inicializa escuchas de red global para sincronizar automáticamente al reconectar
    */
-  initNetworkSyncListener(): () => void {
+  initNetworkSyncListener(userId?: string): () => void {
     const handleOnline = () => {
-      this.syncPendingReports().then((count) => {
-        if (count > 0) {
-          console.info(`[RecoveryService] Sincronizados ${count} reportes pendientes con Supabase.`);
-        }
-      });
+      if (userId) {
+        this.syncPendingReports(userId).then((count) => {
+          if (count > 0) {
+            console.info(`[RecoveryService] Sincronizados ${count} reportes pendientes con Supabase.`);
+          }
+        });
+      }
     };
 
     window.addEventListener('online', handleOnline);
-    // Intento de sincronización al arrancar
-    if (navigator.onLine) {
+    if (navigator.onLine && userId) {
       handleOnline();
     }
 

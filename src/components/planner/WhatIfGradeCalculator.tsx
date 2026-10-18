@@ -8,7 +8,8 @@
  * ==============================================================================
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import {
   Calculator,
   Plus,
@@ -22,17 +23,76 @@ interface EvaluationItem {
   grade: number | null; // Calificación obtenida (null si aún no se ha presentado)
 }
 
-export const WhatIfGradeCalculator: React.FC<{ className?: string }> = ({ className = '' }) => {
-  const [scaleMax, setScaleMax] = useState<number>(20); // 20 | 100 | 5
-  const [passingGrade, setPassingGrade] = useState<number>(10);
-  const [targetGrade, setTargetGrade] = useState<number>(14);
-
-  const [evaluations, setEvaluations] = useState<EvaluationItem[]>([
+function getDefaultEvaluationsForProfile(profile?: string): EvaluationItem[] {
+  if (profile === 'andres_1er_ano') {
+    return [
+      { id: '1', name: 'Primer Corte (Castellano & Morfosintaxis)', weight: 30, grade: 16 },
+      { id: '2', name: 'Segundo Corte (Matemática: Números Enteros y Fracciones)', weight: 35, grade: 14 },
+      { id: '3', name: 'Tercer Corte (Ciencias Naturales)', weight: 35, grade: null },
+    ];
+  }
+  if (profile === 'prima_5to_ano') {
+    return [
+      { id: '1', name: 'Parcial 1 (Química Orgánica & Enlaces)', weight: 30, grade: 17 },
+      { id: '2', name: 'Parcial 2 (Física: Electromagnetismo)', weight: 35, grade: 15 },
+      { id: '3', name: 'Entrega Final Proyecto de Grado', weight: 35, grade: null },
+    ];
+  }
+  if (profile === 'mafe_diseno_ucab') {
+    return [
+      { id: '1', name: 'Entrega 1: Identidad Visual y Retícula', weight: 30, grade: 18 },
+      { id: '2', name: 'Entrega 2: Sistema Tipográfico y Composición', weight: 35, grade: 16 },
+      { id: '3', name: 'Presentación de Jurado Final', weight: 35, grade: null },
+    ];
+  }
+  return [
     { id: '1', name: 'Primer Parcial (Cinemática)', weight: 25, grade: 14 },
     { id: '2', name: 'Segundo Parcial (Dinámica y Fuerzas)', weight: 30, grade: 11 },
     { id: '3', name: 'Quizzes y Talleres de Laboratorio', weight: 15, grade: 16 },
     { id: '4', name: 'Tercer Parcial Final (Energía y Vectores)', weight: 30, grade: null },
-  ]);
+  ];
+}
+
+export const WhatIfGradeCalculator: React.FC<{ className?: string }> = ({ className = '' }) => {
+  const { user } = useAuth();
+  const userId = user?.id || user?.academic_profile || 'santiago_fisica_ucv';
+
+  const [scaleMax, setScaleMax] = useState<number>(20); // 20 | 100 | 5
+  const [passingGrade, setPassingGrade] = useState<number>(10);
+  const [targetGrade, setTargetGrade] = useState<number>(14);
+
+  const [evaluations, setEvaluations] = useState<EvaluationItem[]>(() => {
+    try {
+      const stored = localStorage.getItem(`cpe_${userId}_whatif_scenarios_v1`);
+      if (stored) return JSON.parse(stored);
+    } catch {
+      // Fallback a defaults
+    }
+    return getDefaultEvaluationsForProfile(user?.academic_profile);
+  });
+
+  // Recargar al cambiar de cuenta
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(`cpe_${userId}_whatif_scenarios_v1`);
+      if (stored) {
+        setEvaluations(JSON.parse(stored));
+        return;
+      }
+    } catch {
+      // Fallback
+    }
+    setEvaluations(getDefaultEvaluationsForProfile(user?.academic_profile));
+  }, [userId, user?.academic_profile]);
+
+  // Guardar automáticamente en el almacenamiento de la cuenta activa
+  useEffect(() => {
+    try {
+      localStorage.setItem(`cpe_${userId}_whatif_scenarios_v1`, JSON.stringify(evaluations));
+    } catch {
+      // Ignore
+    }
+  }, [evaluations, userId]);
 
   const handleScaleChange = (newMax: number) => {
     setScaleMax(newMax);

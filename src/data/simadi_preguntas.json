@@ -1534,7 +1534,7 @@
       "936",
       "956",
       "926",
-      "909.9999999999999"
+      "910"
     ],
     "correcta": "936",
     "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 10% de 1300 nos deja un subtotal de 1170. Segundo descuento: 20% de 1170 nos deja 936. (Descuento único equivalente: 28%)."
@@ -1601,13 +1601,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 30% en un artículo de lujo y luego, por promoción especial, un descuento adicional del 10% sobre el precio ya rebajado. Si el precio original era de $1400, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "881.9999999999999",
-      "901.9999999999999",
-      "871.9999999999999",
+      "882",
+      "902",
+      "872",
       "840"
     ],
-    "correcta": "881.9999999999999",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 1400 nos deja un subtotal de 979.9999999999999. Segundo descuento: 10% de 979.9999999999999 nos deja 881.9999999999999. (Descuento único equivalente: 37%)."
+    "correcta": "882",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 1400 nos deja un subtotal de 980. Segundo descuento: 10% de 980 nos deja 882. (Descuento único equivalente: 37%)."
   },
   {
     "id": 116,
@@ -1629,13 +1629,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 20% en una suscripción anual y luego, por promoción especial, un descuento adicional del 30% sobre el precio ya rebajado. Si el precio original era de $900, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "503.99999999999994",
+      "504",
       "524",
-      "493.99999999999994",
+      "494",
       "450"
     ],
-    "correcta": "503.99999999999994",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 20% de 900 nos deja un subtotal de 720. Segundo descuento: 30% de 720 nos deja 503.99999999999994. (Descuento único equivalente: 44%)."
+    "correcta": "504",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 20% de 900 nos deja un subtotal de 720. Segundo descuento: 30% de 720 nos deja 504. (Descuento único equivalente: 44%)."
   },
   {
     "id": 118,
@@ -1671,13 +1671,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 30% en una suscripción anual y luego, por promoción especial, un descuento adicional del 30% sobre el precio ya rebajado. Si el precio original era de $500, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "244.99999999999997",
+      "245",
       "265",
-      "234.99999999999997",
+      "235",
       "200"
     ],
-    "correcta": "244.99999999999997",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 500 nos deja un subtotal de 350. Segundo descuento: 30% de 350 nos deja 244.99999999999997. (Descuento único equivalente: 51%)."
+    "correcta": "245",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 500 nos deja un subtotal de 350. Segundo descuento: 30% de 350 nos deja 245. (Descuento único equivalente: 51%)."
   },
   {
     "id": 121,
@@ -1727,13 +1727,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 30% en un artículo de lujo y luego, por promoción especial, un descuento adicional del 30% sobre el precio ya rebajado. Si el precio original era de $2000, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "979.9999999999999",
-      "999.9999999999999",
-      "969.9999999999999",
+      "980",
+      "1000",
+      "970",
       "800"
     ],
-    "correcta": "979.9999999999999",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 2000 nos deja un subtotal de 1400. Segundo descuento: 30% de 1400 nos deja 979.9999999999999. (Descuento único equivalente: 51%)."
+    "correcta": "980",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 2000 nos deja un subtotal de 1400. Segundo descuento: 30% de 1400 nos deja 980. (Descuento único equivalente: 51%)."
   },
   {
     "id": 125,
@@ -1755,13 +1755,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 40% en una suscripción anual y luego, por promoción especial, un descuento adicional del 30% sobre el precio ya rebajado. Si el precio original era de $300, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "125.99999999999999",
+      "126",
       "146",
-      "115.99999999999999",
-      "90.00000000000001"
+      "116",
+      "90"
     ],
-    "correcta": "125.99999999999999",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 40% de 300 nos deja un subtotal de 180. Segundo descuento: 30% de 180 nos deja 125.99999999999999. (Descuento único equivalente: 58%)."
+    "correcta": "126",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 40% de 300 nos deja un subtotal de 180. Segundo descuento: 30% de 180 nos deja 126. (Descuento único equivalente: 58%)."
   },
   {
     "id": 127,
@@ -1769,13 +1769,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 30% en un artículo de lujo y luego, por promoción especial, un descuento adicional del 30% sobre el precio ya rebajado. Si el precio original era de $700, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "342.99999999999994",
-      "362.99999999999994",
-      "332.99999999999994",
+      "343",
+      "363",
+      "333",
       "280"
     ],
-    "correcta": "342.99999999999994",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 700 nos deja un subtotal de 489.99999999999994. Segundo descuento: 30% de 489.99999999999994 nos deja 342.99999999999994. (Descuento único equivalente: 51%)."
+    "correcta": "343",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 700 nos deja un subtotal de 490. Segundo descuento: 30% de 490 nos deja 343. (Descuento único equivalente: 51%)."
   },
   {
     "id": 128,
@@ -1783,13 +1783,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 30% en un paquete tecnológico y luego, por promoción especial, un descuento adicional del 30% sobre el precio ya rebajado. Si el precio original era de $500, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "244.99999999999997",
+      "245",
       "265",
-      "234.99999999999997",
+      "235",
       "200"
     ],
-    "correcta": "244.99999999999997",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 500 nos deja un subtotal de 350. Segundo descuento: 30% de 350 nos deja 244.99999999999997. (Descuento único equivalente: 51%)."
+    "correcta": "245",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 500 nos deja un subtotal de 350. Segundo descuento: 30% de 350 nos deja 245. (Descuento único equivalente: 51%)."
   },
   {
     "id": 129,
@@ -1853,13 +1853,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 30% en un artículo de lujo y luego, por promoción especial, un descuento adicional del 30% sobre el precio ya rebajado. Si el precio original era de $1000, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "489.99999999999994",
-      "509.99999999999994",
-      "479.99999999999994",
+      "490",
+      "510",
+      "480",
       "400"
     ],
-    "correcta": "489.99999999999994",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 1000 nos deja un subtotal de 700. Segundo descuento: 30% de 700 nos deja 489.99999999999994. (Descuento único equivalente: 51%)."
+    "correcta": "490",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 1000 nos deja un subtotal de 700. Segundo descuento: 30% de 700 nos deja 490. (Descuento único equivalente: 51%)."
   },
   {
     "id": 134,
@@ -1867,13 +1867,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 30% en un paquete tecnológico y luego, por promoción especial, un descuento adicional del 10% sobre el precio ya rebajado. Si el precio original era de $700, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "440.99999999999994",
-      "460.99999999999994",
-      "430.99999999999994",
+      "441",
+      "461",
+      "431",
       "420"
     ],
-    "correcta": "440.99999999999994",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 700 nos deja un subtotal de 489.99999999999994. Segundo descuento: 10% de 489.99999999999994 nos deja 440.99999999999994. (Descuento único equivalente: 37%)."
+    "correcta": "441",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 30% de 700 nos deja un subtotal de 490. Segundo descuento: 10% de 490 nos deja 441. (Descuento único equivalente: 37%)."
   },
   {
     "id": 135,
@@ -1895,13 +1895,13 @@
     "tema": "Porcentajes",
     "pregunta": "Una tienda ofrece un descuento del 20% en un artículo de lujo y luego, por promoción especial, un descuento adicional del 30% sobre el precio ya rebajado. Si el precio original era de $1800, ¿cuál es el precio final a pagar?",
     "opciones": [
-      "1007.9999999999999",
+      "1008",
       "1028",
-      "997.9999999999999",
+      "998",
       "900"
     ],
-    "correcta": "1007.9999999999999",
-    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 20% de 1800 nos deja un subtotal de 1440. Segundo descuento: 30% de 1440 nos deja 1007.9999999999999. (Descuento único equivalente: 44%)."
+    "correcta": "1008",
+    "justificacion": "**Concepto Fundamental:** Descuentos Sucesivos. El segundo porcentaje no se calcula sobre el precio original, sino sobre el subtotal resultante del primer descuento. La fórmula de descuento único es: D = D1 + D2 - (D1×D2)/100.\n\n**Resolución:** Primer descuento: 20% de 1800 nos deja un subtotal de 1440. Segundo descuento: 30% de 1440 nos deja 1008. (Descuento único equivalente: 44%)."
   },
   {
     "id": 137,
@@ -4122,13 +4122,13 @@
     "tema": "Porcentajes",
     "pregunta": "El precio de una acción en la bolsa de valores era de $100 al inicio del año 2023. Si el valor aumenta a una tasa anual del 5%, ¿cuál será el precio estimado al final del año 2025?",
     "opciones": [
-      "$55",
-      "$55.12",
-      "$55.5",
-      "$56"
+      "$110.00",
+      "$110.25",
+      "$105.00",
+      "$115.50"
     ],
-    "correcta": "$55.12",
-    "justificacion": "**Concepto Fundamental:** Interés compuesto. El crecimiento se aplica sobre el valor acumulado del período anterior.\n\n**Resolución:** Después de 2023 (½ año): Esto depende de la interpretación. Usando crecimiento compuesto para 2 años: 100 × (1.05)² ≈ 100 × 1.1025 = $110.25... Nota: El enunciado original de la prueba indica opciones muy por debajo de $100, sugiriendo un error en el planteamiento o un contexto diferente."
+    "correcta": "$110.25",
+    "justificacion": "Monto = 100 × (1 + 0.05)² = 100 × 1.1025 = 110.25 USD. Opciones bajo 100 USD se descartan."
   },
   {
     "id": 1004,
@@ -4262,7 +4262,7 @@
     "tema": "Logaritmos",
     "pregunta": "Hallar el valor de $10^{\\log 10^{3}}$",
     "opciones": [
-      "\\log 1000",
+      "$\\log 1000$",
       "1",
       "3",
       "1000"
@@ -4276,7 +4276,7 @@
     "tema": "Logaritmos",
     "pregunta": "Hallar el valor de $2^{\\log_{2} 2^{4}}$",
     "opciones": [
-      "\\log_{2} 16",
+      "$\\log_{2} 16$",
       "16",
       "1",
       "4"
@@ -4292,7 +4292,7 @@
     "opciones": [
       "25",
       "2",
-      "\\log_{5} 25",
+      "$\\log_{5} 25$",
       "1"
     ],
     "correcta": "25",
@@ -4307,7 +4307,7 @@
       "27",
       "3",
       "1",
-      "\\log_{3} 27"
+      "$\\log_{3} 27$"
     ],
     "correcta": "27",
     "justificacion": "Por propiedad de logaritmos, $\\log_b b^x = x$. Por tanto, el exponente es 3. Luego, calculamos $3^{3} = 27$."
@@ -4400,7 +4400,7 @@
     "id": 1023,
     "area": "Ciencia y Tecnología",
     "tema": "Logaritmos",
-    "pregunta": "El valor de $x$ que satisface la ecuación $5^{x+-1} = 25$ es:",
+    "pregunta": "El valor de $x$ que satisface la ecuación $5^{x- 1} = 25$ es:",
     "opciones": [
       "4",
       "6",
@@ -4408,7 +4408,7 @@
       "3"
     ],
     "correcta": "3",
-    "justificacion": "Sabemos que $25 = 5^2$. Igualando exponentes: $x + -1 = 2 \\implies x = 3$."
+    "justificacion": "Sabemos que $25 = 5^2$. Igualando exponentes: $x - 1 = 2 \\implies x = 3$."
   },
   {
     "id": 1024,
@@ -4556,13 +4556,13 @@
     "tema": "Logaritmos",
     "pregunta": "Hallar $\\log_x (3x)$, si $\\log_x 27 = 3$.",
     "opciones": [
-      "2.0000000000000004",
-      "1/2.0000000000000004",
-      "1.0000000000000004",
-      "3.0000000000000004"
+      "2",
+      "1/2",
+      "1",
+      "3"
     ],
-    "correcta": "2.0000000000000004",
-    "justificacion": "Si $\\log_x 27 = 3$, entonces $x^{3} = 27 \\implies x = 3$. Luego, $\\log_{3} (3 \\cdot 3) = \\log_{3} (9) = 2.0000000000000004$."
+    "correcta": "2",
+    "justificacion": "Si $\\log_x 27 = 3$, entonces $x^{3} = 27 \\implies x = 3$. Luego, $\\log_{3} (3 \\cdot 3) = \\log_{3} (9) = 2$."
   },
   {
     "id": 1035,
@@ -4570,13 +4570,13 @@
     "tema": "Logaritmos",
     "pregunta": "Hallar $\\log_x (9x)$, si $\\log_x 81 = 4$.",
     "opciones": [
-      "3.0000000000000004",
-      "1/3.0000000000000004",
+      "3",
+      "1/3",
       "4",
-      "2.0000000000000004"
+      "2"
     ],
-    "correcta": "3.0000000000000004",
-    "justificacion": "Si $\\log_x 81 = 4$, entonces $x^{4} = 81 \\implies x = 3$. Luego, $\\log_{3} (9 \\cdot 3) = \\log_{3} (27) = 3.0000000000000004$."
+    "correcta": "3",
+    "justificacion": "Si $\\log_x 81 = 4$, entonces $x^{4} = 81 \\implies x = 3$. Luego, $\\log_{3} (9 \\cdot 3) = \\log_{3} (27) = 3$."
   },
   {
     "id": 1036,
@@ -5100,7 +5100,7 @@
     "id": 1073,
     "area": "Ciencia y Tecnología",
     "tema": "Ecuaciones Exponenciales",
-    "pregunta": "El número de valores reales de $x$ que satisfacen la ecuación: $2^{3x^2 - 5x + -2} = 1$ es:",
+    "pregunta": "El número de valores reales de $x$ que satisfacen la ecuación: $2^{3x^2 - 5x - 2} = 1$ es:",
     "opciones": [
       "0",
       "3",
@@ -5108,7 +5108,7 @@
       "1"
     ],
     "correcta": "2",
-    "justificacion": "Igualamos el exponente a 0: $3x^2 - 5x + -2 = 0$. Calculamos el discriminante $\\Delta = (-5)^2 - 4(3)(-2)$. Si $\\Delta > 0$, hay 2 soluciones; si $\\Delta = 0$, hay 1; si $\\Delta < 0$, hay 0. En este caso hay 2 soluciones."
+    "justificacion": "Igualamos el exponente a 0: $3x^2 - 5x - 2 = 0$. Calculamos el discriminante $\\Delta = (-5)^2 - 4(3)(-2)$. Si $\\Delta > 0$, hay 2 soluciones; si $\\Delta = 0$, hay 1; si $\\Delta < 0$, hay 0. En este caso hay 2 soluciones."
   },
   {
     "id": 1074,
@@ -5368,7 +5368,7 @@
     "tema": "Sucesiones",
     "pregunta": "¿Encuentra la fórmula que da el término general de la secuencia: 1, 7, 17, 31, ...? (Considera el primer término cuando n = 1).",
     "opciones": [
-      "$2n + -1$",
+      "$2n - 1$",
       "$n^2 + 0$",
       "$n^3 - 1$",
       "$2n^2 - 1$"
@@ -5620,12 +5620,12 @@
     "tema": "Planteamiento de Ecuaciones",
     "pregunta": "Un número se multiplica por 2 y por 8. Los dos resultados se multiplican entre sí y es 128. ¿Cuál es el número en cuestión?",
     "opciones": [
-      "2\\sqrt{2} \\sqrt{2}",
+      "$2\\sqrt{2} \\sqrt{2}$",
       "4",
-      "2\\sqrt{2}",
+      "$2\\sqrt{2}$",
       "2"
     ],
-    "correcta": "2\\sqrt{2}",
+    "correcta": "$2\\sqrt{2}$",
     "justificacion": "Sea $x$ el número. $(x \\cdot 2) \\cdot (x \\cdot 8) = 128 \\implies 16x^2 = 128 \\implies x^2 = 8 \\implies x = 2\\sqrt{2}$."
   },
   {
@@ -5636,7 +5636,7 @@
     "opciones": [
       "3",
       "2",
-      "3 \\sqrt{2}",
+      "$3 \\sqrt{2}$",
       "4"
     ],
     "correcta": "3",
@@ -5648,7 +5648,7 @@
     "tema": "Planteamiento de Ecuaciones",
     "pregunta": "Un número se multiplica por 2 y por 5. Los dos resultados se multiplican entre sí y es 250. ¿Cuál es el número en cuestión?",
     "opciones": [
-      "5 \\sqrt{2}",
+      "$5 \\sqrt{2}$",
       "2",
       "5",
       "4"
@@ -5662,7 +5662,7 @@
     "tema": "Planteamiento de Ecuaciones",
     "pregunta": "Un número se multiplica por 4 y por 2. Los dos resultados se multiplican entre sí y es 200. ¿Cuál es el número en cuestión?",
     "opciones": [
-      "5 \\sqrt{2}",
+      "$5 \\sqrt{2}$",
       "4",
       "2",
       "5"
@@ -5828,7 +5828,7 @@
     "id": 1126,
     "area": "Razonamiento Lógico Numérico",
     "tema": "Álgebra",
-    "pregunta": "Dada la función $f(x) = x^2 + -4$, la imagen de $x = -3$ es:",
+    "pregunta": "Dada la función $f(x) = x^2 - 4$, la imagen de $x = -3$ es:",
     "opciones": [
       "5",
       "0",
@@ -5836,7 +5836,7 @@
       "7"
     ],
     "correcta": "5",
-    "justificacion": "Sustituimos $x = -3$ en la función: $f(-3) = (-3)^2 + -4 = 9 + -4 = 5.$"
+    "justificacion": "Sustituimos $x = -3$ en la función: $f(-3) = (-3)^2 - 4 = 9 - 4 = 5.$"
   },
   {
     "id": 1127,
@@ -5856,7 +5856,7 @@
     "id": 1128,
     "area": "Razonamiento Lógico Numérico",
     "tema": "Álgebra",
-    "pregunta": "Dada la función $f(x) = x^4 + -5$, la imagen de $x = 2$ es:",
+    "pregunta": "Dada la función $f(x) = x^4 - 5$, la imagen de $x = 2$ es:",
     "opciones": [
       "10",
       "11",
@@ -5864,7 +5864,7 @@
       "13"
     ],
     "correcta": "11",
-    "justificacion": "Sustituimos $x = 2$ en la función: $f(2) = (2)^4 + -5 = 16 + -5 = 11.$"
+    "justificacion": "Sustituimos $x = 2$ en la función: $f(2) = (2)^4 - 5 = 16 - 5 = 11.$"
   },
   {
     "id": 1129,
@@ -7105,8 +7105,8 @@
     "pregunta": "María tiene 5 años menos que el doble de la edad de Julia. Se sabe que ambas edades suman estrictamente más de 25 años. Si 'x' es la edad de Julia, ¿cómo se expresa el dominio de edad de Julia matemáticamente?",
     "opciones": [
       "x > 10",
-      "x > 6.666666666666667",
-      "x < 6.666666666666667",
+      "x > 6.67",
+      "x < 6.67",
       "x < 10"
     ],
     "correcta": "x > 10",

@@ -262,16 +262,24 @@ export const ExamResultsReport: React.FC<ExamResultsReportProps> = ({
                     <p className="font-bold text-[10px] uppercase tracking-wider mb-0.5 opacity-80">
                       Tu Selección:
                     </p>
-                    <p className="font-medium">
-                      {userOpt ? userOpt.text : 'No seleccionada'}
-                    </p>
+                    {userOpt ? (
+                      <p
+                        className="font-medium"
+                        dangerouslySetInnerHTML={{ __html: renderLatex(userOpt.text, false) }}
+                      />
+                    ) : (
+                      <p className="font-medium">No seleccionada</p>
+                    )}
                   </div>
 
                   <div className="p-3 rounded-xl bg-emerald-50/40 border border-emerald-200 text-emerald-900">
                     <p className="font-bold text-[10px] uppercase tracking-wider mb-0.5 text-emerald-700">
                       Respuesta Correcta Oficial:
                     </p>
-                    <p className="font-medium">{correctOpt?.text}</p>
+                    <p
+                      className="font-medium"
+                      dangerouslySetInnerHTML={{ __html: renderLatex(correctOpt?.text || '', false) }}
+                    />
                   </div>
                 </div>
 

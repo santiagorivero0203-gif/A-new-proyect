@@ -358,7 +358,7 @@ export function cleanAndParseJsonWithLatex<T = unknown>(rawOutput: string): T {
   // 3. Intento 1: parseo directo
   try {
     return JSON.parse(cleaned) as T;
-  } catch (_firstErr) {
+  } catch {
     // Si falla, el error más probable son barras invertidas simples en LaTeX (ej: \frac, \sqrt, \vec, \alpha)
     // que JSON.parse interpreta como secuencias de escape inválidas si no van seguidas de " \ / b f n r t u
   }
@@ -371,9 +371,10 @@ export function cleanAndParseJsonWithLatex<T = unknown>(rawOutput: string): T {
       '\\\\'
     );
     return JSON.parse(fixedEscapes) as T;
-  } catch (_secondErr) {
+  } catch {
     // 5. Intento 3: Reemplazo con remoción de caracteres de control huérfanos
     try {
+      // eslint-disable-next-line no-control-regex
       const sanitized = cleaned
         .replace(/[\u0000-\u001F]+/g, (c) => (c === '\n' || c === '\r' || c === '\t' ? c : ''))
         .replace(/\\(?!["\\/]|u[0-9a-fA-F]{4})/g, '\\\\');

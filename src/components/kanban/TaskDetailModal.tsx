@@ -13,7 +13,7 @@
  * ==============================================================================
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   X,
   Sparkles,
@@ -70,6 +70,26 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       setCompletedSubtasks({});
     }
   }, [task]);
+
+  const handleRealtimeUpdate = useCallback((updatedRow: TaskItemData) => {
+    if (updatedRow && updatedRow.ai_metadata?.subtasks) {
+      console.log('[TaskDetailModal Realtime] Desglose de IA recibido:', updatedRow);
+      setCurrentTask(updatedRow);
+      setIsAnalyzing(false);
+      onTaskUpdated?.(updatedRow);
+
+      try {
+        confetti({
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.55 },
+          colors: ['#0F52BA', '#38bdf8', '#818cf8'],
+        });
+      } catch {
+        // Fallback
+      }
+    }
+  }, [onTaskUpdated]);
 
   // ----------------------------------------------------------------------------
   // SUSCRIPCIÓN EN TIEMPO REAL VÍA SUPABASE REALTIME
@@ -140,27 +160,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       supabase.removeChannel(channel);
       clearInterval(poller);
     };
-  }, [isOpen, currentTask, isAnalyzing]);
-
-  const handleRealtimeUpdate = (updatedRow: TaskItemData) => {
-    if (updatedRow && updatedRow.ai_metadata?.subtasks) {
-      console.log('[TaskDetailModal Realtime] Desglose de IA recibido:', updatedRow);
-      setCurrentTask(updatedRow);
-      setIsAnalyzing(false);
-      onTaskUpdated?.(updatedRow);
-
-      try {
-        confetti({
-          particleCount: 70,
-          spread: 60,
-          origin: { y: 0.55 },
-          colors: ['#0F52BA', '#38bdf8', '#818cf8'],
-        });
-      } catch {
-        // Fallback
-      }
-    }
-  };
+  }, [isOpen, currentTask, isAnalyzing, handleRealtimeUpdate]);
 
   // ----------------------------------------------------------------------------
   // DISPARAR DESGLOSE CON IA (NEXUS)

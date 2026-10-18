@@ -4,6 +4,7 @@ import { TimerIcon, PauseIcon, PlayIcon } from '../common/Icons';
 import { ExamQuestionCard } from './ExamQuestionCard';
 import { ExamTimerBadge } from './ExamTimerBadge';
 import { proctoringSystem } from '../../services/proctoringSystem';
+import { useProctoringCamera } from '../../hooks/useProctoringCamera';
 
 interface ExamRunnerProps {
   session: ExamSessionState;
@@ -28,6 +29,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
 }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { isActive, startCamera, stopCamera, videoRef } = useProctoringCamera();
 
   // Liberación estricta de cámara/hardware al salir o terminar la prueba
   useEffect(() => {
@@ -100,6 +102,39 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Supervisión Opcional con Cámara Web (Cero Fugas de Hardware) */}
+      {(session.config.mode === 'UNIVERSITY_EXAM' || session.config.mode === 'SIMADI_UCV') && (
+        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center justify-between text-xs animate-fadeIn">
+          <div className="flex items-center gap-2.5">
+            <span
+              className={`w-2.5 h-2.5 rounded-full ${
+                isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'
+              }`}
+            />
+            <span className="font-semibold text-slate-700">
+              Supervisión SIMADI: {isActive ? 'Cámara Activa (Seguro)' : 'Supervisión Opcional'}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            {isActive && (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-12 h-8 rounded-lg object-cover border border-emerald-300 shrink-0"
+              />
+            )}
+            <button
+              onClick={isActive ? stopCamera : startCamera}
+              className="px-3 py-1.5 rounded-xl text-[11px] font-bold border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-soft-xs"
+            >
+              {isActive ? 'Desactivar Cámara' : 'Activar Cámara'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Pausa Overlay si está pausado */}
       {session.isPaused && (

@@ -15,6 +15,8 @@ import {
   GridIcon,
   AtomIcon,
 } from './Icons';
+import { PenTool } from 'lucide-react';
+import { taskService } from '../../services/taskService';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -101,7 +103,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       id: 'scratchpad',
       title: 'Abrir Scratchpad (Lienzo Canvas & Bloc LaTeX)',
       category: 'HERRAMIENTAS',
-      icon: <span className="text-sm font-bold">✎</span>,
+      icon: <PenTool className="w-4 h-4 text-[#0F52BA]" />,
       run: () => {
         onClose();
         if (onOpenScratchpad) onOpenScratchpad();
@@ -192,7 +194,30 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     },
   ];
 
-  const filtered = actions.filter((a) =>
+  const userTasksActions: CommandAction[] = query.trim()
+    ? taskService
+        .getTasks(user?.id || 'demo')
+        .filter(
+          (t) =>
+            t.title.toLowerCase().includes(query.toLowerCase()) ||
+            t.subject.toLowerCase().includes(query.toLowerCase())
+        )
+        .slice(0, 4)
+        .map((t) => ({
+          id: `task-${t.id}`,
+          title: `Meta: ${t.title} (${t.subject})`,
+          category: 'ESTUDIO' as const,
+          icon: <LayersIcon className="w-4 h-4 text-emerald-600" />,
+          run: () => {
+            onClose();
+            onNavigateToTab('PRODUCTIVITY');
+          },
+        }))
+    : [];
+
+  const combinedActions = [...actions, ...userTasksActions];
+
+  const filtered = combinedActions.filter((a) =>
     a.title.toLowerCase().includes(query.toLowerCase()) ||
     a.category.toLowerCase().includes(query.toLowerCase())
   );

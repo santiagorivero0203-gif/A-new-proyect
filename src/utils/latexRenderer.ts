@@ -36,15 +36,22 @@ export function sanitizeLatex(raw: string): string {
     .trim();
 
   // 2. Recuperar comandos LaTeX dañados por secuencias de escape JSON (\t, \f, \r, \b)
+  // eslint-disable-next-line no-control-regex
   cleaned = cleaned
-    .replace(/\text\{/g, '\\text{')
-    .replace(/mathrm\{/g, '\\mathrm{')
-    .replace(/\frac\{/g, '\\frac{')
-    .replace(/\rightarrow/g, '\\rightarrow')
-    .replace(/\rightleftharpoons/g, '\\rightleftharpoons')
-    .replace(/\beta/g, '\\beta')
-    .replace(/\tau/g, '\\tau')
-    .replace(/\theta/g, '\\theta');
+    .replace(/\x09ext\{/g, '\\text{')
+    .replace(/(?<!\\)text\{/g, '\\text{')
+    .replace(/(?<!\\)mathrm\{/g, '\\mathrm{')
+    .replace(/\x0crac\{/g, '\\frac{')
+    .replace(/(?<!\\)frac\{/g, '\\frac{')
+    .replace(/\x0dight/g, '\\right')
+    .replace(/(?<!\\)left/g, '\\left')
+    .replace(/\x08egin\{/g, '\\begin{')
+    .replace(/(?<!\\)end\{/g, '\\end{')
+    .replace(/(?<!\\)rightarrow/g, '\\rightarrow')
+    .replace(/(?<!\\)rightleftharpoons/g, '\\rightleftharpoons')
+    .replace(/(?<!\\)beta/g, '\\beta')
+    .replace(/(?<!\\)tau/g, '\\tau')
+    .replace(/(?<!\\)theta/g, '\\theta');
 
   // 3. REPARACIÓN CRÍTICA: KaTeX prohíbe _ y ^ dentro de \text{...}.
   // Convierte recursivamente \text{CH_{4}} o \text{m/s^2} en \mathrm{CH_{4}}
@@ -92,9 +99,9 @@ export function renderLatexToHtml(
   if (!latex) return '';
 
   // PROTECCIÓN VITAL: Si se pasa un párrafo de texto en prosa en vez de una fórmula pura,
-  // delegar a renderLatex para evitar que KaTeX una todas las letras en cursiva matemática.
+  // delegar a renderLatex con displayMode=false para evitar que KaTeX una todas las letras en cursiva matemática.
   if (isNaturalLanguageParagraph(latex)) {
-    return renderLatex(latex, options.displayMode ?? false);
+    return renderLatex(latex, false);
   }
 
   const safeLatex = sanitizeLatex(latex);
@@ -166,6 +173,11 @@ function formatPlainTextSegment(rawText: string): string {
   t = t.replace(/\\Sigma\b/g, '&Sigma;');
   t = t.replace(/\\pi\b/g, '&pi;');
   t = t.replace(/\\theta\b/g, '&theta;');
+  t = t.replace(/\\alpha\b/g, '&alpha;');
+  t = t.replace(/\\gamma\b/g, '&gamma;');
+  t = t.replace(/\\omega\b/g, '&omega;');
+  t = t.replace(/\\infty\b/g, '&infin;');
+  t = t.replace(/\\cdot/g, '&sdot;');
 
   // 4. Limpieza de secuencias anómalas de dólares ($$$ -> $)
   t = t.replace(/\${3,}/g, '$');
@@ -242,7 +254,14 @@ export function renderLatex(content: string | undefined | null, displayMode: boo
           mathExpr = rawToken.slice(2, -2).trim();
           isBlock = true;
         } else if (rawToken.startsWith('$') && rawToken.endsWith('$')) {
-          mathExpr = rawToken.slice(1, -1).trim();
+          const inner = rawToken.slice(1, -1).trim();
+          // Descarte de falsos positivos de precios en dólares (ej. "$110.25... de $")
+          if (/^\d+(?:[.,]\d+)?\s+[a-zA-ZáéíóúÁÉÍÓÚñÑ]{2,}/.test(inner) && !/[=+\-*/\\^_<>{}]/.test(inner)) {
+            htmlResult += escapeHtml(rawToken);
+            lastIndex = match.index + rawToken.length;
+            continue;
+          }
+          mathExpr = inner;
           isBlock = false;
         } else if (rawToken.startsWith('\\[') && rawToken.endsWith('\\]')) {
           mathExpr = rawToken.slice(2, -2).trim();

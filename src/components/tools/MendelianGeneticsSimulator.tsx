@@ -18,28 +18,32 @@ interface TraitConfig {
   recessiveName: string;
 }
 
+const TRAIT_A: TraitConfig = {
+  dominantSymbol: 'A',
+  recessiveSymbol: 'a',
+  dominantName: 'Flores Púrpuras',
+  recessiveName: 'Flores Blancas'
+};
+
+const TRAIT_B: TraitConfig = {
+  dominantSymbol: 'B',
+  recessiveSymbol: 'b',
+  dominantName: 'Semilla Lisa',
+  recessiveName: 'Semilla Rugosa'
+};
+
 export const MendelianGeneticsSimulator: React.FC = () => {
   const [crossMode, setCrossMode] = useState<CrossMode>('monohybrid');
 
   // Configuración Rasgo 1 (A/a)
   const [parent1A, setParent1A] = useState<'AA' | 'Aa' | 'aa'>('Aa');
   const [parent2A, setParent2A] = useState<'AA' | 'Aa' | 'aa'>('Aa');
-  const traitA: TraitConfig = {
-    dominantSymbol: 'A',
-    recessiveSymbol: 'a',
-    dominantName: 'Flores Púrpuras',
-    recessiveName: 'Flores Blancas'
-  };
+  const traitA = TRAIT_A;
 
   // Configuración Rasgo 2 para Dihíbrido (B/b)
   const [parent1B, setParent1B] = useState<'BB' | 'Bb' | 'bb'>('Bb');
   const [parent2B, setParent2B] = useState<'BB' | 'Bb' | 'bb'>('Bb');
-  const traitB: TraitConfig = {
-    dominantSymbol: 'B',
-    recessiveSymbol: 'b',
-    dominantName: 'Semilla Lisa',
-    recessiveName: 'Semilla Rugosa'
-  };
+  const traitB = TRAIT_B;
 
   // Separación de gametos para Monohíbrido
   const gametesMono = useMemo(() => {
@@ -77,7 +81,7 @@ export const MendelianGeneticsSimulator: React.FC = () => {
         
         // Determinar fenotipo
         const isDominant = genotype.includes('A');
-        const phenotype = isDominant ? traitA.dominantName : traitA.recessiveName;
+        const phenotype = isDominant ? TRAIT_A.dominantName : TRAIT_A.recessiveName;
 
         genotypeCounts[genotype] = (genotypeCounts[genotype] || 0) + 1;
         if (isDominant) dominantCount++;
@@ -94,7 +98,7 @@ export const MendelianGeneticsSimulator: React.FC = () => {
       recessiveCount,
       total: 4
     };
-  }, [gametesMono, traitA]);
+  }, [gametesMono]);
 
   // Resultados y estadísticas Dihíbrido
   const diAnalysis = useMemo(() => {
@@ -110,8 +114,8 @@ export const MendelianGeneticsSimulator: React.FC = () => {
         const genotype = `${aAlleles}${bAlleles}`;
 
         // Determinar fenotipos conjuntos
-        const phenoA = aAlleles.includes('A') ? traitA.dominantName : traitA.recessiveName;
-        const phenoB = bAlleles.includes('B') ? traitB.dominantName : traitB.recessiveName;
+        const phenoA = aAlleles.includes('A') ? TRAIT_A.dominantName : TRAIT_A.recessiveName;
+        const phenoB = bAlleles.includes('B') ? TRAIT_B.dominantName : TRAIT_B.recessiveName;
         const combinedPheno = `${phenoA} + ${phenoB}`;
 
         genotypeCounts[genotype] = (genotypeCounts[genotype] || 0) + 1;
@@ -127,7 +131,7 @@ export const MendelianGeneticsSimulator: React.FC = () => {
       phenotypes: phenotypeCounts,
       total: 16
     };
-  }, [gametesDi, traitA, traitB]);
+  }, [gametesDi]);
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6">

@@ -1,12 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { TimerIcon, PlayIcon, PauseIcon, RotateCcwIcon } from '../../common/Icons';
 import confetti from 'canvas-confetti';
+import { useAuth } from '../../../context/AuthContext';
 
 export const PomodoroWidget: React.FC = () => {
-  const [selectedDuration, setSelectedDuration] = useState<number>(25 * 60);
-  const [timeLeft, setTimeLeft] = useState<number>(25 * 60);
+  const { user } = useAuth();
+  const userId = user?.id || user?.academic_profile || 'santiago_fisica_ucv';
+  const initialDurationMin = user?.preferences?.focus_duration || 25;
+
+  const [selectedDuration, setSelectedDuration] = useState<number>(initialDurationMin * 60);
+  const [timeLeft, setTimeLeft] = useState<number>(initialDurationMin * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [sessionLabel, setSessionLabel] = useState<string>('Bloque Estándar 25 min');
+  const [sessionLabel, setSessionLabel] = useState<string>(`Bloque ${initialDurationMin} min`);
+  const [completedToday, setCompletedToday] = useState<number>(() => {
+    try {
+      const stored = localStorage.getItem(`cpe_${userId}_pomodoros_today`);
+      return stored ? parseInt(stored, 10) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  // Actualizar al cambiar de usuario
+  useEffect(() => {
+    const prefMin = user?.preferences?.focus_duration || 25;
+    setSelectedDuration(prefMin * 60);
+    setTimeLeft(prefMin * 60);
+    setIsRunning(false);
+    setSessionLabel(`Bloque ${prefMin} min`);
+    try {
+      const stored = localStorage.getItem(`cpe_${userId}_pomodoros_today`);
+      setCompletedToday(stored ? parseInt(stored, 10) || 0 : 0);
+    } catch {
+      setCompletedToday(0);
+    }
+  }, [userId, user?.preferences?.focus_duration]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval> | null = null;
@@ -16,6 +44,15 @@ export const PomodoroWidget: React.FC = () => {
       }, 1000);
     } else if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
+      setCompletedToday((prev) => {
+        const next = prev + 1;
+        try {
+          localStorage.setItem(`cpe_${userId}_pomodoros_today`, String(next));
+        } catch {
+          // Ignore
+        }
+        return next;
+      });
       confetti({
         particleCount: 50,
         spread: 70,
@@ -26,7 +63,7 @@ export const PomodoroWidget: React.FC = () => {
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [isRunning, timeLeft]);
+  }, [isRunning, timeLeft, userId]);
 
   const setTimerPreset = (minutes: number, label: string) => {
     setIsRunning(false);
@@ -68,13 +105,20 @@ export const PomodoroWidget: React.FC = () => {
               <p className="text-[11px] text-slate-500">{sessionLabel}</p>
             </div>
           </div>
-          <span
-            className={`text-[10px] font-bold px-2 py-0.5 rounded-full font-mono ${
-              isRunning ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-slate-100 text-slate-600'
-            }`}
-          >
-            {isRunning ? 'En curso' : 'Listo'}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {completedToday > 0 && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+                {completedToday} completados hoy
+              </span>
+            )}
+            <span
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full font-mono ${
+                isRunning ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-slate-100 text-slate-600'
+              }`}
+            >
+              {isRunning ? 'En curso' : 'Listo'}
+            </span>
+          </div>
         </div>
 
         {/* Botones de Modos */}

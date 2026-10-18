@@ -7,8 +7,9 @@
  * Función 133 del catálogo académico.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Layers, ChevronRight, Sparkles, Clock, Calendar } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export interface Flashcard {
   id: string;
@@ -70,7 +71,42 @@ const DEFAULT_FLASHCARDS: Flashcard[] = [
 ];
 
 export const SpacedRepetitionFlashcards: React.FC = () => {
-  const [cards, setCards] = useState<Flashcard[]>(DEFAULT_FLASHCARDS);
+  const { user } = useAuth();
+  const userId = user?.id || user?.academic_profile || 'santiago_fisica_ucv';
+
+  const [cards, setCards] = useState<Flashcard[]>(() => {
+    try {
+      const stored = localStorage.getItem(`cpe_${userId}_sm2_flashcards_v1`);
+      if (stored) return JSON.parse(stored);
+    } catch {
+      // Fallback
+    }
+    return DEFAULT_FLASHCARDS;
+  });
+
+  // Recargar al cambiar de cuenta
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(`cpe_${userId}_sm2_flashcards_v1`);
+      if (stored) {
+        setCards(JSON.parse(stored));
+        return;
+      }
+    } catch {
+      // Fallback
+    }
+    setCards(DEFAULT_FLASHCARDS);
+  }, [userId]);
+
+  // Persistir cambios
+  useEffect(() => {
+    try {
+      localStorage.setItem(`cpe_${userId}_sm2_flashcards_v1`, JSON.stringify(cards));
+    } catch {
+      // Ignore
+    }
+  }, [cards, userId]);
+
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [filterCategory, setFilterCategory] = useState<string>('ALL');
