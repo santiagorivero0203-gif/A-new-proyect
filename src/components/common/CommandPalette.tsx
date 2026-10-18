@@ -77,7 +77,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     },
     {
       id: 'deconstruct',
-      title: 'Deconstruir Material o Tema con Gemini IA',
+      title: 'Analizar Material o Tema con IA',
       category: 'ESTUDIO',
       icon: <SparklesIcon className="w-4 h-4 text-amber-500" />,
       run: () => {
@@ -132,7 +132,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     },
     {
       id: 'push-test',
-      title: 'Probar Alerta Nativa Web Push',
+      title: 'Probar Recordatorio Nativo',
       category: 'NOTIFICACIONES',
       icon: <SparklesIcon className="w-4 h-4 text-purple-600" />,
       run: () => {

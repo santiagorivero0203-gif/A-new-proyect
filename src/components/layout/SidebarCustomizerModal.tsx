@@ -90,9 +90,9 @@ export const SidebarCustomizerModal: React.FC<SidebarCustomizerModalProps> = ({
     },
     {
       id: 'GUIDES',
-      title: 'Guías & Deconstrucción',
+      title: 'Guías & Análisis IA',
       badge: 'KaTeX',
-      description: 'Deconstrucción de temas complejos con IA, derivaciones paso a paso y fórmulas KaTeX sanitizadas.',
+      description: 'Análisis de temas de estudio con IA, derivaciones paso a paso y fórmulas KaTeX explicadas.',
       icon: <BookOpenIcon className="w-5 h-5 text-indigo-600" />,
       recommendedFor: ['santiago_fisica_ucv', 'prima_bachillerato_5', 'andres_bachillerato_1', 'mafe_diseno_ucab'],
     },

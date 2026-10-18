@@ -191,18 +191,18 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
             }`}
           >
             <SparklesIcon className="w-3.5 h-3.5" />
-            <span>Deconstruidas IA ({deconstructedGuides.length})</span>
+            <span>Análisis con IA ({deconstructedGuides.length})</span>
           </button>
         </div>
       </div>
 
-      {/* VISTA 1: GUÍAS DECONSTRUIDAS POR GEMINI IA (7 PILARES) */}
+      {/* VISTA 1: GUÍAS ANALIZADAS POR GEMINI IA (7 PILARES) */}
       {activeTab === 'AI_DECONSTRUCTED' ? (
         <div className="space-y-6">
           {deconstructedGuides.length === 0 ? (
             <EmptyState
-              title="Aún no has generado guías deconstruidas"
-              description="Sube tus apuntes o PDFs de materias en el Almacén de Documentos para deconstruirlos en 7 pilares pedagógicos con fórmulas, flashcards y banco de preguntas oficial."
+              title="Aún no tienes guías generadas con IA"
+              description="Sube tus apuntes, fotos o archivos para analizarlos en 7 pilares pedagógicos con fórmulas, flashcards y banco de preguntas oficial."
               className="max-w-2xl mx-auto"
             />
           ) : (

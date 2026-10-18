@@ -31,7 +31,7 @@ export const GeminiAiWidget: React.FC<GeminiAiWidgetProps> = ({
     if (!prompt.trim() || isProcessing) return;
 
     setIsProcessing(true);
-    setProgressMsg('Iniciando motor de deconstrucción académica...');
+    setProgressMsg('Analizando tema y generando material de estudio...');
     setDeconstructedGuide(null);
 
     try {
@@ -76,10 +76,10 @@ export const GeminiAiWidget: React.FC<GeminiAiWidgetProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 font-sans">
-              Motor de Deconstrucción Académica (Gemini AI)
+              Análisis de Estudio con IA
             </h3>
             <p className="text-[11px] text-slate-500">
-              Desarma cualquier tema en 7 pilares pedagógicos y crea bancos de evaluación rigurosos
+              Sube tus archivos, fotos o apuntes y saca provecho de ello
             </p>
           </div>
         </div>
@@ -94,7 +94,7 @@ export const GeminiAiWidget: React.FC<GeminiAiWidgetProps> = ({
               className="px-2.5 py-1 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200/70 transition-colors flex items-center gap-1.5"
             >
               <UploadCloudIcon className="w-3.5 h-3.5" />
-              <span>Storage</span>
+              <span>Sube tus Archivos</span>
             </button>
           )}
           {onNavigateToGuides && (
@@ -115,24 +115,24 @@ export const GeminiAiWidget: React.FC<GeminiAiWidgetProps> = ({
           type="text"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Escribe un tema de estudio (ej: Inducción electromagnética de Faraday, fosforilación oxidativa, límites indeterminados)..."
+          placeholder="Escribe un tema de estudio o sube tus archivos y saca provecho de ello..."
           className="input-clean flex-1 text-xs"
           disabled={isProcessing}
         />
         <button
           type="submit"
           disabled={isProcessing || !prompt.trim()}
-          className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2 px-4 rounded-xl shadow-soft flex items-center justify-center gap-2 shrink-0 disabled:opacity-50 transition-all cursor-pointer"
+          className="btn-brand text-xs font-bold py-2 px-4 rounded-xl shadow-soft flex items-center justify-center gap-2 shrink-0 disabled:opacity-50 transition-all cursor-pointer"
         >
           {isProcessing ? (
             <>
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>{progressMsg || 'Deconstruyendo...'}</span>
+              <span>{progressMsg || 'Analizando...'}</span>
             </>
           ) : (
             <>
               <SparklesIcon className="w-4 h-4" />
-              <span>Deconstruir Tema</span>
+              <span>Analizar con IA</span>
             </>
           )}
         </button>
@@ -144,7 +144,7 @@ export const GeminiAiWidget: React.FC<GeminiAiWidgetProps> = ({
           <div className="flex items-start justify-between gap-3">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F52BA]">
-                Guía Hiper-Compleja Generada ({deconstructedGuide.guideMetadata.area})
+                Guía de Estudio Generada ({deconstructedGuide.guideMetadata.area})
               </span>
               <h4 className="text-sm font-bold text-slate-900 mt-0.5">
                 {deconstructedGuide.guideMetadata.title}

@@ -426,10 +426,10 @@ export const AcademicCalendarView: React.FC<AcademicCalendarViewProps> = ({
                   ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                   : 'bg-brand-500 hover:bg-brand-600 text-white'
               }`}
-              title="Recibir notificaciones nativas en el sistema operativo antes de tus exámenes"
+              title="Recibir recordatorios antes de tus entregas y exámenes"
             >
               <SparklesIcon className="w-4 h-4" />
-              <span>{notifGranted ? 'Alertas Activas' : 'Activar Push'}</span>
+              <span>{notifGranted ? 'Recordatorios Activos' : 'Activar Recordatorios'}</span>
             </button>
           </div>
         </div>

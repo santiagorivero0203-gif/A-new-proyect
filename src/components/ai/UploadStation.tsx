@@ -432,10 +432,10 @@ export const UploadStation: React.FC<UploadStationProps> = ({
               </span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-display">
-              Estación de Deconstrucción
+              Análisis de Estudio con IA
             </h2>
             <p className="text-sm text-slate-500 font-normal">
-              Sube fotos de pizarras o guías PDF. Nexus las deconstruirá según tu nivel académico sin mezclar materias ajenas.
+              Sube fotos de pizarras, guías o apuntes. Nexus los analizará y organizará según tu nivel académico sin mezclar materias ajenas.
             </p>
           </div>
         </div>

@@ -75,12 +75,12 @@ export const WORKSPACE_MODULES_CATALOG: WorkspaceModuleConfig[] = [
   },
   {
     id: 'gemini_assistant',
-    name: 'Asistente Multimodal IA Gemini',
-    shortDescription: 'Lectura inteligente de apuntes, extracción de fórmulas y generación de exámenes.',
+    name: 'Análisis de Estudio con IA',
+    shortDescription: 'Sube tus archivos o apuntes y saca provecho con guías y preguntas de prueba.',
     category: 'ai',
     defaultEnabled: true,
     gridSpan: { desktop: 12 },
-    badge: 'Gemini 2.5',
+    badge: 'Inteligencia Artificial',
     accentColor: '#0F52BA',
   },
   {

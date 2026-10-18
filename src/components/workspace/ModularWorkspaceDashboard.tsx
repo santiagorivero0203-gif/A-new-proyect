@@ -33,6 +33,7 @@ import {
   PlusIcon,
 } from '../common/Icons';
 import { Palette, FlaskConical, BookOpen, Calculator, Layers, Calendar, ChevronRight } from 'lucide-react';
+import { UpcomingProjectsAndTopicsWidget } from './widgets/UpcomingProjectsAndTopicsWidget';
 import type { ExamConfig, Question } from '../../types/exam.types';
 import type { MainTabType } from '../layout/Sidebar';
 
@@ -120,10 +121,10 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
             <button
               onClick={() => onNavigateToTab?.('GUIDES')}
               className="py-2.5 px-4 rounded-2xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-soft flex items-center gap-2 transition-all active:scale-[0.98]"
-              title="Ir a Deconstrucción de Guías y Temas"
+              title="Analizar archivos, guías y temas con IA"
             >
               <SparklesIcon className="w-4 h-4 text-amber-400" />
-              <span>Nueva Deconstrucción</span>
+              <span>Analizar con IA</span>
             </button>
           </div>
         </div>
@@ -160,6 +161,19 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
             Preset: {currentPresetObj ? currentPresetObj.name : 'Personalizado'}
           </div>
         </div>
+      </section>
+
+      {/* =========================================================================
+          1. PRIORIDAD MÁXIMA: PROYECTOS MÁS CERCANOS & TEMAS CLAVE CON GUÍAS Y EXÁMENES
+          Cuadro izquierdo: Proyectos más cercanos con fecha límite y barra de progreso.
+          Cuadro derecho: Temas de estudio con acceso directo a Guías KaTeX y Exámenes de prueba.
+          ========================================================================= */}
+      <section className="space-y-2">
+        <UpcomingProjectsAndTopicsWidget
+          onNavigateToTab={onNavigateToTab}
+          onLaunchExam={onLaunchExam}
+          onStartExamWithQuestions={onStartExamWithQuestions}
+        />
       </section>
 
       {/* Dock de Módulos & Laboratorios Especializados Fijados por Perfil */}

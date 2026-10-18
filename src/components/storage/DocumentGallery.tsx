@@ -143,8 +143,8 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
         setActiveDeconstructedGuide(result.data);
       }
     } catch (err) {
-      console.error('Error en pipeline de deconstrucción de Gemini:', err);
-      alert('Hubo un error al deconstruir con Gemini. Intenta nuevamente.');
+      console.error('Error en pipeline de análisis de Gemini:', err);
+      alert('Hubo un error al analizar con Gemini. Intenta nuevamente.');
     } finally {
       setIsAiProcessing(false);
     }

@@ -22,7 +22,7 @@ const TAB_BREADCRUMBS: Record<string, string> = {
   PRODUCTIVITY: 'Panel de Control',
   PLANNER: 'Agenda & Evaluaciones',
   EXAMS: 'Simulador de Exámenes',
-  GUIDES: 'Guías & Deconstrucción',
+  GUIDES: 'Guías & Análisis IA',
   STORAGE: 'Documentos & Vault',
   CREATIVE_BOARD: 'Proyectos & Entregas',
   DESIGN_PALETTE: 'Laboratorio de Color & WCAG',

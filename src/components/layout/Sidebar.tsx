@@ -67,7 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'GUIDES',
-      name: 'Guías & Deconstrucción',
+      name: 'Guías & Análisis IA',
       icon: <BookOpenIcon className="w-5 h-5" />,
       badge: 'KaTeX',
     },
@@ -202,10 +202,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onCloseMobile();
               }}
               className="w-full py-3.5 px-4 rounded-2xl bg-slate-900 hover:bg-black active:scale-[0.98] text-white font-bold text-sm flex items-center justify-center gap-2.5 shadow-soft-md transition-all duration-150 group"
-              title="Deconstruir un nuevo tema, PDF o apunte con Gemini IA"
+              title="Analiza tus archivos, apuntes o temas de estudio con IA"
             >
               <PlusIcon className="w-4.5 h-4.5 stroke-[2.5] text-white/90 group-hover:rotate-90 transition-transform duration-200" />
-              <span>Deconstruir Material</span>
+              <span>Analizar con IA</span>
             </button>
           </div>
 
