@@ -29,6 +29,8 @@
       if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').then((registration) => {
+            // Forzar búsqueda inmediata de nueva versión del SW en el servidor
+            registration.update();
             registration.onupdatefound = () => {
               const installingWorker = registration.installing;
               if (installingWorker) {
@@ -41,6 +43,15 @@
             };
           }).catch((err) => {
             console.warn('Registro de Service Worker falló:', err);
+          });
+
+          // Cuando un nuevo Service Worker tome control (self.clients.claim()), recargar automáticamente
+          let refreshing = false;
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+              refreshing = true;
+              window.location.reload();
+            }
           });
         });
       }
