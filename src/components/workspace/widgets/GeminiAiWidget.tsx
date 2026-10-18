@@ -67,7 +67,7 @@ export const GeminiAiWidget: React.FC<GeminiAiWidgetProps> = ({
   };
 
   return (
-    <div className="app-card p-6 bg-white border border-slate-200/80 shadow-soft space-y-4">
+    <div className="app-card p-4 sm:p-6 bg-white border border-slate-200/80 shadow-soft space-y-4">
       {/* Cabecera */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
         <div className="flex items-center gap-2.5">

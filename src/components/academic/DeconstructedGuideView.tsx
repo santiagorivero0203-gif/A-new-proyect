@@ -235,7 +235,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         {/* PILAR 1: TEORÍA Y SUSTANCIA DEL FENÓMENO */}
         {activeTab === 'THEORY' && (
           <div className="space-y-6 max-w-4xl mx-auto">
-            <div className="border-l-4 border-[#0F52BA] pl-4 py-1">
+            <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
                 1. Introducción al Fenómeno y Sustancia Teórica
               </h2>
@@ -271,7 +271,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         {/* PILAR 2: GLOSARIO TÉCNICO Y UNIDADES DEL SISTEMA INTERNACIONAL */}
         {activeTab === 'GLOSSARY' && (
           <div className="space-y-6 max-w-4xl mx-auto">
-            <div className="border-l-4 border-[#0F52BA] pl-4 py-1">
+            <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
                 2. Glosario Técnico y Unidades en el Sistema Internacional (SI)
               </h2>
@@ -309,7 +309,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         {/* PILAR 3: FÓRMULAS, PATRONES Y REGLAS MNEMOTÉCNICAS */}
         {activeTab === 'FORMULAS' && (
           <div className="space-y-6 max-w-4xl mx-auto">
-            <div className="border-l-4 border-[#0F52BA] pl-4 py-1">
+            <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
                 3. Fórmulas Fundamentales, Patrones & Reglas Mnemotécnicas
               </h2>
@@ -327,7 +327,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                 {formulasAndStrategies?.coreFormulas?.map((formula, idx) => (
                   <div
                     key={idx}
-                    className="p-4 rounded-2xl bg-white border-l-4 border-l-[#0F52BA] border border-slate-200/80 shadow-soft-sm space-y-2.5"
+                    className="p-4 rounded-2xl bg-white border border-blue-200/90 shadow-[0_4px_16px_-2px_rgba(15,82,186,0.10)] ring-1 ring-blue-500/20 space-y-2.5"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-slate-900 font-sans">
@@ -381,7 +381,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         {/* PILAR 4: RESOLUCIÓN DEDUCTIVA PASO A PASO */}
         {activeTab === 'STEP_BY_STEP' && (
           <div className="space-y-6 max-w-4xl mx-auto">
-            <div className="border-l-4 border-[#0F52BA] pl-4 py-1">
+            <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
                 4. Resolución Deductiva Paso a Paso de Casos Representativos
               </h2>
@@ -464,7 +464,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         {/* PILAR 5: ALERTAS DE TRAMPAS Y ERRORES COMUNES */}
         {activeTab === 'ALERTS' && (
           <div className="space-y-6 max-w-4xl mx-auto">
-            <div className="border-l-4 border-amber-500 pl-4 py-1">
+            <div className="p-4 rounded-2xl bg-amber-50/40 border border-amber-200/80 shadow-[0_2px_14px_-2px_rgba(245,158,11,0.10)]">
               <h2 className="text-base font-bold text-slate-900">
                 5. Alertas de Trampas de Examen y Errores Conceptuales
               </h2>
@@ -514,7 +514,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         {/* PILAR 6: ECOSISTEMA DE TÉCNICAS DE ESTUDIO (Active Recall + Cornell + Mapa) */}
         {activeTab === 'STUDY_TECHNIQUES' && (
           <div className="space-y-8 max-w-4xl mx-auto">
-            <div className="border-l-4 border-[#0F52BA] pl-4 py-1">
+            <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
                 6. Ecosistema de Técnicas de Estudio Aplicadas
               </h2>
@@ -695,7 +695,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         {activeTab === 'EVALUATION' && (
           <div className="space-y-6 max-w-4xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 gap-3">
-              <div className="border-l-4 border-emerald-600 pl-4 py-1">
+              <div className="p-4 rounded-2xl bg-emerald-50/40 border border-emerald-200/80 shadow-[0_2px_14px_-2px_rgba(5,150,105,0.08)]">
                 <h2 className="text-base font-bold text-slate-900">
                   7. Batería de Autoevaluación Certificada
                 </h2>

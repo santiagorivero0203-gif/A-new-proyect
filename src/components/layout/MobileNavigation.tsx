@@ -112,20 +112,20 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ currentTab, 
           <button
             key={tab.id}
             onClick={() => onSelectTab(tab.id)}
-            className={`flex flex-col items-center justify-center min-w-[56px] flex-1 py-1 transition-all ${
+            className={`flex flex-col items-center justify-center min-w-[56px] flex-1 py-1 transition-all active:scale-95 ${
               isActive
-                ? 'text-[#0F52BA] dark:text-blue-400 font-bold'
+                ? 'text-brand-500 font-bold'
                 : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
             }`}
           >
             <div
               className={`p-1 rounded-xl transition-all ${
-                isActive ? 'bg-blue-50 dark:bg-blue-950/50 text-[#0F52BA] dark:text-blue-400' : ''
+                isActive ? 'bg-brand-50 text-brand-500 shadow-soft-xs' : ''
               }`}
             >
               {tab.icon}
             </div>
-            <span className="text-[10px] tracking-tight">{tab.label}</span>
+            <span className="text-[10px] tracking-tight font-medium">{tab.label}</span>
           </button>
         );
       })}

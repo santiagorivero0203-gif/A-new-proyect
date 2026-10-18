@@ -50,7 +50,7 @@ export const QuickExamWidget: React.FC<QuickExamWidgetProps> = ({
   };
 
   return (
-    <div className="app-card p-6 flex flex-col justify-between h-full bg-white border border-slate-200/80 shadow-soft">
+    <div className="app-card p-4 sm:p-6 flex flex-col justify-between h-full bg-white border border-slate-200/80 shadow-soft">
       <div className="space-y-4">
         {/* Cabecera */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">

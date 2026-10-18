@@ -291,7 +291,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
       {/* =========================================================================
           PANEL IZQUIERDO: PROYECTOS MÁS CERCANOS (5 columnas en lg)
           ========================================================================= */}
-      <div className="lg:col-span-5 app-card p-6 bg-white border border-slate-200/80 shadow-soft space-y-4">
+      <div className="lg:col-span-5 app-card p-4 sm:p-6 bg-white border border-slate-200/80 shadow-soft space-y-4">
         {/* Encabezado del Panel Izquierdo */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
@@ -312,7 +312,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
           </span>
         </div>
 
-        {/* Lista de Proyectos Priorizados */}
+        {/* Lista de Proyectos con Contorno y Sombra Difusa (Sin barras duras) */}
         <div className="space-y-3">
           {projects.map((proj) => {
             const isSelected = proj.id === activeProject.id;
@@ -320,48 +320,47 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               <div
                 key={proj.id}
                 onClick={() => setSelectedProjectId(proj.id)}
-                className={`p-4 rounded-2xl border text-left transition-all cursor-pointer relative group ${
+                className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer relative group ${
                   isSelected
-                    ? 'border-brand-500 bg-brand-50/20 shadow-soft-sm ring-1 ring-brand-500'
-                    : 'border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+                    ? 'border-brand-500 bg-brand-50/25 ring-2 ring-brand-500/30 shadow-[0_6px_24px_-4px_rgba(15,82,186,0.18)]'
+                    : proj.urgency === 'HIGH'
+                    ? 'border-rose-200/90 bg-white hover:border-rose-300 shadow-[0_2px_14px_-2px_rgba(244,63,94,0.10)] hover:shadow-soft-md'
+                    : 'border-slate-200/80 bg-white hover:border-slate-300 shadow-soft-xs hover:shadow-soft-sm'
                 }`}
               >
-                <div className="flex items-start justify-between gap-2 mb-1.5">
+                <div className="flex items-start justify-between gap-2 mb-2">
                   <span className="text-[11px] font-bold text-brand-600 font-sans tracking-tight">
                     {proj.subject}
                   </span>
-                  <span
-                    className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold flex items-center gap-1 ${
-                      proj.urgency === 'HIGH'
-                        ? 'bg-rose-100 text-rose-700 border border-rose-200'
-                        : 'bg-amber-100 text-amber-800 border border-amber-200'
-                    }`}
-                  >
-                    <Clock className="w-3 h-3" />
-                    <span>Faltan {proj.daysRemaining} días</span>
-                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                      {proj.progressPercentage}% listo
+                    </span>
+                    <span
+                      className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold flex items-center gap-1 ${
+                        proj.urgency === 'HIGH'
+                          ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                          : 'bg-amber-50 text-amber-800 border border-amber-200'
+                      }`}
+                    >
+                      <Clock className="w-3 h-3" />
+                      <span>{proj.daysRemaining}d</span>
+                    </span>
+                  </div>
                 </div>
 
-                <h4 className="text-xs font-bold text-slate-900 leading-snug font-sans group-hover:text-brand-600 transition-colors">
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug font-sans group-hover:text-brand-600 transition-colors">
                   {proj.title}
                 </h4>
 
-                <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                <div className="mt-2.5 flex items-center justify-between text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-100">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-slate-400" />
                     <span>{proj.deadlineText}</span>
                   </div>
-                  <span className="font-mono text-slate-700 font-bold">
-                    {proj.progressPercentage}%
+                  <span className="text-[10px] font-semibold text-brand-600 group-hover:underline">
+                    {isSelected ? 'Seleccionado' : 'Ver temas →'}
                   </span>
-                </div>
-
-                {/* Barra de progreso sutil y elegante */}
-                <div className="w-full h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
-                  <div
-                    className="h-full bg-brand-500 rounded-full transition-all duration-300"
-                    style={{ width: `${proj.progressPercentage}%` }}
-                  />
                 </div>
               </div>
             );
@@ -381,7 +380,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
       {/* =========================================================================
           PANEL DERECHO: TEMAS DEL PROYECTO + GUÍAS & EXÁMENES (7 columnas en lg)
           ========================================================================= */}
-      <div className="lg:col-span-7 app-card p-6 bg-white border border-slate-200/80 shadow-soft space-y-4">
+      <div className="lg:col-span-7 app-card p-4 sm:p-6 bg-white border border-slate-200/80 shadow-soft space-y-4">
         {/* Encabezado del Panel Derecho */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
           <div>
@@ -408,7 +407,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
           {activeProject.topics.map((topic, index) => (
             <div
               key={topic.id}
-              className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 hover:bg-white hover:shadow-soft-sm transition-all space-y-2.5 group"
+              className="p-4 rounded-2xl bg-slate-50/60 border border-slate-200/80 hover:bg-white hover:border-brand-300 hover:shadow-[0_4px_18px_-4px_rgba(15,82,186,0.12)] transition-all space-y-2.5 group active:scale-[0.99]"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">
@@ -416,7 +415,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
                     <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-mono font-bold flex items-center justify-center shrink-0">
                       {index + 1}
                     </span>
-                    <h4 className="text-xs font-bold text-slate-900 group-hover:text-brand-600 transition-colors">
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-brand-600 transition-colors">
                       {topic.title}
                     </h4>
                   </div>
@@ -427,12 +426,12 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               </div>
 
               {/* Botones de Acción Inmediata: Ver Guía & Hacer Examen de Prueba */}
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200/60 pl-7">
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 pt-2 border-t border-slate-200/60 pl-0 sm:pl-7">
                 {/* Botón 1: Ver Guía de Estudio */}
                 <button
                   type="button"
                   onClick={() => handleViewGuide(topic)}
-                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-bold transition-all shadow-soft-xs flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                  className="flex-1 sm:flex-none px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-bold transition-all shadow-soft-xs flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
                   title="Abrir la guía académica con derivaciones KaTeX y teoría explicada"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-indigo-500" />
@@ -443,7 +442,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
                 <button
                   type="button"
                   onClick={() => handleLaunchPracticeExam(topic)}
-                  className="px-3 py-1.5 rounded-xl btn-brand text-white text-xs font-bold transition-all shadow-soft-xs flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                  className="flex-1 sm:flex-none px-3 py-1.5 rounded-xl btn-brand text-white text-xs font-bold transition-all shadow-soft-xs flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
                   title="Iniciar un simulacro de prueba cronometrado con preguntas de este tema"
                 >
                   <Layers className="w-3.5 h-3.5" />

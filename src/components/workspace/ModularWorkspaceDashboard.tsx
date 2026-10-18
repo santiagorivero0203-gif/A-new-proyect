@@ -82,33 +82,34 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
   })();
 
   return (
-    <div className="space-y-8 animate-fadeIn max-w-[1600px] mx-auto">
+    <div className="space-y-5 sm:space-y-8 animate-fadeIn max-w-[1600px] mx-auto pb-20 lg:pb-8">
       {/* =========================================================================
-          1. HERO HEADER: SALUDO GRANDE, FECHA Y CONTROL DE MÓDULOS
+          1. HERO HEADER: SALUDO, FECHA Y CONTROL DE MÓDULOS (RESPONSIVO MÓVIL)
           ========================================================================= */}
-      <section className="bg-white rounded-3xl p-6 sm:p-8 shadow-soft border border-slate-200/80">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight font-sans">
+      <section className="bg-white rounded-3xl p-4 sm:p-7 shadow-soft border border-slate-200/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight font-sans">
               Hola, {user?.full_name || 'Santiago Rivero'} 👋
             </h1>
 
-            <div className="flex flex-wrap items-center gap-3 pt-0.5">
-              <span className="text-xs sm:text-sm font-semibold text-slate-500">
+            <div className="flex flex-wrap items-center gap-2 pt-0.5">
+              <span className="text-xs sm:text-sm font-semibold text-slate-500 font-mono">
                 {todayFormatted}
               </span>
               <span className="text-slate-300 hidden sm:inline">•</span>
-              <span className="text-xs sm:text-sm text-slate-500 font-medium">
-                {user?.institution ? `${user.institution} • ` : ''}Espacio de estudio y productividad personal
+              <span className="text-xs sm:text-sm text-slate-500 font-medium hidden sm:inline">
+                {user?.institution ? `${user.institution} • ` : ''}Espacio de estudio y productividad
               </span>
             </div>
           </div>
 
           {/* Botones de Personalización y Acción Rápida */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            {/* Oculto en teléfono para evitar sobrecarga visual */}
             <button
               onClick={() => setIsCustomizerOpen(true)}
-              className="py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/90 text-xs font-bold text-slate-700 hover:text-slate-900 shadow-soft-sm flex items-center gap-2.5 transition-all active:scale-[0.98]"
+              className="hidden sm:flex py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/90 text-xs font-bold text-slate-700 hover:text-slate-900 shadow-soft-sm items-center gap-2.5 transition-all active:scale-[0.98]"
               title="Personalizar los módulos visibles en tu espacio de trabajo"
             >
               <SlidersIcon className="w-4 h-4 text-slate-500" />
@@ -120,7 +121,7 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
 
             <button
               onClick={() => onNavigateToTab?.('GUIDES')}
-              className="py-2.5 px-4 rounded-2xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-soft flex items-center gap-2 transition-all active:scale-[0.98]"
+              className="py-2.5 px-4 rounded-2xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-soft flex items-center justify-center gap-2 transition-all active:scale-[0.98] w-full sm:w-auto"
               title="Analizar archivos, guías y temas con IA"
             >
               <SparklesIcon className="w-4 h-4 text-amber-400" />
@@ -129,8 +130,8 @@ export const ModularWorkspaceDashboard: React.FC<ModularWorkspaceDashboardProps>
           </div>
         </div>
 
-        {/* Barra de Módulos Rápidos para conmutar en el lienzo */}
-        <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2.5">
+        {/* Barra de Módulos Rápidos para conmutar en el lienzo - Oculta en teléfono */}
+        <div className="mt-5 pt-4 border-t border-slate-100 hidden sm:flex flex-wrap items-center justify-between gap-2.5">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-xs text-slate-400 font-semibold mr-1">Módulos en lienzo:</span>
             {WORKSPACE_MODULES_CATALOG.map((mod) => {
