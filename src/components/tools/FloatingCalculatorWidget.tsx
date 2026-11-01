@@ -40,7 +40,7 @@ export const FloatingCalculatorWidget: React.FC<FloatingCalculatorWidgetProps> =
     <>
       {/* Modal / Ventana Flotante de la Calculadora Científica */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 pointer-events-auto select-none print:hidden">
+        <div className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:bottom-6 sm:right-6 z-50 pointer-events-auto select-none print:hidden">
 
       {/* Ventana Flotante no intrusiva */}
       {isOpen && (

@@ -105,27 +105,34 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({ currentTab, 
   });
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 px-1 flex items-center justify-around shadow-soft overflow-x-auto no-scrollbar">
+    <nav
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/90 dark:border-slate-800 px-2 flex items-center justify-around shadow-[0_-4px_20px_rgba(0,0,0,0.06)] overflow-x-auto no-scrollbar pt-2.5 min-h-[74px] sm:min-h-[78px]"
+      style={{
+        paddingBottom: 'max(16px, calc(env(safe-area-inset-bottom, 0px) + 10px))',
+      }}
+    >
       {visibleTabs.map((tab) => {
         const isActive = currentTab === tab.id;
         return (
           <button
             key={tab.id}
             onClick={() => onSelectTab(tab.id)}
-            className={`flex flex-col items-center justify-center min-w-[56px] flex-1 py-1 transition-all active:scale-95 ${
+            className={`flex flex-col items-center justify-center min-w-[56px] flex-1 py-1.5 px-1 transition-all active:scale-95 touch-manipulation ${
               isActive
-                ? 'text-brand-500 font-bold'
+                ? 'text-[#0F52BA] dark:text-blue-400 font-bold'
                 : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
             }`}
           >
             <div
-              className={`p-1 rounded-xl transition-all ${
-                isActive ? 'bg-brand-50 text-brand-500 shadow-soft-xs' : ''
+              className={`p-1.5 rounded-xl transition-all ${
+                isActive
+                  ? 'bg-blue-50 dark:bg-blue-950/60 text-[#0F52BA] dark:text-blue-400 shadow-xs ring-1 ring-blue-100 dark:ring-blue-900/50 scale-105'
+                  : 'hover:bg-slate-50 dark:hover:bg-slate-800'
               }`}
             >
               {tab.icon}
             </div>
-            <span className="text-[10px] tracking-tight font-medium">{tab.label}</span>
+            <span className="text-[11px] tracking-tight font-medium mt-0.5">{tab.label}</span>
           </button>
         );
       })}
