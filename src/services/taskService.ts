@@ -6,6 +6,8 @@
  * hasta que el estudiante agregue sus propias tareas o metas.
  */
 
+import { ANDRES_DEFAULT_STUDY_TASKS } from '../data/andres_curriculum_hub';
+
 export interface TaskItem {
   id: number;
   title: string;
@@ -29,11 +31,18 @@ export const taskService = {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       } catch {
         // Fallback a array vacío
       }
     }
+
+    // Inicialización canónica de tareas de estudio backward-scheduled para Andrés Rivero
+    if (userId === 'andres_bachillerato_1' || userId === 'andres-001-uuid' || userId.includes('andres')) {
+      this.saveTasks(userId, ANDRES_DEFAULT_STUDY_TASKS);
+      return ANDRES_DEFAULT_STUDY_TASKS;
+    }
+
     return [];
   },
 

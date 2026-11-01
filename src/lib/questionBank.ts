@@ -6,6 +6,10 @@ import {
   NOTION_COLOR_QUESTIONS,
   NOTION_MATH_QUESTIONS,
 } from '../data/mafe_curriculum_hub';
+import {
+  ALL_ANDRES_QUESTIONS,
+  ANDRES_TAILORED_EXAMS,
+} from '../data/andres_curriculum_hub';
 
 /**
  * Banco Integral de Preguntas Académicas Reales
@@ -718,6 +722,12 @@ export const QUESTION_BANK: Question[] = [
   // (Teoría del Diseño + Teoría del Color Clase 4 + Matemática para el Diseño Guías 1 a 4)
   // ==========================================
   ...ALL_MAFE_QUESTIONS,
+
+  // ==========================================
+  // ANDRÉS · 1ER AÑO DE BACHILLERATO (I MOMENTO PEDAGÓGICO)
+  // (Matemáticas ℤ, Biología Lab, Física Palancas, Castellano Barrabás, Informática)
+  // ==========================================
+  ...ALL_ANDRES_QUESTIONS,
 ];
 
 /**
@@ -784,33 +794,8 @@ export const PROFILE_TAILORED_EXAMS: ProfileTailoredExam[] = [
     targetTopicKeyword: 'Álgebra Lineal',
   },
 
-  // 2. Andrés (1er Año Bachillerato)
-  {
-    id: 'exam-andres-school-1',
-    profileId: 'andres_bachillerato_1',
-    title: 'Álgebra Inicial & Razonamiento Gráfico',
-    subtitle: 'Nivel 1er Año de Bachillerato',
-    durationMinutes: 25,
-    questionCount: 5,
-    badge: '1er Año Básico',
-    colorScheme: 'emerald',
-    description: 'Ecuaciones con la analogía de la balanza, suma de fracciones de pizza y números enteros paso a paso.',
-    targetSubject: 'Matemática',
-    targetTopicKeyword: 'Ecuaciones',
-  },
-  {
-    id: 'exam-andres-ciencias-1',
-    profileId: 'andres_bachillerato_1',
-    title: 'Ciencias Naturales & Lengua Materna',
-    subtitle: 'Nivel 1er Año de Bachillerato',
-    durationMinutes: 25,
-    questionCount: 5,
-    badge: 'Ciencias 1er Año',
-    colorScheme: 'emerald',
-    description: 'La célula vegetal y animal, fotosíntesis básica y partes de la oración (sujeto y predicado).',
-    targetSubject: 'Biología',
-    targetTopicKeyword: 'Célula',
-  },
+  // 2. Andrés (1er Año Bachillerato - Evaluaciones Oficiales I Momento)
+  ...ANDRES_TAILORED_EXAMS,
 
   // 3. María Fernanda (Diseño Integral UCAB)
   {
@@ -1001,6 +986,11 @@ export function getQuestionsForTailoredExam(exam: ProfileTailoredExam): Question
   // Resguardo estricto para María Fernanda: banco oficial de diseño
   if (exam.profileId === 'mafe_diseno_ucab') {
     return ALL_MAFE_QUESTIONS.slice(0, exam.questionCount || 10);
+  }
+
+  // Resguardo estricto para Andrés Rivero: banco oficial de 1er año de bachillerato
+  if (exam.profileId === 'andres_bachillerato_1') {
+    return ALL_ANDRES_QUESTIONS.slice(0, exam.questionCount || 8);
   }
 
   return QUESTION_BANK.slice(0, exam.questionCount || 6);

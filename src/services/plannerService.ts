@@ -10,6 +10,10 @@ import type {
 import { taskService } from './taskService';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { calculatePreAlertDate } from '../utils/academicImportValidator';
+import {
+  ANDRES_DEFAULT_EVALUATION_EVENTS,
+  ANDRES_DEFAULT_STUDY_REMINDERS,
+} from '../data/andres_curriculum_hub';
 
 function getEventsKey(userId: string = 'default'): string {
   return `cpe_${userId}_events_clean_v1`;
@@ -42,11 +46,18 @@ export const plannerService = {
     if (data) {
       try {
         const parsed = JSON.parse(data);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       } catch {
         // Fallback a array vacío
       }
     }
+
+    // Inicialización automática canónica para el perfil oficial de Andrés Rivero (1er Año)
+    if (userId === 'andres_bachillerato_1' || userId === 'andres-001-uuid' || userId.includes('andres')) {
+      this.saveEvents(userId, ANDRES_DEFAULT_EVALUATION_EVENTS);
+      return ANDRES_DEFAULT_EVALUATION_EVENTS;
+    }
+
     return [];
   },
 
@@ -83,11 +94,18 @@ export const plannerService = {
     if (data) {
       try {
         const parsed = JSON.parse(data);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       } catch {
         // Fallback a array vacío
       }
     }
+
+    // Inicialización de recordatorios canónicos de estudio para Andrés Rivero
+    if (userId === 'andres_bachillerato_1' || userId === 'andres-001-uuid' || userId.includes('andres')) {
+      this.saveReminders(userId, ANDRES_DEFAULT_STUDY_REMINDERS);
+      return ANDRES_DEFAULT_STUDY_REMINDERS;
+    }
+
     return [];
   },
 

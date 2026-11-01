@@ -6,6 +6,7 @@ import {
   convertDeconstructedToQuestions,
 } from '../types/deconstruction.types';
 import { ALL_MAFE_DECONSTRUCTED_GUIDES } from '../data/mafe_curriculum_hub';
+import { ALL_ANDRES_DECONSTRUCTED_GUIDES } from '../data/andres_curriculum_hub';
 import {
   mapProfileToAcademicLevel,
   getPedagogicalGuardrails,
@@ -574,10 +575,20 @@ ${DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION}`;
         return [...ALL_MAFE_DECONSTRUCTED_GUIDES, ...customOnly];
       }
 
+      // Si es el perfil de Andrés Rivero (1er Año de Bachillerato), sembrar e incluir de forma canónica
+      // sus 4 guías deconstruidas oficiales (Matemáticas ℤ, Biología Lab, Física Palancas, Castellano Barrabás)
+      if (userId === 'andres_bachillerato_1' || userId === 'andres-001-uuid' || userId.includes('andres')) {
+        const customOnly = userList.filter((g) => !g.id?.startsWith('andres-'));
+        return [...ALL_ANDRES_DECONSTRUCTED_GUIDES, ...customOnly];
+      }
+
       return userList;
     } catch {
       if (userId === 'mafe_diseno_ucab' || userId.includes('mafe')) {
         return ALL_MAFE_DECONSTRUCTED_GUIDES;
+      }
+      if (userId === 'andres_bachillerato_1' || userId === 'andres-001-uuid' || userId.includes('andres')) {
+        return ALL_ANDRES_DECONSTRUCTED_GUIDES;
       }
       return [];
     }

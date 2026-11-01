@@ -25,6 +25,7 @@ import type { MainTabType } from '../../layout/Sidebar';
 import type { ExamConfig, Question, AcademicSubject } from '../../../types/exam.types';
 import { QUESTION_BANK } from '../../../lib/questionBank';
 import { ALL_MAFE_QUESTIONS } from '../../../data/mafe_curriculum_hub';
+import { ALL_ANDRES_QUESTIONS } from '../../../data/andres_curriculum_hub';
 import { UCV_EXAM_BANK } from '../../../data/ucv_intro_course_data';
 
 export interface ProjectTopic {
@@ -187,14 +188,131 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
       ];
     }
 
-    // Perfiles de Bachillerato (Andrés y Sofía)
+    // Perfil Andrés (1er Año de Bachillerato · Colegio Católico Carisma Consolación)
+    if (profileId === 'andres_bachillerato_1') {
+      const bioQuestions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Biología');
+      const fisQuestions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Física');
+      const matQuestions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática');
+      const casQuestions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Castellano');
+
+      return [
+        {
+          id: 'proj-andres-01',
+          title: 'Laboratorio Escolar: Instrumentos de Medición & Bioseguridad',
+          subject: 'Biología y Ciencias Naturales (1er Año)',
+          deadlineText: 'Jueves, 05 de Noviembre',
+          daysRemaining: 4,
+          urgency: 'HIGH',
+          progressPercentage: 75,
+          topics: [
+            {
+              id: 'top-andres-01',
+              title: 'Uso de la Probeta Graduada, Menisco & Material Volumétrico',
+              summary: 'Lectura a la altura visual de la base del menisco cóncavo y cálculo de volumen por desplazamiento.',
+              guideTab: 'GUIDES',
+              examSubject: 'Biología',
+              examQuestions: bioQuestions,
+            },
+            {
+              id: 'top-andres-02',
+              title: 'Microscopio Óptico, Tornillo Micrométrico & Bioseguridad',
+              summary: 'Uso obligatorio de bata blanca de manga larga, manipulación de reactivos y enfoque celular fino.',
+              guideTab: 'GUIDES',
+              examSubject: 'Biología',
+              examQuestions: bioQuestions,
+            },
+          ],
+        },
+        {
+          id: 'proj-andres-02',
+          title: 'Taller en Parejas: Magnitudes Físicas, Conversiones & Mediciones',
+          subject: 'Física 1er Año (Prof. Antonio Gonzales)',
+          deadlineText: 'Viernes, 06 de Noviembre',
+          daysRemaining: 5,
+          urgency: 'HIGH',
+          progressPercentage: 65,
+          topics: [
+            {
+              id: 'top-andres-03',
+              title: 'Unidades del Sistema Internacional (SI) & Factores de Conversión',
+              summary: 'Longitud en metros, masa en kilogramos y tiempo en segundos (1 hora = 3600 segundos).',
+              guideTab: 'GUIDES',
+              examSubject: 'Física',
+              examQuestions: fisQuestions,
+            },
+            {
+              id: 'top-andres-04',
+              title: 'Máquinas Simples: Ley de la Palanca (1er, 2do y 3er Género)',
+              summary: 'Equilibrio rotacional P · dp = R · dr, ventaja mecánica en balancines, carretillas y poleas.',
+              guideTab: 'GUIDES',
+              examSubject: 'Física',
+              examQuestions: fisQuestions,
+            },
+          ],
+        },
+        {
+          id: 'proj-andres-03',
+          title: 'Evaluación Parcial: Números Enteros ℤ, Recta & Ley de Signos',
+          subject: 'Matemática 1er Año',
+          deadlineText: 'Lunes, 09 de Noviembre',
+          daysRemaining: 8,
+          urgency: 'MEDIUM',
+          progressPercentage: 55,
+          topics: [
+            {
+              id: 'top-andres-05',
+              title: 'Suma, Resta y Multiplicación con Números Positivos y Negativos',
+              summary: 'Regla de signos iguales/distintos en sumas y ley de multiplicación (+ por + da +, - por - da +).',
+              guideTab: 'GUIDES',
+              examSubject: 'Matemática',
+              examQuestions: matQuestions,
+            },
+            {
+              id: 'top-andres-06',
+              title: 'Resolución de Ecuaciones de 1er Grado con la Balanza',
+              summary: 'Despeje paso a paso manteniendo el equilibrio en ambos miembros y comprobación de la solución.',
+              guideTab: 'GUIDES',
+              examSubject: 'Matemática',
+              examQuestions: matQuestions,
+            },
+          ],
+        },
+        {
+          id: 'proj-andres-04',
+          title: 'Prueba de Comprensión Lectora: Cuento "Barrabás" (Arturo Uslar Pietri)',
+          subject: 'Castellano y Literatura (1er Año)',
+          deadlineText: 'Viernes, 27 de Noviembre',
+          daysRemaining: 26,
+          urgency: 'NORMAL',
+          progressPercentage: 35,
+          topics: [
+            {
+              id: 'top-andres-07',
+              title: 'Análisis Literario de "Barrabás" (1928) & Dilema Moral',
+              summary: 'El desconcierto psicológico ante la libertad inesperada y el sacrificio del hombre justo.',
+              guideTab: 'GUIDES',
+              examSubject: 'Castellano',
+              examQuestions: casQuestions,
+            },
+            {
+              id: 'top-andres-08',
+              title: 'Gramática de la Oración Simple Bimembre & Acentuación SEGA',
+              summary: 'Identificación de sujeto, predicado, objetos directo/indirecto y reglas de agudas, graves y esdrújulas.',
+              guideTab: 'GUIDES',
+              examSubject: 'Castellano',
+              examQuestions: casQuestions,
+            },
+          ],
+        },
+      ];
+    }
+
+    // Perfil Sofía (5to de Bachillerato / Admisión OPSU) y fallback general
     return [
       {
         id: 'proj-bach-01',
-        title: profileId === 'prima_bachillerato_5'
-          ? 'Simulacro Diagnóstico OPSU / Simadi: Razonamiento Integral'
-          : 'Evaluación Parcial: Ecuaciones de 1er Grado & Fracciones',
-        subject: profileId === 'prima_bachillerato_5' ? 'Admisión Universitaria' : 'Matemática 1er Año',
+        title: 'Simulacro Diagnóstico OPSU / Simadi: Razonamiento Integral',
+        subject: 'Admisión Universitaria',
         deadlineText: 'Viernes, 24 de Octubre',
         daysRemaining: 3,
         urgency: 'HIGH',
@@ -202,48 +320,17 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
         topics: [
           {
             id: 'top-bach-01',
-            title: profileId === 'prima_bachillerato_5'
-              ? 'Comprensión Lectora Crítica & Analogías Verbales'
-              : 'Resolución Paso a Paso de Ecuaciones Lineales',
+            title: 'Comprensión Lectora Crítica & Analogías Verbales',
             summary: 'Técnicas de descarte rápido, contexto oracional y comprobación de resultados.',
             guideTab: 'GUIDES',
             examSubject: 'Castellano',
           },
           {
             id: 'top-bach-02',
-            title: profileId === 'prima_bachillerato_5'
-              ? 'Razonamiento Numérico, Porcentajes & Regla de Tres'
-              : 'Operaciones con Fracciones & Mínimo Común Múltiplo',
+            title: 'Razonamiento Numérico, Porcentajes & Regla de Tres',
             summary: 'Algoritmos directos sin calculadora y problemas de proporcionalidad inversa.',
             guideTab: 'GUIDES',
             examSubject: 'Matemática',
-          },
-          {
-            id: 'top-bach-03',
-            title: profileId === 'prima_bachillerato_5'
-              ? 'Química: Estequiometría, Mol & Molaridad de Disoluciones'
-              : 'Ciencias Naturales: La Célula & Reinos Biológicos',
-            summary: 'Balanceo de masa molecular y relaciones estequiométricas fundamentales.',
-            guideTab: 'GUIDES',
-            examSubject: 'Química',
-          },
-        ],
-      },
-      {
-        id: 'proj-bach-02',
-        title: 'Taller de Síntesis: Análisis Sintáctico de Oraciones',
-        subject: 'Castellano & Literatura',
-        deadlineText: 'Miércoles, 28 de Octubre',
-        daysRemaining: 7,
-        urgency: 'MEDIUM',
-        progressPercentage: 45,
-        topics: [
-          {
-            id: 'top-bach-04',
-            title: 'Sujeto, Predicado & Sintagmas Nominales / Verbales',
-            summary: 'Identificación de núcleos, complementos directos, indirectos y circunstanciales.',
-            guideTab: 'GUIDES',
-            examSubject: 'Castellano',
           },
         ],
       },
