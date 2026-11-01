@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Film, Eye } from 'lucide-react';
+import { Film, Eye, Download, Printer, FileText } from 'lucide-react';
 import type {
   DeconstructedAcademicGuide,
 } from '../../types/deconstruction.types';
@@ -18,6 +18,16 @@ import { AudioGuidePlayer } from './AudioGuidePlayer';
 import { KineticReelPlayer } from './KineticReelPlayer';
 import { InteractiveDesignPlayground } from './InteractiveDesignPlayground';
 import { EnhancedFlashcardDeck } from './EnhancedFlashcardDeck';
+import {
+  exportGuideToWord,
+  OFFICIAL_NOTION_PDF_LINKS,
+} from '../../utils/documentExport';
+import {
+  DESIGN_THEORY_QUESTIONS,
+  NOTION_COLOR_QUESTIONS,
+  NOTION_MATH_QUESTIONS,
+  ALL_MAFE_QUESTIONS,
+} from '../../data/mafe_curriculum_hub';
 
 export interface DeconstructedGuideViewProps {
   guide: DeconstructedAcademicGuide;
@@ -82,12 +92,194 @@ const PILLAR_LABELS = {
  * flashcards interactivas de Active Recall, cuadrícula Cornell y lanzamiento
  * directo al SimulatorEngine.
  */
+interface EditorialTheoryRendererProps {
+  content: string;
+  fontSizeMode: 'normal' | 'medium' | 'large';
+}
+
+/**
+ * Renderizador Editorial de Teoría: Deconstrucción en Capítulos, Conceptos y Ejemplos Cotidianos
+ * Aplica los principios de "Menos, pero Mejor", "Jerarquía Invisible" y "Respiración del Espacio".
+ */
+const EditorialTheoryRenderer: React.FC<EditorialTheoryRendererProps> = ({ content, fontSizeMode }) => {
+  const fontClasses = {
+    normal: 'text-sm sm:text-base leading-relaxed',
+    medium: 'text-base sm:text-lg leading-relaxed',
+    large: 'text-lg sm:text-xl leading-relaxed',
+  };
+
+  const bodyClass = fontClasses[fontSizeMode];
+
+  // Identificar secciones por encabezados de capítulos, unidades o guías
+  const rawSections = content.split(/(?=\*\*(?:CAPÍTULO|UNIDAD|GUÍA)\b)/i).filter(Boolean);
+
+  if (rawSections.length <= 1 && !content.includes('**CAPÍTULO') && !content.includes('**UNIDAD') && !content.includes('**GUÍA')) {
+    return (
+      <div className={`prose prose-slate max-w-none ${bodyClass} text-slate-800 space-y-5`}>
+        {content.split('\n\n').filter(Boolean).map((p, idx) => (
+          <div
+            key={idx}
+            className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-soft-xs text-slate-800"
+            dangerouslySetInnerHTML={{ __html: renderLatex(p.trim()) }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      {rawSections.map((sec, secIdx) => {
+        const lines = sec.trim().split('\n').map((l) => l.trim()).filter(Boolean);
+        const headerLine = lines[0] || '';
+        const cleanHeader = headerLine.replace(/\*\*/g, '').trim();
+
+        // Extraer número de capítulo o distintivo
+        const badgeMatch = cleanHeader.match(/^(CAPÍTULO\s+\d+|UNIDAD\s+[IVXLCDM]+|GUÍA\s+\d+)/i);
+        const chapterBadge = badgeMatch ? badgeMatch[1] : `Módulo ${secIdx + 1}`;
+        const chapterTitle = cleanHeader.replace(/^(CAPÍTULO\s+\d+|UNIDAD\s+[IVXLCDM]+|GUÍA\s+\d+)\s*[·:-]\s*/i, '');
+
+        const otherLines = lines.slice(1);
+        const introLines: string[] = [];
+        const items: { term: string; tag?: string; definition: string; example?: string; subBullets: string[] }[] = [];
+        let currentItem: { term: string; tag?: string; definition: string; example?: string; subBullets: string[] } | null = null;
+
+        for (const line of otherLines) {
+          if (line.startsWith('•') || line.startsWith('-')) {
+            if (currentItem) items.push(currentItem);
+            const lineContent = line.replace(/^[•-]\s*/, '').trim();
+            // Buscar término en negrita: **Término:** o **Término (Autor):**
+            const boldMatch = lineContent.match(/^\*\*([^*]+)\*\*[:\s]*(.*)/);
+            if (boldMatch) {
+              const rawTerm = boldMatch[1].trim();
+              const rest = boldMatch[2].trim();
+              // Separar autor o tag si viene entre paréntesis
+              const tagMatch = rawTerm.match(/^(.+?)\s*\((.+?)\)$/);
+              const term = tagMatch ? tagMatch[1].trim() : rawTerm;
+              const tag = tagMatch ? tagMatch[2].trim() : undefined;
+
+              // Buscar ejemplo: *Ej.: ...* o *Ejemplo:*
+              const exampleMatch = rest.match(/\*Ej(?:\.|emplo)[:\s]*([^*]+)\*/i);
+              let definition = rest;
+              let example: string | undefined;
+              if (exampleMatch) {
+                example = exampleMatch[1].trim();
+                definition = rest.replace(/\*Ej(?:\.|emplo)[:\s]*([^*]+)\*/i, '').trim();
+              }
+
+              currentItem = { term, tag, definition, example, subBullets: [] };
+            } else {
+              currentItem = { term: '', definition: lineContent, subBullets: [] };
+            }
+          } else if (line.startsWith('–') || line.startsWith('—')) {
+            const subContent = line.replace(/^[–—]\s*/, '').trim();
+            if (currentItem) {
+              currentItem.subBullets.push(subContent);
+            } else {
+              introLines.push(line);
+            }
+          } else {
+            if (!currentItem) {
+              introLines.push(line);
+            } else {
+              currentItem.definition += ' ' + line;
+            }
+          }
+        }
+        if (currentItem) items.push(currentItem);
+
+        return (
+          <section
+            key={secIdx}
+            className="rounded-3xl bg-slate-50/70 border border-slate-200/90 p-5 sm:p-7 space-y-5 shadow-soft transition-all"
+          >
+            {/* Cabecera Editorial del Capítulo */}
+            <div className="space-y-2 border-b border-slate-200/80 pb-4">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-rose-100 text-rose-800 border border-rose-300/80 uppercase tracking-wide">
+                  {chapterBadge}
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight font-sans">
+                {chapterTitle || cleanHeader}
+              </h3>
+              {introLines.length > 0 && (
+                <div className={`text-slate-600 font-medium ${bodyClass} pt-1 space-y-2`}>
+                  {introLines.map((il, i) => (
+                    <p key={i} dangerouslySetInnerHTML={{ __html: renderLatex(il) }} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Cuadrícula de Conceptos Clave */}
+            <div className="grid grid-cols-1 gap-4">
+              {items.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-soft-xs space-y-3 hover:border-slate-300 transition-all"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight font-sans">
+                      {item.term || `Concepto ${idx + 1}`}
+                    </h4>
+                    {item.tag && (
+                      <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                        {item.tag}
+                      </span>
+                    )}
+                  </div>
+
+                  {item.definition && (
+                    <div
+                      className={`text-slate-700 font-sans ${bodyClass}`}
+                      dangerouslySetInnerHTML={{ __html: renderLatex(item.definition) }}
+                    />
+                  )}
+
+                  {item.example && (
+                    <div className="p-3.5 sm:p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-amber-950 flex items-start gap-3">
+                      <span className="text-lg shrink-0 mt-0.5">💡</span>
+                      <div className="space-y-1">
+                        <strong className="block text-xs uppercase tracking-wider text-amber-900 font-mono font-bold">
+                          Ejemplo real de aplicación:
+                        </strong>
+                        <div
+                          className="text-xs sm:text-sm font-medium leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: renderLatex(item.example) }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {item.subBullets.length > 0 && (
+                    <div className="pt-2 pl-3 border-l-2 border-rose-200 space-y-2">
+                      {item.subBullets.map((sub, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className={`text-xs sm:text-sm text-slate-600 font-sans ${bodyClass}`}
+                          dangerouslySetInnerHTML={{ __html: renderLatex(sub) }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+};
+
 export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   guide,
   onClose,
   onStartExamWithQuestions,
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('THEORY');
+  const [fontSizeMode, setFontSizeMode] = useState<'normal' | 'medium' | 'large'>('medium');
 
   // Estado para justificaciones de preguntas desplegables
   const [expandedQuestionIdx, setExpandedQuestionIdx] = useState<number | null>(null);
@@ -108,15 +300,29 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   // Etiquetas de pilares según disciplina (por defecto: ciencias)
   const labels = PILLAR_LABELS[guide.discipline ?? 'science'];
 
+  // Enlaces a PDFs oficiales de Notion
+  const notionPdfs = guide.id ? OFFICIAL_NOTION_PDF_LINKS[guide.id] : undefined;
+
   /**
-   * Conecta directamente con el Simulador de Exámenes
+   * Conecta directamente con el Simulador de Exámenes con salvaguarda a banco completo
    */
   const handleLaunchSimulator = () => {
-    if (!onStartExamWithQuestions || totalQuestions === 0) return;
-    const adaptedQuestions = convertDeconstructedToQuestions(
-      generatedQuestions,
+    if (!onStartExamWithQuestions) return;
+    let adaptedQuestions = convertDeconstructedToQuestions(
+      generatedQuestions || [],
       guideMetadata.title
     );
+    if (!adaptedQuestions || adaptedQuestions.length === 0) {
+      if (guide.id === 'mafe-design-theory-official') {
+        adaptedQuestions = [...DESIGN_THEORY_QUESTIONS];
+      } else if (guide.id === 'mafe-color-clase4-ucab') {
+        adaptedQuestions = [...NOTION_COLOR_QUESTIONS];
+      } else if (guide.id === 'mafe-math-design-ucab') {
+        adaptedQuestions = [...NOTION_MATH_QUESTIONS];
+      } else {
+        adaptedQuestions = ALL_MAFE_QUESTIONS.slice(0, 10);
+      }
+    }
     onStartExamWithQuestions(
       adaptedQuestions,
       `Simulación: ${guideMetadata.title}`
@@ -150,29 +356,95 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           </p>
         </div>
 
-        {/* Acciones de Cabecera: Reproductor de Audio-Guía, Botón Cobalto Principal & Cerrar */}
-        <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-end sm:self-auto">
+        {/* Acciones de Cabecera: Descargas Oficiales, Tamaño de Texto, Audio-Guía, Simulación & Cerrar */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0 self-end sm:self-auto">
+          {/* Selector de Tamaño de Fuente para Lectura Cómoda */}
+          <div className="flex items-center p-0.5 bg-white border border-slate-200/90 rounded-xl shadow-soft-xs text-xs font-bold text-slate-600">
+            <button
+              onClick={() => setFontSizeMode('normal')}
+              className={`px-2 py-1 rounded-lg transition-all ${
+                fontSizeMode === 'normal' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
+              }`}
+              title="Texto Normal (14px)"
+            >
+              A-
+            </button>
+            <button
+              onClick={() => setFontSizeMode('medium')}
+              className={`px-2 py-1 rounded-lg transition-all ${
+                fontSizeMode === 'medium' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
+              }`}
+              title="Texto Mediano (16px)"
+            >
+              A
+            </button>
+            <button
+              onClick={() => setFontSizeMode('large')}
+              className={`px-2 py-1 rounded-lg transition-all ${
+                fontSizeMode === 'large' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
+              }`}
+              title="Texto Grande (18px)"
+            >
+              A+
+            </button>
+          </div>
+
+          {/* Botón Descargar Word */}
+          <button
+            onClick={() => exportGuideToWord(guide)}
+            className="py-1.5 px-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-soft-xs active:scale-[0.98] transition-all"
+            title="Descargar guía completa en formato Microsoft Word (.doc)"
+          >
+            <FileText className="w-3.5 h-3.5 text-rose-600" />
+            <span>Word (.doc)</span>
+          </button>
+
+          {/* Botón PDF Oficial Notion si existe */}
+          {notionPdfs && notionPdfs.length > 0 && (
+            <a
+              href={notionPdfs[0].url}
+              target="_blank"
+              rel="noreferrer"
+              download={notionPdfs[0].filename}
+              className="py-1.5 px-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200/80 text-rose-700 text-xs font-bold flex items-center gap-1.5 shadow-soft-xs active:scale-[0.98] transition-all"
+              title="Abrir o descargar el archivo PDF original de Notion"
+            >
+              <Download className="w-3.5 h-3.5 text-rose-600" />
+              <span>PDF Oficial</span>
+            </a>
+          )}
+
+          {/* Botón Imprimir / Guardar como PDF */}
+          <button
+            onClick={() => window.print()}
+            className="p-1.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200/70 transition-colors shadow-soft-xs"
+            title="Imprimir guía o Guardar como PDF"
+          >
+            <Printer className="w-4 h-4 text-slate-600" />
+          </button>
+
           {/* Reproductor Text-to-Speech de la Guía */}
           <AudioGuidePlayer
             guideTitle={guideMetadata.title}
             guideText={`${phenomenonAndTheory}. ${guideMetadata.summary}`}
           />
 
-          {totalQuestions > 0 && onStartExamWithQuestions && (
+          {/* Botón de Simulación de Examen */}
+          {onStartExamWithQuestions && (
             <button
               onClick={handleLaunchSimulator}
-              className="bg-[#0F52BA] hover:bg-[#0c4396] active:scale-[0.98] text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center gap-2 group cursor-pointer"
+              className="bg-[#0F52BA] hover:bg-[#0c4396] active:scale-[0.98] text-white text-xs font-bold py-1.5 px-3 rounded-xl shadow-md transition-all flex items-center gap-1.5 group cursor-pointer"
               title="Iniciar simulación de examen de este tema"
             >
-              <PlayIcon className="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
-              <span>Simular Examen ({totalQuestions})</span>
+              <PlayIcon className="w-3.5 h-3.5 text-white group-hover:scale-110 transition-transform" />
+              <span>Simular ({Math.max(totalQuestions, 10)})</span>
             </button>
           )}
 
           {onClose && (
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-200/60 transition-colors"
+              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-200/60 transition-colors"
               title="Cerrar vista de la guía"
             >
               <XIcon className="w-5 h-5" />
@@ -311,12 +583,10 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
               </p>
             </div>
 
-            {/* Desarrollo Teórico con KaTeX (whitespace-pre-line preserva saltos de línea y viñetas del temario) */}
-            <div
-              className="prose prose-slate max-w-none text-xs sm:text-sm text-slate-700 leading-relaxed font-sans space-y-4 whitespace-pre-line"
-              dangerouslySetInnerHTML={{
-                __html: renderLatex(phenomenonAndTheory),
-              }}
+            {/* Desarrollo Teórico Editorial con Alta Legibilidad, KaTeX y Ejemplos Prácticos */}
+            <EditorialTheoryRenderer
+              content={phenomenonAndTheory}
+              fontSizeMode={fontSizeMode}
             />
 
             {/* Banner de Acción Inmediata hacia Técnicas */}
@@ -703,7 +973,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                 </p>
               </div>
 
-              {totalQuestions > 0 && onStartExamWithQuestions && (
+              {onStartExamWithQuestions && (
                 <button
                   onClick={handleLaunchSimulator}
                   className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow-soft flex items-center gap-2 self-start sm:self-auto shrink-0"
@@ -743,7 +1013,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                 </p>
               </div>
 
-              {totalQuestions > 0 && onStartExamWithQuestions && (
+              {onStartExamWithQuestions && (
                 <button
                   onClick={handleLaunchSimulator}
                   className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow-soft flex items-center gap-2 shrink-0"
@@ -853,13 +1123,13 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           <span>Guía guardada y persistida en tu centro de estudio</span>
         </div>
 
-        {totalQuestions > 0 && onStartExamWithQuestions && (
+        {onStartExamWithQuestions && (
           <button
             onClick={handleLaunchSimulator}
             className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <PlayIcon className="w-4 h-4 text-white" />
-            <span>Simular Examen de este Tema ({totalQuestions} Preguntas)</span>
+            <span>Simular Examen de este Tema ({Math.max(totalQuestions, 10)} Preguntas)</span>
           </button>
         )}
       </div>

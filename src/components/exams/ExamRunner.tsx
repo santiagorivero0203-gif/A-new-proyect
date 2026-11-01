@@ -57,8 +57,22 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({
 
   if (!currentQuestion) {
     return (
-      <div className="p-8 text-center text-slate-500">
-        Cargando preguntas de la evaluación...
+      <div className="max-w-md mx-auto my-12 p-8 bg-white border border-slate-200 rounded-3xl shadow-soft text-center space-y-4 animate-fadeIn">
+        <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto text-xl font-bold">
+          ⚠️
+        </div>
+        <h3 className="text-base font-bold text-slate-900 font-sans">
+          No se pudieron cargar preguntas para esta sesión
+        </h3>
+        <p className="text-xs text-slate-500 leading-relaxed font-sans">
+          La configuración del examen solicitada no contiene reactivos activos o la sesión expiró.
+        </p>
+        <button
+          onClick={onFinish}
+          className="btn-brand text-xs py-2 px-4 rounded-xl mx-auto flex items-center gap-2"
+        >
+          <span>Volver al Catálogo de Evaluaciones</span>
+        </button>
       </div>
     );
   }

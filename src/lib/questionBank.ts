@@ -979,15 +979,30 @@ export function getQuestionsForProfile(
 export function getQuestionsForTailoredExam(exam: ProfileTailoredExam): Question[] {
   if (exam.fixedQuestionIds && exam.fixedQuestionIds.length > 0) {
     const byId = new Map(QUESTION_BANK.map((q) => [q.id, q]));
-    return exam.fixedQuestionIds
+    const resolved = exam.fixedQuestionIds
       .map((id) => byId.get(id))
       .filter((q): q is Question => Boolean(q));
+    if (resolved.length > 0) {
+      return resolved;
+    }
   }
-  return getQuestionsForProfile(
+
+  // Respaldo pedagógico: filtrar por materia y palabra clave sin romper el aislamiento
+  const fallback = getQuestionsForProfile(
     exam.profileId,
     exam.targetSubject,
     exam.targetTopicKeyword,
     exam.questionCount
   );
+  if (fallback.length > 0) {
+    return fallback;
+  }
+
+  // Resguardo estricto para María Fernanda: banco oficial de diseño
+  if (exam.profileId === 'mafe_diseno_ucab') {
+    return ALL_MAFE_QUESTIONS.slice(0, exam.questionCount || 10);
+  }
+
+  return QUESTION_BANK.slice(0, exam.questionCount || 6);
 }
 

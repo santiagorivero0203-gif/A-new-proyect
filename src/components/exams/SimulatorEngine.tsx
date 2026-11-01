@@ -51,8 +51,14 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
   }, [academicProfile]);
 
   useEffect(() => {
-    if (initialConfig && initialQuestions && initialQuestions.length > 0) {
-      startExam(initialConfig, initialQuestions);
+    if (initialConfig) {
+      const questionsToUse =
+        initialQuestions && initialQuestions.length > 0
+          ? initialQuestions
+          : initialConfig.customQuestions && initialConfig.customQuestions.length > 0
+          ? initialConfig.customQuestions
+          : undefined;
+      startExam(initialConfig, questionsToUse);
       if (onClearInitial) onClearInitial();
     }
   }, [initialConfig, initialQuestions, startExam, onClearInitial]);
@@ -205,7 +211,7 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                     {
                       mode: ex.profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
                       title: ex.title,
-                      totalQuestions: Math.min(ex.questionCount, questions.length),
+                      totalQuestions: Math.max(1, Math.min(ex.questionCount, questions.length || ex.questionCount)),
                       timeLimitSeconds: ex.durationMinutes * 60,
                       allowPause: true,
                       shuffleQuestions: true,

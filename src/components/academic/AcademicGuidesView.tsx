@@ -22,7 +22,14 @@ import { renderLatex, renderLatexToHtml } from '../../utils/latexRenderer';
 import {
   ALL_MAFE_DECONSTRUCTED_GUIDES,
   ALL_MAFE_QUESTIONS,
+  DESIGN_THEORY_QUESTIONS,
+  NOTION_COLOR_QUESTIONS,
+  NOTION_MATH_QUESTIONS,
 } from '../../data/mafe_curriculum_hub';
+import {
+  exportGuideToWord,
+  OFFICIAL_NOTION_PDF_LINKS,
+} from '../../utils/documentExport';
 
 export interface AcademicGuidesViewProps {
   onStartExamWithQuestions?: (questions: Question[], title: string) => void;
@@ -102,11 +109,25 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
   // Lanzar examen desde una guía deconstruida
   const handleStartExamFromDeconstructed = (guide: DeconstructedAcademicGuide) => {
     if (!onStartExamWithQuestions) return;
-    const questions = convertDeconstructedToQuestions(
-      guide.generatedQuestions,
+    let questions = convertDeconstructedToQuestions(
+      guide.generatedQuestions || [],
       guide.guideMetadata.title,
       user?.academic_profile
     );
+
+    // Salvaguarda: si la guía no produjo preguntas, enlazar directamente con su banco oficial
+    if (!questions || questions.length === 0) {
+      if (guide.id === 'mafe-design-theory-official') {
+        questions = [...DESIGN_THEORY_QUESTIONS];
+      } else if (guide.id === 'mafe-color-clase4-ucab') {
+        questions = [...NOTION_COLOR_QUESTIONS];
+      } else if (guide.id === 'mafe-math-design-ucab') {
+        questions = [...NOTION_MATH_QUESTIONS];
+      } else {
+        questions = ALL_MAFE_QUESTIONS.slice(0, 10);
+      }
+    }
+
     onStartExamWithQuestions(
       questions,
       `Simulación: ${guide.guideMetadata.title}`
@@ -295,23 +316,51 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                  <button
-                    onClick={() => setSelectedDeconstructedGuide(guide)}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 flex-1 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <BookOpenIcon className="w-3.5 h-3.5 text-rose-600" />
-                    <span>Ver Guía 7 Pilares</span>
-                  </button>
+                {/* Barra de Acciones y Descarga de Documentos (PDF / Word) */}
+                <div className="pt-3 border-t border-slate-100 space-y-2">
+                  <div className="flex items-center gap-2">
+                    {/* Botón Descargar Word */}
+                    <button
+                      onClick={() => exportGuideToWord(guide)}
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98]"
+                      title="Descargar guía completa en formato Microsoft Word (.doc)"
+                    >
+                      <span>📝 Word (.doc)</span>
+                    </button>
 
-                  <button
-                    onClick={() => handleStartExamFromDeconstructed(guide)}
-                    className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-1.5 px-3 rounded-xl shadow-soft flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                    title="Simular examen con preguntas de esta guía"
-                  >
-                    <PlayIcon className="w-3.5 h-3.5 text-white" />
-                    <span>Simular</span>
-                  </button>
+                    {/* Botón PDF Oficial Notion si existe */}
+                    {guide.id && OFFICIAL_NOTION_PDF_LINKS[guide.id] && OFFICIAL_NOTION_PDF_LINKS[guide.id].length > 0 && (
+                      <a
+                        href={OFFICIAL_NOTION_PDF_LINKS[guide.id][0].url}
+                        target="_blank"
+                        rel="noreferrer"
+                        download={OFFICIAL_NOTION_PDF_LINKS[guide.id][0].filename}
+                        className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98]"
+                        title="Abrir o descargar archivo PDF original del temario"
+                      >
+                        <span>📄 PDF Oficial</span>
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setSelectedDeconstructedGuide(guide)}
+                      className="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-900 hover:bg-black text-white flex items-center justify-center gap-1.5 transition-all shadow-soft cursor-pointer active:scale-[0.98]"
+                    >
+                      <BookOpenIcon className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Ver Guía Editorial</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleStartExamFromDeconstructed(guide)}
+                      className="py-2 px-3.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-soft flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98]"
+                      title="Simular examen con preguntas de esta guía"
+                    >
+                      <PlayIcon className="w-3.5 h-3.5 text-white" />
+                      <span>Simular</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

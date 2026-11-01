@@ -11,7 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import { sessionRecoveryService } from '../services/sessionRecoveryService';
 
 export function useExamSimulator() {
-  const { user } = useAuth();
+  const { user, academicProfile } = useAuth();
 
   const [session, setSession] = useState<ExamSessionState>({
     status: 'CONFIG',
@@ -193,7 +193,9 @@ export function useExamSimulator() {
   /**
    * Inicia un examen configurando la selección de preguntas (admite banco generado por IA)
    */
-  const startExam = (config: ExamConfig, customQuestions?: Question[]) => {
+  const startExam = useCallback((config: ExamConfig, customQuestions?: Question[]) => {
+    const activeProf = user?.academic_profile || academicProfile;
+
     let pool =
       customQuestions && customQuestions.length > 0
         ? [...customQuestions]
@@ -203,15 +205,25 @@ export function useExamSimulator() {
 
     if (!customQuestions && !config.customQuestions) {
       if (config.subject) {
-        pool = pool.filter((q) => q.subject === config.subject);
+        pool = pool.filter((q) => q.subject.toLowerCase() === config.subject?.toLowerCase());
       }
 
-      if (config.mode === 'SIMADI_UCV' || config.mode === 'UNIVERSITY_EXAM') {
-        pool = pool.filter(
-          (q) =>
-            q.targetProfiles.includes('santiago_fisica_ucv') ||
-            q.targetProfiles.includes('prima_bachillerato_5')
+      if (config.mode === 'SIMADI_UCV') {
+        pool = pool.filter((q) =>
+          q.targetProfiles.includes('santiago_fisica_ucv')
         );
+      } else if (config.mode === 'UNIVERSITY_EXAM') {
+        if (activeProf === 'mafe_diseno_ucab') {
+          pool = pool.filter((q) =>
+            q.targetProfiles.includes('mafe_diseno_ucab') || q.subject === 'Diseño'
+          );
+        } else {
+          pool = pool.filter(
+            (q) =>
+              q.targetProfiles.includes('santiago_fisica_ucv') ||
+              q.targetProfiles.includes('prima_bachillerato_5')
+          );
+        }
       } else if (config.mode === 'HIGH_SCHOOL_EXAM') {
         pool = pool.filter(
           (q) =>
@@ -223,11 +235,27 @@ export function useExamSimulator() {
       }
     }
 
+    // Salvaguarda: si tras filtrar la lista queda vacía, recuperar preguntas acordes al perfil o materia
+    if (pool.length === 0) {
+      if (config.subject) {
+        pool = QUESTION_BANK.filter((q) => q.subject.toLowerCase() === config.subject?.toLowerCase());
+      }
+      if (pool.length === 0 && activeProf) {
+        pool = QUESTION_BANK.filter((q) => q.targetProfiles && q.targetProfiles.includes(activeProf as any));
+      }
+      if (pool.length === 0) {
+        pool = [...QUESTION_BANK];
+      }
+    }
+
     if (config.shuffleQuestions) {
       pool.sort(() => Math.random() - 0.5);
     }
 
-    const selectedQuestions: Question[] = pool.slice(0, Math.min(config.totalQuestions, pool.length));
+    // Asegurar que totalQuestions sea al menos 1 y no exceda la disponibilidad
+    const requestedCount = config.totalQuestions && config.totalQuestions > 0 ? config.totalQuestions : 5;
+    const finalCount = Math.max(1, Math.min(requestedCount, pool.length));
+    const selectedQuestions: Question[] = pool.slice(0, finalCount);
 
     const finalCustom =
       customQuestions && customQuestions.length > 0
@@ -238,6 +266,7 @@ export function useExamSimulator() {
 
     const enrichedConfig: ExamConfig = {
       ...config,
+      totalQuestions: finalCount,
       customQuestions: finalCustom,
     };
 
@@ -253,12 +282,12 @@ export function useExamSimulator() {
       isPaused: false,
       startedAt: new Date().toISOString(),
     });
-  };
+  }, [user, academicProfile]);
 
   /**
    * Registrar respuesta a una pregunta con soporte para Muerte Súbita (SUDDEN_DEATH)
    */
-  const selectAnswer = (questionId: string, optionId: string) => {
+  const selectAnswer = useCallback((questionId: string, optionId: string) => {
     setSession((prev) => {
       const updatedAnswers = {
         ...prev.userAnswers,
@@ -281,12 +310,12 @@ export function useExamSimulator() {
         userAnswers: updatedAnswers,
       };
     });
-  };
+  }, [finishExam]);
 
   /**
    * Marcar o desmarcar pregunta para revisión
    */
-  const toggleFlagQuestion = (questionId: string) => {
+  const toggleFlagQuestion = useCallback((questionId: string) => {
     setSession((prev) => ({
       ...prev,
       flaggedQuestions: {
@@ -294,35 +323,41 @@ export function useExamSimulator() {
         [questionId]: !prev.flaggedQuestions[questionId],
       },
     }));
-  };
+  }, []);
 
-  const goToQuestion = (index: number) => {
-    if (index >= 0 && index < session.questions.length) {
-      setSession((prev) => ({ ...prev, currentIndex: index }));
-    }
-  };
+  const goToQuestion = useCallback((index: number) => {
+    setSession((prev) => {
+      if (index >= 0 && index < prev.questions.length) {
+        return { ...prev, currentIndex: index };
+      }
+      return prev;
+    });
+  }, []);
 
-  const nextQuestion = () => {
+  const nextQuestion = useCallback(() => {
     setSession((prev) => ({
       ...prev,
       currentIndex: Math.min(prev.currentIndex + 1, prev.questions.length - 1),
     }));
-  };
+  }, []);
 
-  const prevQuestion = () => {
+  const prevQuestion = useCallback(() => {
     setSession((prev) => ({
       ...prev,
       currentIndex: Math.max(prev.currentIndex - 1, 0),
     }));
-  };
+  }, []);
 
-  const togglePause = () => {
-    if (session.config.allowPause) {
-      setSession((prev) => ({ ...prev, isPaused: !prev.isPaused }));
-    }
-  };
+  const togglePause = useCallback(() => {
+    setSession((prev) => {
+      if (prev.config.allowPause) {
+        return { ...prev, isPaused: !prev.isPaused };
+      }
+      return prev;
+    });
+  }, []);
 
-  const resetExam = () => {
+  const resetExam = useCallback(() => {
     sessionRecoveryService.clearActiveExamSession(user?.id);
     setReport(null);
     setSession((prev) => ({
@@ -332,7 +367,7 @@ export function useExamSimulator() {
       userAnswers: {},
       flaggedQuestions: {},
     }));
-  };
+  }, [user?.id]);
 
   const resumeRecoveredSession = () => {
     if (recoverableSession) {
