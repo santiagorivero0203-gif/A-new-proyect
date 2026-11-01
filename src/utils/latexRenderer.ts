@@ -143,6 +143,10 @@ function formatPlainTextSegment(rawText: string): string {
 
   let t = rawText;
 
+  // 0. Sanitizar artefactos tipo #@, @[...] o referencias huérfanas
+  t = t.replace(/#@|##@|#\s*@/g, '');
+  t = t.replace(/@\[[^\]]+\]/g, '');
+
   // 1. Comandos de formato tipo LaTeX en texto
   t = t.replace(/\\textit\{([^}]+)\}/g, '<em>$1</em>');
   t = t.replace(/\\textbf\{([^}]+)\}/g, '<strong>$1</strong>');
@@ -152,6 +156,14 @@ function formatPlainTextSegment(rawText: string): string {
   // 2. Markdown común dentro del texto
   t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   t = t.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  // 2b. Encabezados markdown (#, ##, ###) limpios de símbolos extraños
+  t = t.replace(/(?:^|\n)###\s+([^\n]+)/g, '<h4 class="font-bold text-slate-900 dark:text-white text-base mt-3 mb-1.5">$1</h4>');
+  t = t.replace(/(?:^|\n)##\s+([^\n]+)/g, '<h3 class="font-bold text-slate-900 dark:text-white text-lg mt-4 mb-2">$1</h3>');
+  t = t.replace(/(?:^|\n)#\s+([^\n]+)/g, '<h2 class="font-extrabold text-slate-900 dark:text-white text-xl mt-5 mb-2.5">$1</h2>');
+
+  // 2c. Citas y notas destacadas tipo blockquote (> o &gt;)
+  t = t.replace(/(?:^|\n)&gt;\s*([^\n]+)/g, '<div class="my-2.5 pl-3.5 py-2 border-l-4 border-blue-500 bg-blue-50/70 dark:bg-blue-950/40 rounded-r-xl text-slate-800 dark:text-slate-200 font-medium">$1</div>');
 
   // 3. Reemplazo de flechas y símbolos matemáticos que hayan quedado sueltos en texto plano
   t = t.replace(/\\longrightarrow/g, ' &rarr; ');

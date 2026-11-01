@@ -238,7 +238,15 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredDocuments.map((doc) => {
             const isImage = doc.file_type.startsWith('image/');
-            const isPdf = doc.file_type === 'application/pdf';
+            const isPdf = doc.file_type === 'application/pdf' || doc.file_path.toLowerCase().endsWith('.pdf');
+            const isWord =
+              doc.file_type.includes('word') ||
+              doc.file_path.toLowerCase().endsWith('.doc') ||
+              doc.file_path.toLowerCase().endsWith('.docx');
+            const isText =
+              doc.file_type.includes('text') ||
+              doc.file_path.toLowerCase().endsWith('.txt') ||
+              doc.file_path.toLowerCase().endsWith('.md');
             const hasAiAnalysis = Boolean(doc.ai_analysis || doc.ai_summary);
 
             return (
@@ -273,7 +281,15 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
                   </div>
                 ) : (
                   <div className="p-5 pb-3 bg-gradient-to-br from-blue-50/50 to-slate-50 border-b border-slate-100 flex items-start justify-between">
-                    <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shadow-soft-sm shrink-0">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-soft-sm shrink-0 ${
+                        isPdf
+                          ? 'bg-rose-50 text-rose-600'
+                          : isWord
+                          ? 'bg-blue-50 text-[#0F52BA]'
+                          : 'bg-emerald-50 text-emerald-600'
+                      }`}
+                    >
                       <FileTextIcon className="w-5 h-5" />
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -284,7 +300,7 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
                         </span>
                       )}
                       <span className="px-2 py-0.5 rounded-full bg-white text-[10px] font-bold text-slate-600 border border-slate-200">
-                        {isPdf ? 'PDF' : 'DOC'}
+                        {isPdf ? 'PDF' : isWord ? 'WORD' : isText ? 'TXT' : 'DOC'}
                       </span>
                     </div>
                   </div>
@@ -360,10 +376,11 @@ export const DocumentGallery: React.FC<DocumentGalleryProps> = ({
                           href={doc.file_path}
                           target="_blank"
                           rel="noreferrer"
+                          download={doc.title}
                           className="btn-secondary text-[11px] py-1.5 px-3 flex-1 flex items-center justify-center gap-1.5"
                         >
                           <DownloadIcon className="w-3.5 h-3.5 text-slate-600" />
-                          <span>Abrir PDF</span>
+                          <span>{isWord ? 'Abrir Word' : isText ? 'Abrir Doc' : 'Abrir PDF'}</span>
                         </a>
                       )}
 

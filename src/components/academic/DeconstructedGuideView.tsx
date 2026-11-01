@@ -19,6 +19,7 @@ import { InteractiveDesignPlayground } from './InteractiveDesignPlayground';
 import { EnhancedFlashcardDeck } from './EnhancedFlashcardDeck';
 import {
   exportGuideToWord,
+  exportGuideToPdf,
   OFFICIAL_NOTION_PDF_LINKS,
 } from '../../utils/documentExport';
 import {
@@ -99,6 +100,7 @@ interface EditorialTheoryRendererProps {
 /**
  * Renderizador Editorial de Teoría: Deconstrucción en Capítulos, Conceptos y Ejemplos Cotidianos
  * Aplica los principios de "Menos, pero Mejor", "Jerarquía Invisible" y "Respiración del Espacio".
+ * Sanitiza cualquier símbolo extraño (#@, @[...]) y soporta markdown nativo y KaTeX.
  */
 const EditorialTheoryRenderer: React.FC<EditorialTheoryRendererProps> = ({ content, fontSizeMode }) => {
   const fontClasses = {
@@ -109,13 +111,34 @@ const EditorialTheoryRenderer: React.FC<EditorialTheoryRendererProps> = ({ conte
 
   const bodyClass = fontClasses[fontSizeMode];
 
-  // Identificar secciones por encabezados de capítulos, unidades o guías
-  const rawSections = content.split(/(?=\*\*(?:CAPÍTULO|UNIDAD|GUÍA)\b)/i).filter(Boolean);
+  // 1. Sanitizar artefactos anómalos (#@, referencias cuadradas @[...])
+  const sanitized = (content || '')
+    .replace(/#@|##@|#\s*@/g, '')
+    .replace(/@\[[^\]]+\]/g, '')
+    .replace(/\r\n/g, '\n')
+    .trim();
 
-  if (rawSections.length <= 1 && !content.includes('**CAPÍTULO') && !content.includes('**UNIDAD') && !content.includes('**GUÍA')) {
+  // 2. Identificar secciones por encabezados de capítulos, unidades, temas o markdown ###
+  const rawSections = sanitized
+    .split(/(?=(?:\n|^)(?:###?\s+|(?:\*\*)?(?:CAPÍTULO|UNIDAD|GUÍA|MÓDULO|TEMA)\b|\d+\.\s+[A-ZÁÉÍÓÚ]))/i)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (rawSections.length === 0) {
+    return (
+      <div className={`prose prose-slate max-w-none ${bodyClass} text-slate-800 space-y-4`}>
+        <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-soft-xs text-slate-800">
+          Contenido de la guía disponible para estudio.
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback si no hay estructura de secciones
+  if (rawSections.length === 1 && !sanitized.match(/^(?:###|\*\*CAPÍTULO|\*\*UNIDAD|\*\*GUÍA|UNIDAD|CAPÍTULO|\d+\.)/i)) {
     return (
       <div className={`prose prose-slate max-w-none ${bodyClass} text-slate-800 space-y-5`}>
-        {content.split('\n\n').filter(Boolean).map((p, idx) => (
+        {sanitized.split('\n\n').filter(Boolean).map((p, idx) => (
           <div
             key={idx}
             className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-soft-xs text-slate-800"
@@ -129,24 +152,35 @@ const EditorialTheoryRenderer: React.FC<EditorialTheoryRendererProps> = ({ conte
   return (
     <div className="space-y-8">
       {rawSections.map((sec, secIdx) => {
-        const lines = sec.trim().split('\n').map((l) => l.trim()).filter(Boolean);
+        const lines = sec.split('\n').map((l) => l.trim()).filter(Boolean);
         const headerLine = lines[0] || '';
-        const cleanHeader = headerLine.replace(/\*\*/g, '').trim();
+        const cleanHeader = headerLine
+          .replace(/^#+\s*/, '')
+          .replace(/\*\*/g, '')
+          .trim();
 
         // Extraer número de capítulo o distintivo
-        const badgeMatch = cleanHeader.match(/^(CAPÍTULO\s+\d+|UNIDAD\s+[IVXLCDM]+|GUÍA\s+\d+)/i);
+        const badgeMatch = cleanHeader.match(/^(CAPÍTULO\s+\d+|UNIDAD\s+[IVXLCDM\d]+|GUÍA\s+\d+|MÓDULO\s+\d+|\d+\.)/i);
         const chapterBadge = badgeMatch ? badgeMatch[1] : `Módulo ${secIdx + 1}`;
-        const chapterTitle = cleanHeader.replace(/^(CAPÍTULO\s+\d+|UNIDAD\s+[IVXLCDM]+|GUÍA\s+\d+)\s*[·:-]\s*/i, '');
+        const chapterTitle = cleanHeader.replace(/^(CAPÍTULO\s+\d+|UNIDAD\s+[IVXLCDM\d]+|GUÍA\s+\d+|MÓDULO\s+\d+|\d+\.)\s*[·:–-]\s*/i, '');
 
         const otherLines = lines.slice(1);
         const introLines: string[] = [];
+        const calloutLines: string[] = [];
         const items: { term: string; tag?: string; definition: string; example?: string; subBullets: string[] }[] = [];
         let currentItem: { term: string; tag?: string; definition: string; example?: string; subBullets: string[] } | null = null;
 
         for (const line of otherLines) {
-          if (line.startsWith('•') || line.startsWith('-')) {
+          // Detectar citas / notas destacadas (> o &gt;)
+          if (line.startsWith('>') || line.startsWith('&gt;')) {
+            const cleanCallout = line.replace(/^(?:>|&gt;)\s*/, '').trim();
+            calloutLines.push(cleanCallout);
+            continue;
+          }
+
+          if (line.startsWith('•') || line.startsWith('-') || line.startsWith('* ')) {
             if (currentItem) items.push(currentItem);
-            const lineContent = line.replace(/^[•-]\s*/, '').trim();
+            const lineContent = line.replace(/^[•\-*]\s*/, '').trim();
             // Buscar término en negrita: **Término:** o **Término (Autor):**
             const boldMatch = lineContent.match(/^\*\*([^*]+)\*\*[:\s]*(.*)/);
             if (boldMatch) {
@@ -177,6 +211,24 @@ const EditorialTheoryRenderer: React.FC<EditorialTheoryRendererProps> = ({ conte
             } else {
               introLines.push(line);
             }
+          } else if (line.match(/^\d+\.\s+/)) {
+            // Pasos numerados (1. ..., 2. ...)
+            if (currentItem) items.push(currentItem);
+            const numContent = line.replace(/^\d+\.\s+/, '').trim();
+            const boldMatch = numContent.match(/^\*\*([^*]+)\*\*[:\s]*(.*)/);
+            if (boldMatch) {
+              currentItem = {
+                term: boldMatch[1].trim(),
+                definition: boldMatch[2].trim(),
+                subBullets: [],
+              };
+            } else {
+              currentItem = {
+                term: '',
+                definition: numContent,
+                subBullets: [],
+              };
+            }
           } else {
             if (!currentItem) {
               introLines.push(line);
@@ -190,81 +242,101 @@ const EditorialTheoryRenderer: React.FC<EditorialTheoryRendererProps> = ({ conte
         return (
           <section
             key={secIdx}
-            className="rounded-3xl bg-slate-50/70 border border-slate-200/90 p-5 sm:p-7 space-y-5 shadow-soft transition-all"
+            className="rounded-3xl bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-5 shadow-soft transition-all"
           >
-            {/* Cabecera Editorial del Capítulo */}
-            <div className="space-y-2 border-b border-slate-200/80 pb-4">
+            {/* Cabecera Editorial del Capítulo / Unidad */}
+            <div className="space-y-2 border-b border-slate-200/80 dark:border-slate-800 pb-4">
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-rose-100 text-rose-800 border border-rose-300/80 uppercase tracking-wide">
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-100 dark:bg-blue-950/80 text-[#0F52BA] dark:text-blue-300 border border-blue-300/80 dark:border-blue-800 uppercase tracking-wide">
                   {chapterBadge}
                 </span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight font-sans">
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight font-sans">
                 {chapterTitle || cleanHeader}
               </h3>
               {introLines.length > 0 && (
-                <div className={`text-slate-600 font-medium ${bodyClass} pt-1 space-y-2`}>
+                <div className={`text-slate-600 dark:text-slate-300 font-medium ${bodyClass} pt-1 space-y-2.5`}>
                   {introLines.map((il, i) => (
-                    <p key={i} dangerouslySetInnerHTML={{ __html: renderLatex(il) }} />
+                    <div key={i} dangerouslySetInnerHTML={{ __html: renderLatex(il) }} />
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Cuadrícula de Conceptos Clave */}
-            <div className="grid grid-cols-1 gap-4">
-              {items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-soft-xs space-y-3 hover:border-slate-300 transition-all"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight font-sans">
-                      {item.term || `Concepto ${idx + 1}`}
-                    </h4>
-                    {item.tag && (
-                      <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
-                        {item.tag}
-                      </span>
+            {/* Citas y Reglas de Oro Destacadas */}
+            {calloutLines.length > 0 && (
+              <div className="space-y-3">
+                {calloutLines.map((cl, cIdx) => (
+                  <div
+                    key={cIdx}
+                    className="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border-l-4 border-amber-500 text-amber-950 dark:text-amber-200 flex items-start gap-3 shadow-soft-xs"
+                  >
+                    <span className="text-xl shrink-0 mt-0.5">⭐</span>
+                    <div
+                      className="text-xs sm:text-sm font-medium leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: renderLatex(cl) }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Cuadrícula de Conceptos Clave o Pasos */}
+            {items.length > 0 && (
+              <div className="grid grid-cols-1 gap-4">
+                {items.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-soft-xs space-y-3 hover:border-slate-300 transition-all"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight font-sans">
+                        {item.term || `Concepto ${idx + 1}`}
+                      </h4>
+                      {item.tag && (
+                        <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                          {item.tag}
+                        </span>
+                      )}
+                    </div>
+
+                    {item.definition && (
+                      <div
+                        className={`text-slate-700 dark:text-slate-300 font-sans ${bodyClass}`}
+                        dangerouslySetInnerHTML={{ __html: renderLatex(item.definition) }}
+                      />
+                    )}
+
+                    {item.example && (
+                      <div className="p-3.5 sm:p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-amber-950 dark:text-amber-200 flex items-start gap-3">
+                        <span className="text-lg shrink-0 mt-0.5">💡</span>
+                        <div className="space-y-1">
+                          <strong className="block text-xs uppercase tracking-wider text-amber-900 dark:text-amber-300 font-mono font-bold">
+                            Ejemplo real de aplicación:
+                          </strong>
+                          <div
+                            className="text-xs sm:text-sm font-medium leading-relaxed"
+                            dangerouslySetInnerHTML={{ __html: renderLatex(item.example) }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {item.subBullets.length > 0 && (
+                      <div className="pt-2 pl-3 border-l-2 border-blue-200 dark:border-blue-800 space-y-2">
+                        {item.subBullets.map((sub, sIdx) => (
+                          <div
+                            key={sIdx}
+                            className={`text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-sans ${bodyClass}`}
+                            dangerouslySetInnerHTML={{ __html: renderLatex(sub) }}
+                          />
+                        ))}
+                      </div>
                     )}
                   </div>
-
-                  {item.definition && (
-                    <div
-                      className={`text-slate-700 font-sans ${bodyClass}`}
-                      dangerouslySetInnerHTML={{ __html: renderLatex(item.definition) }}
-                    />
-                  )}
-
-                  {item.example && (
-                    <div className="p-3.5 sm:p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-amber-950 flex items-start gap-3">
-                      <span className="text-lg shrink-0 mt-0.5">💡</span>
-                      <div className="space-y-1">
-                        <strong className="block text-xs uppercase tracking-wider text-amber-900 font-mono font-bold">
-                          Ejemplo real de aplicación:
-                        </strong>
-                        <div
-                          className="text-xs sm:text-sm font-medium leading-relaxed"
-                          dangerouslySetInnerHTML={{ __html: renderLatex(item.example) }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {item.subBullets.length > 0 && (
-                    <div className="pt-2 pl-3 border-l-2 border-rose-200 space-y-2">
-                      {item.subBullets.map((sub, sIdx) => (
-                        <div
-                          key={sIdx}
-                          className={`text-xs sm:text-sm text-slate-600 font-sans ${bodyClass}`}
-                          dangerouslySetInnerHTML={{ __html: renderLatex(sub) }}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </section>
         );
       })}
@@ -401,10 +473,21 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
 
           {/* Exportación & Lanzamiento de Simulación */}
           <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+            {/* Descarga Directa en PDF (Funcional para todas las guías deconstruidas) */}
+            <button
+              onClick={() => exportGuideToPdf(guide)}
+              className="py-1 px-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#0F52BA] text-xs font-bold flex items-center gap-1 shadow-soft-xs active:scale-[0.98] transition-all cursor-pointer"
+              title="Descargar o Guardar como documento PDF oficial"
+            >
+              <Download className="w-3.5 h-3.5 text-[#0F52BA]" />
+              <span>PDF</span>
+              <span className="text-[10px] text-blue-500/80 font-normal hidden sm:inline">(.pdf)</span>
+            </button>
+
             {/* Word .doc */}
             <button
               onClick={() => exportGuideToWord(guide)}
-              className="py-1 px-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1 shadow-soft-xs active:scale-[0.98] transition-all"
+              className="py-1 px-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1 shadow-soft-xs active:scale-[0.98] transition-all cursor-pointer"
               title="Descargar guía en Word (.doc)"
             >
               <FileText className="w-3.5 h-3.5 text-rose-600" />
@@ -419,18 +502,18 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                 target="_blank"
                 rel="noreferrer"
                 download={notionPdfs[0].filename}
-                className="py-1 px-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-1 shadow-soft-xs active:scale-[0.98] transition-all"
-                title="Descargar archivo PDF original de Notion"
+                className="py-1 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 text-xs font-bold flex items-center gap-1 shadow-soft-xs active:scale-[0.98] transition-all cursor-pointer"
+                title="Descargar archivo original de Notion"
               >
-                <Download className="w-3.5 h-3.5 text-rose-600" />
-                <span>PDF</span>
+                <Download className="w-3.5 h-3.5 text-slate-600" />
+                <span className="hidden sm:inline">Notion</span>
               </a>
             )}
 
-            {/* Imprimir */}
+            {/* Imprimir / Guardar como PDF */}
             <button
-              onClick={() => window.print()}
-              className="p-1.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors shadow-soft-xs"
+              onClick={() => exportGuideToPdf(guide)}
+              className="p-1.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors shadow-soft-xs cursor-pointer"
               title="Imprimir o Guardar como PDF"
             >
               <Printer className="w-3.5 h-3.5 text-slate-600" />

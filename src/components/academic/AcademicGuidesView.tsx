@@ -32,6 +32,7 @@ import {
 } from '../../data/andres_curriculum_hub';
 import {
   exportGuideToWord,
+  exportGuideToPdf,
   OFFICIAL_NOTION_PDF_LINKS,
 } from '../../utils/documentExport';
 
@@ -356,26 +357,35 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                 {/* Barra de Acciones y Descarga de Documentos (PDF / Word) */}
                 <div className="pt-3 border-t border-slate-100 space-y-2">
                   <div className="flex items-center gap-2">
+                    {/* Botón Descargar PDF Oficial (Funcional para todas las guías) */}
+                    <button
+                      onClick={() => exportGuideToPdf(guide)}
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-blue-50 hover:bg-blue-100 text-[#0F52BA] border border-blue-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                      title="Descargar o Guardar como PDF de alta resolución"
+                    >
+                      <span>📄 PDF (.pdf)</span>
+                    </button>
+
                     {/* Botón Descargar Word */}
                     <button
                       onClick={() => exportGuideToWord(guide)}
-                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98]"
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
                       title="Descargar guía completa en formato Microsoft Word (.doc)"
                     >
                       <span>📝 Word (.doc)</span>
                     </button>
 
-                    {/* Botón PDF Oficial Notion si existe */}
+                    {/* Botón PDF Original Notion si existe */}
                     {guide.id && OFFICIAL_NOTION_PDF_LINKS[guide.id] && OFFICIAL_NOTION_PDF_LINKS[guide.id].length > 0 && (
                       <a
                         href={OFFICIAL_NOTION_PDF_LINKS[guide.id][0].url}
                         target="_blank"
                         rel="noreferrer"
                         download={OFFICIAL_NOTION_PDF_LINKS[guide.id][0].filename}
-                        className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98]"
-                        title="Abrir o descargar archivo PDF original del temario"
+                        className="py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 flex items-center justify-center gap-1 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                        title="Abrir o descargar archivo PDF original de Notion"
                       >
-                        <span>📄 PDF Oficial</span>
+                        <span>Notion</span>
                       </a>
                     )}
                   </div>
@@ -484,15 +494,24 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                   </div>
                 </div>
 
-                {/* Barra de Acciones y Descarga de Documentos (Word) */}
+                {/* Barra de Acciones y Descarga de Documentos (PDF / Word) */}
                 <div className="pt-3 border-t border-slate-100 space-y-2">
-                  <button
-                    onClick={() => exportGuideToWord(guide)}
-                    className="w-full py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98]"
-                    title="Descargar guía completa en formato Microsoft Word (.doc)"
-                  >
-                    <span>📝 Descargar Word (.doc)</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => exportGuideToPdf(guide)}
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-blue-50 hover:bg-blue-100 text-[#0F52BA] border border-blue-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                      title="Descargar o Guardar como PDF de alta resolución"
+                    >
+                      <span>📄 PDF (.pdf)</span>
+                    </button>
+                    <button
+                      onClick={() => exportGuideToWord(guide)}
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                      title="Descargar guía completa en formato Microsoft Word (.doc)"
+                    >
+                      <span>📝 Word (.doc)</span>
+                    </button>
+                  </div>
 
                   <div className="flex items-center gap-2">
                     <button

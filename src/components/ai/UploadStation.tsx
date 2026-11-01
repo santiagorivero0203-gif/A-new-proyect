@@ -111,17 +111,24 @@ export const UploadStation: React.FC<UploadStationProps> = ({
       'image/jpeg',
       'image/jpg',
       'image/webp',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'text/markdown',
     ];
 
-    if (!validTypes.includes(file.type)) {
+    const validExtensions = ['pdf', 'doc', 'docx', 'txt', 'md', 'png', 'jpg', 'jpeg', 'webp'];
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+
+    if (!validTypes.includes(file.type) && !validExtensions.includes(ext)) {
       setErrorMessage(
-        'Formato no compatible. Por favor sube una imagen (PNG, JPG, WEBP) o un documento PDF.'
+        'Formato no compatible. Por favor sube un documento PDF, Word (.docx, .doc), Texto (.txt, .md) o una imagen (PNG, JPG, WEBP).'
       );
       return;
     }
 
-    if (file.size > 20 * 1024 * 1024) {
-      setErrorMessage('El archivo excede el tamaño máximo permitido de 20 MB.');
+    if (file.size > 25 * 1024 * 1024) {
+      setErrorMessage('El archivo excede el tamaño máximo permitido de 25 MB.');
       return;
     }
 
@@ -671,7 +678,7 @@ export const UploadStation: React.FC<UploadStationProps> = ({
             {/* ZONA DE DROP / SELECCIÓN DE ARCHIVOS */}
             <div className="space-y-2">
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
-                Material de Estudio (Foto de Cuaderno/Pizarra o PDF)
+                Material de Estudio (PDF, Word, Texto o Foto de Pizarra)
               </label>
 
               {!selectedFile ? (
@@ -689,7 +696,7 @@ export const UploadStation: React.FC<UploadStationProps> = ({
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/png,image/jpeg,image/webp,application/pdf"
+                    accept=".pdf,.doc,.docx,.txt,.md,image/png,image/jpeg,image/webp,image/jpg"
                     onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
                     className="hidden"
                   />
@@ -705,7 +712,7 @@ export const UploadStation: React.FC<UploadStationProps> = ({
                         <span className="text-[#0F52BA] hover:underline">explora tus carpetas</span>
                       </p>
                       <p className="text-xs text-slate-400 mt-1">
-                        Fotos de pizarra/cuaderno (JPG, PNG, WEBP) o documentos PDF de hasta 20 MB
+                        PDFs, documentos Word (.docx), textos (.txt/.md) o fotos de pizarra de hasta 25 MB
                       </p>
                     </div>
                   </div>

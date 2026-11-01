@@ -13,11 +13,50 @@ export interface UploadDocumentParams {
 }
 
 /**
+ * Deduce el MIME type real a partir del nombre o extensión si el navegador no lo reporta.
+ */
+function inferMimeType(fileName: string, rawType?: string): string {
+  if (rawType && rawType !== 'application/octet-stream' && rawType !== '') {
+    return rawType;
+  }
+  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  switch (ext) {
+    case 'pdf':
+      return 'application/pdf';
+    case 'docx':
+      return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    case 'doc':
+      return 'application/msword';
+    case 'txt':
+      return 'text/plain';
+    case 'md':
+      return 'text/markdown';
+    case 'csv':
+      return 'text/csv';
+    case 'pptx':
+      return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+    case 'ppt':
+      return 'application/vnd.ms-powerpoint';
+    case 'png':
+      return 'image/png';
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'webp':
+      return 'image/webp';
+    case 'svg':
+      return 'image/svg+xml';
+    default:
+      return rawType || 'application/octet-stream';
+  }
+}
+
+/**
  * Servicio de Almacenamiento y Registro en Supabase Storage & PostgreSQL
  */
 export const storageService = {
   /**
-   * Valida tamaño y extensión permitida
+   * Valida tamaño y extensión permitida (PDF, Word .doc/.docx, Texto .txt/.md, Presentaciones, Imágenes)
    */
   validateFile(file: File): { valid: boolean; error?: string } {
     const allowedTypes = [
@@ -26,20 +65,52 @@ export const storageService = {
       'image/jpeg',
       'image/jpg',
       'image/webp',
+      'image/svg+xml',
+      'image/gif',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'text/markdown',
+      'text/csv',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     ];
-    const maxSizeBytes = 15 * 1024 * 1024; // 15MB
 
-    if (!allowedTypes.includes(file.type)) {
+    const allowedExtensions = [
+      'pdf',
+      'doc',
+      'docx',
+      'txt',
+      'md',
+      'csv',
+      'ppt',
+      'pptx',
+      'png',
+      'jpg',
+      'jpeg',
+      'webp',
+      'svg',
+      'gif',
+    ];
+
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    const isMimeAllowed = allowedTypes.includes(file.type);
+    const isExtAllowed = allowedExtensions.includes(ext);
+
+    const maxSizeBytes = 30 * 1024 * 1024; // 30MB
+
+    if (!isMimeAllowed && !isExtAllowed) {
       return {
         valid: false,
-        error: 'Formato no soportado. Sube archivos PDF o imágenes (PNG, JPG, WEBP).',
+        error:
+          'Formato no soportado. Sube archivos PDF, Word (.docx, .doc), Texto (.txt, .md), Presentaciones o imágenes (PNG, JPG, WEBP).',
       };
     }
 
     if (file.size > maxSizeBytes) {
       return {
         valid: false,
-        error: 'El archivo excede el límite máximo de 15 MB.',
+        error: 'El archivo excede el límite máximo de 30 MB.',
       };
     }
 
@@ -62,6 +133,7 @@ export const storageService = {
 
     if (onProgress) onProgress(25);
 
+    const effectiveMimeType = inferMimeType(file.name, file.type);
     const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
     const filePath = `${userId}/${Date.now()}_${sanitizedFileName}`;
 
@@ -73,6 +145,7 @@ export const storageService = {
         const { error: uploadError } = await supabase.storage
           .from(BUCKET_NAME)
           .upload(filePath, file, {
+            contentType: effectiveMimeType,
             cacheControl: '3600',
             upsert: false,
           });
@@ -97,7 +170,7 @@ export const storageService = {
             title: title || file.name,
             description: description || null,
             file_path: publicUrl || filePath,
-            file_type: file.type,
+            file_type: effectiveMimeType,
             file_size_bytes: file.size,
             tags,
             storage_bucket: BUCKET_NAME,
@@ -126,7 +199,7 @@ export const storageService = {
         title: title || file.name,
         description,
         file_path: publicUrl,
-        file_type: file.type,
+        file_type: effectiveMimeType,
         file_size_bytes: file.size,
         tags,
         storage_bucket: BUCKET_NAME,

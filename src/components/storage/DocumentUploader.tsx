@@ -26,6 +26,8 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onDocumentUp
     'Foto Pizarra',
     'Apuntes de Clase',
     'Guía PDF',
+    'Guía Word',
+    'Resumen / Notas',
     'Física UCV',
     'Matemática',
     'Química',
@@ -101,10 +103,10 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onDocumentUp
             Subir Documentos, Apuntes y Pizarras
           </h3>
           <p className="text-xs text-slate-500">
-            Sube PDFs de guías o fotografías de la pizarra para almacenamiento seguro en Supabase Storage
+            Sube PDFs, documentos Word (.docx), apuntes de texto o fotografías de la pizarra para almacenamiento seguro en Supabase Storage
           </p>
         </div>
-        <span className="app-badge font-mono text-[11px]">Máx 15 MB</span>
+        <span className="app-badge font-mono text-[11px]">Máx 30 MB</span>
       </div>
 
       {errorMessage && (
@@ -140,7 +142,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onDocumentUp
         <input
           ref={fileInputRef}
           type="file"
-          accept=".pdf,image/png,image/jpeg,image/jpg,image/webp"
+          accept=".pdf,.doc,.docx,.txt,.md,.csv,.ppt,.pptx,image/*"
           onChange={(e) => e.target.files?.[0] && handleFileChange(e.target.files[0])}
           className="hidden"
         />
