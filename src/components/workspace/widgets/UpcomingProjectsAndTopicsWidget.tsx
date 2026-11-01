@@ -22,15 +22,17 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import type { MainTabType } from '../../layout/Sidebar';
-import type { ExamConfig, Question } from '../../../types/exam.types';
+import type { ExamConfig, Question, AcademicSubject } from '../../../types/exam.types';
 import { QUESTION_BANK } from '../../../lib/questionBank';
+import { ALL_MAFE_QUESTIONS } from '../../../data/mafe_curriculum_hub';
+import { UCV_EXAM_BANK } from '../../../data/ucv_intro_course_data';
 
 export interface ProjectTopic {
   id: string;
   title: string;
   summary: string;
   guideTab?: MainTabType;
-  examSubject?: string;
+  examSubject?: AcademicSubject;
   examQuestions?: Question[];
 }
 
@@ -76,7 +78,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               id: 'top-mafe-01',
               title: 'Teoría del Color, Espacios HSL & Armonías Cromáticas',
               summary: 'Rueda cromática, curvas de luminancia perceptual y contraste WCAG 2.1 AAA para UI.',
-              guideTab: 'DESIGN_PALETTE',
+              guideTab: 'GUIDES',
               examSubject: 'Diseño',
             },
             {
@@ -90,7 +92,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               id: 'top-mafe-03',
               title: 'Ergonomía Visual & Accesibilidad Universal',
               summary: 'Diseño inclusivo, reducción de carga cognitiva y lineamientos de interacción humana.',
-              guideTab: 'CREATIVE_BOARD',
+              guideTab: 'GUIDES',
               examSubject: 'Diseño',
             },
           ],
@@ -108,7 +110,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               id: 'top-mafe-04',
               title: 'Antropometría & Proporciones Funcionales',
               summary: 'Dimensionamiento estándar para interacción física de productos y cajas de empaque.',
-              guideTab: 'CREATIVE_BOARD',
+              guideTab: 'GUIDES',
               examSubject: 'Diseño',
             },
             {
@@ -152,7 +154,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               id: 'top-sant-03',
               title: 'Álgebra Vectorial 2D/3D & Producto Escalar / Vectorial',
               summary: 'Vectores unitarios i,j,k, proyecciones ortogonales y producto cruz con determinantes 3x3.',
-              guideTab: 'MATH_LAB',
+              guideTab: 'GUIDES',
               examSubject: 'Matemática',
             },
           ],
@@ -170,14 +172,14 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               id: 'top-sant-04',
               title: 'Intervalos en la Recta Real & Valor Absoluto',
               summary: 'Desigualdades lineales y cuadráticas, cotas superiores y vecindades.',
-              guideTab: 'UCV_COURSE',
+              guideTab: 'GUIDES',
               examSubject: 'Matemática',
             },
             {
               id: 'top-sant-05',
               title: 'Operaciones de Conjuntos & Diagramas de Venn',
               summary: 'Unión, intersección, diferencia simétrica y tablas de verdad lógicas.',
-              guideTab: 'UCV_COURSE',
+              guideTab: 'GUIDES',
               examSubject: 'Matemática',
             },
           ],
@@ -204,7 +206,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               ? 'Comprensión Lectora Crítica & Analogías Verbales'
               : 'Resolución Paso a Paso de Ecuaciones Lineales',
             summary: 'Técnicas de descarte rápido, contexto oracional y comprobación de resultados.',
-            guideTab: 'HUMANITIES_LAB',
+            guideTab: 'GUIDES',
             examSubject: 'Castellano',
           },
           {
@@ -213,7 +215,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               ? 'Razonamiento Numérico, Porcentajes & Regla de Tres'
               : 'Operaciones con Fracciones & Mínimo Común Múltiplo',
             summary: 'Algoritmos directos sin calculadora y problemas de proporcionalidad inversa.',
-            guideTab: 'MATH_LAB',
+            guideTab: 'GUIDES',
             examSubject: 'Matemática',
           },
           {
@@ -222,7 +224,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               ? 'Química: Estequiometría, Mol & Molaridad de Disoluciones'
               : 'Ciencias Naturales: La Célula & Reinos Biológicos',
             summary: 'Balanceo de masa molecular y relaciones estequiométricas fundamentales.',
-            guideTab: 'SCIENCE_LAB',
+            guideTab: 'GUIDES',
             examSubject: 'Química',
           },
         ],
@@ -240,7 +242,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
             id: 'top-bach-04',
             title: 'Sujeto, Predicado & Sintagmas Nominales / Verbales',
             summary: 'Identificación de núcleos, complementos directos, indirectos y circunstanciales.',
-            guideTab: 'HUMANITIES_LAB',
+            guideTab: 'GUIDES',
             examSubject: 'Castellano',
           },
         ],
@@ -252,37 +254,103 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
   const [selectedProjectId, setSelectedProjectId] = useState<string>(projects[0]?.id || '');
   const activeProject = projects.find((p) => p.id === selectedProjectId) || projects[0];
 
-  // Lanzar examen de prueba enfocado en el tema
+  // Banco de preguntas calibrado según el perfil académico activo
+  const getProfileQuestions = (): Question[] => {
+    if (profileId === 'mafe_diseno_ucab') {
+      return ALL_MAFE_QUESTIONS;
+    }
+    if (profileId === 'santiago_fisica_ucv') {
+      return UCV_EXAM_BANK;
+    }
+    if (profileId === 'andres_bachillerato_1') {
+      return QUESTION_BANK.filter((q) => q.targetProfiles.includes('andres_bachillerato_1'));
+    }
+    if (profileId === 'prima_bachillerato_5') {
+      return QUESTION_BANK.filter((q) => q.targetProfiles.includes('prima_bachillerato_5'));
+    }
+    return QUESTION_BANK;
+  };
+
+  // Lanzar examen de prueba enfocado estrictamente en el tema y perfil
   const handleLaunchPracticeExam = (topic: ProjectTopic) => {
-    // Buscar preguntas reales que coincidan con el tema o materia
-    const matchingQuestions = QUESTION_BANK.filter((q) => {
-      const matchSubject = topic.examSubject ? q.subject.toLowerCase() === topic.examSubject.toLowerCase() : true;
-      const matchTopic = q.topic.toLowerCase().includes(topic.title.toLowerCase()) || topic.title.toLowerCase().includes(q.topic.toLowerCase());
-      return matchSubject || matchTopic;
+    const profileBank = getProfileQuestions();
+
+    // Buscar en el banco del estudiante preguntas que coincidan con la materia o palabras clave del tema
+    const searchTokens = topic.title
+      .toLowerCase()
+      .split(/[\s,·\-_/]+/)
+      .filter((t) => t.length > 3);
+
+    const matchingQuestions = profileBank.filter((q) => {
+      const matchSubject = topic.examSubject
+        ? q.subject.toLowerCase() === topic.examSubject.toLowerCase()
+        : true;
+      const qText = `${q.topic} ${q.questionText}`.toLowerCase();
+      const matchKeyword = searchTokens.some((tok) => qText.includes(tok));
+      return matchSubject && matchKeyword;
     });
 
-    const questionsToUse = matchingQuestions.length >= 3 ? matchingQuestions.slice(0, 5) : QUESTION_BANK.slice(0, 5);
+    const questionsToUse =
+      matchingQuestions.length >= 3
+        ? matchingQuestions.slice(0, 5)
+        : profileBank.slice(0, 5);
 
     if (onStartExamWithQuestions) {
       onStartExamWithQuestions(questionsToUse, `Práctica: ${topic.title}`);
     } else if (onLaunchExam) {
       onLaunchExam({
-        mode: 'QUICK_PRACTICE',
-        title: `Práctica Rápida: ${topic.title}`,
-        totalQuestions: 5,
+        mode: profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
+        title: `Práctica: ${topic.title}`,
+        totalQuestions: questionsToUse.length,
         timeLimitSeconds: 15 * 60,
         allowPause: true,
         shuffleQuestions: true,
+        customQuestions: questionsToUse,
+        subject: topic.examSubject,
       });
     } else if (onNavigateToTab) {
       onNavigateToTab('EXAMS');
     }
   };
 
-  // Ver guía de estudio correspondiente
-  const handleViewGuide = (topic: ProjectTopic) => {
+  // Ver guía de estudio correspondiente en la vista oficial de guías
+  const handleViewGuide = (_topic: ProjectTopic) => {
     if (onNavigateToTab) {
-      onNavigateToTab(topic.guideTab || 'GUIDES');
+      onNavigateToTab('GUIDES');
+    }
+  };
+
+  // Lanzar simulacro integral del proyecto con reactivos reales del estudiante
+  const handleLaunchFullMockExam = () => {
+    const profileBank = getProfileQuestions();
+    const count = Math.min(10, profileBank.length);
+    const questionsToUse = profileBank.slice(0, count);
+
+    if (onStartExamWithQuestions) {
+      onStartExamWithQuestions(
+        questionsToUse,
+        `Simulacro Completo: ${activeProject.title}`
+      );
+    } else if (onLaunchExam) {
+      onLaunchExam({
+        mode: profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
+        title: `Simulacro Completo: ${activeProject.title}`,
+        totalQuestions: count,
+        timeLimitSeconds: 25 * 60,
+        allowPause: true,
+        shuffleQuestions: true,
+        customQuestions: questionsToUse,
+        subject:
+          profileId === 'mafe_diseno_ucab'
+            ? 'Diseño'
+            : profileId === 'santiago_fisica_ucv'
+            ? 'Física'
+            : profileId === 'andres_bachillerato_1'
+            ? 'Matemática'
+            : 'Castellano',
+      });
+    } else if (onNavigateToTab) {
+      onNavigateToTab('EXAMS');
     }
   };
 
@@ -465,20 +533,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
           </div>
 
           <button
-            onClick={() => {
-              if (onLaunchExam) {
-                onLaunchExam({
-                  mode: 'QUICK_PRACTICE',
-                  title: `Evaluación Integral: ${activeProject.title}`,
-                  totalQuestions: 10,
-                  timeLimitSeconds: 25 * 60,
-                  allowPause: true,
-                  shuffleQuestions: true,
-                });
-              } else if (onNavigateToTab) {
-                onNavigateToTab('EXAMS');
-              }
-            }}
+            onClick={handleLaunchFullMockExam}
             className="btn-brand text-xs py-2 px-4 rounded-xl flex items-center gap-2 shrink-0 active:scale-95"
           >
             <Sparkles className="w-3.5 h-3.5" />

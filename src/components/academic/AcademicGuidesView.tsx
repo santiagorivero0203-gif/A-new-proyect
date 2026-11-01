@@ -775,8 +775,8 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
 
       {/* MODAL DETALLE DE GUÍA HIPER-COMPLEJA DECONSTRUIDA CON IA */}
       {selectedDeconstructedGuide && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
-          <div className="max-w-4xl w-full">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-2 sm:p-6 animate-fadeIn">
+          <div className="max-w-4xl w-full max-h-[96vh] flex flex-col">
             <DeconstructedGuideView
               guide={selectedDeconstructedGuide}
               onClose={() => setSelectedDeconstructedGuide(null)}

@@ -230,154 +230,156 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
         </div>
       </div>
 
-      {/* SECCIÓN ESPECÍFICA: CURSO INTRODUCTORIO FACULTAD DE CIENCIAS UCV */}
-      <div className="app-card p-6 sm:p-7 rounded-3xl bg-white border-2 border-blue-200/90 shadow-soft-sm space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0F52BA] border border-blue-200 text-xs font-bold font-sans">
-              <AtomIcon className="w-3.5 h-3.5" />
-              <span>Simulación Oficial • Facultad de Ciencias UCV</span>
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 tracking-tight font-sans">
-              Evaluaciones del Curso Introductorio (UA I, UA II y UA III Completo)
-            </h3>
-            <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
-              Batería de reactivos oficiales del programa de nivelación: Lectura Crítica, Método Científico, Aritmética SI, Operaciones en ℚ y ℝ, Álgebra Avanzada, Intervalos, Funciones, Trigonometría y Vectores.
-            </p>
-          </div>
-
-          <span className="text-xs font-mono font-bold text-[#0F52BA] px-3 py-1 rounded-xl bg-blue-50 border border-blue-100 shrink-0 self-start sm:self-auto">
-            {UCV_EXAM_BANK.length} Reactivos Calibrados
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Tarjeta 1: Simulacro Integral Completo */}
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950 to-[#0F52BA] text-white flex flex-col justify-between space-y-3 shadow-soft-xs">
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/20 text-white font-bold">
-                Examen Integral • 30 Preguntas
-              </span>
-              <h4 className="text-sm font-bold leading-tight">
-                Simulacro Integral Curso Introductorio UCV
-              </h4>
-              <p className="text-[11px] text-blue-100/80 leading-relaxed">
-                Abarca el 100% del temario del programa oficial (UA I, UA II y los 5 bloques de UA III).
+      {/* SECCIÓN ESPECÍFICA: CURSO INTRODUCTORIO FACULTAD DE CIENCIAS UCV (Solo visible para Santiago) */}
+      {activeProfileTab === 'santiago_fisica_ucv' && (
+        <div className="app-card p-6 sm:p-7 rounded-3xl bg-white border-2 border-blue-200/90 shadow-soft-sm space-y-5 animate-fadeIn">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0F52BA] border border-blue-200 text-xs font-bold font-sans">
+                <AtomIcon className="w-3.5 h-3.5" />
+                <span>Simulación Oficial • Facultad de Ciencias UCV</span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 tracking-tight font-sans">
+                Evaluaciones del Curso Introductorio (UA I, UA II y UA III Completo)
+              </h3>
+              <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
+                Batería de reactivos oficiales del programa de nivelación: Lectura Crítica, Método Científico, Aritmética SI, Operaciones en ℚ y ℝ, Álgebra Avanzada, Intervalos, Funciones, Trigonometría y Vectores.
               </p>
             </div>
 
-            <button
-              onClick={() =>
-                startExam(
-                  {
-                    mode: 'SIMADI_UCV',
-                    title: 'Simulacro Integral: Curso Introductorio Ciencias UCV',
-                    totalQuestions: Math.min(30, UCV_EXAM_BANK.length),
-                    timeLimitSeconds: 60 * 60,
-                    allowPause: true,
-                    shuffleQuestions: true,
-                    subject: 'Física',
-                  },
-                  UCV_EXAM_BANK
-                )
-              }
-              className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-soft-xs"
-            >
-              <PlayIcon className="w-3 h-3 text-[#0F52BA]" />
-              <span>Iniciar Integral (60 Min)</span>
-            </button>
+            <span className="text-xs font-mono font-bold text-[#0F52BA] px-3 py-1 rounded-xl bg-blue-50 border border-blue-100 shrink-0 self-start sm:self-auto">
+              {UCV_EXAM_BANK.length} Reactivos Calibrados
+            </span>
           </div>
 
-          {/* Tarjeta 2: Evaluación Diagnóstica Inicial */}
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between space-y-3">
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold border border-purple-200">
-                Hito Día 1 • 15 Preguntas
-              </span>
-              <h4 className="text-sm font-bold text-slate-900 leading-tight">
-                Diagnóstico de Entrada UCV
-              </h4>
-              <p className="text-[11px] text-slate-500 leading-relaxed">
-                Mide tus fortalezas previas antes de iniciar las 6 semanas de clases.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Tarjeta 1: Simulacro Integral Completo */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950 to-[#0F52BA] text-white flex flex-col justify-between space-y-3 shadow-soft-xs">
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/20 text-white font-bold">
+                  Examen Integral • 30 Preguntas
+                </span>
+                <h4 className="text-sm font-bold leading-tight">
+                  Simulacro Integral Curso Introductorio UCV
+                </h4>
+                <p className="text-[11px] text-blue-100/80 leading-relaxed">
+                  Abarca el 100% del temario del programa oficial (UA I, UA II y los 5 bloques de UA III).
+                </p>
+              </div>
 
-            <button
-              onClick={() =>
-                startExam(
-                  {
-                    mode: 'DIAGNOSTIC_EXAM',
-                    title: 'Evaluación Diagnóstica Inicial - Ciencias UCV',
-                    totalQuestions: 15,
-                    timeLimitSeconds: 35 * 60,
-                    allowPause: true,
-                    shuffleQuestions: true,
-                  },
-                  UCV_EXAM_BANK
-                )
-              }
-              className="w-full py-2.5 px-3 rounded-xl bg-[#0F52BA] hover:bg-[#0c4194] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-soft-xs"
-            >
-              <PlayIcon className="w-3 h-3" />
-              <span>Iniciar Diagnóstico (35 Min)</span>
-            </button>
-          </div>
-
-          {/* Tarjeta 3: Práctica por Módulo Específico */}
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between space-y-3">
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
-                Formativo • 5 Reactivos
-              </span>
-              <h4 className="text-sm font-bold text-slate-900 leading-tight">
-                Quiz Modular Específico
-              </h4>
-              <select
-                value={selectedUcvModuleId}
-                onChange={(e) => setSelectedUcvModuleId(e.target.value)}
-                className="input-clean py-1.5 px-2 text-xs font-sans rounded-lg w-full bg-white border border-slate-200 text-slate-700"
+              <button
+                onClick={() =>
+                  startExam(
+                    {
+                      mode: 'SIMADI_UCV',
+                      title: 'Simulacro Integral: Curso Introductorio Ciencias UCV',
+                      totalQuestions: Math.min(30, UCV_EXAM_BANK.length),
+                      timeLimitSeconds: 60 * 60,
+                      allowPause: true,
+                      shuffleQuestions: true,
+                      subject: 'Física',
+                    },
+                    UCV_EXAM_BANK
+                  )
+                }
+                className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-soft-xs"
               >
-                {UCV_CURRICULUM_MODULES.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.title}
-                  </option>
-                ))}
-              </select>
+                <PlayIcon className="w-3 h-3 text-[#0F52BA]" />
+                <span>Iniciar Integral (60 Min)</span>
+              </button>
             </div>
 
-            <button
-              onClick={() => {
-                const targetMod =
-                  UCV_CURRICULUM_MODULES.find((m) => m.id === selectedUcvModuleId) ||
-                  UCV_CURRICULUM_MODULES[0];
-                const unitClean = targetMod.unit.replace('_', ' ');
-                const matchingQuestions = UCV_EXAM_BANK.filter(
-                  (q) =>
-                    (q.sourceExam && q.sourceExam.includes(unitClean)) ||
-                    targetMod.title.toLowerCase().includes(q.topic.toLowerCase()) ||
-                    targetMod.summary.toLowerCase().includes(q.topic.toLowerCase())
-                );
-                const modularQuestions = matchingQuestions.length >= 3 ? matchingQuestions : UCV_EXAM_BANK;
-                startExam(
-                  {
-                    mode: 'QUICK_PRACTICE',
-                    title: `Cuestionario Oficial: ${targetMod.title}`,
-                    totalQuestions: Math.min(5, modularQuestions.length),
-                    timeLimitSeconds: 15 * 60,
-                    allowPause: true,
-                    shuffleQuestions: true,
-                  },
-                  modularQuestions
-                );
-              }}
-              className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-soft-xs"
-            >
-              <PlayIcon className="w-3 h-3 text-emerald-400" />
-              <span>Evaluar Módulo Seleccionado</span>
-            </button>
+            {/* Tarjeta 2: Evaluación Diagnóstica Inicial */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between space-y-3">
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold border border-purple-200">
+                  Hito Día 1 • 15 Preguntas
+                </span>
+                <h4 className="text-sm font-bold text-slate-900 leading-tight">
+                  Diagnóstico de Entrada UCV
+                </h4>
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Mide tus fortalezas previas antes de iniciar las 6 semanas de clases.
+                </p>
+              </div>
+
+              <button
+                onClick={() =>
+                  startExam(
+                    {
+                      mode: 'DIAGNOSTIC_EXAM',
+                      title: 'Evaluación Diagnóstica Inicial - Ciencias UCV',
+                      totalQuestions: 15,
+                      timeLimitSeconds: 35 * 60,
+                      allowPause: true,
+                      shuffleQuestions: true,
+                    },
+                    UCV_EXAM_BANK
+                  )
+                }
+                className="w-full py-2.5 px-3 rounded-xl bg-[#0F52BA] hover:bg-[#0c4194] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-soft-xs"
+              >
+                <PlayIcon className="w-3 h-3" />
+                <span>Iniciar Diagnóstico (35 Min)</span>
+              </button>
+            </div>
+
+            {/* Tarjeta 3: Práctica por Módulo Específico */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between space-y-3">
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                  Formativo • 5 Reactivos
+                </span>
+                <h4 className="text-sm font-bold text-slate-900 leading-tight">
+                  Quiz Modular Específico
+                </h4>
+                <select
+                  value={selectedUcvModuleId}
+                  onChange={(e) => setSelectedUcvModuleId(e.target.value)}
+                  className="input-clean py-1.5 px-2 text-xs font-sans rounded-lg w-full bg-white border border-slate-200 text-slate-700"
+                >
+                  {UCV_CURRICULUM_MODULES.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                onClick={() => {
+                  const targetMod =
+                    UCV_CURRICULUM_MODULES.find((m) => m.id === selectedUcvModuleId) ||
+                    UCV_CURRICULUM_MODULES[0];
+                  const unitClean = targetMod.unit.replace('_', ' ');
+                  const matchingQuestions = UCV_EXAM_BANK.filter(
+                    (q) =>
+                      (q.sourceExam && q.sourceExam.includes(unitClean)) ||
+                      targetMod.title.toLowerCase().includes(q.topic.toLowerCase()) ||
+                      targetMod.summary.toLowerCase().includes(q.topic.toLowerCase())
+                  );
+                  const modularQuestions = matchingQuestions.length >= 3 ? matchingQuestions : UCV_EXAM_BANK;
+                  startExam(
+                    {
+                      mode: 'QUICK_PRACTICE',
+                      title: `Cuestionario Oficial: ${targetMod.title}`,
+                      totalQuestions: Math.min(5, modularQuestions.length),
+                      timeLimitSeconds: 15 * 60,
+                      allowPause: true,
+                      shuffleQuestions: true,
+                    },
+                    modularQuestions
+                  );
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-soft-xs"
+              >
+                <PlayIcon className="w-3 h-3 text-emerald-400" />
+                <span>Evaluar Módulo Seleccionado</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Grid de Modelos de Examen Reales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -391,10 +393,14 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
               <span className="text-xs text-slate-400 font-mono">60 Minutos</span>
             </div>
             <h3 className="text-base font-bold text-slate-900 leading-snug">
-              Examen de Carrera (Física & Matemática)
+              {activeProfileTab === 'mafe_diseno_ucab'
+                ? 'Examen de Carrera: Teoría del Diseño & Color'
+                : 'Examen de Carrera (Física & Matemática)'}
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Cálculo diferencial e integral, vectores tridimensionales en ℝ³, dinámica newtoniana y conservación de la energía.
+              {activeProfileTab === 'mafe_diseno_ucab'
+                ? 'Semiótica visual, niveles emocionales de Norman, leyes de Gestalt, usabilidad y contraste WCAG 2.1.'
+                : 'Cálculo diferencial e integral, vectores tridimensionales en ℝ³, dinámica newtoniana y conservación de la energía.'}
             </p>
           </div>
 
@@ -402,11 +408,15 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
             onClick={() =>
               startExam({
                 mode: 'UNIVERSITY_EXAM',
-                title: 'Examen de Carrera: Física & Matemática Analítica',
+                title:
+                  activeProfileTab === 'mafe_diseno_ucab'
+                    ? 'Examen de Carrera: Teoría del Diseño & Color'
+                    : 'Examen de Carrera: Física & Matemática Analítica',
                 totalQuestions: 6,
                 timeLimitSeconds: 60 * 60,
                 allowPause: true,
                 shuffleQuestions: true,
+                subject: activeProfileTab === 'mafe_diseno_ucab' ? 'Diseño' : 'Física',
               })
             }
             className="btn-brand w-full text-xs py-2.5 flex items-center justify-center gap-2"

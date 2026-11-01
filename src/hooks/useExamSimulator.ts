@@ -6,6 +6,7 @@ import type {
   Question,
 } from '../types/exam.types';
 import { QUESTION_BANK } from '../lib/questionBank';
+import { ALL_MAFE_QUESTIONS } from '../data/mafe_curriculum_hub';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { sessionRecoveryService } from '../services/sessionRecoveryService';
@@ -230,14 +231,29 @@ export function useExamSimulator() {
             q.targetProfiles.includes('andres_bachillerato_1') ||
             q.targetProfiles.includes('prima_bachillerato_5')
         );
-      } else if (config.mode === 'DIAGNOSTIC_EXAM' || config.mode === 'SIMADI_OPSU') {
-        // Incluye todas las materias y niveles para diagnóstico general
+      } else {
+        // En modos genéricos (QUICK_PRACTICE, TIME_PRESSURE, DIAGNOSTIC_EXAM):
+        // Priorizar estrictamente las preguntas del estudiante activo para evitar asignarle
+        // materias universitarias a bachillerato o física a diseño.
+        if (activeProf === 'mafe_diseno_ucab') {
+          pool = pool.filter(
+            (q) => q.targetProfiles.includes('mafe_diseno_ucab') || q.subject === 'Diseño'
+          );
+        } else if (activeProf === 'andres_bachillerato_1') {
+          pool = pool.filter((q) => q.targetProfiles.includes('andres_bachillerato_1'));
+        } else if (activeProf === 'prima_bachillerato_5') {
+          pool = pool.filter((q) => q.targetProfiles.includes('prima_bachillerato_5'));
+        } else if (activeProf === 'santiago_fisica_ucv') {
+          pool = pool.filter((q) => q.targetProfiles.includes('santiago_fisica_ucv'));
+        }
       }
     }
 
     // Salvaguarda: si tras filtrar la lista queda vacía, recuperar preguntas acordes al perfil o materia
     if (pool.length === 0) {
-      if (config.subject) {
+      if (activeProf === 'mafe_diseno_ucab') {
+        pool = [...ALL_MAFE_QUESTIONS];
+      } else if (config.subject) {
         pool = QUESTION_BANK.filter((q) => q.subject.toLowerCase() === config.subject?.toLowerCase());
       }
       if (pool.length === 0 && activeProf) {

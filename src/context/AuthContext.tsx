@@ -47,6 +47,12 @@ function getHydratedProfile(profileId: AcademicProfileId): UserProfile {
         tabs.splice(1, 0, 'UCV_COURSE');
       }
 
+      // Auto-reparar caché local de Mafe para asegurar acceso a Guías y Exámenes
+      if (profileId === 'mafe_diseno_ucab') {
+        if (!tabs.includes('GUIDES')) tabs.splice(1, 0, 'GUIDES');
+        if (!tabs.includes('EXAMS')) tabs.splice(2, 0, 'EXAMS');
+      }
+
       return {
         ...base,
         preferences: {
@@ -65,6 +71,10 @@ function getHydratedProfile(profileId: AcademicProfileId): UserProfile {
   ];
   if (profileId === 'santiago_fisica_ucv' && !defaultTabs.includes('UCV_COURSE')) {
     defaultTabs.splice(1, 0, 'UCV_COURSE');
+  }
+  if (profileId === 'mafe_diseno_ucab') {
+    if (!defaultTabs.includes('GUIDES')) defaultTabs.splice(1, 0, 'GUIDES');
+    if (!defaultTabs.includes('EXAMS')) defaultTabs.splice(2, 0, 'EXAMS');
   }
 
   return {
@@ -240,6 +250,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const tabs = [...parsed.sidebar_tabs];
           if (profileId === 'santiago_fisica_ucv' && !tabs.includes('UCV_COURSE')) {
             tabs.splice(1, 0, 'UCV_COURSE');
+          }
+          if (profileId === 'mafe_diseno_ucab') {
+            if (!tabs.includes('GUIDES')) tabs.splice(1, 0, 'GUIDES');
+            if (!tabs.includes('EXAMS')) tabs.splice(2, 0, 'EXAMS');
           }
           return tabs;
         }

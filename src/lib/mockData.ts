@@ -7,7 +7,7 @@ export const DEFAULT_PROFILE_SIDEBAR_TABS: Record<AcademicProfileId, MainTabType
   andres_bachillerato_1: ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'MATH_LAB', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
   prima_bachillerato_5: ['PRODUCTIVITY', 'EXAMS', 'PLANNER', 'GUIDES', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
   santiago_fisica_ucv: ['PRODUCTIVITY', 'UCV_COURSE', 'MATH_LAB', 'SCIENCE_LAB', 'EXAMS', 'PLANNER', 'GUIDES', 'STORAGE', 'SETTINGS'],
-  mafe_diseno_ucab: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'DESIGN_PALETTE', 'HUMANITIES_LAB', 'PLANNER', 'STORAGE', 'SETTINGS'],
+  mafe_diseno_ucab: ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'CREATIVE_BOARD', 'DESIGN_PALETTE', 'PLANNER', 'STORAGE', 'SETTINGS'],
 };
 
 /**
@@ -85,7 +85,7 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
       sound_enabled: true,
       focus_duration: 35,
       compact_mode: false,
-      sidebar_tabs: ['PRODUCTIVITY', 'CREATIVE_BOARD', 'DESIGN_PALETTE', 'HUMANITIES_LAB', 'PLANNER', 'STORAGE', 'SETTINGS'],
+      sidebar_tabs: ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'CREATIVE_BOARD', 'DESIGN_PALETTE', 'PLANNER', 'STORAGE', 'SETTINGS'],
     },
     created_at: '2026-08-20T09:00:00Z',
     updated_at: '2026-10-12T16:45:00Z',

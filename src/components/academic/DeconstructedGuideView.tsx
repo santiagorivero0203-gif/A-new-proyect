@@ -7,7 +7,6 @@ import { convertDeconstructedToQuestions } from '../../types/deconstruction.type
 import type { Question } from '../../types/exam.types';
 import { renderLatex } from '../../utils/latexRenderer';
 import {
-  SparklesIcon,
   PlayIcon,
   BookOpenIcon,
   XIcon,
@@ -332,124 +331,123 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   return (
     <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-soft flex flex-col max-h-[92vh] overflow-hidden animate-fadeIn">
       {/* 1. CABECERA EDITORIAL PRINCIPAL (Menos, pero Mejor + Acento Cobalto) */}
-      <div className="p-5 sm:p-6 bg-slate-50/60 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1.5 flex-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0F52BA] border border-blue-200/70 text-xs font-semibold">
-              <SparklesIcon className="w-3.5 h-3.5 text-[#0F52BA]" />
-              Guía Hiper-Compleja Deconstruida
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-white text-slate-700 border border-slate-200 text-xs font-semibold">
-              {guideMetadata.area || 'Ciencias & Humanidades'}
-            </span>
-            <span className="text-[11px] font-mono text-slate-400">
-              7 Pilares Pedagógicos
-            </span>
+      <div className="relative p-4 sm:p-6 bg-slate-50/70 border-b border-slate-200/80 space-y-3">
+        {/* Fila Superior: Badge contextual, Título & Botón de Cierre Fijo */}
+        <div className="flex items-start justify-between gap-3 pr-8 sm:pr-0">
+          <div className="space-y-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0F52BA] border border-blue-200/70 text-[11px] font-bold">
+                {guideMetadata.area || 'Diseño Integral'}
+              </span>
+              <span className="text-[11px] font-mono text-slate-400 hidden sm:inline">
+                Guía Deconstruida • 7 Pilares
+              </span>
+            </div>
+            <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight font-sans leading-snug">
+              {guideMetadata.title}
+            </h1>
           </div>
-
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight font-sans truncate">
-            {guideMetadata.title}
-          </h1>
-
-          <p className="text-xs text-slate-600 leading-relaxed line-clamp-2 max-w-3xl">
-            {guideMetadata.summary}
-          </p>
-        </div>
-
-        {/* Acciones de Cabecera: Descargas Oficiales, Tamaño de Texto, Audio-Guía, Simulación & Cerrar */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0 self-end sm:self-auto">
-          {/* Selector de Tamaño de Fuente para Lectura Cómoda */}
-          <div className="flex items-center p-0.5 bg-white border border-slate-200/90 rounded-xl shadow-soft-xs text-xs font-bold text-slate-600">
-            <button
-              onClick={() => setFontSizeMode('normal')}
-              className={`px-2 py-1 rounded-lg transition-all ${
-                fontSizeMode === 'normal' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
-              }`}
-              title="Texto Normal (14px)"
-            >
-              A-
-            </button>
-            <button
-              onClick={() => setFontSizeMode('medium')}
-              className={`px-2 py-1 rounded-lg transition-all ${
-                fontSizeMode === 'medium' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
-              }`}
-              title="Texto Mediano (16px)"
-            >
-              A
-            </button>
-            <button
-              onClick={() => setFontSizeMode('large')}
-              className={`px-2 py-1 rounded-lg transition-all ${
-                fontSizeMode === 'large' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
-              }`}
-              title="Texto Grande (18px)"
-            >
-              A+
-            </button>
-          </div>
-
-          {/* Botón Descargar Word */}
-          <button
-            onClick={() => exportGuideToWord(guide)}
-            className="py-1.5 px-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-soft-xs active:scale-[0.98] transition-all"
-            title="Descargar guía completa en formato Microsoft Word (.doc)"
-          >
-            <FileText className="w-3.5 h-3.5 text-rose-600" />
-            <span>Word (.doc)</span>
-          </button>
-
-          {/* Botón PDF Oficial Notion si existe */}
-          {notionPdfs && notionPdfs.length > 0 && (
-            <a
-              href={notionPdfs[0].url}
-              target="_blank"
-              rel="noreferrer"
-              download={notionPdfs[0].filename}
-              className="py-1.5 px-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200/80 text-rose-700 text-xs font-bold flex items-center gap-1.5 shadow-soft-xs active:scale-[0.98] transition-all"
-              title="Abrir o descargar el archivo PDF original de Notion"
-            >
-              <Download className="w-3.5 h-3.5 text-rose-600" />
-              <span>PDF Oficial</span>
-            </a>
-          )}
-
-          {/* Botón Imprimir / Guardar como PDF */}
-          <button
-            onClick={() => window.print()}
-            className="p-1.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200/70 transition-colors shadow-soft-xs"
-            title="Imprimir guía o Guardar como PDF"
-          >
-            <Printer className="w-4 h-4 text-slate-600" />
-          </button>
-
-          {/* Reproductor Text-to-Speech de la Guía */}
-          <AudioGuidePlayer
-            guideTitle={guideMetadata.title}
-            guideText={`${phenomenonAndTheory}. ${guideMetadata.summary}`}
-          />
-
-          {/* Botón de Simulación de Examen */}
-          {onStartExamWithQuestions && (
-            <button
-              onClick={handleLaunchSimulator}
-              className="bg-[#0F52BA] hover:bg-[#0c4396] active:scale-[0.98] text-white text-xs font-bold py-1.5 px-3 rounded-xl shadow-md transition-all flex items-center gap-1.5 group cursor-pointer"
-              title="Iniciar simulación de examen de este tema"
-            >
-              <PlayIcon className="w-3.5 h-3.5 text-white group-hover:scale-110 transition-transform" />
-              <span>Simular ({Math.max(totalQuestions, 10)})</span>
-            </button>
-          )}
 
           {onClose && (
             <button
               onClick={onClose}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-200/60 transition-colors"
+              className="absolute top-3 right-3 sm:static p-2 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-200/70 transition-colors cursor-pointer shrink-0"
               title="Cerrar vista de la guía"
             >
               <XIcon className="w-5 h-5" />
             </button>
           )}
+        </div>
+
+        {/* Fila de Herramientas y Acciones (Limpia y Compacta) */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+          {/* Herramientas de lectura: Zoom y Audio */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="inline-flex items-center p-0.5 bg-white border border-slate-200 rounded-xl shadow-soft-xs text-xs font-bold text-slate-600">
+              <button
+                onClick={() => setFontSizeMode('normal')}
+                className={`px-2 py-0.5 rounded-lg transition-all ${
+                  fontSizeMode === 'normal' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
+                }`}
+                title="Texto Normal (14px)"
+              >
+                A-
+              </button>
+              <button
+                onClick={() => setFontSizeMode('medium')}
+                className={`px-2 py-0.5 rounded-lg transition-all ${
+                  fontSizeMode === 'medium' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
+                }`}
+                title="Texto Mediano (16px)"
+              >
+                A
+              </button>
+              <button
+                onClick={() => setFontSizeMode('large')}
+                className={`px-2 py-0.5 rounded-lg transition-all ${
+                  fontSizeMode === 'large' ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 text-slate-600'
+                }`}
+                title="Texto Grande (18px)"
+              >
+                A+
+              </button>
+            </div>
+
+            <AudioGuidePlayer
+              guideTitle={guideMetadata.title}
+              guideText={`${phenomenonAndTheory}. ${guideMetadata.summary}`}
+            />
+          </div>
+
+          {/* Exportación & Lanzamiento de Simulación */}
+          <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+            {/* Word .doc */}
+            <button
+              onClick={() => exportGuideToWord(guide)}
+              className="py-1 px-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1 shadow-soft-xs active:scale-[0.98] transition-all"
+              title="Descargar guía en Word (.doc)"
+            >
+              <FileText className="w-3.5 h-3.5 text-rose-600" />
+              <span className="hidden sm:inline">Word</span>
+              <span className="text-[10px] text-slate-400 font-normal">(.doc)</span>
+            </button>
+
+            {/* PDF Oficial Notion si existe */}
+            {notionPdfs && notionPdfs.length > 0 && (
+              <a
+                href={notionPdfs[0].url}
+                target="_blank"
+                rel="noreferrer"
+                download={notionPdfs[0].filename}
+                className="py-1 px-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-1 shadow-soft-xs active:scale-[0.98] transition-all"
+                title="Descargar archivo PDF original de Notion"
+              >
+                <Download className="w-3.5 h-3.5 text-rose-600" />
+                <span>PDF</span>
+              </a>
+            )}
+
+            {/* Imprimir */}
+            <button
+              onClick={() => window.print()}
+              className="p-1.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors shadow-soft-xs"
+              title="Imprimir o Guardar como PDF"
+            >
+              <Printer className="w-3.5 h-3.5 text-slate-600" />
+            </button>
+
+            {/* Botón Primario de Simulación */}
+            {onStartExamWithQuestions && (
+              <button
+                onClick={handleLaunchSimulator}
+                className="bg-[#0F52BA] hover:bg-[#0c4396] active:scale-[0.98] text-white text-xs font-bold py-1 px-3.5 rounded-xl shadow-soft transition-all flex items-center gap-1.5 group cursor-pointer"
+                title="Iniciar simulación de examen de este tema"
+              >
+                <PlayIcon className="w-3.5 h-3.5 text-white group-hover:scale-110 transition-transform" />
+                <span>Simular ({Math.max(totalQuestions, 10)})</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1116,9 +1114,9 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         )}
       </div>
 
-      {/* 4. PIE DE ACCIONES FIJO DE LA GUÍA */}
-      <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-200/90 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+      {/* 4. PIE DE ACCIONES DE LA GUÍA (Visible en pantallas medianas/grandes para no sobrecargar móvil) */}
+      <div className="hidden sm:flex p-3.5 bg-slate-50/90 border-t border-slate-200/80 items-center justify-between gap-3 text-xs text-slate-500">
+        <div className="flex items-center gap-2">
           <BookOpenIcon className="w-4 h-4 text-[#0F52BA]" />
           <span>Guía guardada y persistida en tu centro de estudio</span>
         </div>
@@ -1126,10 +1124,10 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         {onStartExamWithQuestions && (
           <button
             onClick={handleLaunchSimulator}
-            className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
+            className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-1.5 px-4 rounded-xl shadow-soft transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
           >
-            <PlayIcon className="w-4 h-4 text-white" />
-            <span>Simular Examen de este Tema ({Math.max(totalQuestions, 10)} Preguntas)</span>
+            <PlayIcon className="w-3.5 h-3.5 text-white" />
+            <span>Simular Examen ({Math.max(totalQuestions, 10)} Preguntas)</span>
           </button>
         )}
       </div>
