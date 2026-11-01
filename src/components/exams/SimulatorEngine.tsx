@@ -5,7 +5,7 @@ import { ExamRunner } from './ExamRunner';
 import { ExamResultsReport } from './ExamResultsReport';
 import { LayersIcon, PlayIcon, AtomIcon } from '../common/Icons';
 import { UCV_EXAM_BANK, UCV_CURRICULUM_MODULES } from '../../data/ucv_intro_course_data';
-import { PROFILE_TAILORED_EXAMS, getQuestionsForProfile } from '../../lib/questionBank';
+import { PROFILE_TAILORED_EXAMS, getQuestionsForTailoredExam } from '../../lib/questionBank';
 import type { AcademicSubject, ExamConfig, Question } from '../../types/exam.types';
 
 interface SimulatorEngineProps {
@@ -199,12 +199,8 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
 
               <button
                 onClick={() => {
-                  const questions = getQuestionsForProfile(
-                    ex.profileId,
-                    ex.targetSubject,
-                    ex.targetTopicKeyword,
-                    ex.questionCount
-                  );
+                  // Resuelve modelos fijos (fixedQuestionIds) o filtra por materia/palabra clave
+                  const questions = getQuestionsForTailoredExam(ex);
                   startExam(
                     {
                       mode: ex.profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
@@ -570,7 +566,7 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
 
         {/* Selector de Materias */}
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
-          {(['TODAS', 'Matemática', 'Física', 'Química', 'Biología', 'Castellano'] as const).map(
+          {(['TODAS', 'Matemática', 'Física', 'Química', 'Biología', 'Castellano', 'Diseño'] as const).map(
             (subj) => (
               <button
                 key={subj}

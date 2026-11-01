@@ -31,6 +31,46 @@ type TabType =
   | 'EVALUATION';
 
 /**
+ * Etiquetas de los pilares según la disciplina de la guía.
+ * 'science' conserva los textos originales; 'design' adapta el vocabulario a guías
+ * conceptuales (Semiótica, Gestalt, Usabilidad, Actor-Red) donde no existen unidades SI ni fórmulas numéricas.
+ */
+const PILLAR_LABELS = {
+  science: {
+    theoryTitle: '1. Introducción al Fenómeno y Sustancia Teórica',
+    theorySubtitle: 'Explicación rigurosa de la mecánica interna del fenómeno con notación matemática formal',
+    glossaryTab: '2. Glosario & Unidades',
+    glossaryTitle: '2. Glosario Técnico y Unidades en el Sistema Internacional (SI)',
+    glossarySubtitle: 'Definiciones precisas de variables, operadores y constantes académicas',
+    formulasTab: '3. Fórmulas & Reglas',
+    formulasTitle: '3. Fórmulas Fundamentales, Patrones & Reglas Mnemotécnicas',
+    formulasSubtitle: 'Ecuaciones rectoras y trucos cognitivos para identificación inmediata en exámenes',
+    formulasSection: 'Ecuaciones Fundamentales (KaTeX)',
+    formulaBadge: 'Expresión Central',
+    stepsTab: '4. Deducción Paso a Paso',
+    stepsTitle: '4. Resolución Deductiva Paso a Paso de Casos Representativos',
+    stepsSubtitle: 'Desglose analítico de qué datos se tienen, qué principios se aplican y cómo se despeja',
+    alertsSubtitle: 'Fallos típicos de despeje, signos, conversión de unidades y falsos amigos conceptuales',
+  },
+  design: {
+    theoryTitle: '1. Temario Oficial y Teoría Deconstruida por Capítulos',
+    theorySubtitle: 'Conceptos clave, autores de referencia y ejemplos de estudio de cada capítulo',
+    glossaryTab: '2. Glosario & Autores',
+    glossaryTitle: '2. Glosario de Conceptos y Autores de Referencia',
+    glossarySubtitle: 'Definiciones exactas de examen con el autor o capítulo de origen',
+    formulasTab: '3. Modelos & Mnemotecnias',
+    formulasTitle: '3. Modelos Teóricos y Reglas Mnemotécnicas',
+    formulasSubtitle: 'Cada teoría resumida como una "ecuación conceptual" y trucos para no confundir términos',
+    formulasSection: 'Modelos Teóricos Esenciales',
+    formulaBadge: 'Modelo Central',
+    stepsTab: '4. Método & Casos Resueltos',
+    stepsTitle: '4. Metodología Paso a Paso para Resolver Casos de Examen',
+    stepsSubtitle: 'Plantilla de 4 pasos (un paso por capítulo) aplicada a objetos cotidianos',
+    alertsSubtitle: 'Pares de conceptos que más se confunden en los parciales y cómo distinguirlos',
+  },
+} as const;
+
+/**
  * Componente Editorial de Guía de Estudio Hiper-Compleja
  * Renderiza el núcleo pedagógico deconstruido en 7 pilares con soporte KaTeX,
  * flashcards interactivas de Active Recall, cuadrícula Cornell y lanzamiento
@@ -64,6 +104,8 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   const totalQuestions = generatedQuestions?.length || 0;
   const flashcards = studyTechniquesHub?.activeRecallFlashcards || [];
   const currentCard = flashcards[flashcardIndex];
+  // Etiquetas de pilares según disciplina (por defecto: ciencias)
+  const labels = PILLAR_LABELS[guide.discipline ?? 'science'];
 
   /**
    * Conecta directamente con el Simulador de Exámenes
@@ -159,7 +201,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
-          <span>2. Glosario & Unidades</span>
+          <span>{labels.glossaryTab}</span>
           <span className="text-[10px] opacity-75">({glossary?.length || 0})</span>
         </button>
 
@@ -171,7 +213,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
-          <span>3. Fórmulas & Reglas</span>
+          <span>{labels.formulasTab}</span>
           <span className="text-[10px] opacity-75">
             ({formulasAndStrategies?.coreFormulas?.length || 0})
           </span>
@@ -185,7 +227,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
-          <span>4. Deducción Paso a Paso</span>
+          <span>{labels.stepsTab}</span>
           <span className="text-[10px] opacity-75">
             ({stepByStepExamples?.length || 0})
           </span>
@@ -237,16 +279,16 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           <div className="space-y-6 max-w-4xl mx-auto">
             <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
-                1. Introducción al Fenómeno y Sustancia Teórica
+                {labels.theoryTitle}
               </h2>
               <p className="text-xs text-slate-500 font-mono mt-0.5">
-                Explicación rigurosa de la mecánica interna del fenómeno con notación matemática formal
+                {labels.theorySubtitle}
               </p>
             </div>
 
-            {/* Desarrollo Teórico con KaTeX */}
+            {/* Desarrollo Teórico con KaTeX (whitespace-pre-line preserva saltos de línea y viñetas del temario) */}
             <div
-              className="prose prose-slate max-w-none text-xs sm:text-sm text-slate-700 leading-relaxed font-sans space-y-4"
+              className="prose prose-slate max-w-none text-xs sm:text-sm text-slate-700 leading-relaxed font-sans space-y-4 whitespace-pre-line"
               dangerouslySetInnerHTML={{
                 __html: renderLatex(phenomenonAndTheory),
               }}
@@ -273,10 +315,10 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           <div className="space-y-6 max-w-4xl mx-auto">
             <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
-                2. Glosario Técnico y Unidades en el Sistema Internacional (SI)
+                {labels.glossaryTitle}
               </h2>
               <p className="text-xs text-slate-500 font-mono mt-0.5">
-                Definiciones precisas de variables, operadores y constantes académicas
+                {labels.glossarySubtitle}
               </p>
             </div>
 
@@ -311,17 +353,17 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           <div className="space-y-6 max-w-4xl mx-auto">
             <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
-                3. Fórmulas Fundamentales, Patrones & Reglas Mnemotécnicas
+                {labels.formulasTitle}
               </h2>
               <p className="text-xs text-slate-500 font-mono mt-0.5">
-                Ecuaciones rectoras y trucos cognitivos para identificación inmediata en exámenes
+                {labels.formulasSubtitle}
               </p>
             </div>
 
             {/* Tarjetas de Fórmulas con Acento Cobalto */}
             <div className="space-y-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 px-1">
-                Ecuaciones Fundamentales (KaTeX)
+                {labels.formulasSection}
               </h3>
               <div className="space-y-3">
                 {formulasAndStrategies?.coreFormulas?.map((formula, idx) => (
@@ -334,7 +376,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                         {formula.name}
                       </span>
                       <span className="text-[10px] font-mono text-[#0F52BA] bg-blue-50 px-2 py-0.5 rounded-md font-semibold">
-                        Expresión Central
+                        {labels.formulaBadge}
                       </span>
                     </div>
 
@@ -383,10 +425,10 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           <div className="space-y-6 max-w-4xl mx-auto">
             <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-200/80 shadow-[0_2px_14px_-2px_rgba(15,82,186,0.08)]">
               <h2 className="text-base font-bold text-slate-900">
-                4. Resolución Deductiva Paso a Paso de Casos Representativos
+                {labels.stepsTitle}
               </h2>
               <p className="text-xs text-slate-500 font-mono mt-0.5">
-                Desglose analítico de qué datos se tienen, qué principios se aplican y cómo se despeja
+                {labels.stepsSubtitle}
               </p>
             </div>
 
@@ -469,7 +511,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                 5. Alertas de Trampas de Examen y Errores Conceptuales
               </h2>
               <p className="text-xs text-slate-500 font-mono mt-0.5">
-                Fallos típicos de despeje, signos, conversión de unidades y falsos amigos conceptuales
+                {labels.alertsSubtitle}
               </p>
             </div>
 

@@ -19,6 +19,10 @@ import {
 import { EmptyState } from '../common/EmptyState';
 import type { Question } from '../../types/exam.types';
 import { renderLatex, renderLatexToHtml } from '../../utils/latexRenderer';
+import {
+  ALL_MAFE_DECONSTRUCTED_GUIDES,
+  ALL_MAFE_QUESTIONS,
+} from '../../data/mafe_curriculum_hub';
 
 export interface AcademicGuidesViewProps {
   onStartExamWithQuestions?: (questions: Question[], title: string) => void;
@@ -26,6 +30,7 @@ export interface AcademicGuidesViewProps {
 
 type CategoryTab =
   | 'ALL'
+  | 'mafe_curriculum'
   | 'ucv_ciencias'
   | 'verbal'
   | 'logico'
@@ -38,8 +43,16 @@ type DetailTab = 'THEORY' | 'EXAMS' | 'REFERENCES';
 export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
   onStartExamWithQuestions,
 }) => {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<CategoryTab>('ALL');
+  const { user, academicProfile } = useAuth();
+  // Determinar perfil activo
+  const isMafe =
+    academicProfile === 'mafe_diseno_ucab' || user?.academic_profile === 'mafe_diseno_ucab';
+  const isSantiago =
+    academicProfile === 'santiago_fisica_ucv' || user?.academic_profile === 'santiago_fisica_ucv';
+
+  // Por defecto, mostrar PRIMERO lo personalizado del perfil del estudiante
+  const defaultTab: CategoryTab = isMafe ? 'mafe_curriculum' : isSantiago ? 'ucv_ciencias' : 'ALL';
+  const [activeTab, setActiveTab] = useState<CategoryTab>(defaultTab);
   const [selectedGuide, setSelectedGuide] = useState<SimadiGuide | null>(null);
   const [detailTab, setDetailTab] = useState<DetailTab>('THEORY');
 
@@ -54,13 +67,16 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
 
   // Obtener guías oficiales de la base
   const guides = simadiBankService.getAllGuides(
-    activeTab === 'TOPIC_SELECTOR' || activeTab === 'AI_DECONSTRUCTED'
+    activeTab === 'TOPIC_SELECTOR' || activeTab === 'AI_DECONSTRUCTED' || activeTab === 'mafe_curriculum'
       ? 'ALL'
       : activeTab
   );
 
-  // Obtener guías deconstruidas generadas por el usuario
-  const deconstructedGuides = user ? geminiService.getDeconstructedGuides(user.id) : [];
+  // Obtener guías deconstruidas generadas por el usuario (incluyendo las oficiales de Mafe)
+  const userDeconstructed = user ? geminiService.getDeconstructedGuides(user.id) : [];
+  const deconstructedGuides = isMafe
+    ? [...ALL_MAFE_DECONSTRUCTED_GUIDES, ...userDeconstructed.filter(g => !g.id?.startsWith('mafe-'))]
+    : userDeconstructed;
 
   // Datos para el selector de temas
   const areasSummary = simadiBankService.getAreasSummary();
@@ -121,6 +137,20 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
 
         {/* Pestañas de Categoría */}
         <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/70">
+          {/* Si es Mafe, mostrar primero su pestaña destacada */}
+          {isMafe && (
+            <button
+              onClick={() => setActiveTab('mafe_curriculum')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                activeTab === 'mafe_curriculum'
+                  ? 'bg-rose-600 text-white shadow-soft-sm font-bold'
+                  : 'text-rose-700 bg-rose-50/70 hover:bg-rose-100 border border-rose-200/60'
+              }`}
+            >
+              <span>🎨 Mi Programa UCAB (3 Guías)</span>
+            </button>
+          )}
+
           <button
             onClick={() => setActiveTab('ALL')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
@@ -195,6 +225,109 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
           </button>
         </div>
       </div>
+
+      {/* VISTA 0: PROGRAMA EXCLUSIVO DE MARÍA FERNANDA (DISEÑO INTEGRAL UCAB) */}
+      {activeTab === 'mafe_curriculum' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-rose-50 via-white to-pink-50/50 border-2 border-rose-200/80 shadow-soft flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1.5 min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300/80 font-mono">
+                  Personalizado para María Fernanda Valderrama
+                </span>
+                <span className="text-[10px] font-mono text-slate-500">
+                  Escuela de Diseño Integral UCAB • 3 Guías Deconstruidas • {ALL_MAFE_QUESTIONS.length} Reactivos
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 tracking-tight font-sans">
+                Mi Centro Académico & Exámenes de Diseño
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
+                Temario oficial de Teoría del Diseño (Semiótica, Gestalt, Usabilidad, Actor-Red), Teoría del Color (Clase 4 de escalas de 15 a 9 pasos) y Matemática para el Diseño (Geometría, Retículas, Pendientes y Ángulos).
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() =>
+                  onStartExamWithQuestions?.(
+                    ALL_MAFE_QUESTIONS,
+                    'Diseño UCAB · Simulacro General (Todas las Guías)'
+                  )
+                }
+                className="bg-rose-600 hover:bg-rose-700 active:scale-[0.97] text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-soft flex items-center gap-1.5 transition-all cursor-pointer"
+              >
+                <PlayIcon className="w-3.5 h-3.5 text-white" />
+                <span>Simular Examen Completo ({ALL_MAFE_QUESTIONS.length})</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Grid de las 3 Guías Oficiales Deconstruidas */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {ALL_MAFE_DECONSTRUCTED_GUIDES.map((guide) => (
+              <div
+                key={guide.id}
+                className="p-5 rounded-3xl bg-white border border-rose-200/90 hover:border-rose-400 transition-all shadow-soft flex flex-col justify-between space-y-4"
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 font-mono">
+                      {guide.guideMetadata.area}
+                    </span>
+                    <span className="text-[10px] font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
+                      {guide.generatedQuestions?.length || 0} Reactivos
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-bold text-slate-900 leading-snug font-sans">
+                    {guide.guideMetadata.title}
+                  </h3>
+
+                  <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 font-sans">
+                    {guide.guideMetadata.summary}
+                  </p>
+
+                  <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-mono text-slate-400">
+                    <span>• {guide.glossary?.length || 0} términos</span>
+                    <span>• {guide.formulasAndStrategies?.coreFormulas?.length || 0} modelos</span>
+                    <span>• {guide.studyTechniquesHub?.activeRecallFlashcards?.length || 0} flashcards</span>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <button
+                    onClick={() => setSelectedDeconstructedGuide(guide)}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 flex-1 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <BookOpenIcon className="w-3.5 h-3.5 text-rose-600" />
+                    <span>Ver Guía 7 Pilares</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleStartExamFromDeconstructed(guide)}
+                    className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-1.5 px-3 rounded-xl shadow-soft flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    title="Simular examen con preguntas de esta guía"
+                  >
+                    <PlayIcon className="w-3.5 h-3.5 text-white" />
+                    <span>Simular</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
+            <span>¿Quieres consultar contenidos de bachillerato o de la UCV? Cambia a la pestaña <strong>«Todas»</strong> en la barra superior.</span>
+            <button
+              onClick={() => setActiveTab('ALL')}
+              className="text-[#0F52BA] font-bold hover:underline"
+            >
+              Ver todas las guías →
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* VISTA 1: GUÍAS ANALIZADAS POR GEMINI IA (7 PILARES) */}
       {activeTab === 'AI_DECONSTRUCTED' ? (

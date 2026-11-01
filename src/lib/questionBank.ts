@@ -1,4 +1,11 @@
 import type { AcademicSubject, Question } from '../types/exam.types';
+import {
+  ALL_MAFE_QUESTIONS,
+  DESIGN_THEORY_MODEL_A,
+  DESIGN_THEORY_MODEL_B,
+  NOTION_COLOR_QUESTIONS,
+  NOTION_MATH_QUESTIONS,
+} from '../data/mafe_curriculum_hub';
 
 /**
  * Banco Integral de Preguntas Académicas Reales
@@ -705,6 +712,12 @@ export const QUESTION_BANK: Question[] = [
     correctOptionId: 'opt-a',
     explanation: 'La accesibilidad universal exige doble codificación perceptiva: el color debe complementarse siempre con iconos, patrones o etiquetas textuales para no excluir a usuarios con discromatopsias.',
   },
+
+  // ==========================================
+  // MAFE · PROGRAMA COMPLETO DE DISEÑO INTEGRAL UCAB
+  // (Teoría del Diseño + Teoría del Color Clase 4 + Matemática para el Diseño Guías 1 a 4)
+  // ==========================================
+  ...ALL_MAFE_QUESTIONS,
 ];
 
 /**
@@ -722,6 +735,11 @@ export interface ProfileTailoredExam {
   description: string;
   targetSubject: AcademicSubject;
   targetTopicKeyword?: string;
+  /**
+   * Lista cerrada de IDs de reactivos. Si se define, el examen lanza EXACTAMENTE estas preguntas
+   * (modelos de examen fijos) en lugar de filtrar por materia/palabra clave.
+   */
+  fixedQuestionIds?: string[];
 }
 
 export const PROFILE_TAILORED_EXAMS: ProfileTailoredExam[] = [
@@ -821,6 +839,71 @@ export const PROFILE_TAILORED_EXAMS: ProfileTailoredExam[] = [
     targetSubject: 'Castellano',
     targetTopicKeyword: 'Gestalt',
   },
+  {
+    id: 'exam-mafe-teoria-modelo-a',
+    profileId: 'mafe_diseno_ucab',
+    title: 'Teoría del Diseño · Modelo A (Parcial Oficial)',
+    subtitle: 'Escuela de Diseño Integral UCAB',
+    durationMinutes: 25,
+    questionCount: DESIGN_THEORY_MODEL_A.length,
+    badge: 'Teoría del Diseño',
+    colorScheme: 'rose',
+    description: 'Simulacro tipo parcial: signo y arbitrariedad, denotación/connotación, ideología oculta, Gestalt, niveles de Norman, affordance vs signifier, mapping y Actor-Red.',
+    targetSubject: 'Diseño',
+    fixedQuestionIds: DESIGN_THEORY_MODEL_A.map((q) => q.id),
+  },
+  {
+    id: 'exam-mafe-teoria-modelo-b',
+    profileId: 'mafe_diseno_ucab',
+    title: 'Teoría del Diseño · Modelo B (Casos Aplicados)',
+    subtitle: 'Escuela de Diseño Integral UCAB',
+    durationMinutes: 30,
+    questionCount: DESIGN_THEORY_MODEL_B.length,
+    badge: 'Casos Aplicados',
+    colorScheme: 'rose',
+    description: 'Casos inéditos de refuerzo: frasco de perfume, menú de café, afiche, reloj de lujo, cocina, cable USB y semáforo inteligente. Incluye la trampa Significante vs Signifier.',
+    targetSubject: 'Diseño',
+    fixedQuestionIds: DESIGN_THEORY_MODEL_B.map((q) => q.id),
+  },
+  {
+    id: 'exam-mafe-teoria-integral',
+    profileId: 'mafe_diseno_ucab',
+    title: 'Teoría del Diseño · Simulacro Integral',
+    subtitle: 'Escuela de Diseño Integral UCAB',
+    durationMinutes: 50,
+    questionCount: DESIGN_THEORY_MODEL_A.length + DESIGN_THEORY_MODEL_B.length,
+    badge: 'Integral 4 Capítulos',
+    colorScheme: 'rose',
+    description: 'Los 4 capítulos completos (Modelo A + Modelo B) en orden aleatorio, para el repaso final antes del parcial.',
+    targetSubject: 'Diseño',
+    fixedQuestionIds: [...DESIGN_THEORY_MODEL_A, ...DESIGN_THEORY_MODEL_B].map((q) => q.id),
+  },
+  {
+    id: 'exam-mafe-color-clase4',
+    profileId: 'mafe_diseno_ucab',
+    title: 'Teoría del Color · Evaluación Clase #4 (Escalas & Síntesis)',
+    subtitle: 'Licenciatura en Diseño UCAB',
+    durationMinutes: 20,
+    questionCount: NOTION_COLOR_QUESTIONS.length,
+    badge: 'Color Clase 4',
+    colorScheme: 'rose',
+    description: 'Escala acromática de 15 pasos a blanco y negro, escalas de matices (A>C, C>M, M>A), escalas de luminosidad en 10 pasos y corrección de saltos visuales en 9 pasos.',
+    targetSubject: 'Diseño',
+    fixedQuestionIds: NOTION_COLOR_QUESTIONS.map((q) => q.id),
+  },
+  {
+    id: 'exam-mafe-matematica-diseno',
+    profileId: 'mafe_diseno_ucab',
+    title: 'Matemática para el Diseño · Geometría, Rectas & Ángulos',
+    subtitle: 'Licenciatura en Diseño UCAB · Guías 1 a 4',
+    durationMinutes: 25,
+    questionCount: NOTION_MATH_QUESTIONS.length,
+    badge: 'Matemática & Retícula',
+    colorScheme: 'rose',
+    description: 'Punto abstracto vs físico, rectas alabeadas en 3D, pendiente m = tan(θ), retículas editoriales, sistemas de ecuaciones lineales y clasificación angular en marcas.',
+    targetSubject: 'Diseño',
+    fixedQuestionIds: NOTION_MATH_QUESTIONS.map((q) => q.id),
+  },
 
   // 4. Prima (Admisión Universitaria / 5to Año)
   {
@@ -885,5 +968,26 @@ export function getQuestionsForProfile(
   }
 
   return filtered.slice(0, limit);
+}
+
+/**
+ * Resuelve los reactivos de un examen calibrado por perfil.
+ * - Si el examen define `fixedQuestionIds` (modelos de examen fijos), devuelve exactamente esos
+ *   reactivos en el orden declarado.
+ * - En caso contrario, delega en `getQuestionsForProfile` (filtro por materia y palabra clave).
+ */
+export function getQuestionsForTailoredExam(exam: ProfileTailoredExam): Question[] {
+  if (exam.fixedQuestionIds && exam.fixedQuestionIds.length > 0) {
+    const byId = new Map(QUESTION_BANK.map((q) => [q.id, q]));
+    return exam.fixedQuestionIds
+      .map((id) => byId.get(id))
+      .filter((q): q is Question => Boolean(q));
+  }
+  return getQuestionsForProfile(
+    exam.profileId,
+    exam.targetSubject,
+    exam.targetTopicKeyword,
+    exam.questionCount
+  );
 }
 

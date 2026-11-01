@@ -5,7 +5,9 @@ export type AcademicSubject =
   | 'Física'
   | 'Química'
   | 'Biología'
-  | 'Castellano';
+  | 'Castellano'
+  // Teoría del Diseño (Semiótica, Gestalt, Usabilidad, Actor-Red) — perfil María Fernanda (UCAB)
+  | 'Diseño';
 
 export interface ExamOption {
   id: string;

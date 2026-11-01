@@ -7,6 +7,8 @@ function normalizeSubject(area: string): AcademicSubject {
   if (lower.includes('quími') || lower.includes('quimic')) return 'Química';
   if (lower.includes('biol')) return 'Biología';
   if (lower.includes('castell') || lower.includes('lengu') || lower.includes('verbal')) return 'Castellano';
+  // Guías de Teoría del Diseño (Semiótica, Gestalt, Usabilidad, Actor-Red)
+  if (lower.includes('diseñ') || lower.includes('disen') || lower.includes('semiót') || lower.includes('semiot')) return 'Diseño';
   return 'Matemática';
 }
 
@@ -112,6 +114,12 @@ export interface DeconstructedAcademicGuide {
   documentId?: string;
   createdAt?: string;
   sourceType?: 'document' | 'topic_prompt';
+  /**
+   * Disciplina de la guía. Ajusta las etiquetas de los pilares en `DeconstructedGuideView`
+   * (p. ej. "Glosario & Autores" en lugar de "Unidades SI" para guías de diseño).
+   * Si se omite se asume 'science' (comportamiento original).
+   */
+  discipline?: 'science' | 'design';
   guideMetadata: GuideMetadata;
   phenomenonAndTheory: string;
   glossary: GlossaryItem[];

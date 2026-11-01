@@ -5,6 +5,7 @@ import {
   type DeconstructedAcademicGuide,
   convertDeconstructedToQuestions,
 } from '../types/deconstruction.types';
+import { ALL_MAFE_DECONSTRUCTED_GUIDES } from '../data/mafe_curriculum_hub';
 import {
   mapProfileToAcademicLevel,
   getPedagogicalGuardrails,
@@ -564,8 +565,20 @@ ${DECONSTRUCTION_JSON_SCHEMA_INSTRUCTION}`;
     try {
       const userGuidesKey = `${LOCAL_STORAGE_DECONSTRUCTED_GUIDES_KEY}_${userId}`;
       const cached = localStorage.getItem(userGuidesKey);
-      return cached ? JSON.parse(cached) : [];
+      const userList: DeconstructedAcademicGuide[] = cached ? JSON.parse(cached) : [];
+
+      // Si es el perfil de María Fernanda Valderrama, sembrar e incluir de forma canónica
+      // las guías oficiales de su pensum (Teoría del Diseño, Color Clase 4, Matemática para el Diseño)
+      if (userId === 'mafe_diseno_ucab' || userId.includes('mafe')) {
+        const customOnly = userList.filter((g) => !g.id?.startsWith('mafe-'));
+        return [...ALL_MAFE_DECONSTRUCTED_GUIDES, ...customOnly];
+      }
+
+      return userList;
     } catch {
+      if (userId === 'mafe_diseno_ucab' || userId.includes('mafe')) {
+        return ALL_MAFE_DECONSTRUCTED_GUIDES;
+      }
       return [];
     }
   },

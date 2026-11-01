@@ -201,6 +201,97 @@ export const storageService = {
     }
 
     // Retornar lista vacía lista para subidas reales del estudiante
+    // En caso de que sea María Fernanda, proveer de fábrica los PDFs oficiales de Notion sincronizados
+    if (userId === 'mafe_diseno_ucab' || userId.includes('mafe')) {
+      const now = '2026-10-25T10:00:00.000Z';
+      return [
+        {
+          id: 'doc-mafe-notion-color-4',
+          user_id: userId,
+          title: 'Clase 4: Teoría del Color (Escalas & Síntesis)',
+          file_path: '/documents/mafe_notion_guides/EB_LICDISUCAB_COLOR_CLASE4_OCT_09_2026.pdf',
+          file_type: 'application/pdf',
+          file_size_bytes: 107715,
+          storage_bucket: 'documents',
+          tags: ['Diseño', 'Color', 'UCAB', 'Clase 4'],
+          created_at: '2026-10-09T10:00:00.000Z',
+          updated_at: now,
+        },
+        {
+          id: 'doc-mafe-notion-math-1',
+          user_id: userId,
+          title: 'Guía Teórica #1: Geometría (Punto, Recta, Plano y Espacio)',
+          file_path: '/documents/mafe_notion_guides/Guia_teorica__1._Punto_recta_y_espacio_V1.3.pdf',
+          file_type: 'application/pdf',
+          file_size_bytes: 1288024,
+          storage_bucket: 'documents',
+          tags: ['Diseño', 'Matemática', 'Geometría', 'UCAB'],
+          created_at: '2026-10-15T10:00:00.000Z',
+          updated_at: now,
+        },
+        {
+          id: 'doc-mafe-notion-math-2',
+          user_id: userId,
+          title: 'Guía Teórica #2: Rectas, Retículas & Pendientes',
+          file_path: '/documents/mafe_notion_guides/Guia_Teorica__2.__Rectas_(1).pdf',
+          file_type: 'application/pdf',
+          file_size_bytes: 1704613,
+          storage_bucket: 'documents',
+          tags: ['Diseño', 'Matemática', 'Rectas', 'Retícula'],
+          created_at: '2026-10-18T10:00:00.000Z',
+          updated_at: now,
+        },
+        {
+          id: 'doc-mafe-notion-math-3-teorica',
+          user_id: userId,
+          title: 'Guía Teórica #3: Sistemas de Ecuaciones Lineales',
+          file_path: '/documents/mafe_notion_guides/Guia_teorica__3._Sistema_de_ecuaciones_(3).pdf',
+          file_type: 'application/pdf',
+          file_size_bytes: 956337,
+          storage_bucket: 'documents',
+          tags: ['Diseño', 'Matemática', 'Ecuaciones'],
+          created_at: '2026-10-22T10:00:00.000Z',
+          updated_at: now,
+        },
+        {
+          id: 'doc-mafe-notion-math-3-ejercicios',
+          user_id: userId,
+          title: 'Guía de Ejercicios #3: Sistemas de Ecuaciones Lineales',
+          file_path: '/documents/mafe_notion_guides/Guia_de_ejercicios__3._Sistema_de_ecuaciones_(3).pdf',
+          file_type: 'application/pdf',
+          file_size_bytes: 286580,
+          storage_bucket: 'documents',
+          tags: ['Diseño', 'Matemática', 'Ejercicios'],
+          created_at: '2026-10-22T10:30:00.000Z',
+          updated_at: now,
+        },
+        {
+          id: 'doc-mafe-notion-math-4-teorica',
+          user_id: userId,
+          title: 'Guía Teórica #4: Ángulos & Relaciones Geométricas',
+          file_path: '/documents/mafe_notion_guides/Guia_teorica__4_._Angulos_._V1.3_(1).pdf',
+          file_type: 'application/pdf',
+          file_size_bytes: 501457,
+          storage_bucket: 'documents',
+          tags: ['Diseño', 'Matemática', 'Ángulos'],
+          created_at: '2026-10-25T10:00:00.000Z',
+          updated_at: now,
+        },
+        {
+          id: 'doc-mafe-notion-math-4-ejercicios',
+          user_id: userId,
+          title: 'Guía de Ejercicios #4: Ángulos (Conversiones & Aplicaciones)',
+          file_path: '/documents/mafe_notion_guides/Guia_de_ejercicios__4._Angulos.V1.2_(2).pdf',
+          file_type: 'application/pdf',
+          file_size_bytes: 333830,
+          storage_bucket: 'documents',
+          tags: ['Diseño', 'Matemática', 'Ejercicios'],
+          created_at: '2026-10-25T10:30:00.000Z',
+          updated_at: now,
+        },
+      ];
+    }
+
     return [];
   },
 };
