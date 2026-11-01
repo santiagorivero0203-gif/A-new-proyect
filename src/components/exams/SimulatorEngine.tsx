@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useExamSimulator } from '../../hooks/useExamSimulator';
+import { useExam } from '../../context/ExamContext';
 import { ExamRunner } from './ExamRunner';
 import { ExamResultsReport } from './ExamResultsReport';
 import { LayersIcon, PlayIcon, AtomIcon } from '../common/Icons';
@@ -34,7 +34,7 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
     togglePause,
     finishExam,
     resetExam,
-  } = useExamSimulator();
+  } = useExam();
 
   const { academicProfile } = useAuth();
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<AcademicSubject | 'TODAS'>('TODAS');

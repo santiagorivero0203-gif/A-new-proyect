@@ -47,6 +47,14 @@ export const StudySummaryPdfExporter: React.FC = () => {
     }
   ]);
 
+  const [formattedDate] = useState(() =>
+    new Date().toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  );
+
   const handlePrint = () => {
     window.print();
   };
@@ -123,11 +131,7 @@ export const StudySummaryPdfExporter: React.FC = () => {
             </p>
           </div>
           <div className="text-right text-[10px] text-slate-400 font-mono shrink-0">
-            {new Date().toLocaleDateString('es-ES', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
+            {formattedDate}
           </div>
         </div>
 

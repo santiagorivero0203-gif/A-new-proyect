@@ -7,7 +7,7 @@
  * Función 133 del catálogo académico.
  */
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Layers, ChevronRight, Sparkles, Clock, Calendar } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -84,18 +84,22 @@ export const SpacedRepetitionFlashcards: React.FC = () => {
     return DEFAULT_FLASHCARDS;
   });
 
+  const prevUserIdRef = useRef(userId);
   // Recargar al cambiar de cuenta
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(`cpe_${userId}_sm2_flashcards_v1`);
-      if (stored) {
-        setCards(JSON.parse(stored));
-        return;
+    if (prevUserIdRef.current !== userId) {
+      prevUserIdRef.current = userId;
+      try {
+        const stored = localStorage.getItem(`cpe_${userId}_sm2_flashcards_v1`);
+        if (stored) {
+          setCards(JSON.parse(stored));
+          return;
+        }
+      } catch {
+        // Fallback
       }
-    } catch {
-      // Fallback
+      setCards(DEFAULT_FLASHCARDS);
     }
-    setCards(DEFAULT_FLASHCARDS);
   }, [userId]);
 
   // Persistir cambios

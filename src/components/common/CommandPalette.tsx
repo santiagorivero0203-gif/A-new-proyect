@@ -222,12 +222,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     a.category.toLowerCase().includes(query.toLowerCase())
   );
 
+  const prevIsOpenRef = useRef(isOpen);
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !prevIsOpenRef.current) {
       setQuery('');
       setSelectedIndex(0);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
+    prevIsOpenRef.current = isOpen;
   }, [isOpen]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

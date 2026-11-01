@@ -34,16 +34,26 @@ export function useExamSimulator() {
   });
 
   const [report, setReport] = useState<ExamReport | null>(null);
-  const [recoverableSession, setRecoverableSession] = useState<ExamSessionState | null>(null);
+  const [recoverableSession, setRecoverableSession] = useState<ExamSessionState | null>(() => {
+    const backup = sessionRecoveryService.getActiveExamSession(user?.id);
+    if (backup && backup.status === 'IN_PROGRESS' && backup.questions.length > 0) {
+      return backup;
+    }
+    return null;
+  });
 
+  const prevUserIdRef = useRef(user?.id);
   // Escuchar reconexión y detectar sesiones pendientes de recuperación aisladas por cuenta
   useEffect(() => {
     const cleanupSync = sessionRecoveryService.initNetworkSyncListener(user?.id);
-    const backup = sessionRecoveryService.getActiveExamSession(user?.id);
-    if (backup && backup.status === 'IN_PROGRESS' && backup.questions.length > 0) {
-      setRecoverableSession(backup);
-    } else {
-      setRecoverableSession(null);
+    if (prevUserIdRef.current !== user?.id) {
+      prevUserIdRef.current = user?.id;
+      const backup = sessionRecoveryService.getActiveExamSession(user?.id);
+      if (backup && backup.status === 'IN_PROGRESS' && backup.questions.length > 0) {
+        setRecoverableSession(backup);
+      } else {
+        setRecoverableSession(null);
+      }
     }
     return cleanupSync;
   }, [user?.id]);

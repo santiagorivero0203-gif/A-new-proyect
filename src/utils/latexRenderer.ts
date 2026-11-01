@@ -36,22 +36,25 @@ export function sanitizeLatex(raw: string): string {
     .trim();
 
   // 2. Recuperar comandos LaTeX dañados por secuencias de escape JSON (\t, \f, \r, \b)
-  // eslint-disable-next-line no-control-regex
+  /* oxlint-disable no-control-regex */
+  /* eslint-disable no-control-regex */
   cleaned = cleaned
-    .replace(/\x09ext\{/g, '\\text{')
+    .replace(/\text\{/g, '\\text{')
     .replace(/(?<!\\)text\{/g, '\\text{')
     .replace(/(?<!\\)mathrm\{/g, '\\mathrm{')
-    .replace(/\x0crac\{/g, '\\frac{')
+    .replace(/\frac\{/g, '\\frac{')
     .replace(/(?<!\\)frac\{/g, '\\frac{')
-    .replace(/\x0dight/g, '\\right')
+    .replace(/\right/g, '\\right')
     .replace(/(?<!\\)left/g, '\\left')
-    .replace(/\x08egin\{/g, '\\begin{')
+    .replace(/\begin\{/g, '\\begin{')
     .replace(/(?<!\\)end\{/g, '\\end{')
     .replace(/(?<!\\)rightarrow/g, '\\rightarrow')
     .replace(/(?<!\\)rightleftharpoons/g, '\\rightleftharpoons')
     .replace(/(?<!\\)beta/g, '\\beta')
     .replace(/(?<!\\)tau/g, '\\tau')
     .replace(/(?<!\\)theta/g, '\\theta');
+  /* oxlint-enable no-control-regex */
+  /* eslint-enable no-control-regex */
 
   // 3. REPARACIÓN CRÍTICA: KaTeX prohíbe _ y ^ dentro de \text{...}.
   // Convierte recursivamente \text{CH_{4}} o \text{m/s^2} en \mathrm{CH_{4}}

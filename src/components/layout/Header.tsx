@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useExam } from '../../context/ExamContext';
+import { useNavigation } from '../../context/NavigationContext';
 import {
   LayersIcon,
   SunIcon,
@@ -45,6 +47,8 @@ export const Header: React.FC<HeaderProps> = ({
   currentTab,
 }) => {
   const { user, signOut } = useAuth();
+  const { session, isExamActive } = useExam();
+  const { navigateToTab } = useNavigation();
   const [currentTheme, setCurrentTheme] = useState<'light' | 'dark' | 'rose_pastel'>(() => {
     if (typeof document !== 'undefined') {
       if (document.documentElement.classList.contains('theme-rose-pastel')) return 'rose_pastel';
@@ -103,8 +107,24 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
       </div>
 
-      {/* Lado Derecho: Toggle de Luz, Usuario y Salir */}
+      {/* Lado Derecho: Indicador de Examen, Toggle de Luz, Usuario y Salir */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
+        {/* Indicador de Examen en Curso si el estudiante navega por otras pestañas */}
+        {isExamActive && currentTab !== 'EXAMS' && (
+          <button
+            onClick={() => navigateToTab('EXAMS')}
+            className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-[#0F52BA] dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-xs font-bold transition-all shadow-soft-xs active:scale-95 animate-pulse cursor-pointer"
+            title="Retomar tu evaluación en curso"
+          >
+            <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400 animate-ping" />
+            <span>
+              Examen activo ({Math.floor(session.secondsRemaining / 60)}:
+              {(session.secondsRemaining % 60).toString().padStart(2, '0')})
+            </span>
+            <span>→</span>
+          </button>
+        )}
+
         {/* Botón de Selector de Tema: Claro / Oscuro / Rose Atelier Pastel */}
         <button
           onClick={cycleTheme}

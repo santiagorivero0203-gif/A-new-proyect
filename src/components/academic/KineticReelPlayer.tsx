@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Play,
   Pause,
@@ -161,7 +161,7 @@ export const KineticReelPlayer: React.FC<KineticReelPlayerProps> = ({
   }, [videoSrc]);
 
   // Manejo de SFX y Audio BGM
-  const playSfx = (sfxName: string) => {
+  const playSfx = useCallback((sfxName: string) => {
     if (isMuted) return;
     try {
       if (!sfxAudioRef.current) {
@@ -173,7 +173,7 @@ export const KineticReelPlayer: React.FC<KineticReelPlayerProps> = ({
     } catch {
       // Ignorar bloqueos de autoplay del navegador
     }
-  };
+  }, [isMuted]);
 
   // Reproducción de música de fondo (BGM)
   useEffect(() => {
@@ -222,7 +222,7 @@ export const KineticReelPlayer: React.FC<KineticReelPlayerProps> = ({
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [isPlaying, currentBeatIndex, currentScene.durationSeconds, scenes.length, playerMode, isMuted]);
+  }, [isPlaying, currentBeatIndex, currentScene.durationSeconds, scenes.length, playerMode, playSfx]);
 
   // Cambio manual de beat
   const goToBeat = (index: number) => {

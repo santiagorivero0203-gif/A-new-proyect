@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Shuffle,
   Sparkles,
@@ -30,11 +30,15 @@ export const EnhancedFlashcardDeck: React.FC<EnhancedFlashcardDeckProps> = ({
   const [isFlipped, setIsFlipped] = useState(false);
   const [ratings, setRatings] = useState<Record<number, CardMastery>>({});
 
+  const prevFlashcardsRef = useRef(flashcards);
   useEffect(() => {
-    setDeck(flashcards);
-    setCurrentIndex(0);
-    setIsFlipped(false);
-    setRatings({});
+    if (prevFlashcardsRef.current !== flashcards) {
+      prevFlashcardsRef.current = flashcards;
+      setDeck(flashcards);
+      setCurrentIndex(0);
+      setIsFlipped(false);
+      setRatings({});
+    }
   }, [flashcards]);
 
   if (!deck || deck.length === 0) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type {
   WorkspaceModuleId,
   WorkspacePresetId,
@@ -57,10 +57,14 @@ export function useWorkspaceModules() {
   const [activeModules, setActiveModules] = useState<WorkspaceModuleId[]>(loadUserModules);
   const [activePreset, setActivePreset] = useState<WorkspacePresetId | null>(loadUserPreset);
 
-  // Recargar configuración del workspace de inmediato si cambia la cuenta activa
+  const prevUserIdRef = useRef(userId);
+  // Recargar configuración del workspace si cambia la cuenta activa
   useEffect(() => {
-    setActiveModules(loadUserModules());
-    setActivePreset(loadUserPreset());
+    if (prevUserIdRef.current !== userId) {
+      prevUserIdRef.current = userId;
+      setActiveModules(loadUserModules());
+      setActivePreset(loadUserPreset());
+    }
   }, [userId, loadUserModules, loadUserPreset]);
 
   // Guardar cambios en localStorage aislado y en preferencias del usuario

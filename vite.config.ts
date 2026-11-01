@@ -25,11 +25,23 @@ export default defineConfig({
           if (id.includes('node_modules/canvas-confetti')) {
             return 'vendor-ui';
           }
-          if (id.includes('simadi_preguntas.json') || id.includes('simadi_guides.json')) {
+          if (id.includes('simadi_preguntas.json') || id.includes('simadi_guides.json') || id.includes('simadi_real_exam_corpus')) {
             return 'data-simadi';
           }
-          if (id.includes('UCVInteractiveLabs')) {
+          if (id.includes('mafe_curriculum_hub') || id.includes('mafe_design_theory_course')) {
+            return 'data-mafe-curriculum';
+          }
+          if (id.includes('ucv_intro_course_data')) {
+            return 'data-ucv-curriculum';
+          }
+          if (id.includes('questionBank')) {
+            return 'data-question-bank';
+          }
+          if (id.includes('UCVInteractiveLabs') || id.includes('MathAlgebraView') || id.includes('ScienceLabView')) {
             return 'academic-labs';
+          }
+          if (id.includes('CreativeDeliveryBoard')) {
+            return 'creative-board';
           }
         },
       },

@@ -1,59 +1,63 @@
-import React, { useState } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { NavigationProvider, useNavigation } from './context/NavigationContext';
+import { ExamProvider, useExam } from './context/ExamContext';
 import { MainLayout } from './components/layout/MainLayout';
-import type { MainTabType } from './components/layout/Sidebar';
+import type { MainTabType } from './types';
 import { ModularWorkspaceDashboard } from './components/workspace/ModularWorkspaceDashboard';
-import { AcademicGuidesView } from './components/academic/AcademicGuidesView';
-import { AcademicPlannerView } from './components/planner/AcademicPlannerView';
-import { SimulatorEngine } from './components/exams/SimulatorEngine';
-import { StorageManagerView } from './components/storage/StorageManagerView';
-import { CreativeDeliveryBoard } from './components/dashboards/CreativeDeliveryBoard';
-import { ToolsAndSettingsView } from './components/tools/ToolsAndSettingsView';
-import { ScienceLabView } from './components/academic/ScienceLabView';
-import { HumanitiesLabView } from './components/academic/HumanitiesLabView';
-import { DesignPaletteView } from './components/design/DesignPaletteView';
-import { MathAlgebraView } from './components/tools/MathAlgebraView';
-import { UCVIntroCourseHub } from './components/academic/UCVIntroCourseHub';
 import { StudentAuthPortal } from './components/auth/StudentAuthPortal';
 import { AuthModal } from './components/auth/AuthModal';
-import type { ExamConfig, Question } from './types/exam.types';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { ViewLoadingSkeleton } from './components/common/ViewLoadingSkeleton';
+
+// ==============================================================================
+// CARGA PEREZOSA (CODE-SPLITTING DINÁMICO)
+// Desacopla módulos secundarios para reducir drásticamente el bundle inicial
+// y evitar congelamiento o lentitud en dispositivos móviles y de baja gama.
+// ==============================================================================
+const AcademicGuidesView = lazy(() =>
+  import('./components/academic/AcademicGuidesView').then((m) => ({ default: m.AcademicGuidesView }))
+);
+const AcademicPlannerView = lazy(() =>
+  import('./components/planner/AcademicPlannerView').then((m) => ({ default: m.AcademicPlannerView }))
+);
+const SimulatorEngine = lazy(() =>
+  import('./components/exams/SimulatorEngine').then((m) => ({ default: m.SimulatorEngine }))
+);
+const StorageManagerView = lazy(() =>
+  import('./components/storage/StorageManagerView').then((m) => ({ default: m.StorageManagerView }))
+);
+const CreativeDeliveryBoard = lazy(() =>
+  import('./components/dashboards/CreativeDeliveryBoard').then((m) => ({ default: m.CreativeDeliveryBoard }))
+);
+const ToolsAndSettingsView = lazy(() =>
+  import('./components/tools/ToolsAndSettingsView').then((m) => ({ default: m.ToolsAndSettingsView }))
+);
+const ScienceLabView = lazy(() =>
+  import('./components/academic/ScienceLabView').then((m) => ({ default: m.ScienceLabView }))
+);
+const HumanitiesLabView = lazy(() =>
+  import('./components/academic/HumanitiesLabView').then((m) => ({ default: m.HumanitiesLabView }))
+);
+const DesignPaletteView = lazy(() =>
+  import('./components/design/DesignPaletteView').then((m) => ({ default: m.DesignPaletteView }))
+);
+const MathAlgebraView = lazy(() =>
+  import('./components/tools/MathAlgebraView').then((m) => ({ default: m.MathAlgebraView }))
+);
+const UCVIntroCourseHub = lazy(() =>
+  import('./components/academic/UCVIntroCourseHub').then((m) => ({ default: m.UCVIntroCourseHub }))
+);
 
 /**
  * Contenido Principal de la Aplicación
- * Con control de sesión y aislamiento por cuenta de estudiante
+ * Con control de sesión, límites de error por vista y ruteo centralizado
  */
 const AppContent: React.FC = () => {
   const { user, academicProfile } = useAuth();
-  const [currentTab, setCurrentTab] = useState<MainTabType>('PRODUCTIVITY');
-  const [aiExamConfig, setAiExamConfig] = useState<ExamConfig | null>(null);
-  const [aiExamQuestions, setAiExamQuestions] = useState<Question[] | null>(null);
+  const { currentTab, navigateToTab } = useNavigation();
+  const { startExam, startExamWithQuestions } = useExam();
   const [isSupabaseAuthOpen, setIsSupabaseAuthOpen] = useState(false);
-
-  /**
-   * Conecta los componentes de IA con el simulador de exámenes
-   */
-  const handleStartExamWithAiQuestions = (questions: Question[], title: string) => {
-    setAiExamConfig({
-      mode: 'AI_GENERATED',
-      title: title || 'Simulacro Personalizado por Gemini IA',
-      totalQuestions: questions.length,
-      timeLimitSeconds: Math.max(questions.length * 3 * 60, 10 * 60),
-      allowPause: true,
-      shuffleQuestions: false,
-      customQuestions: questions,
-    });
-    setAiExamQuestions(questions);
-    setCurrentTab('EXAMS');
-  };
-
-  /**
-   * Lanzar examen preconfigurado desde el widget de inicio
-   */
-  const handleLaunchExam = (config: ExamConfig) => {
-    setAiExamConfig(config);
-    setAiExamQuestions(config.customQuestions || null);
-    setCurrentTab('EXAMS');
-  };
 
   // Si no hay sesión activa, mostrar el portal de acceso limpio y selección de cuenta
   if (!user) {
@@ -68,60 +72,63 @@ const AppContent: React.FC = () => {
     );
   }
 
+  // Renderizado dinámico de la vista activa según la pestaña actual
   const renderCurrentView = () => {
     switch (currentTab) {
       case 'PRODUCTIVITY':
         return (
           <ModularWorkspaceDashboard
-            onStartExamWithQuestions={handleStartExamWithAiQuestions}
-            onLaunchExam={handleLaunchExam}
-            onNavigateToTab={(tab) => setCurrentTab(tab)}
+            onStartExamWithQuestions={startExamWithQuestions}
+            onLaunchExam={startExam}
+            onNavigateToTab={navigateToTab}
           />
         );
+
       case 'PLANNER':
         return (
           <AcademicPlannerView
-            onLaunchExam={handleLaunchExam}
-            onNavigateToGuides={() => setCurrentTab('GUIDES')}
+            onLaunchExam={startExam}
+            onNavigateToGuides={() => navigateToTab('GUIDES')}
           />
         );
+
       case 'GUIDES':
         return (
           <AcademicGuidesView
-            onStartExamWithQuestions={handleStartExamWithAiQuestions}
+            onStartExamWithQuestions={startExamWithQuestions}
           />
         );
+
       case 'EXAMS':
-        return (
-          <SimulatorEngine
-            initialConfig={aiExamConfig}
-            initialQuestions={aiExamQuestions}
-            onClearInitial={() => {
-              setAiExamConfig(null);
-              setAiExamQuestions(null);
-            }}
-          />
-        );
+        return <SimulatorEngine />;
+
       case 'STORAGE':
         return (
           <StorageManagerView
-            onStartExamWithQuestions={handleStartExamWithAiQuestions}
-            onNavigateToGuides={() => setCurrentTab('GUIDES')}
+            onStartExamWithQuestions={startExamWithQuestions}
+            onNavigateToGuides={() => navigateToTab('GUIDES')}
           />
         );
+
       case 'CREATIVE_BOARD':
         return <CreativeDeliveryBoard />;
+
       case 'DESIGN_PALETTE':
         return <DesignPaletteView />;
+
       case 'SCIENCE_LAB':
         return <ScienceLabView />;
+
       case 'HUMANITIES_LAB':
         return <HumanitiesLabView />;
+
       case 'MATH_LAB':
         return <MathAlgebraView />;
+
       case 'SETTINGS':
       case 'TOOLS':
         return <ToolsAndSettingsView />;
+
       case 'UCV_COURSE': {
         // El Curso Introductorio UCV es exclusivo del perfil de Santiago Rivero (Facultad de Ciencias UCV)
         const isSantiago =
@@ -134,29 +141,29 @@ const AppContent: React.FC = () => {
         if (!isSantiago) {
           return (
             <ModularWorkspaceDashboard
-              onStartExamWithQuestions={handleStartExamWithAiQuestions}
-              onLaunchExam={handleLaunchExam}
-              onNavigateToTab={(tab) => setCurrentTab(tab)}
+              onStartExamWithQuestions={startExamWithQuestions}
+              onLaunchExam={startExam}
+              onNavigateToTab={navigateToTab}
             />
           );
         }
+
         return (
           <UCVIntroCourseHub
             onStartExam={(config, customQuestions) => {
-              setAiExamConfig(config);
-              setAiExamQuestions(customQuestions || null);
-              setCurrentTab('EXAMS');
+              startExam(config, customQuestions);
             }}
-            onNavigateToTab={(tab) => setCurrentTab(tab as MainTabType)}
+            onNavigateToTab={(tab) => navigateToTab(tab as MainTabType)}
           />
         );
       }
+
       default:
         return (
           <ModularWorkspaceDashboard
-            onStartExamWithQuestions={handleStartExamWithAiQuestions}
-            onLaunchExam={handleLaunchExam}
-            onNavigateToTab={(tab) => setCurrentTab(tab)}
+            onStartExamWithQuestions={startExamWithQuestions}
+            onLaunchExam={startExam}
+            onNavigateToTab={navigateToTab}
           />
         );
     }
@@ -165,9 +172,9 @@ const AppContent: React.FC = () => {
   return (
     <MainLayout
       currentTab={currentTab}
-      onSelectTab={setCurrentTab}
+      onSelectTab={navigateToTab}
       onLaunchQuickExam={() =>
-        handleLaunchExam({
+        startExam({
           mode: 'QUICK_PRACTICE',
           title: 'Simulacro Express (Cmd + K)',
           totalQuestions: 5,
@@ -177,7 +184,11 @@ const AppContent: React.FC = () => {
         })
       }
     >
-      {renderCurrentView()}
+      <ErrorBoundary fallbackTitle="Error al renderizar este módulo académico">
+        <Suspense fallback={<ViewLoadingSkeleton label="Cargando módulo académico..." />}>
+          {renderCurrentView()}
+        </Suspense>
+      </ErrorBoundary>
     </MainLayout>
   );
 };
@@ -185,7 +196,11 @@ const AppContent: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <AuthProvider>
-      <AppContent />
+      <NavigationProvider>
+        <ExamProvider>
+          <AppContent />
+        </ExamProvider>
+      </NavigationProvider>
     </AuthProvider>
   );
 };

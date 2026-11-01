@@ -39,15 +39,11 @@ export const AudioGuidePlayer: React.FC<AudioGuidePlayerProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [rate, setRate] = useState<number>(1.0);
-  const [isSupported, setIsSupported] = useState(true);
+  const [isSupported] = useState(() => typeof window !== 'undefined' && 'speechSynthesis' in window);
 
   useEffect(() => {
-    if (!('speechSynthesis' in window)) {
-      setIsSupported(false);
-    }
-
     return () => {
-      if ('speechSynthesis' in window) {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
     };
