@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Film, Eye } from 'lucide-react';
 import type {
   DeconstructedAcademicGuide,
 } from '../../types/deconstruction.types';
@@ -14,6 +15,9 @@ import {
   LayersIcon,
 } from '../common/Icons';
 import { AudioGuidePlayer } from './AudioGuidePlayer';
+import { KineticReelPlayer } from './KineticReelPlayer';
+import { InteractiveDesignPlayground } from './InteractiveDesignPlayground';
+import { EnhancedFlashcardDeck } from './EnhancedFlashcardDeck';
 
 export interface DeconstructedGuideViewProps {
   guide: DeconstructedAcademicGuide;
@@ -28,6 +32,8 @@ type TabType =
   | 'STEP_BY_STEP'
   | 'ALERTS'
   | 'STUDY_TECHNIQUES'
+  | 'KINETIC_VIDEO'
+  | 'INTERACTIVE_LAB'
   | 'EVALUATION';
 
 /**
@@ -83,10 +89,6 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('THEORY');
 
-  // Estado para Flashcards de Active Recall
-  const [flashcardIndex, setFlashcardIndex] = useState<number>(0);
-  const [isCardFlipped, setIsCardFlipped] = useState<boolean>(false);
-
   // Estado para justificaciones de preguntas desplegables
   const [expandedQuestionIdx, setExpandedQuestionIdx] = useState<number | null>(null);
 
@@ -103,7 +105,6 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
 
   const totalQuestions = generatedQuestions?.length || 0;
   const flashcards = studyTechniquesHub?.activeRecallFlashcards || [];
-  const currentCard = flashcards[flashcardIndex];
   // Etiquetas de pilares según disciplina (por defecto: ciencias)
   const labels = PILLAR_LABELS[guide.discipline ?? 'science'];
 
@@ -257,6 +258,30 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         >
           <LayersIcon className="w-3.5 h-3.5" />
           <span>6. Técnicas de Estudio</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('KINETIC_VIDEO')}
+          className={`py-2.5 px-3 text-xs font-bold rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            activeTab === 'KINETIC_VIDEO'
+              ? 'bg-sky-600 text-white shadow-soft-sm ring-1 ring-sky-400'
+              : 'text-sky-700 hover:bg-sky-50'
+          }`}
+        >
+          <Film className="w-3.5 h-3.5" />
+          <span>🎬 Reel Cinético</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('INTERACTIVE_LAB')}
+          className={`py-2.5 px-3 text-xs font-bold rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            activeTab === 'INTERACTIVE_LAB'
+              ? 'bg-purple-600 text-white shadow-soft-sm ring-1 ring-purple-400'
+              : 'text-purple-700 hover:bg-purple-50'
+          }`}
+        >
+          <Eye className="w-3.5 h-3.5" />
+          <span>🧪 Laboratorio Visual</span>
         </button>
 
         <button
@@ -565,95 +590,21 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
               </p>
             </div>
 
-            {/* SECCIÓN A: FLASHCARDS INTERACTIVAS DE ACTIVE RECALL */}
+            {/* SECCIÓN A: FLASHCARDS INTERACTIVAS DE ACTIVE RECALL (SISTEMA LEITNER) */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900 font-sans">
-                    Active Recall: Tarjetas de Evocación Rápida
-                  </h3>
-                  <span className="text-xs text-slate-500 font-mono">
-                    Haz clic en la tarjeta para voltearla y poner a prueba tu memoria de trabajo
-                  </span>
-                </div>
-                <span className="text-xs font-mono font-bold text-[#0F52BA] px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200/80">
-                  Tarjeta {flashcardIndex + 1} de {flashcards.length}
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 font-sans">
+                  Active Recall: Tarjetas de Evocación Rápida & Sistema Leitner
+                </h3>
+                <span className="text-xs text-slate-500 font-mono">
+                  Haz clic en la tarjeta para voltearla en 3D y califica tu nivel de retención
                 </span>
               </div>
 
-              {currentCard && (
-                <div className="space-y-3">
-                  {/* Tarjeta Flip con Animación */}
-                  <div
-                    onClick={() => setIsCardFlipped(!isCardFlipped)}
-                    className={`min-h-[180px] p-6 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between shadow-soft select-none ${
-                      isCardFlipped
-                        ? 'bg-slate-900 text-white border-slate-800'
-                        : 'bg-white text-slate-900 border-slate-200/90 hover:border-blue-400'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-[11px] font-mono">
-                      <span className={isCardFlipped ? 'text-blue-400' : 'text-[#0F52BA]'}>
-                        {isCardFlipped ? '✦ RESPUESTA / CONCLUSIÓN' : '❓ PREGUNTA DE EVOCACIÓN'}
-                      </span>
-                      <span className={isCardFlipped ? 'text-slate-400' : 'text-slate-400'}>
-                        Toca para {isCardFlipped ? 'ver pregunta' : 'revelar respuesta'}
-                      </span>
-                    </div>
-
-                    <div className="py-4 text-center">
-                      <p
-                        className={`text-sm sm:text-base font-semibold leading-relaxed font-sans ${
-                          isCardFlipped ? 'text-slate-100' : 'text-slate-900'
-                        }`}
-                        dangerouslySetInnerHTML={{
-                          __html: renderLatex(
-                            isCardFlipped ? currentCard.back : currentCard.front
-                          ),
-                        }}
-                      />
-                    </div>
-
-                    <div className="text-center text-[11px] font-mono text-slate-400">
-                      {isCardFlipped ? '✓ Respuesta verificada' : '⟳ Haz clic en la tarjeta para voltear'}
-                    </div>
-                  </div>
-
-                  {/* Controles de Navegación de Flashcards */}
-                  <div className="flex items-center justify-between pt-1">
-                    <button
-                      onClick={() => {
-                        setIsCardFlipped(false);
-                        setFlashcardIndex((prev) => Math.max(0, prev - 1));
-                      }}
-                      disabled={flashcardIndex === 0}
-                      className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition-colors"
-                    >
-                      ← Anterior
-                    </button>
-
-                    <button
-                      onClick={() => setIsCardFlipped(!isCardFlipped)}
-                      className="px-4 py-1.5 rounded-xl text-xs font-bold bg-blue-50 text-[#0F52BA] hover:bg-blue-100 border border-blue-200 transition-colors"
-                    >
-                      {isCardFlipped ? 'Ver Pregunta' : 'Girar Tarjeta'}
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setIsCardFlipped(false);
-                        setFlashcardIndex((prev) =>
-                          Math.min(flashcards.length - 1, prev + 1)
-                        );
-                      }}
-                      disabled={flashcardIndex >= flashcards.length - 1}
-                      className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition-colors"
-                    >
-                      Siguiente →
-                    </button>
-                  </div>
-                </div>
-              )}
+              <EnhancedFlashcardDeck
+                flashcards={flashcards}
+                renderLatex={renderLatex}
+              />
             </div>
 
             {/* SECCIÓN B: MÉTODO CORNELL (CUADRÍCULA CLÁSICA DE 3 BLOQUES) */}
@@ -730,6 +681,52 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 8: VIDEO REEL CINÉTICO VERTICAL 9:16 (PLAYBOOK REMOTION & HYPERFRAMES) */}
+        {activeTab === 'KINETIC_VIDEO' && (
+          <div className="space-y-6 max-w-4xl mx-auto py-2 animate-fadeIn">
+            <div className="p-4 rounded-2xl bg-sky-50/50 border border-sky-200/80 shadow-[0_2px_14px_-2px_rgba(56,189,248,0.12)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse" />
+                  <span className="text-xs font-mono font-bold uppercase text-sky-700">
+                    Playbook Remotion & HyperFrames
+                  </span>
+                </div>
+                <h2 className="text-base font-bold text-slate-900 mt-0.5">
+                  Reel Cinético Vertical 9:16 (5 Beats de Retención)
+                </h2>
+                <p className="text-xs text-slate-500 font-mono mt-0.5">
+                  Hook (0-3.3s) • Táctica (3.6s) • Showcase Visual (3.6s) • Síntesis (3.6s) • CTA Oficial
+                </p>
+              </div>
+
+              {totalQuestions > 0 && onStartExamWithQuestions && (
+                <button
+                  onClick={handleLaunchSimulator}
+                  className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow-soft flex items-center gap-2 self-start sm:self-auto shrink-0"
+                >
+                  <PlayIcon className="w-3.5 h-3.5 text-white" />
+                  <span>Ir al Examen</span>
+                </button>
+              )}
+            </div>
+
+            <KineticReelPlayer
+              title={guideMetadata.title}
+              subject={guideMetadata.area || 'Diseño Integral'}
+              videoSrc="/videos/mafe_teoria_diseno.mp4"
+              onCtaClick={handleLaunchSimulator}
+            />
+          </div>
+        )}
+
+        {/* TAB 9: LABORATORIO DE ANIMACIONES Y MICRO-INTERACCIONES */}
+        {activeTab === 'INTERACTIVE_LAB' && (
+          <div className="space-y-6 max-w-4xl mx-auto py-2 animate-fadeIn">
+            <InteractiveDesignPlayground />
           </div>
         )}
 
