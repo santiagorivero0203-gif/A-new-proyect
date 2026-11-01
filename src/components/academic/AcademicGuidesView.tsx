@@ -390,6 +390,30 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                     )}
                   </div>
 
+                    {guide.id && OFFICIAL_NOTION_PDF_LINKS[guide.id] && OFFICIAL_NOTION_PDF_LINKS[guide.id].length > 1 && (
+                      <div className="pt-2 border-t border-slate-100 space-y-1.5">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                          Guías originales de Notion ({OFFICIAL_NOTION_PDF_LINKS[guide.id].length} archivos adjuntos):
+                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {OFFICIAL_NOTION_PDF_LINKS[guide.id].map((pdf, pIdx) => (
+                            <a
+                              key={pIdx}
+                              href={pdf.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              download={pdf.filename}
+                              className="text-[10px] font-medium px-2 py-1 rounded-md bg-slate-50 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 hover:border-rose-300 transition-colors flex items-center gap-1 shadow-soft-2xs cursor-pointer"
+                              title={pdf.label}
+                            >
+                              <span>📄</span>
+                              <span className="truncate max-w-[130px]">{pdf.label.replace(/\s*\(PDF\)/i, '')}</span>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setSelectedDeconstructedGuide(guide)}

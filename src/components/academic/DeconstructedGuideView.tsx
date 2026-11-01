@@ -534,6 +534,34 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         </div>
       </div>
 
+      {/* BANNER DE DOCUMENTOS ORIGINALES ADJUNTOS (NOTION) */}
+      {notionPdfs && notionPdfs.length > 0 && (
+        <div className="px-4 sm:px-6 py-2 bg-gradient-to-r from-rose-50/80 via-white to-blue-50/80 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-1.5 text-slate-700">
+            <span className="font-bold text-rose-700 flex items-center gap-1">
+              <span>📎</span>
+              <span>Documentos originales adjuntos ({notionPdfs.length} {notionPdfs.length === 1 ? 'guía' : 'guías'}):</span>
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {notionPdfs.map((pdf, idx) => (
+              <a
+                key={idx}
+                href={pdf.url}
+                target="_blank"
+                rel="noreferrer"
+                download={pdf.filename}
+                className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-800 border border-slate-200 hover:border-rose-300 shadow-soft-2xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                title={'Descargar archivo original: ' + pdf.filename}
+              >
+                <span>📥</span>
+                <span>{pdf.label.replace(/\s*\(PDF\)/i, '')}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 2. BARRA DE PESTAÑAS (7 Pilares de la Anatomía Pedagógica) */}
       <div className="px-4 sm:px-6 border-b border-slate-200 bg-white flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-none py-1">
         <button
