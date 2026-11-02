@@ -14,6 +14,10 @@ import {
   ANDRES_DEFAULT_EVALUATION_EVENTS,
   ANDRES_DEFAULT_STUDY_REMINDERS,
 } from '../data/andres_curriculum_hub';
+import {
+  SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS,
+  SANTIAGO_SEMESTER_1_DEFAULT_REMINDERS,
+} from '../data/santiago_curriculum_hub';
 
 function getEventsKey(userId: string = 'default'): string {
   return `cpe_${userId}_events_clean_v1`;
@@ -57,6 +61,14 @@ export const plannerService = {
       this.saveEvents(userId, ANDRES_DEFAULT_EVALUATION_EVENTS);
       return ANDRES_DEFAULT_EVALUATION_EVENTS;
     }
+
+    // Inicialización automática canónica para Santiago Rivero (1er Semestre Física UCV)
+    if (userId === 'santiago_fisica_ucv' || userId === 'santiago-003-uuid' || userId.includes('santiago')) {
+      this.saveEvents(userId, SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS);
+      return SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS;
+    }
+
+
 
     return [];
   },
@@ -104,6 +116,12 @@ export const plannerService = {
     if (userId === 'andres_bachillerato_1' || userId === 'andres-001-uuid' || userId.includes('andres')) {
       this.saveReminders(userId, ANDRES_DEFAULT_STUDY_REMINDERS);
       return ANDRES_DEFAULT_STUDY_REMINDERS;
+    }
+
+    // Inicialización de recordatorios canónicos de estudio para Santiago Rivero
+    if (userId === 'santiago_fisica_ucv' || userId === 'santiago-003-uuid' || userId.includes('santiago')) {
+      this.saveReminders(userId, SANTIAGO_SEMESTER_1_DEFAULT_REMINDERS);
+      return SANTIAGO_SEMESTER_1_DEFAULT_REMINDERS;
     }
 
     return [];

@@ -31,6 +31,10 @@ import {
   ALL_ANDRES_QUESTIONS,
 } from '../../data/andres_curriculum_hub';
 import {
+  SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES,
+  SANTIAGO_SEMESTER_1_QUESTIONS,
+} from '../../data/santiago_curriculum_hub';
+import {
   exportGuideToWord,
   exportGuideToPdf,
   OFFICIAL_NOTION_PDF_LINKS,
@@ -44,6 +48,7 @@ type CategoryTab =
   | 'ALL'
   | 'mafe_curriculum'
   | 'andres_curriculum'
+  | 'santiago_curriculum'
   | 'ucv_ciencias'
   | 'verbal'
   | 'logico'
@@ -71,7 +76,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
     : isAndres
     ? 'andres_curriculum'
     : isSantiago
-    ? 'ucv_ciencias'
+    ? 'santiago_curriculum'
     : 'ALL';
   const [activeTab, setActiveTab] = useState<CategoryTab>(defaultTab);
   const [selectedGuide, setSelectedGuide] = useState<SimadiGuide | null>(null);
@@ -92,7 +97,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
 
   // Obtener guías oficiales de la base
   const guides = simadiBankService.getAllGuides(
-    activeTab === 'TOPIC_SELECTOR' || activeTab === 'AI_DECONSTRUCTED' || activeTab === 'mafe_curriculum' || activeTab === 'andres_curriculum'
+    activeTab === 'TOPIC_SELECTOR' || activeTab === 'AI_DECONSTRUCTED' || activeTab === 'mafe_curriculum' || activeTab === 'andres_curriculum' || activeTab === 'santiago_curriculum'
       ? 'ALL'
       : activeTab
   );
@@ -103,6 +108,8 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
     ? [...ALL_MAFE_DECONSTRUCTED_GUIDES, ...userDeconstructed.filter(g => !g.id?.startsWith('mafe-'))]
     : isAndres
     ? [...ALL_ANDRES_DECONSTRUCTED_GUIDES, ...userDeconstructed.filter(g => !g.id?.startsWith('andres-'))]
+    : isSantiago
+    ? [...SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES, ...userDeconstructed.filter(g => !g.id?.startsWith('santiago-'))]
     : userDeconstructed;
 
   // Datos para el selector de temas
@@ -163,6 +170,14 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
         questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Castellano' && ['andres-q-cas-003', 'andres-q-cas-006', 'andres-q-cas-007', 'andres-q-cas-008'].includes(q.id));
       } else if (guide.id === 'andres-design-color-grid') {
         questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Diseño' || q.id.startsWith('andres-q-des-') || q.id.startsWith('andres-q-inf-'));
+      } else if (guide.id === 'santiago-calc1-limits-guide') {
+        questions = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.topic.includes('Límites') || q.topic.includes('Derivadas') || q.subject === 'Matemática');
+      } else if (guide.id === 'santiago-fis1-mechanics-guide') {
+        questions = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.subject === 'Física' && (q.topic.includes('Cinemática') || q.topic.includes('Dinámica') || q.topic.includes('Energía')));
+      } else if (guide.id === 'santiago-alg1-vectors-guide') {
+        questions = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.topic.includes('Plano') || q.topic.includes('Determinantes'));
+      } else if (guide.id === 'santiago-lab1-errors-guide') {
+        questions = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.topic.includes('Incertidumbre'));
       } else {
         questions = isAndres ? ALL_ANDRES_QUESTIONS.slice(0, 10) : ALL_MAFE_QUESTIONS.slice(0, 10);
       }
@@ -233,6 +248,20 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                 }`}
               >
                 <span>🎨 Mi Programa UCAB (3 Guías)</span>
+              </button>
+            )}
+
+                        {/* Si es Santiago, mostrar pestaña destacada de Semestre I UCV */}
+            {isSantiago && (
+              <button
+                onClick={() => setActiveTab('santiago_curriculum')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                  activeTab === 'santiago_curriculum'
+                    ? 'bg-[#0F52BA] text-white shadow-soft-sm font-bold'
+                    : 'text-[#0F52BA] bg-blue-50/80 hover:bg-blue-100 border border-blue-200/80'
+                }`}
+              >
+                <span>⚛️ Semestre I Ciencias UCV (${SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.length} Guías)</span>
               </button>
             )}
 
@@ -311,6 +340,120 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
           </div>
         )}
       </div>
+
+
+      {/* VISTA 0C: PROGRAMA EXCLUSIVO DE SANTIAGO RIVERO (SEMESTRE I · CIENCIAS UCV) */}
+      {activeTab === 'santiago_curriculum' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-blue-950 via-[#0a1835] to-slate-900 border-2 border-blue-600/40 shadow-soft-lg flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
+            <div className="space-y-1.5 min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 font-mono">
+                  Licenciatura en Física · Facultad de Ciencias UCV
+                </span>
+                <span className="text-[10px] font-mono text-slate-300">
+                  Semestre I • {SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.length} Guías Deconstruidas • {SANTIAGO_SEMESTER_1_QUESTIONS.length} Reactivos Analíticos
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-white tracking-tight font-sans">
+                Mi Centro Académico · Primer Semestre UCV
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
+                Temario oficial de Física I (Mecánica ℝ³ y leyes de Newton), Cálculo I (Axiomas reales, límites ε-δ y derivadas), Álgebra Lineal & Geometría Analítica (Planos, matrices y determinantes) y Laboratorio I de Física (Metrología y propagación de incertidumbres).
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() =>
+                  onStartExamWithQuestions?.(
+                    SANTIAGO_SEMESTER_1_QUESTIONS,
+                    'Primer Semestre UCV · Simulacro Integral (Física I + Cálculo I + Álgebra Lineal)'
+                  )
+                }
+                className="bg-[#0F52BA] hover:bg-[#0c4194] active:scale-[0.97] text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-[0_0_20px_rgba(15,82,186,0.5)] flex items-center gap-1.5 transition-all cursor-pointer border border-blue-400/30"
+              >
+                <PlayIcon className="w-3.5 h-3.5 text-white" />
+                <span>Simular Examen Semestre I ({SANTIAGO_SEMESTER_1_QUESTIONS.length})</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Grid de las 4 Guías Oficiales Deconstruidas de Semestre I */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.map((guide) => (
+              <div
+                key={guide.id}
+                className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-blue-200/90 dark:border-blue-900/40 hover:border-[#0F52BA] transition-all shadow-soft flex flex-col justify-between space-y-4"
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/80 text-[#0F52BA] dark:text-blue-300 font-mono">
+                      {guide.guideMetadata.area}
+                    </span>
+                    <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md">
+                      {guide.generatedQuestions?.length || 5} Reactivos
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug font-sans">
+                    {guide.guideMetadata.title}
+                  </h3>
+
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 font-sans">
+                    {guide.guideMetadata.summary}
+                  </p>
+
+                  <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-mono text-slate-400">
+                    <span>• {guide.glossary?.length || 0} términos</span>
+                    <span>• {guide.formulasAndStrategies?.coreFormulas?.length || 0} modelos</span>
+                    <span>• {guide.studyTechniquesHub?.activeRecallFlashcards?.length || 0} flashcards</span>
+                  </div>
+                </div>
+
+                {/* Barra de Acciones y Descarga de Documentos (PDF / Word) */}
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => exportGuideToPdf(guide)}
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 text-[#0F52BA] dark:text-blue-300 border border-blue-200/90 dark:border-blue-800/60 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                      title="Descargar o Guardar como PDF de alta resolución"
+                    >
+                      <span>📄 PDF (.pdf)</span>
+                    </button>
+                    <button
+                      onClick={() => exportGuideToWord(guide)}
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                      title="Descargar guía completa en formato Microsoft Word (.doc)"
+                    >
+                      <span>📝 Word (.doc)</span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setSelectedDeconstructedGuide(guide)}
+                      className="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-900 hover:bg-black text-white flex items-center justify-center gap-1.5 transition-all shadow-soft cursor-pointer active:scale-[0.98]"
+                    >
+                      <BookOpenIcon className="w-3.5 h-3.5 text-blue-400" />
+                      <span>Ver Guía</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleStartExamFromDeconstructed(guide)}
+                      className="py-2 px-3.5 rounded-xl text-xs font-bold bg-[#0F52BA] hover:bg-[#0c4194] text-white shadow-soft flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98]"
+                      title="Simular examen con preguntas de esta guía"
+                    >
+                      <PlayIcon className="w-3.5 h-3.5 text-white" />
+                      <span>Examen</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* VISTA 0: PROGRAMA EXCLUSIVO DE MARÍA FERNANDA (DISEÑO INTEGRAL UCAB) */}
       {activeTab === 'mafe_curriculum' && (

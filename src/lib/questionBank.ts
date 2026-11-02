@@ -10,6 +10,10 @@ import {
   ALL_ANDRES_QUESTIONS,
   ANDRES_TAILORED_EXAMS,
 } from '../data/andres_curriculum_hub';
+import {
+  SANTIAGO_SEMESTER_1_QUESTIONS,
+  SANTIAGO_SEMESTER_1_TAILORED_EXAMS,
+} from '../data/santiago_curriculum_hub';
 
 /**
  * Banco Integral de Preguntas Académicas Reales
@@ -728,6 +732,12 @@ export const QUESTION_BANK: Question[] = [
   // (Matemáticas ℤ, Biología Lab, Física Palancas, Castellano Barrabás, Informática)
   // ==========================================
   ...ALL_ANDRES_QUESTIONS,
+
+  // ==========================================
+  // SANTIAGO · PRIMER SEMESTRE CIENCIAS UCV (FÍSICA)
+  // (Física I, Cálculo I, Álgebra Lineal I, Laboratorio I de Física)
+  // ==========================================
+  ...SANTIAGO_SEMESTER_1_QUESTIONS,
 ];
 
 /**
@@ -793,6 +803,9 @@ export const PROFILE_TAILORED_EXAMS: ProfileTailoredExam[] = [
     targetSubject: 'Matemática',
     targetTopicKeyword: 'Álgebra Lineal',
   },
+
+  // Modelos Adicionales de Primer Semestre (Ciencias UCV)
+  ...SANTIAGO_SEMESTER_1_TAILORED_EXAMS,
 
   // 2. Andrés (1er Año Bachillerato - Evaluaciones Oficiales I Momento)
   ...ANDRES_TAILORED_EXAMS,
