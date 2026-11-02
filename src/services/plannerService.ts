@@ -54,10 +54,11 @@ export const plannerService = {
           const parsed: EvaluationEvent[] = JSON.parse(data);
           if (Array.isArray(parsed) && parsed.length > 0) {
             const hasEnrichedData = parsed.some((e) => e.guideId || e.researchPrompt || e.multimediaResources);
-            if (hasEnrichedData && parsed.length >= SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS.length) {
+            const hasNewCurriculum = parsed.some((e) => e.id.includes('mat1') || e.id.includes('qgi'));
+            if (hasNewCurriculum && hasEnrichedData && parsed.length >= SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS.length) {
               return parsed;
             }
-            // Fusionar con el catálogo enriquecido preservando notas y calificaciones del usuario
+            // Fusionar con el catálogo enriquecido del nuevo pensum preservando notas y calificaciones del usuario
             const merged = SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS.map((def) => {
               const existing = parsed.find((p) => p.id === def.id || (p.subject === def.subject && p.title === def.title));
               return existing

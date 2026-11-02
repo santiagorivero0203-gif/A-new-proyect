@@ -4,15 +4,15 @@
  * (Facultad de Ciencias · Escuela de Física · Universidad Central de Venezuela - UCV).
  *
  * Arquitectura modular y escalable para el PRIMER SEMESTRE (Semestre I):
- * 1. Materias Oficiales de la Escuela de Física UCV:
- *    - Física I (Mecánica Clásica, Cinemática Vectorial, Dinámica Newtoniana, Trabajo/Energía y Momento)
- *    - Cálculo I (Análisis Real, Cotas, Límites, Continuidad, Derivación y Optimización)
- *    - Álgebra Lineal & Geometría Analítica (Vectores en ℝ³, Planos, Matrices, Determinantes y Sistemas)
- *    - Laboratorio I de Física (Teoría de Errores, Propagación de Incertidumbres y Mínimos Cuadrados)
- * 2. Calendario de Evaluaciones Base (14 Parciales, Talleres, Proyectos e Informes de Laboratorio)
- *    con enlace a Guía Deconstruida, Recursos Multimedia y Prompt de Investigación con Arquitectura Santiago
+ * 1. Materias Oficiales de la Escuela de Física UCV (Pensum 2023):
+ *    - Matemática I (Cátedra Pedro Alson · Métodos de Graficación) [5 créditos]
+ *    - Principios de Química I (Código 3401 · Escuela de Química UCV) [5 créditos]
+ *    - Física I (Mecánica Clásica · Escuela de Física UCV) [5 créditos]
+ *    - Laboratorio I de Física (Metrología, Incertidumbres y Riel de Aire) [3 créditos]
+ * 2. Calendario de Evaluaciones Base (Parciales, Talleres e Informes de Laboratorio)
+ *    con enlace a Guía Deconstruida, Recursos Multimedia y Prompt de Investigación
  * 3. Tareas y Sesiones de Estudio con Backward Scheduling (Alertas escalonadas de 10, 7 y 3 días)
- * 4. Catorce Guías Académicas Deconstruidas en 7 Pilares (`SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES`)
+ * 4. Veinte Guías Académicas Deconstruidas en 7 Pilares (`SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES`)
  * 5. Banco de Reactivos Calibrados para Nivel Universitario Semestre I (`SANTIAGO_SEMESTER_1_QUESTIONS`)
  * 6. Modelos de Examen Preconfigurados (`SANTIAGO_SEMESTER_1_TAILORED_EXAMS`)
  * 7. Motor de Ingesta Dinámica (`ingestSantiagoSemester1Data`)
@@ -23,10 +23,7 @@ import type { DeconstructedAcademicGuide } from '../types/deconstruction.types';
 import type { EvaluationEvent, StudyReminder } from '../types/academicPlanner.types';
 import { SANTIAGO_RESEARCH_PROMPTS } from './santiago_prompts';
 import { SANTIAGO_MULTIMEDIA_CATALOG } from './santiago_multimedia';
-import {
-  SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES as RAW_GUIDES,
-  questionToDeconstructed,
-} from './santiago_guides';
+export { SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES } from './santiago_guides';
 
 export const SANTIAGO_PROFILE = 'santiago_fisica_ucv' as const;
 
@@ -36,7 +33,7 @@ function buildOptions(texts: [string, string, string, string]) {
 }
 
 // =====================================================================
-// 1. MATERIAS OFICIALES DEL PRIMER SEMESTRE (ESCUELA DE FÍSICA UCV)
+// 1. MATERIAS OFICIALES DEL PRIMER SEMESTRE (PENSUM FÍSICA UCV 2023)
 // =====================================================================
 export interface SantiagoSemesterSubject {
   code: string;
@@ -49,40 +46,40 @@ export interface SantiagoSemesterSubject {
 
 export const SANTIAGO_SEMESTER_1_SUBJECTS: SantiagoSemesterSubject[] = [
   {
+    code: 'MAT-1101',
+    name: 'Matemática I (Pedro Alson · Métodos de Graficación)',
+    department: 'Departamento de Matemáticas · Facultad de Ciencias UCV',
+    credits: 5,
+    description:
+      'Estudio geométrico de curvas continuas, monotonía y cotas, operaciones con curvas (suma, producto, recíproca 1/f y composición con la bisectriz y = x), modelo teclas y pantallas de Alson, linealización de diagramas por completación de cuadrados, soluciones múltiples de ecuaciones no lineales, familias de hipérbolas homográficas canónicas v + k/(x - h), inecuaciones gráficas sobre el eje real, límites visuales y trazado cualitativo de la función derivada f prime (x).',
+    typicalEvalStructure: '3 Parciales (25% c/u) + Taller de Graficación y Operaciones (15%) + Quices (10%).',
+  },
+  {
+    code: 'QGI-3401',
+    name: 'Principios de Química I',
+    department: 'Escuela de Química · Instituto de Ciencias de la Tierra UCV',
+    credits: 5,
+    description:
+      'Propiedades de la materia y medidas, análisis dimensional y cifras significativas en densidad, leyes ponderales e isótopos, mecánica cuántica (Planck, Bohr, de Broglie, Heisenberg), los 4 números cuánticos y configuraciones electrónicas (Aufbau, Pauli, Hund con anomalías de Cr/Cu), tendencias periódicas y carga nuclear efectiva Z_ef, enlace iónico y ciclo de Born-Haber, estructuras de Lewis y octeto expandido, modelo TRPEV/VSEPR y polaridad molecular, estequiometría de reacción (mol, reactivo limitante y rendimiento), reacciones acuosas de precipitación y redox ion-electrón, leyes de los gases y recolección sobre agua, y disoluciones ideales con propiedades coligativas.',
+    typicalEvalStructure: '3 Parciales (25% c/u) + Informe de Laboratorio (15%) + Quices de Entrada (10%).',
+  },
+  {
     code: 'FIS-1101',
-    name: 'Física I',
-    department: 'Departamento de Física Aplicada y Teórica',
+    name: 'Física I (Mecánica Clásica)',
+    department: 'Escuela de Física · Departamento de Física Aplicada y Teórica UCV',
     credits: 5,
     description:
-      'Cinemática vectorial en ℝ³, leyes de Newton, dinámica de partículas, fuerzas dependientes de la velocidad, trabajo, energía potencial y cinética, teorema de conservación del momento lineal y colisiones en 2D.',
-    typicalEvalStructure: '3 Parciales (25% c/u) + Proyecto/Taller Computacional (15%) + Quices (10%).',
-  },
-  {
-    code: 'MAT-1102',
-    name: 'Cálculo I',
-    department: 'Departamento de Matemáticas',
-    credits: 5,
-    description:
-      'Axiomas de cuerpo de los números reales, supremo e ínfimo, sucesiones y límites formales (definición épsilon-delta), continuidad, derivabilidad, teoremas de Rolle y del Valor Medio, regla de la cadena y problemas de optimización física.',
-    typicalEvalStructure: '3 Parciales (25% c/u) + Taller de Modelado y Optimización (15%) + Quices (10%).',
-  },
-  {
-    code: 'MAT-1103',
-    name: 'Álgebra Lineal & Geometría Analítica',
-    department: 'Departamento de Matemáticas',
-    credits: 4,
-    description:
-      'Vectores euclidianos en ℝ² y ℝ³, producto escalar, producto vectorial y mixto, ecuaciones de rectas y planos en el espacio, matrices, determinantes, eliminación gaussiana, transformaciones lineales y autovectores.',
-    typicalEvalStructure: '2 Parciales (35% c/u) + Taller Práctico de Rotaciones (20%) + Quices (10%).',
+      'Cinemática vectorial en tres dimensiones, vector de posición, velocidad tangente, aceleración intrínseca (tangencial y centrípeta), radio de curvatura y tiro parabólico, leyes de Newton, diagramas de cuerpo libre (DCL), dinámica con fricción estática y cinética en planos inclinados, peralte de curvas, trabajo mecánico por integral de línea, teorema de las fuerzas vivas, fuerzas conservativas, energía potencial gravitatoria y elástica, conservación de la energía mecánica y disipación por fricción.',
+    typicalEvalStructure: '3 Parciales (25% c/u) + Taller / Proyecto Mecánico (15%) + Quices (10%).',
   },
   {
     code: 'FIS-1104',
     name: 'Laboratorio I de Física',
-    department: 'Laboratorios Docentes de Física',
+    department: 'Laboratorios Docentes de Física · Pabellón 2 UCV',
     credits: 3,
     description:
-      'Instrumentación metrológica (pie de rey, micrómetro, cronómetro digital), teoría de medición y cifras significativas, propagación de incertidumbres sistemáticas y aleatorias por Gauss, ajuste lineal por mínimos cuadrados y redacción formal de informes.',
-    typicalEvalStructure: 'Informe #1 Densidades (25%) + Informe #2 Riel de Aire (25%) + Examen Práctico (30%) + Quices de Entrada (20%).',
+      'Instrumentación metrológica (calibrador vernier, tornillo micrométrico, cronómetros digitales y fotoceldas), teoría de medición y cifras significativas, propagación de incertidumbres sistemáticas y aleatorias por Gauss, ajuste lineal por mínimos cuadrados y redacción formal de informes científicos.',
+    typicalEvalStructure: 'Informe #1 Densidades (25%) + Informe #2 Riel de Aire (25%) + Examen Práctico en Estaciones (30%) + Quices de Entrada (20%).',
   },
 ];
 
@@ -90,10 +87,176 @@ export const SANTIAGO_SEMESTER_1_SUBJECTS: SantiagoSemesterSubject[] = [
 // 2. CALENDARIO DE EVALUACIONES ENRIQUECIDO CON GUÍAS, MULTIMEDIA Y PROMPTS
 // =====================================================================
 export const SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS: EvaluationEvent[] = [
-  // --- FÍSICA I ---
+  // --- MATEMÁTICA I (PEDRO ALSON) ---
+  {
+    id: 'santiago-mat1-parcial-1',
+    title: 'Primer Parcial de Matemática I: Estudio de Curvas & Soluciones Múltiples',
+    subject: 'Matemática',
+    date: '2026-11-25',
+    time: '08:00 AM',
+    type: 'PARCIAL',
+    weightPercentage: 25,
+    location: 'Facultad de Ciencias UCV · Aula 104',
+    topics: [
+      'Estudio geométrico de curvas continuas',
+      'Monotonía, intervalos de crecimiento y cotas',
+      'Caminos de ida y caminos de vuelta en el plano',
+      'Soluciones múltiples de ecuaciones no lineales y trigonométricas',
+    ],
+    notes: 'Examen canónico del Prof. Pedro Alson (Editorial ERRO). Traer lápices y regla.',
+    guideId: 'santiago-mat1-curvas-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-mat1-curvas'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-mat1-curvas'],
+  },
+  {
+    id: 'santiago-mat1-taller-operaciones',
+    title: 'Taller de Matemática I: Operaciones con Curvas, Recíproca y Composición',
+    subject: 'Matemática',
+    date: '2026-12-09',
+    time: '10:00 AM',
+    type: 'TALLER',
+    weightPercentage: 15,
+    location: 'Facultad de Ciencias UCV · Aula 104',
+    topics: [
+      'Suma y resta gráfica de curvas por ordenadas',
+      'Curva recíproca 1/f(x) y polos asintóticos',
+      'Producto geométrico de curvas y análisis de signos',
+      'Composición gráfica mediante el camino de la bisectriz y = x',
+    ],
+    notes: 'Taller práctico individual con trazado limpio a mano alzada.',
+    guideId: 'santiago-mat1-operaciones-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-mat1-operaciones'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-mat1-operaciones'],
+  },
+  {
+    id: 'santiago-mat1-parcial-2',
+    title: 'Segundo Parcial de Matemática I: Teclas, Hipérbolas Homográficas e Inecuaciones',
+    subject: 'Matemática',
+    date: '2027-01-13',
+    time: '08:00 AM',
+    type: 'PARCIAL',
+    weightPercentage: 25,
+    location: 'Facultad de Ciencias UCV · Aula 104',
+    topics: [
+      'Modelo de teclas y pantallas y linealización por completación de cuadrados',
+      'Descomposición canónica de hipérbolas homográficas v + k/(x - h)',
+      'Familias de rectas secantes y áreas triangulares bajo curvas',
+      'Resolución visual de inecuaciones f(x) >= g(x) y transformadas con módulo |f(x)|',
+    ],
+    notes: 'Problema clásico de 6 puntos de hipérbola homográfica con recta.',
+    guideId: 'santiago-mat1-rectas-hiperbolas-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-mat1-rectas-hiperbolas'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-mat1-inecuaciones'],
+  },
+  {
+    id: 'santiago-mat1-parcial-3',
+    title: 'Tercer Parcial de Matemática I: Límites, Derivadas y Graficación de f prime (x)',
+    subject: 'Matemática',
+    date: '2027-02-03',
+    time: '08:00 AM',
+    type: 'PARCIAL',
+    weightPercentage: 25,
+    location: 'Facultad de Ciencias UCV · Aula 104',
+    topics: [
+      'Definición geométrica de límites y tipos de discontinuidades',
+      'Recta tangente y razón de cambio instantánea',
+      'Trazado cualitativo de la función derivada f prime a partir de f',
+      'Puntos de inflexión y análisis de concavidad',
+    ],
+    notes: 'Evaluación final de la cátedra de Pedro Alson.',
+    guideId: 'santiago-mat1-limites-derivadas-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-mat1-limites-derivadas'],
+  },
+
+  // --- PRINCIPIOS DE QUÍMICA I (CÓDIGO 3401) ---
+  {
+    id: 'santiago-qgi-parcial-1',
+    title: 'Primer Parcial de Principios de Química I: Materia, Cuántica y Tabla Periódica',
+    subject: 'Química',
+    date: '2026-11-27',
+    time: '08:00 AM',
+    type: 'PARCIAL',
+    weightPercentage: 25,
+    location: 'Facultad de Ciencias UCV · Aula 201',
+    topics: [
+      'Propiedades de la materia, análisis dimensional y cifras significativas',
+      'Leyes ponderales, modelos atómicos e isótopos',
+      'Cuantización de Planck, modelo de Bohr y números cuánticos (n, l, ml, ms)',
+      'Configuraciones electrónicas (Aufbau, Pauli, Hund) y anomalías de Cr/Cu',
+      'Tendencias periódicas, carga nuclear efectiva Z_ef y radios',
+    ],
+    notes: 'Llevar tabla periódica oficial limpia y calculadora científica.',
+    guideId: 'santiago-qgi-cuantica-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-cuantica'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
+  },
+  {
+    id: 'santiago-qgi-informe-1',
+    title: 'Informe de Laboratorio de Química: Medidas de Densidad y Cifras Significativas',
+    subject: 'Química',
+    date: '2026-12-02',
+    time: '02:00 PM',
+    type: 'TALLER',
+    weightPercentage: 15,
+    location: 'Laboratorios Docentes de Química · Pabellón 1 UCV',
+    topics: [
+      'Pesadas en balanza analítica y lectura de probetas',
+      'Determinación de densidad de sólidos por desplazamiento de agua',
+      'Propagación estricta de cifras significativas',
+      'Identificación de metales por comparación con densidades teóricas',
+    ],
+    notes: 'Entrega de informe formal según normas del departamento.',
+    guideId: 'santiago-qgi-propiedades-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-propiedades'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
+  },
+  {
+    id: 'santiago-qgi-parcial-2',
+    title: 'Segundo Parcial de Principios de Química I: Enlace Químico, TRPEV y Estequiometría',
+    subject: 'Química',
+    date: '2027-01-08',
+    time: '08:00 AM',
+    type: 'PARCIAL',
+    weightPercentage: 25,
+    location: 'Facultad de Ciencias UCV · Aula 201',
+    topics: [
+      'Enlace iónico, energía reticular y ciclo de Born-Haber',
+      'Estructuras de Lewis, carga formal, resonancia y octeto expandido',
+      'Geometría molecular TRPEV/VSEPR, distorsión angular y polaridad',
+      'Hibridación de orbitales (sp, sp2, sp3, sp3d, sp3d2)',
+      'Estequiometría de reacción, reactivo limitante, pureza y rendimiento',
+    ],
+    notes: 'Dominio absoluto de Lewis y balance de masas mol-mol.',
+    guideId: 'santiago-qgi-estequiometria-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-estequiometria'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria'],
+  },
+  {
+    id: 'santiago-qgi-parcial-3',
+    title: 'Tercer Parcial de Principios de Química I: Reacciones Acuosas, Redox, Gases y Coligativas',
+    subject: 'Química',
+    date: '2027-01-27',
+    time: '08:00 AM',
+    type: 'PARCIAL',
+    weightPercentage: 25,
+    location: 'Facultad de Ciencias UCV · Aula 201',
+    topics: [
+      'Reglas de solubilidad y ecuaciones iónicas netas',
+      'Balanceo redox por ion-electrón en medio ácido y básico',
+      'Titulaciones volumétricas ácido-base y punto de equivalencia',
+      'Leyes de los gases, PV = nRT, presiones parciales de Dalton sobre agua',
+      'Disoluciones ideales, concentraciones (M, m, X) y propiedades coligativas con van t Hoff',
+    ],
+    notes: 'Examen de alta densidad cuantitativa. Traer calculadora.',
+    guideId: 'santiago-qgi-disoluciones-reacciones-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-disoluciones-reacciones'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-disoluciones'],
+  },
+
+  // --- FÍSICA I (MECÁNICA CLÁSICA) ---
   {
     id: 'santiago-fis1-parcial-1',
-    title: 'Primer Parcial de Física I: Cinemática Vectorial ℝ³',
+    title: 'Primer Parcial de Física I: Cinemática Vectorial ℝ³ y Triedro Intrínseco',
     subject: 'Física',
     date: '2026-11-20',
     time: '08:00 AM',
@@ -102,17 +265,18 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS: EvaluationEvent[] = [
     location: 'Facultad de Ciencias UCV · Aula Magna / Aula 201',
     topics: [
       'Cinemática diferencial en ℝ³',
-      'Aceleración tangencial y normal',
-      'Tiro parabólico con resistencia del aire',
-      'Movimiento circular no uniforme',
+      'Aceleración tangencial y normal o centrípeta',
+      'Radio de curvatura y círculo osculador',
+      'Tiro parabólico con análisis paramétrico',
     ],
     notes: 'Llevar calculadora científica y formulario oficial rubricado.',
     guideId: 'santiago-fis1-kinematics-guide',
     multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-fis1-kinematics'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-lab1-airtrack'],
   },
   {
     id: 'santiago-fis1-parcial-2',
-    title: 'Segundo Parcial de Física I: Leyes de Newton y Dinámica',
+    title: 'Segundo Parcial de Física I: Leyes de Newton, Dinámica y Fricción',
     subject: 'Física',
     date: '2026-12-18',
     time: '08:00 AM',
@@ -120,18 +284,19 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS: EvaluationEvent[] = [
     weightPercentage: 25,
     location: 'Facultad de Ciencias UCV · Aula 201',
     topics: [
-      'Diagramas de cuerpo libre complejos',
-      'Rozamiento estático y cinético',
-      'Fuerzas elásticas de Hooke',
-      'Dinámica en marcos no inerciales (fuerzas ficticias)',
+      'Diagramas de cuerpo libre (DCL) en sistemas conectados',
+      'Fricción estática máxima vs fricción cinética',
+      'Planos inclinados con ligaduras de cuerdas y poleas',
+      'Dinámica del movimiento circular y peralte de curvas',
     ],
-    notes: 'Requiere dominio absoluto de descomposición vectorial trigonométrica.',
+    notes: 'Aislamiento de cada masa y alineación de ejes con la aceleración.',
     guideId: 'santiago-fis1-dynamics-guide',
     multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-fis1-dynamics'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-fis1-newton'],
   },
   {
     id: 'santiago-fis1-parcial-3',
-    title: 'Tercer Parcial de Física I: Trabajo, Energía y Conservación',
+    title: 'Tercer Parcial de Física I: Trabajo, Energía Mecánica y Conservación',
     subject: 'Física',
     date: '2027-01-29',
     time: '08:00 AM',
@@ -139,179 +304,19 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS: EvaluationEvent[] = [
     weightPercentage: 25,
     location: 'Facultad de Ciencias UCV · Aula 201',
     topics: [
-      'Integrales de línea para trabajo mecánico',
-      'Energía potencial gravitacional y elástica',
-      'Conservación de la energía mecánica',
-      'Colisiones elásticas e inelásticas en 2D',
+      'Integral de línea para el trabajo mecánico',
+      'Teorema de las fuerzas vivas (W_neto = Delta K)',
+      'Fuerzas conservativas y energía potencial gravitatoria y elástica',
+      'Disipación mecánica por trabajo de fricción no conservativo',
     ],
-    notes: 'Último parcial ordinario antes del cierre de actas semestral.',
+    notes: 'Último parcial ordinario antes del cierre de actas.',
     guideId: 'santiago-fis1-energy-guide',
     multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-fis1-energy'],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-fis1-energia'],
   },
-  {
-    id: 'santiago-fis1-proyecto',
-    title: 'Proyecto de Física I: Simulación Mecánica Computacional en Python',
-    subject: 'Física',
-    date: '2027-01-15',
-    time: '11:59 PM',
-    type: 'PROYECTO',
-    weightPercentage: 15,
-    location: 'Campus Virtual UCV / Repositorio GitHub',
-    topics: [
-      'Integrador numérico Euler-Cromer',
-      'Modelado de fricción aerodinámica v y v²',
-      'Búsqueda numérica de ángulo óptimo de tiro',
-      'Gráficas científicas con Matplotlib',
-    ],
-    notes: 'Entrega en Jupyter Notebook con código documentado y memoria técnica.',
-    guideId: 'santiago-fis1-simulation-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-fis1-simulation'],
-    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-fis1-simulation'],
-  },
-
-  // --- CÁLCULO I ---
-  {
-    id: 'santiago-calc1-parcial-1',
-    title: 'Primer Parcial de Cálculo I: Cotas, Sucesiones y Límites',
-    subject: 'Matemática',
-    date: '2026-11-27',
-    time: '10:00 AM',
-    type: 'PARCIAL',
-    weightPercentage: 25,
-    location: 'Facultad de Ciencias UCV · Aula 104',
-    topics: [
-      'Axioma del supremo e ínfimo',
-      'Definición rigurosa de límite (ε - δ)',
-      'Límites indeterminados racionales y trigonométricos',
-      'Continuidad y Teorema de Bolzano',
-    ],
-    notes: 'Prohibido el uso de calculadora; demostraciones analíticas rigurosas.',
-    guideId: 'santiago-calc1-limits-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-calc1-limits'],
-  },
-  {
-    id: 'santiago-calc1-parcial-2',
-    title: 'Segundo Parcial de Cálculo I: Derivadas y Regla de la Cadena',
-    subject: 'Matemática',
-    date: '2026-12-22',
-    time: '10:00 AM',
-    type: 'PARCIAL',
-    weightPercentage: 25,
-    location: 'Facultad de Ciencias UCV · Aula 104',
-    topics: [
-      'Derivada por definición',
-      'Regla de la cadena y derivación implícita',
-      'Derivadas de orden superior',
-      'Diferenciales y aproximaciones lineales',
-    ],
-    notes: 'Examen de alta velocidad algebraica.',
-    guideId: 'santiago-calc1-derivatives-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-calc1-derivatives'],
-  },
-  {
-    id: 'santiago-calc1-parcial-3',
-    title: 'Tercer Parcial de Cálculo I: Teoremas de Valor Medio y Optimización',
-    subject: 'Matemática',
-    date: '2027-02-05',
-    time: '10:00 AM',
-    type: 'PARCIAL',
-    weightPercentage: 25,
-    location: 'Facultad de Ciencias UCV · Aula 104',
-    topics: [
-      'Teorema de Rolle y del Valor Medio (Cauchy/Lagrange)',
-      'Regla de L\'Hôpital',
-      'Criterios de primera y segunda derivada',
-      'Problemas de optimización aplicada a la física',
-    ],
-    notes: 'Graficación analítica detallada de funciones con asíntotas oblicuas.',
-    guideId: 'santiago-calc1-optimization-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-calc1-optimization'],
-  },
-  {
-    id: 'santiago-calc1-taller',
-    title: 'Taller de Cálculo I: Modelado Matemático y Optimización Aplicada',
-    subject: 'Matemática',
-    date: '2027-01-20',
-    time: '02:00 PM',
-    type: 'TALLER',
-    weightPercentage: 15,
-    location: 'Facultad de Ciencias UCV · Aula 104',
-    topics: [
-      'Modelado de contenedores y recipientes de costo mínimo',
-      'Ecuaciones de ligadura geométrica',
-      'Teorema de Weierstrass en intervalos cerrados',
-      'Comprobación de concavidad con segunda derivada',
-    ],
-    notes: 'Trabajo individual formal con redacción de deducciones matemáticas.',
-    guideId: 'santiago-calc1-modeling-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-calc1-optimization'],
-    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-calc1-modeling'],
-  },
-
-  // --- ÁLGEBRA LINEAL & GEOMETRÍA ANALÍTICA ---
-  {
-    id: 'santiago-alg1-parcial-1',
-    title: 'Primer Parcial de Álgebra Lineal: Geometría Vectorial en ℝ³',
-    subject: 'Matemática',
-    date: '2026-12-04',
-    time: '08:00 AM',
-    type: 'PARCIAL',
-    weightPercentage: 35,
-    location: 'Facultad de Ciencias UCV · Aula 302',
-    topics: [
-      'Producto escalar, normas y ortogonalidad',
-      'Producto vectorial y áreas de paralelogramos',
-      'Triple producto escalar y volúmenes de paralelepípedos',
-      'Ecuaciones vectoriales y paramétricas de rectas y planos',
-    ],
-    notes: 'Enfoque geométrico riguroso para física teórica.',
-    guideId: 'santiago-alg1-vectors-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-alg1-vectors'],
-  },
-  {
-    id: 'santiago-alg1-parcial-2',
-    title: 'Segundo Parcial de Álgebra Lineal: Matrices, Sistemas y Rango',
-    subject: 'Matemática',
-    date: '2027-01-22',
-    time: '08:00 AM',
-    type: 'PARCIAL',
-    weightPercentage: 35,
-    location: 'Facultad de Ciencias UCV · Aula 302',
-    topics: [
-      'Álgebra de matrices e inversas',
-      'Operaciones elementales de fila y matriz escalonada',
-      'Teorema de Rouché-Frobenius',
-      'Determinantes, propiedades y regla de Cramer',
-    ],
-    notes: 'Sistemas homogéneos y no homogéneos de dimensión n.',
-    guideId: 'santiago-alg1-matrices-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-alg1-matrices'],
-  },
-  {
-    id: 'santiago-alg1-taller',
-    title: 'Taller de Álgebra Lineal: Rotaciones y Gráfica Vectorial en ℝ³',
-    subject: 'Matemática',
-    date: '2027-01-18',
-    time: '10:00 AM',
-    type: 'TALLER',
-    weightPercentage: 20,
-    location: 'Facultad de Ciencias UCV · Laboratorio de Cómputo',
-    topics: [
-      'Matrices ortogonales de rotación espacial',
-      'Autovalores y autovectores en giros',
-      'Ejes principales de inercia mecánica',
-      'Preservación de ángulos y normas euclidianas',
-    ],
-    notes: 'Entrega práctica con demostración de ortogonalidad matricial.',
-    guideId: 'santiago-alg1-workshop-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-alg1-matrices'],
-    researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-alg1-workshop'],
-  },
-
-  // --- LABORATORIO I DE FÍSICA ---
   {
     id: 'santiago-lab1-informe-1',
-    title: 'Informe #1: Medición de Densidades y Propagación de Incertidumbres',
+    title: 'Informe #1 de Lab Física: Medición de Densidad y Propagación de Incertidumbres',
     subject: 'Física',
     date: '2026-11-16',
     time: '02:00 PM',
@@ -319,19 +324,19 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS: EvaluationEvent[] = [
     weightPercentage: 25,
     location: 'Laboratorio Docente de Física I · Pabellón 2',
     topics: [
-      'Manejo de calibrador vernier y tornillo micrométrico',
-      'Cálculo de error instrumental y aleatorio',
-      'Propagación diferencial multivariable de Gauss',
-      'Redondeo de cifras significativas',
+      'Calibrador vernier y tornillo micrométrico',
+      'Apreciación instrumental y error aleatorio',
+      'Propagación en cuadratura de Gauss',
+      'Redondeo formal de cifras significativas',
     ],
-    notes: 'Entrega formal impresa en formato de paper científico con tablas.',
-    guideId: 'santiago-lab1-density-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-lab1-density'],
+    notes: 'Entrega formal impresa en formato de paper científico.',
+    guideId: 'santiago-fis1-kinematics-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-fis1-kinematics'],
     researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-lab1-density'],
   },
   {
     id: 'santiago-lab1-informe-2',
-    title: 'Informe #2: Cinemática en Riel de Aire y Ajuste por Mínimos Cuadrados',
+    title: 'Informe #2 de Lab Física: Cinemática en Riel de Aire y Mínimos Cuadrados',
     subject: 'Física',
     date: '2026-12-14',
     time: '02:00 PM',
@@ -339,34 +344,15 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS: EvaluationEvent[] = [
     weightPercentage: 25,
     location: 'Laboratorio Docente de Física I · Pabellón 2',
     topics: [
-      'Fotoceldas y cronómetros digitales en riel de aire',
+      'Fotoceldas en riel de aire',
       'Regresión lineal por mínimos cuadrados y coeficiente R²',
-      'Linealización cuadrática x vs t²',
-      'Determinación experimental de la aceleración g',
+      'Linealización cuadrática de posición vs tiempo²',
+      'Determinación experimental de g en Caracas',
     ],
     notes: 'Incluir barras de error experimentales en las gráficas.',
-    guideId: 'santiago-lab1-airtrack-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-lab1-airtrack'],
+    guideId: 'santiago-fis1-kinematics-guide',
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-fis1-kinematics'],
     researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-lab1-airtrack'],
-  },
-  {
-    id: 'santiago-lab1-examen',
-    title: 'Examen Práctico de Laboratorio I: Metrología y Calibración en Vivo',
-    subject: 'Física',
-    date: '2027-01-25',
-    time: '02:00 PM',
-    type: 'PARCIAL',
-    weightPercentage: 30,
-    location: 'Laboratorio Docente de Física I · Pabellón 2',
-    topics: [
-      'Medición en mesa con trinquete de micrómetro',
-      'Identificación y corrección de error de cero',
-      'Trazado manual de recta de ajuste con pendiente',
-      'Estimación rápida de densidades y errores',
-    ],
-    notes: 'Prueba individual práctica por estaciones de trabajo.',
-    guideId: 'santiago-lab1-exam-guide',
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-lab1-density'],
   },
 ];
 
@@ -376,7 +362,7 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS: EvaluationEvent[] = [
 export const SANTIAGO_SEMESTER_1_DEFAULT_REMINDERS: StudyReminder[] = [
   {
     id: 'rem-santiago-sem1-01',
-    title: 'Repaso intensivo de Cinemática ℝ³ (10 días antes del Parcial I Física I)',
+    title: 'Repaso intensivo de Cinemática ℝ³ (10 días antes del Parcial 1 de Física I)',
     subject: 'Física',
     dueDate: '2026-11-10',
     priority: 'ALTA',
@@ -385,7 +371,7 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_REMINDERS: StudyReminder[] = [
   },
   {
     id: 'rem-santiago-sem1-02',
-    title: 'Entrega y revisión de cálculos del Informe #1 (Densidad e Incertidumbres)',
+    title: 'Revisión de cálculos del Informe #1 de Física (Densidad e Incertidumbres de Gauss)',
     subject: 'Física',
     dueDate: '2026-11-14',
     priority: 'ALTA',
@@ -394,25 +380,25 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_REMINDERS: StudyReminder[] = [
   },
   {
     id: 'rem-santiago-sem1-03',
-    title: 'Resolver batería de límites formales ε-δ (7 días antes de Cálculo I)',
+    title: 'Resolver batería de Estudio de Curvas y Caminos de Ida/Vuelta (Matemática I)',
     subject: 'Matemática',
-    dueDate: '2026-11-20',
+    dueDate: '2026-11-18',
     priority: 'ALTA',
     completed: false,
     createdAt: '2026-11-01T12:00:00Z',
   },
   {
     id: 'rem-santiago-sem1-04',
-    title: 'Demostración de distancias punto-plano en ℝ³ (Álgebra Lineal)',
-    subject: 'Matemática',
-    dueDate: '2026-11-28',
+    title: 'Práctica de números cuánticos y configuraciones de Cr/Cu (Química I)',
+    subject: 'Química',
+    dueDate: '2026-11-20',
     priority: 'ALTA',
     completed: false,
     createdAt: '2026-11-01T12:00:00Z',
   },
   {
     id: 'rem-santiago-sem1-05',
-    title: 'Ajuste por mínimos cuadrados de datos de riel de aire (Informe #2)',
+    title: 'Regresión lineal por mínimos cuadrados para el Informe #2 de Riel de Aire',
     subject: 'Física',
     dueDate: '2026-12-11',
     priority: 'ALTA',
@@ -421,18 +407,45 @@ export const SANTIAGO_SEMESTER_1_DEFAULT_REMINDERS: StudyReminder[] = [
   },
   {
     id: 'rem-santiago-sem1-06',
-    title: 'Práctica de derivadas implícitas y razones de cambio (Cálculo I)',
-    subject: 'Matemática',
-    dueDate: '2026-12-17',
+    title: 'Práctica de DCL con fricción estática máxima para Parcial 2 de Física I',
+    subject: 'Física',
+    dueDate: '2026-12-15',
     priority: 'ALTA',
     completed: false,
     createdAt: '2026-11-01T12:00:00Z',
   },
   {
     id: 'rem-santiago-sem1-07',
-    title: 'Compilar simulación computacional de tiro con fricción en Python',
-    subject: 'Física',
-    dueDate: '2027-01-12',
+    title: 'Cuadros ICF de Reactivo Limitante y Estructuras de Lewis TRPEV (Química I)',
+    subject: 'Química',
+    dueDate: '2027-01-04',
+    priority: 'ALTA',
+    completed: false,
+    createdAt: '2026-11-01T12:00:00Z',
+  },
+  {
+    id: 'rem-santiago-sem1-08',
+    title: 'División polinómica de Hipérbolas Canónicas e Inecuaciones Gráficas (Matemática I)',
+    subject: 'Matemática',
+    dueDate: '2027-01-09',
+    priority: 'ALTA',
+    completed: false,
+    createdAt: '2026-11-01T12:00:00Z',
+  },
+  {
+    id: 'rem-santiago-sem1-09',
+    title: 'Balanceo Redox por Ion-Electrón en medio ácido y gases sobre agua (Química I)',
+    subject: 'Química',
+    dueDate: '2027-01-23',
+    priority: 'ALTA',
+    completed: false,
+    createdAt: '2026-11-01T12:00:00Z',
+  },
+  {
+    id: 'rem-santiago-sem1-10',
+    title: 'Trazado cualitativo de la función derivada f prime a partir de f (Matemática I)',
+    subject: 'Matemática',
+    dueDate: '2027-01-30',
     priority: 'ALTA',
     completed: false,
     createdAt: '2026-11-01T12:00:00Z',
@@ -501,227 +514,297 @@ export const SANTIAGO_SEMESTER_1_QUESTIONS: Question[] = [
     explanation:
       'Por definición de energía potencial: $U(x) = -\\int_0^x (-kx\' + 3\\beta x\'^2)\\, dx\' = \\int_0^x (kx\' - 3\\beta x\'^2)\\, dx\' = \\frac{1}{2}kx^2 - \\beta x^3$.',
   },
+
+  // --- MATEMÁTICA I (PEDRO ALSON) ---
   {
-    id: 'santiago-q-fis1-004',
-    subject: 'Física',
-    topic: 'Simulación y Rozamiento del Aire',
+    id: 'santiago-q-mat1-001',
+    subject: 'Matemática',
+    topic: 'Estudio de Curvas y Monotonía (Pedro Alson)',
     difficulty: 'Avanzado',
     targetProfiles: [SANTIAGO_PROFILE],
     questionText:
-      'Al disparar un proyectil con resistencia del aire proporcional a $v^2$, ¿cómo varía el ángulo de tiro para obtener el alcance máximo comparado con el caso ideal sin fricción?',
+      'Una función continua $f(x)$ está definida en $[-5, 5]$ con $f(-5) = -3$ y $f(5) = 4$. Si $f(x)$ es estrictamente creciente en todo su dominio, ¿cuántas soluciones reales posee la ecuación $f(x) = 1$ según el método de caminos de vuelta de Pedro Alson?',
+    latexFormula: 'f(x_1) < f(x_2) \\iff x_1 < x_2',
     options: buildOptions([
-      'Disminuye a un ángulo menor a $45^\\circ$ (típicamente entre $35^\\circ$ y $40^\\circ$)',
-      'Aumenta a un ángulo mayor a $45^\\circ$',
-      'Permanece exactamente en $45^\\circ$',
-      'Se vuelve independiente del ángulo de lanzamiento',
+      'Exactamente una única solución real',
+      'Al menos dos soluciones reales',
+      'Ninguna solución porque 1 no está en los extremos',
+      'Infinitas soluciones en el intervalo central',
     ]),
     correctOptionId: 'opt-a',
     explanation:
-      'La resistencia del aire penaliza severamente el tiempo prolongado de vuelo a gran altura. Por tanto, trayectorias más rasantes (ángulos menores a 45 grados) logran un mejor alcance horizontal porque sufren menos desaceleración acumulada.',
+      'Por el Teorema del Valor Intermedio y la monotonía estricta, la función continua creciente recorre inyectivamente todos los valores entre -3 y 4. Como el valor 1 está dentro del intervalo $(-3, 4)$, la recta horizontal y = 1 corta la curva exactamente una sola vez (inyectividad), garantizando una única preimagen x.',
+  },
+  {
+    id: 'santiago-q-mat1-002',
+    subject: 'Matemática',
+    topic: 'Curva Recíproca (Pedro Alson)',
+    difficulty: 'Avanzado',
+    targetProfiles: [SANTIAGO_PROFILE],
+    questionText:
+      'Si una curva continua $f(x)$ cruza el eje horizontal en $x = 3$ con pendiente positiva $f\'(3) = 2$, ¿qué comportamiento presenta su curva recíproca $r(x) = \\frac{1}{f(x)}$ en las cercanías de $x = 3$?',
+    latexFormula: 'r(x) = \\frac{1}{f(x)}',
+    options: buildOptions([
+      'Una asíntota vertical en $x = 3$, tendiendo a $-\\infty$ por la izquierda y a $+\\infty$ por la derecha',
+      'Un corte con el eje horizontal en $x = 3$',
+      'Una asíntota vertical que tiende a $+\\infty$ por ambos lados',
+      'Una discontinuidad evitable con agujero en $(3, 1/2)$',
+    ]),
+    correctOptionId: 'opt-a',
+    explanation:
+      'Al ser f(3) = 0, la función recíproca tiene un polo vertical en x = 3. Como la pendiente es positiva, f(x) < 0 para x < 3 (haciendo que 1/f(x) tienda a -infinito) y f(x) > 0 para x > 3 (haciendo que 1/f(x) tienda a +infinito).',
+  },
+  {
+    id: 'santiago-q-mat1-003',
+    subject: 'Matemática',
+    topic: 'Teclas y Pantallas: Linealización Cuadrática',
+    difficulty: 'Avanzado',
+    targetProfiles: [SANTIAGO_PROFILE],
+    questionText:
+      'Al aplicar el modelo de Pedro Alson a la expresión cuadrática $y = 3x^2 - 12x + 5$, ¿cuál es su representación en diagrama lineal de pantallas tras completar el trinomio cuadrado perfecto?',
+    latexFormula: 'y = a(x - h)^2 + k',
+    options: buildOptions([
+      '$y = 3(x - 2)^2 - 7$',
+      '$y = 3(x - 4)^2 - 11$',
+      '$y = (3x - 2)^2 - 7$',
+      '$y = 3(x + 2)^2 + 5$',
+    ]),
+    correctOptionId: 'opt-a',
+    explanation:
+      'Factorizamos el 3: y = 3(x^2 - 4x) + 5. Completamos el cuadrado: la mitad de -4 es -2, al cuadrado es 4. Sumamos y restamos 4: y = 3[(x - 2)^2 - 4] + 5 = 3(x - 2)^2 - 12 + 5 = 3(x - 2)^2 - 7.',
+  },
+  {
+    id: 'santiago-q-mat1-004',
+    subject: 'Matemática',
+    topic: 'Hipérbolas Homográficas Canónicas',
+    difficulty: 'Avanzado',
+    targetProfiles: [SANTIAGO_PROFILE],
+    questionText:
+      'Dada la función homográfica $f(x) = \\frac{4x - 1}{2x + 6}$, ¿cuáles son sus asíntotas ortogonales y su parámetro $k$ en la forma canónica $v + \\frac{k}{x - h}$?',
+    latexFormula: 'f(x) = v + \\frac{k}{x - h}',
+    options: buildOptions([
+      'Asíntota vertical $x = -3$, asíntota horizontal $y = 2$, parámetro $k = -6.5$',
+      'Asíntota vertical $x = 3$, asíntota horizontal $y = 4$, parámetro $k = 5$',
+      'Asíntota vertical $x = -6$, asíntota horizontal $y = 2$, parámetro $k = -1$',
+      'Asíntota vertical $x = 0$, asíntota horizontal $y = -1/6$, parámetro $k = 4$',
+    ]),
+    correctOptionId: 'opt-a',
+    explanation:
+      'Dividimos: (4x - 1) / (2x + 6) = (4x - 1) / [2(x + 3)] = (1/2) * [ (4(x+3) - 13)/(x+3) ] = (1/2) * [ 4 - 13/(x+3) ] = 2 - 6.5/(x + 3). Por tanto: asíntota vertical h = -3, horizontal v = 2, y k = -6.5.',
+  },
+  {
+    id: 'santiago-q-mat1-005',
+    subject: 'Matemática',
+    topic: 'Graficación Cualitativa de la Derivada f prime',
+    difficulty: 'Avanzado',
+    targetProfiles: [SANTIAGO_PROFILE],
+    questionText:
+      'Si una curva continua $f(x)$ alcanza un máximo local suave en $x = -2$ y un mínimo local suave en $x = 4$, ¿cuál es el comportamiento obligatorio de su función derivada $f\'(x)$?',
+    latexFormula: 'f\'(x_0) = 0 \\text{ en extremos locales suaves}',
+    options: buildOptions([
+      '$f\'(-2) = 0$, $f\'(4) = 0$, y $f\'(x) < 0$ para todo $x \\in (-2, 4)$',
+      '$f\'(-2) = 4$, $f\'(4) = -2$, y $f\'(x) > 0$ en el tramo central',
+      '$f\'(x)$ alcanza un máximo en $x = -2$ y un mínimo en $x = 4$',
+      '$f\'(x)$ no puede existir en los extremos de la curva',
+    ]),
+    correctOptionId: 'opt-a',
+    explanation:
+      'En un máximo local suave, la tangente es horizontal, por lo que f prime (-2) = 0. En un mínimo suave, la tangente también es horizontal, por lo que f prime (4) = 0. Entre el máximo y el mínimo la función decrece, lo que exige rigurosamente que su derivada sea negativa (f prime (x) < 0).',
   },
 
-  // --- CÁLCULO I ---
+  // --- PRINCIPIOS DE QUÍMICA I (CÓDIGO 3401) ---
   {
-    id: 'santiago-q-calc1-001',
-    subject: 'Matemática',
-    topic: 'Límites Trigonométricos Notables',
-    difficulty: 'Avanzado',
-    targetProfiles: [SANTIAGO_PROFILE],
-    questionText: 'Calcula el límite analítico: $\\lim_{x \\to 0} \\frac{1 - \\cos(4x)}{x^2}$.',
-    latexFormula: '\\lim_{x \\to 0} \\frac{1 - \\cos(u)}{u^2} = \\frac{1}{2}',
-    options: buildOptions(['$8$', '$4$', '$2$', '$16$']),
-    correctOptionId: 'opt-a',
-    explanation:
-      'Multiplicamos por el conjugado $(1 + \\cos(4x))$ o aplicamos la identidad trigonométrica $1 - \\cos(4x) = 2\\sin^2(2x)$: $\\lim_{x \\to 0} \\frac{2\\sin^2(2x)}{x^2} = 2 \\cdot \\left(\\lim_{x \\to 0} \\frac{\\sin(2x)}{x}\\right)^2 = 2 \\cdot (2)^2 = 8$.',
-  },
-  {
-    id: 'santiago-q-calc1-002',
-    subject: 'Matemática',
-    topic: 'Regla de la Cadena y Derivadas',
+    id: 'santiago-q-qgi-001',
+    subject: 'Química',
+    topic: 'Cifras Significativas y Densidad (Química I)',
     difficulty: 'Avanzado',
     targetProfiles: [SANTIAGO_PROFILE],
     questionText:
-      'Dada la función $f(x) = \\ln\\left(\\sqrt{\\frac{1 + x}{1 - x}}\\right)$ para $|x| < 1$, su derivada $f\'(x)$ simplificada al máximo es:',
-    latexFormula: 'f(x) = \\frac{1}{2}[\\ln(1+x) - \\ln(1-x)]',
+      'Un estudiante de Química I pesa un sólido en balanza analítica registrando $25.40\\,\\text{g}$ y mide su volumen en probeta obteniendo un cambio de nivel de $10.0\\,\\text{mL}$ a $13.2\\,\\text{mL}$. ¿Cómo debe reportar la densidad del sólido aplicando las reglas de cifras significativas?',
+    latexFormula: 'd = \\frac{m}{V_f - V_i}',
     options: buildOptions([
-      '$\\frac{1}{1 - x^2}$',
-      '$\\frac{x}{1 - x^2}$',
-      '$\\frac{2}{1 + x^2}$',
-      '$\\frac{1}{\\sqrt{1 - x^2}}$',
+      '$7.9\\,\\text{g/mL}$ (2 cifras significativas)',
+      '$7.9375\\,\\text{g/mL}$ (5 cifras significativas)',
+      '$7.94\\,\\text{g/mL}$ (3 cifras significativas)',
+      '$8\\,\\text{g/mL}$ (1 cifra significativa)',
     ]),
     correctOptionId: 'opt-a',
     explanation:
-      'Aplicando propiedades de logaritmos antes de derivar: $f(x) = \\frac{1}{2}(\\ln(1 + x) - \\ln(1 - x))$. Derivamos: $f\'(x) = \\frac{1}{2} \\left( \\frac{1}{1 + x} + \\frac{1}{1 - x} \\right) = \\frac{1}{2} \\left( \\frac{2}{1 - x^2} \\right) = \\frac{1}{1 - x^2}$.',
+      'La diferencia de volumen es 13.2 mL - 10.0 mL = 3.2 mL (conserva 1 decimal, teniendo solo 2 cifras significativas: el 3 y el 2). La masa tiene 4 cifras significativas (25.40). En la división manda el menor número de cifras significativas (2), por lo que 25.40 / 3.2 = 7.9375 debe redondearse estrictamente a 7.9 g/mL.',
   },
   {
-    id: 'santiago-q-calc1-003',
-    subject: 'Matemática',
-    topic: 'Teorema de Rolle y del Valor Medio',
+    id: 'santiago-q-qgi-002',
+    subject: 'Química',
+    topic: 'Estructura Electrónica y Anomalía de Aufbau',
     difficulty: 'Avanzado',
     targetProfiles: [SANTIAGO_PROFILE],
     questionText:
-      'Para la función $f(x) = x^3 - 4x$ en el intervalo cerrado $[0, 2]$, encuentra el punto $c \\in (0, 2)$ que garantiza el Teorema de Rolle tal que $f\'(c) = 0$.',
-    latexFormula: 'f\'(c) = 3c^2 - 4 = 0',
+      '¿Cuál es la configuración electrónica en el estado fundamental para el átomo de Cobre ($Z = 29$) y cuántos electrones desapareados posee?',
+    latexFormula: '[\\text{Ar}] 4s^1 3d^{10}',
     options: buildOptions([
-      '$c = \\frac{2}{\\sqrt{3}} = \\frac{2\\sqrt{3}}{3}$',
-      '$c = 1$',
-      '$c = \\sqrt{2}$',
-      '$c = \\frac{4}{3}$',
+      '$[\\text{Ar}] 4s^1 3d^{10}$, con 1 electrón desapareado',
+      '$[\\text{Ar}] 4s^2 3d^9$, con 1 electrón desapareado',
+      '$[\\text{Ar}] 4s^2 3d^9$, con 0 electrones desapareados',
+      '$[\\text{Ar}] 4s^0 3d^{11}$, con 2 electrones desapareados',
     ]),
     correctOptionId: 'opt-a',
     explanation:
-      'Verificamos hipótesis: $f$ es continua en $[0, 2]$ y derivable en $(0, 2)$, con $f(0) = f(2) = 0$. Por el Teorema de Rolle existe $c \\in (0, 2)$ tal que $f\'(c) = 3c^2 - 4 = 0 \\implies c^2 = 4/3 \\implies c = +2/\\sqrt{3} \\approx 1.155 \\in (0, 2)$.',
+      'El cobre presenta una anomalía cuántica de estabilidad termodinámica: promociona un electrón del subnivel 4s para completar la subcapa 3d10 (completamente llena). Su configuración real es [Ar] 4s1 3d10. El orbital 4s contiene 1 electrón solitario, por lo que tiene exactamente 1 electrón desapareado (paramagnético).',
   },
   {
-    id: 'santiago-q-calc1-004',
-    subject: 'Matemática',
-    topic: 'Optimización de Contenedores',
+    id: 'santiago-q-qgi-003',
+    subject: 'Química',
+    topic: 'Tabla Periódica: Carga Nuclear Efectiva',
     difficulty: 'Avanzado',
     targetProfiles: [SANTIAGO_PROFILE],
     questionText:
-      'Para un envase cilíndrico cerrado de volumen fijo $V$, ¿cuál es la relación óptima entre la altura $h$ y el radio $r$ que minimiza el área total de material?',
-    latexFormula: 'h = 2r',
+      'Al comparar los iones isoelectrónicos $\\text{N}^{3-}$, $\\text{O}^{2-}$, $\\text{F}^{-}$ y $\\text{Na}^{+}$ (todos con 10 electrones), ¿cuál presenta el menor radio iónico y por qué?',
+    latexFormula: 'Z_{\\text{ef}} = Z - S',
     options: buildOptions([
-      '$h = 2r$ (la altura es igual al diámetro)',
-      '$h = r$',
-      '$h = 4r$',
-      '$h = \\frac{r}{2}$',
+      '$\\text{Na}^{+}$, porque posee el mayor número atómico ($Z = 11$) y mayor $Z_{\\text{ef}}$ atrayendo la nube con más fuerza',
+      '$\\text{N}^{3-}$, porque tiene la mayor carga negativa',
+      '$\\text{F}^{-}$, porque el flúor es el elemento más electronegativo',
+      'Todos tienen idéntico radio por poseer exactamente 10 electrones',
     ]),
     correctOptionId: 'opt-a',
     explanation:
-      'Al minimizar $A(r) = 2\\pi r^2 + 2V/r$ derivando e igualando a cero: $4\\pi r - 2V/r^2 = 0 \\implies 2\\pi r^3 = V$. Como $V = \\pi r^2 h$, sustituyendo queda $2\\pi r^3 = \\pi r^2 h \\implies h = 2r$.',
+      'En especies isoelectrónicas el apantallamiento es idéntico. La atracción sobre los 10 electrones depende exclusivamente de los protones del núcleo. El Na+ tiene 11 protones atrayendo 10 electrones, lo que genera la mayor carga nuclear efectiva Z_ef y contrae fuertemente la nube electrónica, haciéndolo el más pequeño de la serie.',
   },
-
-  // --- ÁLGEBRA LINEAL & GEOMETRÍA ANALÍTICA ---
   {
-    id: 'santiago-q-alg1-001',
-    subject: 'Matemática',
-    topic: 'Ecuación del Plano en ℝ³',
+    id: 'santiago-q-qgi-004',
+    subject: 'Química',
+    topic: 'Geometría Molecular TRPEV / VSEPR',
     difficulty: 'Avanzado',
     targetProfiles: [SANTIAGO_PROFILE],
     questionText:
-      'Encuentra la ecuación general del plano $\\pi$ que pasa por el punto $P_0(1, -2, 3)$ y tiene como vector normal $\\vec{n} = (2, -4, 5)$.',
-    latexFormula: 'A(x - x_0) + B(y - y_0) + C(z - z_0) = 0',
+      '¿Cuál es la geometría molecular real del tetrafluoruro de azufre ($\\text{SF}_4$) según el modelo de repulsión de pares de electrones de la capa de valencia (TRPEV)?',
+    latexFormula: '\\text{Número Estérico} = 4 \\text{ enlaces} + 1 \\text{ par libre} = 5',
     options: buildOptions([
-      '$2x - 4y + 5z - 25 = 0$',
-      '$2x - 4y + 5z + 25 = 0$',
-      '$x - 2y + 3z - 10 = 0$',
-      '$2x - 4y + 5z = 0$',
+      'Balancín (o subibaja / see-saw)',
+      'Tetraédrica regular',
+      'Cuadrada plana',
+      'Piramidal trigonal',
     ]),
     correctOptionId: 'opt-a',
     explanation:
-      'La ecuación del plano es $2(x - 1) - 4(y - (-2)) + 5(z - 3) = 0 \\implies 2x - 2 - 4y - 8 + 5z - 15 = 0 \\implies 2x - 4y + 5z - 25 = 0$.',
+      'El átomo central de Azufre (Grupo 16) tiene 6 electrones de valencia. Forma 4 enlaces simples con F (4 electrones) y le queda 1 par libre (2 electrones). El número estérico es 4 + 1 = 5 (geometría de pares bipiramidal trigonal). El par libre se ubica en el plano ecuatorial a 120 grados para minimizar repulsión, dejando una geometría molecular de Balancín (see-saw).',
   },
   {
-    id: 'santiago-q-alg1-002',
-    subject: 'Matemática',
-    topic: 'Determinantes y Rango Matricial',
+    id: 'santiago-q-qgi-005',
+    subject: 'Química',
+    topic: 'Estequiometría y Reactivo Limitante',
     difficulty: 'Avanzado',
     targetProfiles: [SANTIAGO_PROFILE],
     questionText:
-      '¿Para qué valor de $\\lambda \\in \\mathbb{R}$ la matriz $A = \\begin{pmatrix} 1 & 2 & 1 \\\\ 0 & \\lambda - 1 & 3 \\\\ 0 & 0 & \\lambda - 4 \\end{pmatrix}$ NO tiene inversa (es singular)?',
-    latexFormula: '\\det(A) = (1)(\\lambda - 1)(\\lambda - 4) = 0',
+      'Se mezclan $2.0\\,\\text{moles}$ de gas $\\text{N}_2$ con $3.0\\,\\text{moles}$ de gas $\\text{H}_2$ para sintetizar amoníaco según $\\text{N}_2(g) + 3\\,\\text{H}_2(g) \\rightarrow 2\\,\\text{NH}_3(g)$. ¿Cuántos moles de $\\text{NH}_3$ se pueden producir como máximo teórico?',
+    latexFormula: '\\frac{n}{\\text{coeficiente}}',
     options: buildOptions([
-      '$\\lambda = 1$ o $\\lambda = 4$',
-      '$\\lambda = 0$ exclusivamente',
-      '$\\lambda = -1$ o $\\lambda = -4$',
-      'Tiene inversa para todo $\\lambda \\in \\mathbb{R}$',
+      '$2.0\\,\\text{moles de } \\text{NH}_3$',
+      '$4.0\\,\\text{moles de } \\text{NH}_3$',
+      '$1.0\\,\\text{mol de } \\text{NH}_3$',
+      '$3.0\\,\\text{moles de } \\text{NH}_3$',
     ]),
     correctOptionId: 'opt-a',
     explanation:
-      'Como $A$ es triangular superior, su determinante es el producto de la diagonal: $\\det(A) = 1 \\cdot (\\lambda - 1) \\cdot (\\lambda - 4)$. Es singular si $\\det(A) = 0$, lo que ocurre cuando $\\lambda = 1$ o $\\lambda = 4$.',
+      'Comparamos la relación moles/coeficiente: Para N2: 2.0 / 1 = 2.0. Para H2: 3.0 / 3 = 1.0. Como 1.0 < 2.0, el H2 es el reactivo limitante. Los 3.0 moles de H2 limitante producen: 3.0 moles H2 * (2 moles NH3 / 3 moles H2) = 2.0 moles de NH3 teóricos.',
   },
   {
-    id: 'santiago-q-alg1-003',
-    subject: 'Matemática',
-    topic: 'Autovalores en Rotaciones Espaciales',
+    id: 'santiago-q-qgi-006',
+    subject: 'Química',
+    topic: 'Propiedades Coligativas y Factor de van t Hoff',
     difficulty: 'Avanzado',
     targetProfiles: [SANTIAGO_PROFILE],
     questionText:
-      'Toda matriz de rotación pura $R \\in SO(3)$ en el espacio euclidiano posee siempre al menos un autovalor real igual a:',
-    latexFormula: 'R \\vec{v} = 1 \\cdot \\vec{v}',
+      '¿Cuál de las siguientes disoluciones acuosas $0.10\\,\\text{m}$ registrará el punto de congelación más bajo (menor temperatura bajo cero)?',
+    latexFormula: '\\Delta T_f = K_f \\cdot m \\cdot i',
     options: buildOptions([
-      '$\\lambda = 1$ (el autovector asociado define el eje de rotación inmóvil)',
-      '$\\lambda = 0$',
-      '$\\lambda = -1$',
-      'No tiene ningún autovalor real',
+      'Cloruro de aluminio $\\text{AlCl}_3$ ($i \\approx 4$)',
+      'Cloruro de sodio $\\text{NaCl}$ ($i \\approx 2$)',
+      'Cloruro de calcio $\\text{CaCl}_2$ ($i \\approx 3$)',
+      'Glucosa $\\text{C}_6\\text{H}_{12}\\text{O}_6$ ($i = 1$)',
     ]),
     correctOptionId: 'opt-a',
     explanation:
-      'Por el Teorema de Rotación de Euler, todo giro en 3D deja una línea fija (el eje de giro). Los puntos de ese eje no cambian bajo la rotación, lo que equivale a $R v = 1 \\cdot v$, por lo que siempre existe el autovalor $\\lambda = 1$.',
-  },
-
-  // --- LABORATORIO I DE FÍSICA ---
-  {
-    id: 'santiago-q-lab1-001',
-    subject: 'Física',
-    topic: 'Propagación de Incertidumbres',
-    difficulty: 'Avanzado',
-    targetProfiles: [SANTIAGO_PROFILE],
-    questionText:
-      'Para determinar la densidad $\\rho = \\frac{m}{V}$ de un cilindro homogéneo, se mide $m = (100.0 \\pm 0.2)\\,\\text{g}$ y su volumen $V = (20.0 \\pm 0.1)\\,\\text{cm}^3$. ¿Cuál es la incertidumbre relativa porcentual $\\epsilon_\\rho$ en la densidad?',
-    latexFormula: '\\epsilon_\\rho = \\sqrt{\\left(\\frac{\\Delta m}{m}\\right)^2 + \\left(\\frac{\\Delta V}{V}\\right)^2}',
-    options: buildOptions([
-      '$\\approx 0.54\\%$',
-      '$\\approx 1.50\\%$',
-      '$\\approx 0.02\\%$',
-      '$\\approx 3.00\\%$',
-    ]),
-    correctOptionId: 'opt-a',
-    explanation:
-      'Las incertidumbres relativas son $\\frac{\\Delta m}{m} = 0.002$ ($0.2\\%$) y $\\frac{\\Delta V}{V} = 0.005$ ($0.5\\%$). En cuadratura: $\\epsilon_\\rho = \\sqrt{(0.002)^2 + (0.005)^2} = \\sqrt{0.000029} \\approx 0.00538 = 0.54\\%$.',
-  },
-  {
-    id: 'santiago-q-lab1-002',
-    subject: 'Física',
-    topic: 'Mínimos Cuadrados y Cinemática',
-    difficulty: 'Avanzado',
-    targetProfiles: [SANTIAGO_PROFILE],
-    questionText:
-      'En un riel de aire, se ajusta linealmente la posición $x$ frente al tiempo al cuadrado $t^2$ y se obtiene una pendiente $m = (2.45 \\pm 0.05)\\,\\text{m/s}^2$. ¿Cuál es la aceleración $a$ del carro?',
-    latexFormula: 'x = \\frac{1}{2} a t^2 \\implies a = 2m',
-    options: buildOptions([
-      '$a = (4.90 \\pm 0.10)\\,\\text{m/s}^2$',
-      '$a = (2.45 \\pm 0.05)\\,\\text{m/s}^2$',
-      '$a = (1.22 \\pm 0.03)\\,\\text{m/s}^2$',
-      '$a = (9.80 \\pm 0.20)\\,\\text{m/s}^2$',
-    ]),
-    correctOptionId: 'opt-a',
-    explanation:
-      'Como $x = \\frac{1}{2}at^2$, la pendiente representa $m = \\frac{1}{2}a$. Por tanto, la aceleración es el doble de la pendiente: $a = 2m = 2(2.45) = 4.90\\,\\text{m/s}^2$ y su error es $\\Delta a = 2\\Delta m = 0.10\\,\\text{m/s}^2$.',
+      'El descenso crioscópico es directamente proporcional al producto m * i. A igual molalidad (0.10 m), la sal que produzca mayor número de iones libres generará el mayor descenso de temperatura. El AlCl3 se disocia en 1 Al(3+) y 3 Cl(-), dando i = 4. Esto produce el mayor Delta Tf y por tanto el punto de congelación más bajo bajo cero.',
   },
 ];
 
 // =====================================================================
-// 5. GUÍAS DECONSTRUIDAS COMPLETAS (INYECCIÓN DE REACTIVOS Y RE-EXPORTACIÓN)
-// =====================================================================
-export const SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES: DeconstructedAcademicGuide[] = RAW_GUIDES.map(
-  (guide) => {
-    // Inyectar preguntas correspondientes si están vacías
-    if (!guide.generatedQuestions || guide.generatedQuestions.length === 0) {
-      let matchedQs = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => {
-        if (guide.guideMetadata.area.includes('Física') && q.subject === 'Física') return true;
-        if (guide.guideMetadata.area.includes('Cálculo') && q.subject === 'Matemática' && !q.topic.includes('Plano') && !q.topic.includes('Determinantes')) return true;
-        if (guide.guideMetadata.area.includes('Álgebra') && (q.topic.includes('Plano') || q.topic.includes('Determinantes') || q.topic.includes('Autovalor'))) return true;
-        if (guide.guideMetadata.area.includes('Laboratorio') && (q.topic.includes('Incertidumbre') || q.topic.includes('Mínimos Cuadrados'))) return true;
-        return false;
-      });
-      if (matchedQs.length === 0) matchedQs = SANTIAGO_SEMESTER_1_QUESTIONS.slice(0, 3);
-      return {
-        ...guide,
-        generatedQuestions: matchedQs.map(questionToDeconstructed),
-      };
-    }
-    return guide;
-  }
-);
-
-// =====================================================================
-// 6. MODELOS DE EXAMEN PRECONFIGURADOS PARA PRIMER SEMESTRE UCV
+// 5. MODELOS DE EXAMEN PRECONFIGURADOS PARA PRIMER SEMESTRE UCV
 // =====================================================================
 export const SANTIAGO_SEMESTER_1_TAILORED_EXAMS = [
   {
-    id: 'exam-santiago-sem1-fisica1-parcial1',
+    id: 'exam-santiago-sem1-mat1-parcial1',
+    profileId: SANTIAGO_PROFILE,
+    title: 'Matemática I · Parcial 1: Estudio de Curvas & Soluciones Múltiples',
+    subtitle: 'Facultad de Ciencias UCV · Cátedra Pedro Alson',
+    durationMinutes: 60,
+    questionCount: 6,
+    badge: 'Matemática I UCV',
+    colorScheme: 'indigo' as const,
+    description:
+      'Caminos de ida y vuelta, monotonía estricta, cotas superiores e inferiores, curva recíproca 1/f y conteo visual de soluciones en ecuaciones no lineales.',
+    targetSubject: 'Matemática' as const,
+    targetTopicKeyword: 'Curvas',
+  },
+  {
+    id: 'exam-santiago-sem1-mat1-parcial2',
+    profileId: SANTIAGO_PROFILE,
+    title: 'Matemática I · Parcial 2: Hipérbolas Homográficas & Inecuaciones',
+    subtitle: 'Facultad de Ciencias UCV · Cátedra Pedro Alson',
+    durationMinutes: 60,
+    questionCount: 6,
+    badge: 'Matemática I UCV',
+    colorScheme: 'indigo' as const,
+    description:
+      'Descomposición de hipérbolas canónicas v + k/(x - h), familias de rectas, áreas de triángulos bajo curvas e inecuaciones gráficas con módulo.',
+    targetSubject: 'Matemática' as const,
+    targetTopicKeyword: 'Hipérbolas',
+  },
+  {
+    id: 'exam-santiago-sem1-qgi-parcial1',
+    profileId: SANTIAGO_PROFILE,
+    title: 'Principios de Química I · Parcial 1: Cuántica, Configuración & Tabla',
+    subtitle: 'Facultad de Ciencias UCV · Escuela de Química (Código 3401)',
+    durationMinutes: 60,
+    questionCount: 6,
+    badge: 'Química I UCV',
+    colorScheme: 'indigo' as const,
+    description:
+      'Cifras significativas y densidad, números cuánticos, reglas de Aufbau y Hund con anomalías de Cr/Cu, y carga nuclear efectiva Z_ef en series isoelectrónicas.',
+    targetSubject: 'Química' as const,
+    targetTopicKeyword: 'Cuántica',
+  },
+  {
+    id: 'exam-santiago-sem1-qgi-parcial2',
+    profileId: SANTIAGO_PROFILE,
+    title: 'Principios de Química I · Parcial 2: Enlace, TRPEV & Estequiometría',
+    subtitle: 'Facultad de Ciencias UCV · Escuela de Química (Código 3401)',
+    durationMinutes: 60,
+    questionCount: 6,
+    badge: 'Química I UCV',
+    colorScheme: 'indigo' as const,
+    description:
+      'Estructuras de Lewis con octeto expandido, cargas formales, geometría molecular TRPEV, polaridad y cálculos de reactivo limitante y rendimiento.',
+    targetSubject: 'Química' as const,
+    targetTopicKeyword: 'Estequiometría',
+  },
+  {
+    id: 'exam-santiago-sem1-qgi-parcial3',
+    profileId: SANTIAGO_PROFILE,
+    title: 'Principios de Química I · Parcial 3: Redox, Gases & Coligativas',
+    subtitle: 'Facultad de Ciencias UCV · Escuela de Química (Código 3401)',
+    durationMinutes: 60,
+    questionCount: 6,
+    badge: 'Química I UCV',
+    colorScheme: 'indigo' as const,
+    description:
+      'Balanceo por ion-electrón en medio ácido, gases recolectados sobre agua con ley de Dalton, y cálculo crioscópico con factor de van t Hoff.',
+    targetSubject: 'Química' as const,
+    targetTopicKeyword: 'Redox',
+  },
+  {
+    id: 'exam-santiago-sem1-fis1-parcial1',
     profileId: SANTIAGO_PROFILE,
     title: 'Física I · Parcial 1: Cinemática Vectorial en ℝ³',
     subtitle: 'Facultad de Ciencias UCV · Escuela de Física',
@@ -730,69 +813,55 @@ export const SANTIAGO_SEMESTER_1_TAILORED_EXAMS = [
     badge: 'Física I UCV',
     colorScheme: 'indigo' as const,
     description:
-      'Vectores de posición, velocidad y aceleración en 3 dimensiones, componentes intrínsecas, tiro parabólico y movimiento curvilíneo.',
+      'Vectores de posición, velocidad y aceleración, triedro intrínseco (a_t y a_n), radio de curvatura y tiro parabólico tridimensional.',
     targetSubject: 'Física' as const,
     targetTopicKeyword: 'Cinemática',
   },
   {
-    id: 'exam-santiago-sem1-calculo1-parcial1',
+    id: 'exam-santiago-sem1-fis1-parcial2',
     profileId: SANTIAGO_PROFILE,
-    title: 'Cálculo I · Parcial 1: Axiomas de ℝ, Cotas & Límites Notables',
-    subtitle: 'Facultad de Ciencias UCV · Departamento de Matemáticas',
+    title: 'Física I · Parcial 2: Leyes de Newton & Dinámica de Rozamiento',
+    subtitle: 'Facultad de Ciencias UCV · Escuela de Física',
     durationMinutes: 60,
     questionCount: 6,
-    badge: 'Cálculo I UCV',
+    badge: 'Física I UCV',
     colorScheme: 'indigo' as const,
     description:
-      'Propiedad del supremo, demostraciones de límites por épsilon-delta, formas indeterminadas 0/0 e infinito sobre infinito.',
-    targetSubject: 'Matemática' as const,
-    targetTopicKeyword: 'Límites',
-  },
-  {
-    id: 'exam-santiago-sem1-algebra1-parcial1',
-    profileId: SANTIAGO_PROFILE,
-    title: 'Álgebra Lineal · Parcial 1: Geometría de Rectas y Planos en ℝ³',
-    subtitle: 'Facultad de Ciencias UCV · Departamento de Matemáticas',
-    durationMinutes: 50,
-    questionCount: 5,
-    badge: 'Álgebra Lineal',
-    colorScheme: 'indigo' as const,
-    description:
-      'Producto escalar, producto cruz, ecuaciones simétricas de la recta, planos en el espacio y distancia punto-plano.',
-    targetSubject: 'Matemática' as const,
-    targetTopicKeyword: 'Plano',
-  },
-  {
-    id: 'exam-santiago-sem1-lab1-practica',
-    profileId: SANTIAGO_PROFILE,
-    title: 'Laboratorio I de Física · Quiz de Metrología e Incertidumbres',
-    subtitle: 'Laboratorios Docentes de Física · UCV',
-    durationMinutes: 35,
-    questionCount: 5,
-    badge: 'Laboratorio I',
-    colorScheme: 'indigo' as const,
-    description:
-      'Propagación de errores de Gauss, cifras significativas, apreciación instrumental y ajuste de rectas por mínimos cuadrados.',
+      'Diagramas de cuerpo libre en planos inclinados, fricción estática y cinética, y sistemas de masas acopladas con poleas ideales.',
     targetSubject: 'Física' as const,
-    targetTopicKeyword: 'Incertidumbre',
+    targetTopicKeyword: 'Dinámica',
+  },
+  {
+    id: 'exam-santiago-sem1-fis1-parcial3',
+    profileId: SANTIAGO_PROFILE,
+    title: 'Física I · Parcial 3: Trabajo, Energía & Fuerzas Conservativas',
+    subtitle: 'Facultad de Ciencias UCV · Escuela de Física',
+    durationMinutes: 60,
+    questionCount: 6,
+    badge: 'Física I UCV',
+    colorScheme: 'indigo' as const,
+    description:
+      'Integral de línea del trabajo, teorema de fuerzas vivas, energía potencial gravitatoria y elástica, y balance con trabajo no conservativo.',
+    targetSubject: 'Física' as const,
+    targetTopicKeyword: 'Energía',
   },
   {
     id: 'exam-santiago-sem1-simulacro-integral',
     profileId: SANTIAGO_PROFILE,
-    title: 'Simulacro Integral Semestre I (Física I + Cálculo I + Álgebra Lineal)',
-    subtitle: 'Batería Completa Primer Semestre · Ciencias UCV',
+    title: 'Simulacro Integral Semestre I (Matemática I + Química I + Física I)',
+    subtitle: 'Batería Multidisciplinaria Completa · Facultad de Ciencias UCV',
     durationMinutes: 90,
     questionCount: 15,
     badge: 'Simulacro Semestre I',
     colorScheme: 'indigo' as const,
     description:
-      'Evaluación integral multidisciplinaria de alta exigencia analítica que reúne todos los conceptos fundamentales del primer semestre.',
+      'Evaluación universitaria de máxima exigencia que integra los conceptos analíticos fundamentales de las tres materias del primer semestre.',
     targetSubject: 'Física' as const,
   },
 ];
 
 // =====================================================================
-// 7. MOTOR DE INGESTA DINÁMICA DE SÍLABOS Y EVALUACIONES (BULK INGESTOR)
+// 6. MOTOR DE INGESTA DINÁMICA DE SÍLABOS Y EVALUACIONES (BULK INGESTOR)
 // =====================================================================
 export interface SantiagoCurriculumInputPayload {
   subjects?: Array<{

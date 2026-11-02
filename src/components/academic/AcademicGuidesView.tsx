@@ -87,7 +87,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
   >('TODAS');
   // Filtro temático de asignaturas exclusivo para Santiago Rivero
   const [santiagoSubjectFilter, setSantiagoSubjectFilter] = useState<
-    'TODAS' | 'Física I' | 'Cálculo I' | 'Álgebra Lineal' | 'Laboratorio I'
+    'TODAS' | 'Matemática I' | 'Principios de Química I' | 'Física I'
   >('TODAS');
 
   // Estado para Guías Deconstruidas con Gemini IA
@@ -402,10 +402,9 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
             <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 w-fit">
               {[
                 { id: 'TODAS', label: `Todas (${SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.length})` },
-                { id: 'Física I', label: 'Física I' },
-                { id: 'Cálculo I', label: 'Cálculo I' },
-                { id: 'Álgebra Lineal', label: 'Álgebra Lineal' },
-                { id: 'Laboratorio I', label: 'Laboratorio I' },
+                { id: 'Matemática I', label: 'Matemática I · Pedro Alson (7)' },
+                { id: 'Principios de Química I', label: 'Principios de Química I (10)' },
+                { id: 'Física I', label: 'Física I (3)' },
               ].map((f) => (
                 <button
                   key={f.id}

@@ -176,6 +176,7 @@ export interface DeconstructedAcademicGuide {
   generatedQuestions: DeconstructedQuestion[];
   multimediaResources?: MultimediaResource[];
   researchPrompts?: SantiagoResearchPrompt[];
+  researchPrompt?: SantiagoResearchPrompt;
 }
 
 /**
