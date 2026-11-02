@@ -29,6 +29,48 @@ export const OFFICIAL_NOTION_PDF_LINKS: Record<string, { label: string; filename
       url: '/documents/mafe_notion_guides/EB_LICDISUCAB_COLOR_CLASE4_OCT_09_2026.pdf',
     },
   ],
+  'mafe-math-guia1-geometria': [
+    {
+      label: 'Guía 1 Teórica: Punto, Recta y Espacio (PDF)',
+      filename: 'Guia_teorica__1._Punto_recta_y_espacio_V1.3.pdf',
+      url: '/documents/mafe_notion_guides/Guia_teorica__1._Punto_recta_y_espacio_V1.3.pdf',
+    },
+  ],
+  'mafe-math-guia2-rectas': [
+    {
+      label: 'Guía 2 Teórica: Rectas & Retículas (PDF)',
+      filename: 'Guia_Teorica__2.__Rectas_(1).pdf',
+      url: '/documents/mafe_notion_guides/Guia_Teorica__2.__Rectas_(1).pdf',
+    },
+  ],
+  'mafe-math-guia3-sistemas-teoria': [
+    {
+      label: 'Guía 3 Teórica: Sistemas de Ecuaciones (PDF)',
+      filename: 'Guia_teorica__3._Sistema_de_ecuaciones_(3).pdf',
+      url: '/documents/mafe_notion_guides/Guia_teorica__3._Sistema_de_ecuaciones_(3).pdf',
+    },
+  ],
+  'mafe-math-guia3-sistemas-ejercicios': [
+    {
+      label: 'Guía 3 Ejercicios: Sistemas de Ecuaciones (PDF)',
+      filename: 'Guia_de_ejercicios__3._Sistema_de_ecuaciones_(3).pdf',
+      url: '/documents/mafe_notion_guides/Guia_de_ejercicios__3._Sistema_de_ecuaciones_(3).pdf',
+    },
+  ],
+  'mafe-math-guia4-angulos-teoria': [
+    {
+      label: 'Guía 4 Teórica: Ángulos y Paralelas (PDF)',
+      filename: 'Guia_teorica__4_._Angulos_._V1.3_(1).pdf',
+      url: '/documents/mafe_notion_guides/Guia_teorica__4_._Angulos_._V1.3_(1).pdf',
+    },
+  ],
+  'mafe-math-guia4-angulos-ejercicios': [
+    {
+      label: 'Guía 4 Ejercicios: Ángulos y Rampas (PDF)',
+      filename: 'Guia_de_ejercicios__4._Angulos.V1.2_(2).pdf',
+      url: '/documents/mafe_notion_guides/Guia_de_ejercicios__4._Angulos.V1.2_(2).pdf',
+    },
+  ],
   'mafe-math-design-ucab': [
     {
       label: 'Guía 1 Teórica: Punto, Recta y Espacio (PDF)',

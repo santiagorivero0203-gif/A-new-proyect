@@ -541,14 +541,14 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                   Personalizado para María Fernanda Valderrama
                 </span>
                 <span className="text-[10px] font-mono text-slate-500">
-                  Escuela de Diseño Integral UCAB • 3 Guías Deconstruidas • {ALL_MAFE_QUESTIONS.length} Reactivos
+                  Escuela de Diseño Integral UCAB • {ALL_MAFE_DECONSTRUCTED_GUIDES.length} Guías Oficiales Deconstruidas • {ALL_MAFE_QUESTIONS.length} Reactivos Calibrados
                 </span>
               </div>
               <h3 className="text-lg font-bold text-slate-900 tracking-tight font-sans">
                 Mi Centro Académico & Exámenes de Diseño
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
-                Temario oficial de Teoría del Diseño (Semiótica, Gestalt, Usabilidad, Actor-Red), Teoría del Color (Clase 4 de escalas de 15 a 9 pasos) y Matemática para el Diseño (Geometría, Retículas, Pendientes y Ángulos).
+                Temario oficial de Teoría del Diseño (Semiótica, Gestalt, Usabilidad, Actor-Red), Teoría del Color (Clase 4 de escalas de 15 a 9 pasos) y Matemática para el Diseño (Geometría, Retículas, Sistemas de Ecuaciones Lineales y Ángulos con aplicaciones en diseño).
               </p>
             </div>
 

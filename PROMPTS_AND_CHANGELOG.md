@@ -768,4 +768,45 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `CALENDAR_AND_EVALUATION_PLAN_SYSTEM.md` | Actualizar | Versión 2.0.0 con 100% de coherencia con el código, corrección de Mermaid, claves reales y schemas universales. |
 | `PROMPTS_AND_CHANGELOG.md` | Actualizar | Documentación y registro del Prompt 23. |
 
+---
+
+### Prompt 24: Ingesta Curricular Integral de Guías Oficiales UCAB para María Fernanda Valderrama desde Notion
+> **Contenido**:
+> 1. **Revisión de Tareas en Notion MCP**:
+>    - Detección y ejecución de la tarea asignada: *"Añade estas guías a el apartado de María Fernanda Valderrama en a new proyect mi app de productividad"*.
+>    - Análisis curricular exhaustivo y extracción pedagógica de los 7 documentos oficiales en PDF:
+>      * `Guia_teorica__1._Punto_recta_y_espacio_V1.3.pdf` (14 págs)
+>      * `Guia_Teorica__2.__Rectas_(1).pdf` (19 págs)
+>      * `Guia_teorica__3._Sistema_de_ecuaciones_(3).pdf` (18 págs)
+>      * `Guia_de_ejercicios__3._Sistema_de_ecuaciones_(3).pdf` (2 págs)
+>      * `Guia_teorica__4_._Angulos_._V1.3_(1).pdf` (16 págs)
+>      * `Guia_de_ejercicios__4._Angulos.V1.2_(2).pdf` (7 págs)
+>      * `EB_LICDISUCAB_COLOR_CLASE4_OCT_09_2026.pdf` (25 págs)
+> 2. **Arquitectura Modular Escalable (`src/data/guides/mafe_matematica_diseno.ts`)**:
+>    - Deconstrucción completa en los 7 pilares pedagógicos de cada guía de matemática para el diseño:
+>      * `mafe-math-guia1-geometria`: Guía Teórica #1: Punto abstracto vs visible en diseño (imán visual), líneas, segmentos, planos como soporte y rectas en el espacio 3D (secantes, concurrentes, paralelas y alabeadas).
+>      * `mafe-math-guia2-rectas`: Guía Teórica #2: Retículas modulares de maquetación, plano cartesiano, distancia, punto medio, significado perceptual de la pendiente ($m = \tan\theta$), ecuaciones y perpendicularidad.
+>      * `mafe-math-guia3-sistemas-teoria`: Guía Teórica #3: Sistemas lineales 2x2 como restricciones de diseño, clasificación analítica/geométrica (SCD, SCI, SI) y métodos de resolución (Gráfico, Sustitución, Igualación, Reducción).
+>      * `mafe-math-guia3-sistemas-ejercicios`: Guía de Ejercicios #3: Resolución de los ejercicios de la UCAB y modelado real (mezcla de tintes pigmentarios, balance de carga en iluminación LED y tiempos de imprenta editorial).
+>      * `mafe-math-guia4-angulos-teoria`: Guía Teórica #4: Ángulos en diseño, posición estándar, barrida antihoraria/horaria, conversión sexagesimal a circular ($180^\circ = \pi\text{ rad}$), clasificación por amplitud/posición y 8 ángulos de paralelas con secante.
+>      * `mafe-math-guia4-angulos-ejercicios`: Guía de Ejercicios #4: Cuaderno de ejercicios con conversiones, demostraciones y refutaciones lógicas con contraejemplos, bisectrices simétricas, balance en isotipos y rampas de soporte.
+> 3. **Banco de Preguntas Calibradas y Reactivos Certificados**:
+>    - Adición de 18 reactivos calibrados con justificación pedagógica estricta vinculados a las guías y disponibles en el simulador general de exámenes de diseño (`ALL_MAFE_QUESTIONS`).
+> 4. **Exportación e Integración de PDFs Oficiales (`documentExport.ts` y `AcademicGuidesView.tsx`)**:
+>    - Mapeo 1:1 de cada guía deconstruida a su respectivo PDF original de Notion en `OFFICIAL_NOTION_PDF_LINKS`.
+>    - Actualización dinámica del contador de guías deconstruidas y subtítulo curricular en la vista de María Fernanda Valderrama.
+> 5. **Garantía de Calidad**:
+>    - `npm run build`: 0 errores, compilación de bundle de producción en 7.7s.
+>    - `npm run lint`: 0 errores de TypeScript y Oxlint.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `scripts/generate_mafe_matematica_diseno.mjs` | Crear | Script generador automatizado para las 6 guías deconstruidas de matemática de Mafe. |
+| `src/data/guides/mafe_matematica_diseno.ts` | Crear | Módulo con 6 guías deconstruidas en 7 pilares y 18 reactivos calibrados de examen. |
+| `src/data/mafe_curriculum_hub.ts` | Actualizar | Registro consolidado de todas las guías y preguntas de María Fernanda Valderrama. |
+| `src/utils/documentExport.ts` | Actualizar | Mapeo 1:1 en `OFFICIAL_NOTION_PDF_LINKS` para la descarga directa de los PDFs oficiales de Notion. |
+| `src/components/academic/AcademicGuidesView.tsx` | Actualizar | Contador dinámico de guías y subtítulo curricular actualizado. |
+| `PROMPTS_AND_CHANGELOG.md` | Actualizar | Documentación y registro del Prompt 24. |
+
+
 
