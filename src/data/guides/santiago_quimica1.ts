@@ -2,6 +2,8 @@
  * @file santiago_quimica1.ts
  * @description Guías Académicas Deconstruidas Oficiales (7 Pilares) para SANTIAGO_QUIMICA1_GUIDES.
  * Formato canónico riguroso compatible con DeconstructedAcademicGuide.
+ * Basado directamente en la Guía Oficial de Principios de Química I (Código 3401 · UCV Ciencias)
+ * y Guías de Problemas de la Escuela de Química (UCV).
  */
 
 import type { DeconstructedAcademicGuide } from '../../types/deconstruction.types';
@@ -16,168 +18,158 @@ export const SANTIAGO_QUIMICA1_GUIDES: DeconstructedAcademicGuide[] = [
       "title": "Principios de Química I: Materia, Medidas, Cifras Significativas y Densidad",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
       "summary": "Clasificación sistemática de la materia, transformaciones físicas y químicas, análisis dimensional en cadena por factores unitarios, metrología de laboratorio y propagación estricta de cifras significativas."
-    },
+},
     "phenomenonAndTheory": "La química estudia la materia mediante la observación de sus transformaciones y la medición cuantitativa de sus magnitudes físicas. La materia se presenta como sustancias puras (elementos formados por un solo tipo de átomo, o compuestos con proporciones fijas e invariables de elementos) o como mezclas (homogéneas o disoluciones con composición uniforme en una sola fase, y heterogéneas con fases físicamente distinguibles). En el laboratorio de la UCV, toda medición experimental conlleva una apreciación instrumental e incertidumbre. Para no inventar exactitud artificial, las cifras significativas dictan cuántos dígitos son físicamente válidos: en sumas y restas manda el menor número de decimales, mientras que en multiplicaciones y divisiones manda el menor número de cifras significativas totales.",
     "glossary": [
       {
-        "term": "Sustancia Pura",
-        "definition": "Materia que tiene una composición química fija y propiedades características definidas e inalterables en cualquier muestra.",
-        "symbolOrUnit": "Elementos y Compuestos"
+            "term": "Sustancia Pura",
+            "symbolOrUnit": "\\text{Elementos y Compuestos}",
+            "definition": "Materia que tiene una composición química fija y propiedades características definidas e inalterables en cualquier muestra."
       },
       {
-        "term": "Mezcla Homogénea (Disolución)",
-        "definition": "Combinación física de dos o más sustancias que se distribuyen uniformemente a nivel molecular formando una sola fase visual.",
-        "symbolOrUnit": "Fase única"
+            "term": "Mezcla Homogénea (Disolución)",
+            "symbolOrUnit": "\\text{Fase única uniforme}",
+            "definition": "Combinación física de dos o más sustancias que se distribuyen uniformemente a nivel molecular formando una sola fase visual."
       },
       {
-        "term": "Propiedad Intensiva",
-        "definition": "Propiedad física que no depende de la cantidad de masa presente en la muestra, como la densidad, temperatura y punto de ebullición.",
-        "symbolOrUnit": "Independiente de la masa"
+            "term": "Propiedad Intensiva",
+            "symbolOrUnit": "\\rho, T, P",
+            "definition": "Propiedad física que no depende de la cantidad de masa presente en la muestra, como la densidad, temperatura y punto de ebullición."
       },
       {
-        "term": "Análisis Dimensional",
-        "definition": "Método algorítmico de conversión que multiplica cantidades por factores unitarios fraccionarios para cancelar unidades no deseadas.",
-        "symbolOrUnit": "Factores de conversión"
-      },
-      {
-        "term": "Cifras Significativas",
-        "definition": "Todos los dígitos medidos con certeza por la escala de un instrumento analítico más un único dígito final estimado o incierto.",
-        "symbolOrUnit": "Dígitos válidos"
+            "term": "Cifras Significativas",
+            "symbolOrUnit": "\\text{Dígitos seguros } + 1 \\text{ estimado}",
+            "definition": "Todos los dígitos medidos con certeza por la escala de un instrumento analítico más un único dígito final estimado o incierto."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Sustancia Pura",
-          "latex": "Elementos y Compuestos",
-          "application": "Materia que tiene una composición química fija y propiedades características definidas e inalterables en cualquier muestra."
-        },
-        {
-          "name": "Mezcla Homogénea (Disolución)",
-          "latex": "Fase única",
-          "application": "Combinación física de dos o más sustancias que se distribuyen uniformemente a nivel molecular formando una sola fase visual."
-        },
-        {
-          "name": "Propiedad Intensiva",
-          "latex": "Independiente de la masa",
-          "application": "Propiedad física que no depende de la cantidad de masa presente en la muestra, como la densidad, temperatura y punto de ebullición."
-        }
+            {
+                  "name": "Densidad de una Sustancia",
+                  "latex": "\\rho = \\frac{m}{V} \\quad [\\mathrm{g/cm^3} \\text{ o } \\mathrm{kg/m^3}]",
+                  "application": "Relación intensiva entre la masa inercial y el volumen ocupado por el material a temperatura fija."
+            },
+            {
+                  "name": "Propagación en Suma y Resta",
+                  "latex": "\\text{Decimales}(A \\pm B) = \\min(\\text{Dec}(A), \\text{Dec}(B))",
+                  "application": "El resultado no puede tener más decimales que la medida experimental menos precisa."
+            },
+            {
+                  "name": "Propagación en Multiplicación y División",
+                  "latex": "\\text{Cifras}(A \\cdot B) = \\min(\\text{CS}(A), \\text{CS}(B))",
+                  "application": "El resultado final conserva el número de cifras significativas del factor más limitado."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Identificar si la muestra bajo estudio es una sustancia pura o una mezcla examinando si puede separarse por métodos físicos simples.",
-        "Paso 2: Registrar cada dato experimental anotando la magnitud numérica junto con la apreciación del instrumento utilizado.",
-        "Paso 3: Para conversiones de unidades, escribir la cadena de factores unitarios cancelando las unidades intermedias en diagonal.",
-        "Paso 4: En sumas o restas de datos, redondear el resultado final para que conserve exactamente el mismo número de decimales que la medida con menos decimales.",
-        "Paso 5: En multiplicaciones o divisiones (como el cálculo de densidad d = m / V), redondear el resultado final al número de cifras significativas de la medida más pobre.",
-        "Paso 6: Comparar el valor experimental de densidad obtenido con la literatura de referencia y calcular el error relativo porcentual.",
-        "Regla 1: Los ceros entre dígitos distintos de cero siempre son significativos (ej. 405 tiene 3 cifras).",
-        "Regla 2: Los ceros a la izquierda del primer dígito distinto de cero nunca son significativos; solo ubican el punto decimal (ej. 0.02 tiene 1 cifra).",
-        "Regla 3: Los ceros a la derecha del punto decimal en un número con coma sí son significativos (ej. 3.00 tiene 3 cifras).",
-        "Regla 4: Los factores de conversión exactos (ej. 1 pulgada = 2.54 cm exactamente, o 1 kg = 1000 g) tienen infinitas cifras significativas y no limitan la precisión."
+            "Paso 1: Identificar si la muestra es sustancia pura o mezcla verificando si se separa por métodos físicos.",
+            "Paso 2: Registrar cada dato experimental con la apreciación del instrumento utilizado.",
+            "Paso 3: Para conversiones, plantear factores unitarios fraccionarios cancelando unidades en diagonal.",
+            "Paso 4: En sumas/restas, redondear al menor número de decimales entre los sumandos.",
+            "Paso 5: En multiplicaciones/divisiones, redondear al menor número de cifras significativas totales.",
+            "Regla 1: Los ceros entre dígitos distintos de cero siempre son significativos.",
+            "Regla 2: Los ceros a la izquierda jamás son significativos; solo posicionan el punto decimal.",
+            "Regla 3: Los factores exactos (ej. 1 kg = 1000 g) tienen infinitas cifras significativas."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: En el laboratorio de Química I de la UCV, un estudiante...",
-        "problemStatement": "En el laboratorio de Química I de la UCV, un estudiante pesa una barra cilíndrica de metal desconocido en una balanza analítica registrando 48.362 g. Para medir su volumen, vierte agua en una probeta graduada hasta 25.0 mL, introduce la barra y el nivel sube a 31.2 mL. Calcule la densidad del metal en g/cm³ y en unidades SI (kg/m³) aplicando rigurosamente las reglas de cifras significativas, e identifique de qué metal se trata si los valores teóricos son Hierro (7.87 g/cm³) y Níquel (8.90 g/cm³).",
-        "deductiveSteps": [
-          "Paso 1: Calculamos el volumen de la barra por diferencia de lecturas en la probeta: V = V_final - V_inicial = 31.2 mL - 25.0 mL = 6.2 mL.",
-          "Paso 2: Aplicamos la regla de cifras en la resta: 31.2 tiene 1 decimal y 25.0 tiene 1 decimal. El resultado 6.2 mL conserva 1 decimal y tiene únicamente 2 cifras significativas (el 6 es seguro y el 2 es incierto).",
-          "Paso 3: Calculamos la densidad dividiendo masa entre volumen: d = 48.362 g / 6.2 mL = 7.80032... g/mL.",
-          "Paso 4: Aplicamos la regla de cifras en la división: la masa tiene 5 cifras significativas (48.362) y el volumen tiene 2 cifras significativas (6.2). El resultado final debe redondearse estrictamente a 2 cifras significativas: d = 7.8 g/mL = 7.8 g/cm³.",
-          "Paso 5: Convertimos a unidades del SI (kg/m³) usando análisis dimensional en cadena: (7.8 g / 1 cm³) * (1 kg / 1000 g) * (100 cm / 1 m)³ = (7.8 / 1000) * 1,000,000 kg/m³ = 7.8 * 10³ kg/m³.",
-          "Paso 6: Comparando con los valores teóricos, 7.8 g/cm³ concuerda estrechamente con el Hierro (7.87 g/cm³), con un error relativo de solo 0.9%."
-        ],
-        "finalResult": "En el laboratorio de la UCV, un cálculo con cifras significativas mal redondeadas anula automáticamente la validez analítica de la respuesta."
+            "title": "Problema Canónico UCV (Parcial 1): Cálculo Metrológico de Densidad con Propagación de Cifras",
+            "problemStatement": "En el laboratorio de Química I de la UCV, un estudiante pesa una barra cilíndrica de metal en balanza analítica registrando 48.362 g. En una probeta graduada con agua hasta 25.0 mL, introduce la barra y el nivel sube a 31.2 mL. Calcule la densidad del metal en g/cm³ aplicando rigurosamente las reglas de cifras significativas, e identifique de qué metal se trata sabiendo que el Hierro tiene densidad 7.87 g/cm³ y el Níquel 8.90 g/cm³.",
+            "deductiveSteps": [
+                  "Paso 1: Volumen por desplazamiento: V = V_final - V_inicial = 31.2 mL - 25.0 mL = 6.2 mL.",
+                  "Paso 2: Cifras en la resta: 31.2 y 25.0 tienen 1 decimal cada uno. La resta 6.2 mL conserva 1 decimal y tiene únicamente 2 cifras significativas.",
+                  "Paso 3: Cálculo de densidad: d = m / V = 48.362 g / 6.2 mL = 7.800322... g/mL.",
+                  "Paso 4: Cifras en la división: la masa tiene 5 cifras (48.362) y el volumen tiene 2 cifras (6.2). El resultado debe redondearse a 2 cifras significativas: d = 7.8 g/mL = 7.8 g/cm³.",
+                  "Paso 5: Identificación: El valor 7.8 g/cm³ concuerda con el Hierro (7.87 g/cm³), con un error experimental menor al 1%."
+            ],
+            "finalResult": "En la química experimental de la UCV, un cálculo con cifras significativas mal redondeadas anula la validez del reporte analítico."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 1 UCV",
-        "correction": "Preguntar cuántas cifras significativas tiene la operación (12.45 - 12.41) / 3.20. La resta da 0.04 (solo 1 cifra significativa), por lo que el resultado final solo puede tener una cifra."
+            "trap": "Trampa de ceros a la izquierda",
+            "correction": "Contar 0.0045 como 5 cifras; los ceros a la izquierda solo indican orden de magnitud, el número tiene 2 cifras significativas."
       },
       {
-        "trap": "Trampa de unidades",
-        "correction": "Mezclar mililitros (mL) con metros cúbicos (m³) sin usar la equivalencia puente fundamental: 1 mL = 1 cm³."
-      },
-      {
-        "trap": "Trampa de propiedad intensiva",
-        "correction": "Afirmar que si se duplica la masa de un líquido su densidad se duplica, ignorando que el volumen también se duplica."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Reportar la densidad con 5 cifras significativas (7.8003 g/cm³) porque la calculadora arrojó todos los dígitos en pantalla."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Olvidar elevar al cubo el factor de conversión de centímetros a metros al transformar unidades de volumen cúbico."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Contar los ceros a la izquierda como cifras significativas: en 0.0045 g solo hay dos cifras significativas (el 4 y el 5)."
+            "trap": "Trampa de la resta con pérdida de precisión",
+            "correction": "Restar 15.42 - 15.40 = 0.02 y creer que tiene 4 cifras; el resultado solo tiene 1 cifra significativa."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Sustancia Pura?",
-          "back": "Materia que tiene una composición química fija y propiedades características definidas e inalterables en cualquier muestra. (Notación: Elementos y Compuestos)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Mezcla Homogénea (Disolución)?",
-          "back": "Combinación física de dos o más sustancias que se distribuyen uniformemente a nivel molecular formando una sola fase visual. (Notación: Fase única)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Propiedad Intensiva?",
-          "back": "Propiedad física que no depende de la cantidad de masa presente en la muestra, como la densidad, temperatura y punto de ebullición. (Notación: Independiente de la masa)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Análisis Dimensional?",
-          "back": "Método algorítmico de conversión que multiplica cantidades por factores unitarios fraccionarios para cancelar unidades no deseadas. (Notación: Factores de conversión)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Cifras Significativas?",
-          "back": "Todos los dígitos medidos con certeza por la escala de un instrumento analítico más un único dígito final estimado o incierto. (Notación: Dígitos válidos)"
-        }
+            {
+                  "front": "¿Cuál es la regla de cifras significativas para sumas y restas?",
+                  "back": "El resultado debe redondearse para que coincida con el menor número de lugares decimales de los términos sumados o restados."
+            },
+            {
+                  "front": "¿Cuál es la regla de cifras significativas para multiplicaciones y divisiones?",
+                  "back": "El resultado debe tener el mismo número de cifras significativas que la medida original con menor número de cifras significativas."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Sustancia Pura",
-          "Mezcla Homogénea (Disolución)",
-          "Propiedad Intensiva",
-          "Análisis Dimensional",
-          "Cifras Significativas"
-        ],
-        "notes": [
-          "Paso 1: Identificar si la muestra bajo estudio es una sustancia pura o una mezcla examinando si puede separarse por métodos físicos simples.",
-          "Paso 2: Registrar cada dato experimental anotando la magnitud numérica junto con la apreciación del instrumento utilizado.",
-          "Paso 3: Para conversiones de unidades, escribir la cadena de factores unitarios cancelando las unidades intermedias en diagonal.",
-          "Paso 4: En sumas o restas de datos, redondear el resultado final para que conserve exactamente el mismo número de decimales que la medida con menos decimales.",
-          "Paso 5: En multiplicaciones o divisiones (como el cálculo de densidad d = m / V), redondear el resultado final al número de cifras significativas de la medida más pobre."
-        ],
-        "summary": "Clasificación sistemática de la materia, transformaciones físicas y químicas, análisis dimensional en cadena por factores unitarios, metrología de laboratorio y propagación estricta de cifras significativas."
+            "cues": [
+                  "Propiedad Intensiva",
+                  "Regla de Decimales",
+                  "Regla de Cifras Totales",
+                  "Apreciación"
+            ],
+            "notes": [
+                  "1. Densidad: magnitud intensiva d = m/V.",
+                  "2. Sumas/Restas: conservan el menor número de decimales.",
+                  "3. Multiplicaciones/Divisiones: conservan el menor número de cifras totales.",
+                  "4. 1 mL = 1 cm³ exactamente."
+            ],
+            "summary": "Metrología química, cifras significativas y clasificación fundamental de la materia en el laboratorio universitario."
       },
-      "conceptMapNodes": "Principios de Química I: Materia, Medidas, Cifras Significativas y Densidad\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Sustancia Pura, Mezcla Homogénea (Disolución), Propiedad Intensiva\n  └── Protocolo: Paso 1: Identificar si la muestra bajo estudio es una sustancia pura o una mezcla examinando si puede separarse por métodos físicos simples. -> Paso 2: Registrar cada dato experimental anotando la magnitud numérica junto con la apreciación del instrumento utilizado. -> Paso 3: Para conversiones de unidades, escribir la cadena de factores unitarios cancelando las unidades intermedias en diagonal."
-    },
+      "conceptMapNodes": "Medidas y Cifras\n  ├── Materia: Sustancias puras vs Mezclas (homogéneas / heterogéneas)\n  ├── Regla Suma/Resta: Menor número de decimales\n  └── Regla Mult/Div: Menor número de cifras significativas totales"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Materia, Medidas, Cifras Significativas y Densidad",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Materia, Medidas, Cifras Significativas y Densidad?",
-        "opciones": [
-          "Clasificación sistemática de la materia, transformaciones físicas y químicas, análisis dimensional e",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Clasificación sistemática de la materia, transformaciones físicas y químicas, análisis dimensional e",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Materia, Medidas, Cifras Significativas y Densidad\n\n**Resolución Directa:** La química estudia la materia mediante la observación de sus transformaciones y la medición cuantitativa de sus magnitudes físicas. La materia se presenta como sustancias puras (el..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Cifras Significativas y Densidad",
+            "tipo": "opcion_multiple",
+            "pregunta": "Un estudiante de Química I pesa un sólido registrando $25.40\\,\\text{g}$ y mide su volumen en probeta obteniendo un cambio de $10.0\\,\\text{mL}$ a $13.2\\,\\text{mL}$. ¿Cómo debe reportar la densidad aplicando las reglas de cifras significativas?",
+            "opciones": [
+                  "$7.9\\,\\text{g/mL}$ (2 cifras significativas)",
+                  "$7.9375\\,\\text{g/mL}$ (5 cifras significativas)",
+                  "$7.94\\,\\text{g/mL}$ (3 cifras significativas)",
+                  "$8\\,\\text{g/mL}$ (1 cifra significativa)"
+            ],
+            "correcta": "$7.9\\,\\text{g/mL}$ (2 cifras significativas)",
+            "justificacion": "**Concepto Fundamental:** Propagación de Cifras en Resta y División.\n\n**Resolución:** El volumen es $\\Delta V = 13.2 - 10.0 = 3.2\\,\\text{mL}$, con 1 decimal y por tanto solo 2 cifras significativas. En la división $\\rho = \\frac{25.40}{3.2}$, la masa tiene 4 cifras pero el volumen limita a 2 cifras significativas. Por tanto, $7.9375$ se redondea estrictamente a $7.9\\,\\text{g/mL}$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Cifras Significativas en Operaciones Combinadas",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuántas cifras significativas tiene el resultado de la operación combinada $\\frac{12.45 - 12.41}{3.200}$?",
+            "opciones": [
+                  "Exactamente 1 cifra significativa",
+                  "Exactamente 2 cifras significativas",
+                  "Exactamente 4 cifras significativas",
+                  "Infinitas cifras por ser factores teóricos"
+            ],
+            "correcta": "Exactamente 1 cifra significativa",
+            "justificacion": "**Concepto Fundamental:** Pérdida de Precisión en Restas de Magnitudes Cercanas.\n\n**Resolución:** En el numerador: $12.45 - 12.41 = 0.04$ (conserva 2 decimales, pero el valor numérico $0.04$ tiene una sola cifra significativa: el 4). Al dividir $0.04$ (1 cifra) entre $3.200$ (4 cifras), el resultado final $0.0125$ debe redondearse a una sola cifra: $0.01$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Clasificación de Propiedades",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál de las siguientes magnitudes físicas de una muestra líquida es una propiedad intensiva?",
+            "opciones": [
+                  "La densidad a $20^\\circ\\text{C}$",
+                  "La masa total de la muestra",
+                  "El volumen en litros que ocupa",
+                  "La capacidad calorífica total en Joules/K"
+            ],
+            "correcta": "La densidad a $20^\\circ\\text{C}$",
+            "justificacion": "**Concepto Fundamental:** Propiedades Intensivas vs Extensivas.\n\n**Resolución:** Las propiedades intensivas no dependen de la cantidad de materia de la muestra. La densidad $\\rho = m/V$, el punto de ebullición y la temperatura son intensivas; la masa y el volumen son extensivas porque se duplican si se duplica la cantidad de sustancia."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-propiedades'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-propiedades"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-propiedades"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-propiedades"],
   },
   {
     "id": "santiago-qgi-atomos-guide",
@@ -185,169 +177,141 @@ researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
     "guideMetadata": {
       "title": "Principios de Química I: Leyes Ponderales, Modelos Atómicos e Isótopos",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Fundamentos cuantitativos de las leyes clásicas de la química, evolución de modelos atómicos (Dalton, Thomson, Rutherford), número atómico Z, número másico A y cálculo de masa atómica promedio."
-    },
-    "phenomenonAndTheory": "La teoría atómica moderna se construyó sobre las tres leyes ponderales clásicas de la química: la Ley de Conservación de la Masa de Lavoisier (la masa total no se crea ni se destruye en una reacción química ordinaria), la Ley de las Proporciones Definidas de Proust (un compuesto puro siempre contiene exactamente los mismos elementos en idéntica proporción de masa), y la Ley de las Proporciones Múltiples de Dalton (cuando dos elementos forman más de un compuesto, las masas de uno que se combinan con una masa fija del otro guardan una relación de números enteros sencillos). Los experimentos de Thomson con tubos de rayos catódicos revelaron el electrón, Millikan midió su carga elemental, y el bombardeo de láminas de oro por Rutherford demostró que el átomo posee un núcleo diminuto y denso cargado positivamente.",
+      "summary": "Leyes clásicas de la química (Lavoisier, Proust, Dalton), modelos atómicos históricos, número atómico Z, número másico A y cálculo de masa atómica promedio por abundancia isotópica."
+},
+    "phenomenonAndTheory": "La química moderna descansa sobre las leyes ponderales de combinación química. Lavoisier demostró la conservación de la masa en sistemas cerrados; Proust formuló la Ley de las Proporciones Definidas (un compuesto siempre contiene exactamente la misma proporción en masa de sus elementos); y Dalton formuló la Ley de las Proporciones Múltiples (cuando dos elementos forman más de un compuesto, las masas de uno que se combinan con una masa fija del otro guardan relaciones de números enteros sencillos como 1:2, 1:3). El átomo contiene un núcleo denso con protones (Z) y neutrones (N), rodeado por electrones. Los isótopos son átomos del mismo elemento con idéntico Z pero distinto número másico A; la masa atómica que aparece en la tabla periódica es el promedio ponderado de las masas isotópicas multiplicado por sus abundancias naturales relativas.",
     "glossary": [
       {
-        "term": "Número Atómico Z",
-        "definition": "Cantidad total de protones que residen en el núcleo atómico, que define la identidad química inmutable de cada elemento.",
-        "symbolOrUnit": "Z = protones"
+            "term": "Número Atómico (Z)",
+            "symbolOrUnit": "Z = p^+",
+            "definition": "Número de protones en el núcleo atómico que define la identidad química irrevocable de cada elemento."
       },
       {
-        "term": "Número Másico A",
-        "definition": "Suma entera total de nucleones (protones más neutrones) presentes en el núcleo de un átomo individual.",
-        "symbolOrUnit": "A = Z + N"
+            "term": "Número Másico (A)",
+            "symbolOrUnit": "A = Z + N",
+            "definition": "Suma total de nucleones (protones más neutrones) presentes en el núcleo del átomo."
       },
       {
-        "term": "Isótopos",
-        "definition": "Átomos del mismo elemento químico que poseen idéntico número atómico Z pero diferente número de neutrones N y diferente masa másica A.",
-        "symbolOrUnit": "Mismo Z, distinto A"
-      },
-      {
-        "term": "Masa Atómica Promedio",
-        "definition": "Media ponderada de las masas isotópicas de un elemento considerando la abundancia relativa natural de cada isótopo en la Tierra.",
-        "symbolOrUnit": "u o g/mol"
-      },
-      {
-        "term": "Ley de Proporciones Múltiples",
-        "definition": "Principio de Dalton que establece que las razones entre masas de un elemento que reaccionan con masa fija de otro son fracciones de enteros pequeños (1:1, 1:2, 2:3).",
-        "symbolOrUnit": "m1 / m2 = n1 / n2"
+            "term": "Isótopos",
+            "symbolOrUnit": "^{A}_{Z}\\text{X}",
+            "definition": "Átomos con el mismo número de protones pero diferente cantidad de neutrones, teniendo idéntico comportamiento químico pero diferente masa física."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Número Atómico Z",
-          "latex": "Z = protones",
-          "application": "Cantidad total de protones que residen en el núcleo atómico, que define la identidad química inmutable de cada elemento."
-        },
-        {
-          "name": "Número Másico A",
-          "latex": "A = Z + N",
-          "application": "Suma entera total de nucleones (protones más neutrones) presentes en el núcleo de un átomo individual."
-        },
-        {
-          "name": "Isótopos",
-          "latex": "Mismo Z, distinto A",
-          "application": "Átomos del mismo elemento químico que poseen idéntico número atómico Z pero diferente número de neutrones N y diferente masa másica A."
-        }
+            {
+                  "name": "Masa Atómica Promedio Ponderada",
+                  "latex": "\\bar{A} = \\sum_{i=1}^n x_i \\cdot m_i = x_1 m_1 + x_2 m_2 + \\dots",
+                  "application": "Calcular el peso atómico de la tabla periódica sumando el producto de cada masa isotópica por su fracción molar de abundancia."
+            },
+            {
+                  "name": "Ley de Proporciones Múltiples de Dalton",
+                  "latex": "\\frac{m_B(\\text{Compuesto II})}{m_B(\\text{Compuesto I})} = \\frac{p}{q} \\in \\mathbb{Q}^+",
+                  "application": "Comprobar que las masas de un elemento que se combinan con masa constante de otro están en relación entera pequeña."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Para demostrar la Ley de Proporciones Múltiples, tomar las masas de los compuestos y normalizar respecto a un gramo fijo del primer elemento.",
-        "Paso 2: Dividir las masas normalizadas del segundo elemento entre sí y simplificar para obtener una razón de números enteros pequeños.",
-        "Paso 3: Identificar nucleidos escribiendo el símbolo químico con el número másico A como superíndice izquierdo y el número atómico Z como subíndice.",
-        "Paso 4: Calcular el número de neutrones restando directamente: N = A - Z.",
-        "Paso 5: Para calcular la masa atómica promedio ponderada, multiplicar la masa exacta de cada isótopo por su porcentaje de abundancia dividido entre 100.",
-        "Paso 6: Sumar todas las contribuciones isotópicas y redondear al número de cifras significativas dictado por las abundancias medidas.",
-        "Regla 1: El número atómico Z es la huella digital del elemento; si cambia Z, cambia de elemento químico.",
-        "Regla 2: En un ion monoatómico con carga q, el número de electrones es siempre e- = Z - q (restando la carga algebraica).",
-        "Regla 3: Dos sustancias cumplen la ley de proporciones múltiples solo si están formadas exactamente por los mismos dos elementos químicos en relaciones cuantitativas distintas.",
-        "Regla 4: La suma de los porcentajes de abundancia de todos los isótopos de un elemento debe sumar exactamente el 100%."
+            "Paso 1: Convertir porcentajes de abundancia a fracciones decimales dividiendo entre 100.",
+            "Paso 2: Multiplicar cada masa isotópica exacta por su respectiva fracción de abundancia.",
+            "Paso 3: Sumar los productos ponderados y redondear según cifras significativas.",
+            "Paso 4: Para proporciones múltiples, fijar 1 gramo del primer elemento en ambos compuestos y dividir las masas del segundo elemento."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: El elemento cloro existe en la naturaleza como una mezc...",
-        "problemStatement": "El elemento cloro existe en la naturaleza como una mezcla de dos isótopos estables: Cloro-35 con masa isotópica de 34.969 u y abundancia natural de 75.77%, y Cloro-37 con masa isotópica de 36.966 u y abundancia natural de 24.23%. Calcule la masa atómica promedio del cloro natural y determine el número de protones, neutrones y electrones en el anión cloruro 37Cl- (Z = 17).",
-        "deductiveSteps": [
-          "Paso 1: Planteamos la media ponderada para la masa atómica: Masa promedio = (Masa_Cl35 * %_Cl35 + Masa_Cl37 * %_Cl37) / 100.",
-          "Paso 2: Sustituimos los valores numéricos: Masa promedio = (34.969 u * 75.77 + 36.966 u * 24.23) / 100.",
-          "Paso 3: Calculamos cada sumando: primer término = 2649.5911 u; segundo término = 895.6862 u. Suma = 3545.2773 u.",
-          "Paso 4: Dividimos entre 100: Masa promedio = 35.452773 u. Redondeando a 4 cifras significativas (debido a las abundancias 75.77% y 24.23%), obtenemos: 35.45 u (exactamente el valor de la tabla periódica).",
-          "Paso 5: Analizamos la especie subatómica 37Cl- con Z = 17 y A = 37: Protones = Z = 17.",
-          "Paso 6: Neutrones = A - Z = 37 - 17 = 20 neutrones. Como es un anión con carga negativa -1, ha ganado un electrón respecto al átomo neutro: Electrones = 17 + 1 = 18 electrones."
-        ],
-        "finalResult": "La masa atómica de la tabla periódica nunca es la masa de un átomo real, sino el promedio estadístico de la mezcla isotópica terrestre."
+            "title": "Problema Canónico UCV (Parcial 1): Cálculo de Masa Atómica Promedio del Cloro",
+            "problemStatement": "El Cloro natural está formado por dos isótopos estables: Cl-35 con masa 34.96885 u y abundancia natural del 75.77%, y Cl-37 con masa 36.96590 u y abundancia del 24.23%. Calcule la masa atómica promedio del Cloro que debe reportarse en la tabla periódica con 4 cifras significativas.",
+            "deductiveSteps": [
+                  "Paso 1: Fracciones decimales: f(Cl-35) = 75.77 / 100 = 0.7577; f(Cl-37) = 24.23 / 100 = 0.2423.",
+                  "Paso 2: Aporte de Cl-35: 0.7577 * 34.96885 u = 26.49589 u.",
+                  "Paso 3: Aporte de Cl-37: 0.2423 * 36.96590 u = 8.95683 u.",
+                  "Paso 4: Suma total: Masa = 26.49589 u + 8.95683 u = 35.4527 u.",
+                  "Paso 5: Redondeo: Redondeando a 4 cifras significativas según las abundancias: 35.45 u."
+            ],
+            "finalResult": "El valor ponderado 35.45 u coincide exactamente con el valor canónico del Cloro en la tabla periódica oficial de la UCV."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 1 UCV",
-        "correction": "Preguntar si el CO y el CO2 demuestran la ley de proporciones definidas o múltiples. Son compuestos distintos formados por los mismos elementos, por lo que demuestran la ley de proporciones múltiples."
-      },
-      {
-        "trap": "Trampa de Thomson vs Rutherford",
-        "correction": "Atribuir el descubrimiento del núcleo a Thomson cuando fue Rutherford con la dispersión alfa quien lo demostró."
-      },
-      {
-        "trap": "Trampa de número de masa",
-        "correction": "Olvidar que los electrones no se cuentan en el número másico A porque su masa es despreciable frente a protones y neutrones."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Calcular el promedio aritmético simple sumando las dos masas y dividiendo entre 2, ignorando que uno de los isótopos es tres veces más abundante."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Confundir número másico A (un número entero de conteo) con masa atómica u (un valor decimal con unidades físicas)."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Restar electrones en un ion negativo en lugar de sumarlos."
+            "trap": "Trampa del promedio aritmético simple",
+            "correction": "Sumar (35 + 37)/2 = 36 u ignorando que el isótopo 35 es tres veces más abundante que el 37."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Número Atómico Z?",
-          "back": "Cantidad total de protones que residen en el núcleo atómico, que define la identidad química inmutable de cada elemento. (Notación: Z = protones)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Número Másico A?",
-          "back": "Suma entera total de nucleones (protones más neutrones) presentes en el núcleo de un átomo individual. (Notación: A = Z + N)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Isótopos?",
-          "back": "Átomos del mismo elemento químico que poseen idéntico número atómico Z pero diferente número de neutrones N y diferente masa másica A. (Notación: Mismo Z, distinto A)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Masa Atómica Promedio?",
-          "back": "Media ponderada de las masas isotópicas de un elemento considerando la abundancia relativa natural de cada isótopo en la Tierra. (Notación: u o g/mol)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Ley de Proporciones Múltiples?",
-          "back": "Principio de Dalton que establece que las razones entre masas de un elemento que reaccionan con masa fija de otro son fracciones de enteros pequeños (1:1, 1:2, 2:3). (Notación: m1 / m2 = n1 / n2)"
-        }
+            {
+                  "front": "¿Qué enuncia la Ley de las Proporciones Múltiples de Dalton?",
+                  "back": "Cuando dos elementos se combinan para formar más de un compuesto, las masas de uno de ellos que se unen con una masa fija del otro guardan una relación de números enteros sencillos."
+            },
+            {
+                  "front": "¿Cómo se calcula la masa atómica promedio de un elemento con varios isótopos?",
+                  "back": "Multiplicando la masa exacta de cada isótopo por su abundancia fraccionaria decimal y sumando todos los términos."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Número Atómico Z",
-          "Número Másico A",
-          "Isótopos",
-          "Masa Atómica Promedio",
-          "Ley de Proporciones Múltiples"
-        ],
-        "notes": [
-          "Paso 1: Para demostrar la Ley de Proporciones Múltiples, tomar las masas de los compuestos y normalizar respecto a un gramo fijo del primer elemento.",
-          "Paso 2: Dividir las masas normalizadas del segundo elemento entre sí y simplificar para obtener una razón de números enteros pequeños.",
-          "Paso 3: Identificar nucleidos escribiendo el símbolo químico con el número másico A como superíndice izquierdo y el número atómico Z como subíndice.",
-          "Paso 4: Calcular el número de neutrones restando directamente: N = A - Z.",
-          "Paso 5: Para calcular la masa atómica promedio ponderada, multiplicar la masa exacta de cada isótopo por su porcentaje de abundancia dividido entre 100."
-        ],
-        "summary": "Fundamentos cuantitativos de las leyes clásicas de la química, evolución de modelos atómicos (Dalton, Thomson, Rutherford), número atómico Z, número másico A y cálculo de masa atómica promedio."
+            "cues": [
+                  "Leyes Ponderales",
+                  "Proporciones Definidas",
+                  "Proporciones Múltiples",
+                  "Isótopos"
+            ],
+            "notes": [
+                  "1. Lavoisier: Masa reactivos = Masa productos.",
+                  "2. Proust: Proporción fija de masas en un compuesto.",
+                  "3. Dalton: Relaciones de enteros sencillos en múltiples compuestos.",
+                  "4. Masa atómica = Promedio ponderado de isótopos."
+            ],
+            "summary": "Evolución histórica de las leyes de combinación química y estructura atómica fundamental."
       },
-      "conceptMapNodes": "Principios de Química I: Leyes Ponderales, Modelos Atómicos e Isótopos\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Número Atómico Z, Número Másico A, Isótopos\n  └── Protocolo: Paso 1: Para demostrar la Ley de Proporciones Múltiples, tomar las masas de los compuestos y normalizar respecto a un gramo fijo del primer elemento. -> Paso 2: Dividir las masas normalizadas del segundo elemento entre sí y simplificar para obtener una razón de números enteros pequeños. -> Paso 3: Identificar nucleidos escribiendo el símbolo químico con el número másico A como superíndice izquierdo y el número atómico Z como subíndice."
-    },
+      "conceptMapNodes": "Leyes Ponderales e Isótopos\n  ├── Leyes: Lavoisier (Masa) | Proust (Definidas) | Dalton (Múltiples)\n  └── Isótopos: Mismo Z, distinto A -> Masa = Promedio ponderado"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Leyes Ponderales, Modelos Atómicos e Isótopos",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Leyes Ponderales, Modelos Atómicos e Isótopos?",
-        "opciones": [
-          "Fundamentos cuantitativos de las leyes clásicas de la química, evolución de modelos atómicos (Dalton",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Fundamentos cuantitativos de las leyes clásicas de la química, evolución de modelos atómicos (Dalton",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Leyes Ponderales, Modelos Atómicos e Isótopos\n\n**Resolución Directa:** La teoría atómica moderna se construyó sobre las tres leyes ponderales clásicas de la química: la Ley de Conservación de la Masa de Lavoisier (la masa total no se crea ni se destru..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Masa Atómica Ponderada de Isótopos",
+            "tipo": "opcion_multiple",
+            "pregunta": "El elemento Galio ($Z = 31$) posee dos isótopos estables: $^{69}\\text{Ga}$ ($68.925\\,\\text{u}$, $60.11\\%$) y $^{71}\\text{Ga}$ ($70.925\\,\\text{u}$, $39.89\\%$) . ¿Cuál es su masa atómica promedio?",
+            "opciones": [
+                  "$69.72\\,\\text{u}$",
+                  "$69.93\\,\\text{u}$ (promedio aritmético simple)",
+                  "$68.93\\,\\text{u}$",
+                  "$70.50\\,\\text{u}$"
+            ],
+            "correcta": "$69.72\\,\\text{u}$",
+            "justificacion": "**Concepto Fundamental:** Promedio Ponderado de Isótopos.\n\n**Resolución:** $\\bar{A} = (0.6011)(68.925) + (0.3989)(70.925) = 41.4308 + 28.2920 = 69.7228\\,\\text{u} \\approx 69.72\\,\\text{u}$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Ley de Proporciones Múltiples",
+            "tipo": "opcion_multiple",
+            "pregunta": "El nitrógeno forma dos óxidos: en el primero $14.0\\,\\text{g}$ de N se unen a $16.0\\,\\text{g}$ de O; en el segundo $14.0\\,\\text{g}$ de N se unen a $32.0\\,\\text{g}$ de O. ¿Qué ley fundamental comprueba este hecho?",
+            "opciones": [
+                  "La Ley de las Proporciones Múltiples de Dalton, porque la relación de masas de oxígeno es $16:32 = 1:2$",
+                  "La Ley de la Conservación de la Masa de Lavoisier exclusivamente",
+                  "La Ley de los Gases Ideales de Charles",
+                  "El Principio de Exclusión de Pauli"
+            ],
+            "correcta": "La Ley de las Proporciones Múltiples de Dalton, porque la relación de masas de oxígeno es $16:32 = 1:2$",
+            "justificacion": "**Concepto Fundamental:** Ley de las Proporciones Múltiples.\n\n**Resolución:** Al mantener fija la masa de nitrógeno ($14.0\\,\\text{g}$), las masas de oxígeno que se combinan ($16.0\\,\\text{g}$ en $\\text{NO}$ y $32.0\\,\\text{g}$ en $\\text{NO}_2$) están en relación exacta de números enteros pequeños: $32.0 / 16.0 = 2/1 = 1:2$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Partículas Subatómicas en Iones",
+            "tipo": "opcion_multiple",
+            "pregunta": "Para el ion sulfuro $^{34}_{16}\\text{S}^{2-}$, ¿cuál es el número exacto de protones, neutrones y electrones respectivamente?",
+            "opciones": [
+                  "16 protones, 18 neutrones y 18 electrones",
+                  "16 protones, 16 neutrones y 18 electrones",
+                  "18 protones, 16 neutrones y 16 electrones",
+                  "16 protones, 34 neutrones y 18 electrones"
+            ],
+            "correcta": "16 protones, 18 neutrones y 18 electrones",
+            "justificacion": "**Concepto Fundamental:** Número Atómico, Número Másico y Carga Iónica.\n\n**Resolución:** $Z = 16$ indica 16 protones. El número de neutrones es $A - Z = 34 - 16 = 18$ neutrones. La carga $2-$ indica que ha ganado 2 electrones sobre el átomo neutro: $16 + 2 = 18$ electrones."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-atomos'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-atomos"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-atomos"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-atomos"],
   },
   {
     "id": "santiago-qgi-cuantica-guide",
@@ -355,169 +319,157 @@ researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
     "guideMetadata": {
       "title": "Principios de Química I: Mecánica Cuántica, Números Cuánticos y Configuraciones Electrónicas",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Cuantización de la energía, modelo de Bohr, números cuánticos principal, secundario, magnético y de espín, formas de orbitales s, p, d, f y reglas de llenado electrónico con anomalías del cromo y cobre."
-    },
-    "phenomenonAndTheory": "La estructura electrónica de los átomos explica el comportamiento químico de la materia a través de la física cuántica. La radiación electromagnética transporta energía en paquetes discretos llamados fotones, descritos por la ecuación de Planck E = h*nu. El modelo atómico de Bohr demostró que los electrones no caen en espiral hacia el núcleo porque viven en niveles de energía estacionarios y cuantizados. La mecánica cuántica moderna, mediante la dualidad onda-partícula de De Broglie y el principio de incertidumbre de Heisenberg, sustituyó la noción de trayectorias u órbitas rígidas por orbitales atómicos: regiones tridimensionales del espacio donde existe una probabilidad del 90% de hallar al electrón, descritas por cuatro números cuánticos (n, l, ml, ms) y gobernadas por las reglas de Aufbau, Pauli y Hund.",
+      "summary": "Cuantización energética de Planck, modelo atómico de Bohr, números cuánticos (n, l, ml, ms), principios de Aufbau, exclusión de Pauli, regla de Hund y anomalías de estabilidad del Cr y Cu."
+},
+    "phenomenonAndTheory": "La física clásica falló al explicar por qué los electrones acelerados no colapsaban en el núcleo. Planck y Einstein demostraron que la radiación electromagnética se intercambia en paquetes discretos de energía llamados fotones (E = h*nu). La mecánica ondulatoria de Schrödinger describe los electrones no como partículas con órbitas fijas, sino como funciones de onda de probabilidad en orbitales atómicos. Cuatro números cuánticos especifican unívocamente el estado de cada electrón: n (nivel principal), l (forma del subnivel: s, p, d, f), ml (orientación espacial) y ms (espín intrínseco). Para construir la configuración electrónica en el estado fundamental se aplican tres reglas inviolables: el principio de Aufbau (menor energía primero), el principio de exclusión de Pauli (no puede haber dos electrones con los 4 números cuánticos idénticos) y la regla de Hund (máxima multiplicidad de espín en orbitales degenerados). Además, existen anomalías termodinámicas de subcapa semillena o llena en el Cromo ([Ar] 4s1 3d5) y Cobre ([Ar] 4s1 3d10).",
     "glossary": [
       {
-        "term": "Número Cuántico Principal n",
-        "definition": "Entero positivo (1, 2, 3...) que determina el nivel de energía principal y el tamaño promedio de la nube electrónica respecto al núcleo.",
-        "symbolOrUnit": "n = 1, 2, 3..."
+            "term": "Número Cuántico Principal (n)",
+            "symbolOrUnit": "n = 1, 2, 3, \\dots",
+            "definition": "Determina el nivel energético principal y el tamaño o extensión promedio de la nube electrónica."
       },
       {
-        "term": "Número Cuántico Azimutal l",
-        "definition": "Entero que determina la forma geométrica del orbital atómico: l = 0 (orbital s esférico), l = 1 (orbital p bilobular), l = 2 (orbital d), l = 3 (orbital f).",
-        "symbolOrUnit": "0 <= l <= n - 1"
+            "term": "Número Cuántico Azimutal (l)",
+            "symbolOrUnit": "l = 0, 1, \\dots, (n-1)",
+            "definition": "Define la forma geométrica del orbital atómico: l = 0 (s, esférico), l = 1 (p, bilobular), l = 2 (d), l = 3 (f)."
       },
       {
-        "term": "Número Cuántico Magnético ml",
-        "definition": "Entero que especifica la orientación espacial tridimensional del orbital respecto a un campo magnético exterior.",
-        "symbolOrUnit": "-l <= ml <= +l"
+            "term": "Número Cuántico Magnético (ml)",
+            "symbolOrUnit": "m_l = -l, \\dots, 0, \\dots, +l",
+            "definition": "Determina la orientación espacial del orbital bajo la influencia de un campo magnético exterior."
       },
       {
-        "term": "Número Cuántico de Espín ms",
-        "definition": "Momento angular intrínseco del electrón, que solo puede adoptar dos orientaciones posibles: +1/2 (giro hacia arriba) o -1/2 (giro hacia abajo).",
-        "symbolOrUnit": "ms = +1/2, -1/2"
-      },
-      {
-        "term": "Principio de Aufbau",
-        "definition": "Regla de construcción progresiva que establece que los electrones ocupan primero los orbitales de menor energía disponible siguiendo la suma n + l.",
-        "symbolOrUnit": "Regla n + l"
+            "term": "Número Cuántico de Espín (ms)",
+            "symbolOrUnit": "m_s = \\pm \\frac{1}{2}",
+            "definition": "Momento angular intrínseco de giro del electrón sobre su propio eje."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Número Cuántico Principal n",
-          "latex": "n = 1, 2, 3...",
-          "application": "Entero positivo (1, 2, 3...) que determina el nivel de energía principal y el tamaño promedio de la nube electrónica respecto al núcleo."
-        },
-        {
-          "name": "Número Cuántico Azimutal l",
-          "latex": "0 <= l <= n - 1",
-          "application": "Entero que determina la forma geométrica del orbital atómico: l = 0 (orbital s esférico), l = 1 (orbital p bilobular), l = 2 (orbital d), l = 3 (orbital f)."
-        },
-        {
-          "name": "Número Cuántico Magnético ml",
-          "latex": "-l <= ml <= +l",
-          "application": "Entero que especifica la orientación espacial tridimensional del orbital respecto a un campo magnético exterior."
-        }
+            {
+                  "name": "Energía del Fotón (Planck-Einstein)",
+                  "latex": "E = h\\nu = \\frac{hc}{\\lambda}, \\quad h = 6.626 \\times 10^{-34}\\,\\mathrm{J\\cdot s}",
+                  "application": "Calcular la energía emitida o absorbida en transiciones electrónicas cuánticas."
+            },
+            {
+                  "name": "Regla de Energía de Madelung",
+                  "latex": "(n + l) \\text{ determina el orden de llenado}",
+                  "application": "Si dos subniveles tienen igual suma (n+l), se llena primero el de menor n (ej. 4s se llena antes de 3d)."
+            },
+            {
+                  "name": "Anomalías Cuánticas Canónicas",
+                  "latex": "\\mathrm{Cr}: [\\mathrm{Ar}] 4s^1 3d^5, \\quad \\mathrm{Cu}: [\\mathrm{Ar}] 4s^1 3d^{10}",
+                  "application": "Promoción de un electrón del orbital 4s a la subcapa 3d para maximizar la energía de canje cuántica."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Obtener el número atómico Z del elemento neutro para conocer la cantidad total de electrones que se deben acomodar.",
-        "Paso 2: Seguir la regla de las diagonales (orden creciente de n + l): 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p, 5s, 4d, 5p, 6s...",
-        "Paso 3: Llenar cada subnivel respetando las capacidades máximas: s aloja 2 e-, p aloja 6 e-, d aloja 10 e-, f aloja 14 e-.",
-        "Paso 4: Aplicar el Principio de Exclusión de Pauli: jamás colocar más de dos electrones por cajita cuántica y con espines antiparalelos.",
-        "Paso 5: Aplicar la Regla de Hund: en subniveles degenerados (como los 3 orbitales p o 5 orbitales d), colocar primero un electrón con espín paralelo en cada orbital antes de aparear.",
-        "Paso 6: Verificar posibles excepciones termodinámicas de estabilidad: los metales de transición con d4 (como Cr) o d9 (como Cu) promocionan un electrón desde el subnivel s para alcanzar semilleno (d5) o lleno (d10).",
-        "Regla 1: Dos electrones en el mismo átomo jamás pueden tener exactamente el mismo conjunto de los cuatro números cuánticos (Principio de Pauli).",
-        "Regla 2: El número de orbitales dentro de un subnivel l es siempre 2*l + 1; por eso p tiene 3 orbitales y d tiene 5 orbitales.",
-        "Regla 3: Si una especie tiene electrones desapareados es paramagnética; si todos sus electrones están en parejas de espines opuestos es diamagnética.",
-        "Regla 4: Los electrones de valencia determinan la reactividad y corresponden a los electrones ubicados en la capa más externa n."
+            "Paso 1: Determinar el número total de electrones a ubicar a partir del número atómico Z (ajustando por carga neta si es un ion).",
+            "Paso 2: Seguir la regla de las diagonales (1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p, 5s...).",
+            "Paso 3: Verificar si el elemento es Cromo (Z=24) o Cobre (Z=29) para aplicar la anomalía [Ar] 4s1 3d5 o [Ar] 4s1 3d10.",
+            "Paso 4: En cationes de metales de transición, retirar primero los electrones del nivel más externo n=4 (los electrones 4s) antes de tocar los 3d.",
+            "Paso 5: Dibujar las cajas de orbitales aplicando la regla de Hund (ubicar un electrón con espín paralelo en cada caja antes de aparear)."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: Escriba la configuración electrónica completa y la abre...",
-        "problemStatement": "Escriba la configuración electrónica completa y la abreviada con gas noble para el átomo neutro de Cromo (Z = 24) y para su catión Cr3+. Indique el conjunto completo de los cuatro números cuánticos (n, l, ml, ms) para el electrón más externo del átomo neutro y señale si el catión es paramagnético o diamagnético justificando su respuesta.",
-        "deductiveSteps": [
-          "Paso 1: Para Z = 24, el llenado estándar predeciría: 1s2 2s2 2p6 3s2 3p6 4s2 3d4.",
-          "Paso 2: Excepción del Cromo: la subcapa 3d semillena (3d5) ofrece una estabilidad cuántica especial por minimización de la repulsión interelectrónica y maximización de la energía de canje. Por tanto, un electrón del orbital 4s es promovido al 3d.",
-          "Paso 3: Configuración electrónica real del Cromo neutro: 1s2 2s2 2p6 3s2 3p6 4s1 3d5. Con gas noble: [Ar] 4s1 3d5.",
-          "Paso 4: El electrón más externo reside en el nivel cuántico superior n = 4, que es el orbital 4s1. Sus cuatro números cuánticos son: n = 4, l = 0 (tipo s), ml = 0, ms = +1/2.",
-          "Paso 5: Para formar el catión Cr3+, se deben perder 3 electrones. Regla de ionización en metales de transición: siempre se pierden primero los electrones del nivel más externo n (los 4s) antes de tocar los electrones 3d. Se pierde 1 electrón del 4s y 2 electrones del 3d. Configuración del Cr3+: [Ar] 3d3.",
-          "Paso 6: En la subcapa 3d3, por la regla de Hund, los 3 electrones ocupan tres orbitales d diferentes de forma desapareada con espines paralelos: [Ar] (u_ )(u_ )(u_ )( _ )( _ ). Al tener 3 electrones desapareados, el ion Cr3+ es fuertemente paramagnético (es atraído por campos magnéticos externos)."
-        ],
-        "finalResult": "En la química de los metales de transición, el nivel 4s se llena primero al construir el átomo, pero también se vacía primero al formar cationes."
+            "title": "Problema Canónico UCV (Parcial 1): Configuración Electrónica del Cobre y Números Cuánticos",
+            "problemStatement": "Escriba la configuración electrónica en el estado fundamental para el átomo neutro de Cobre (Z = 29) y para su catión cuproso Cu+. Indique el conjunto completo de números cuánticos (n, l, ml, ms) para el electrón más externo del átomo neutro y señale si es paramagnético o diamagnético.",
+            "deductiveSteps": [
+                  "Paso 1: Configuración estándar de Aufbau: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁹.",
+                  "Paso 2: Corrección por anomalía cuántica: Una subcapa d totalmente llena (d10) confiere una estabilidad energética superior. La configuración real es: [Ar] 4s¹ 3d¹⁰.",
+                  "Paso 3: Electrón más externo: El nivel principal más alejado es n = 4, que corresponde al orbital 4s. Contiene un único electrón solitario.",
+                  "Paso 4: Números cuánticos del electrón 4s: n = 4; l = 0 (subnivel s); ml = 0 (única orientación para l=0); ms = +1/2. Conjunto: (4, 0, 0, +1/2).",
+                  "Paso 5: Ionización Cu+: Al formar cationes, los metales de transición pierden primero los electrones de la capa más externa (nivel n = 4). Por tanto, pierde el electrón 4s: Cu+: [Ar] 3d¹⁰.",
+                  "Paso 6: Magnetismo: El átomo neutro de Cu tiene 1 electrón desapareado en 4s, por lo que es PARAMAGNÉTICO. El ion Cu+ tiene todos sus orbitales 3d llenos con pares apareados, por lo que es DIAMAGNÉTICO."
+            ],
+            "finalResult": "Las anomalías cuánticas demuestran que la energía total del sistema prevalece sobre el ordenamiento mnemotécnico simple."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 1 UCV",
-        "correction": "Preguntar si el conjunto (n=3, l=3, ml=0, ms=+1/2) es válido. Es totalmente falso porque para n=3 el valor máximo de l es 2 (orbitales s, p, d)."
+            "trap": "Trampa de ionización en metales de transición",
+            "correction": "Quitar electrones del subnivel 3d en lugar de los 4s al formar iones como Fe²+ o Cu+; siempre se vacía primero el nivel n más alto (4s)."
       },
       {
-        "trap": "Trampa de ionización del Cobre",
-        "correction": "Al ionizar Cu (Z=29, [Ar] 4s1 3d10) a Cu2+, el estudiante escribe [Ar] 4s1 3d8 en vez de [Ar] 3d9."
-      },
-      {
-        "trap": "Trampa del signo de ml",
-        "correction": "Olvidar que ml puede ser negativo y va desde -l pasando por cero hasta +l."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Escribir para el Cromo 4s2 3d4 olvidando la anomalía de estabilidad del d5 semilleno."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Al ionizar metales de transición, quitar electrones del orbital 3d antes de vaciar el orbital 4s."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Asignar al número cuántico azimutal l un valor igual o mayor que n: l jamás puede ser igual a n."
+            "trap": "Trampa de números cuánticos permitidos",
+            "correction": "Aceptar combinaciones inválidas como n=2, l=2 (l solo llega hasta n-1=1) o ml=+2 cuando l=1 (ml solo va de -l a +l)."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Número Cuántico Principal n?",
-          "back": "Entero positivo (1, 2, 3...) que determina el nivel de energía principal y el tamaño promedio de la nube electrónica respecto al núcleo. (Notación: n = 1, 2, 3...)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Número Cuántico Azimutal l?",
-          "back": "Entero que determina la forma geométrica del orbital atómico: l = 0 (orbital s esférico), l = 1 (orbital p bilobular), l = 2 (orbital d), l = 3 (orbital f). (Notación: 0 <= l <= n - 1)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Número Cuántico Magnético ml?",
-          "back": "Entero que especifica la orientación espacial tridimensional del orbital respecto a un campo magnético exterior. (Notación: -l <= ml <= +l)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Número Cuántico de Espín ms?",
-          "back": "Momento angular intrínseco del electrón, que solo puede adoptar dos orientaciones posibles: +1/2 (giro hacia arriba) o -1/2 (giro hacia abajo). (Notación: ms = +1/2, -1/2)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Principio de Aufbau?",
-          "back": "Regla de construcción progresiva que establece que los electrones ocupan primero los orbitales de menor energía disponible siguiendo la suma n + l. (Notación: Regla n + l)"
-        }
+            {
+                  "front": "¿Por qué el Cobre (Z = 29) presenta la configuración [Ar] 4s¹ 3d¹⁰ en lugar de [Ar] 4s² 3d⁹?",
+                  "back": "Porque una subcapa 3d completamente llena (10 electrones) maximiza la simetría esférica y la energía de canje cuántica, reduciendo la energía total del átomo."
+            },
+            {
+                  "front": "¿Cuál es el orden de remoción de electrones al ionizar un metal de transición?",
+                  "back": "Se remueven primero los electrones del orbital de mayor número cuántico principal n (el orbital 4s) antes de remover electrones de la subcapa interna 3d."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Número Cuántico Principal n",
-          "Número Cuántico Azimutal l",
-          "Número Cuántico Magnético ml",
-          "Número Cuántico de Espín ms",
-          "Principio de Aufbau"
-        ],
-        "notes": [
-          "Paso 1: Obtener el número atómico Z del elemento neutro para conocer la cantidad total de electrones que se deben acomodar.",
-          "Paso 2: Seguir la regla de las diagonales (orden creciente de n + l): 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p, 5s, 4d, 5p, 6s...",
-          "Paso 3: Llenar cada subnivel respetando las capacidades máximas: s aloja 2 e-, p aloja 6 e-, d aloja 10 e-, f aloja 14 e-.",
-          "Paso 4: Aplicar el Principio de Exclusión de Pauli: jamás colocar más de dos electrones por cajita cuántica y con espines antiparalelos.",
-          "Paso 5: Aplicar la Regla de Hund: en subniveles degenerados (como los 3 orbitales p o 5 orbitales d), colocar primero un electrón con espín paralelo en cada orbital antes de aparear."
-        ],
-        "summary": "Cuantización de la energía, modelo de Bohr, números cuánticos principal, secundario, magnético y de espín, formas de orbitales s, p, d, f y reglas de llenado electrónico con anomalías del cromo y cobre."
+            "cues": [
+                  "Números Cuánticos",
+                  "Principio de Pauli",
+                  "Regla de Hund",
+                  "Anomalías Cr y Cu"
+            ],
+            "notes": [
+                  "1. Cuatro números cuánticos: n (nivel), l (forma), ml (orientación), ms (espín).",
+                  "2. Pauli: Máximo 2 electrones por orbital con espines opuestos.",
+                  "3. Hund: Desaparear al máximo en subniveles degenerados.",
+                  "4. Cr ([Ar] 4s¹ 3d⁵) y Cu ([Ar] 4s¹ 3d¹⁰) son anomalías estables."
+            ],
+            "summary": "Estructura cuántica de la nube electrónica, orbitales atómicos y reglas canónicas de configuración electrónica en la UCV."
       },
-      "conceptMapNodes": "Principios de Química I: Mecánica Cuántica, Números Cuánticos y Configuraciones Electrónicas\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Número Cuántico Principal n, Número Cuántico Azimutal l, Número Cuántico Magnético ml\n  └── Protocolo: Paso 1: Obtener el número atómico Z del elemento neutro para conocer la cantidad total de electrones que se deben acomodar. -> Paso 2: Seguir la regla de las diagonales (orden creciente de n + l): 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p, 5s, 4d, 5p, 6s... -> Paso 3: Llenar cada subnivel respetando las capacidades máximas: s aloja 2 e-, p aloja 6 e-, d aloja 10 e-, f aloja 14 e-."
-    },
+      "conceptMapNodes": "Mecánica Cuántica y Electrones\n  ├── Números Cuánticos: n, l (0 a n-1), ml (-l a +l), ms (+- 1/2)\n  ├── Reglas: Aufbau (energía) | Pauli (no 4 iguales) | Hund (espín paralelo)\n  └── Excepciones: Cr ([Ar] 4s¹ 3d⁵) y Cu ([Ar] 4s¹ 3d¹⁰)"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Mecánica Cuántica, Números Cuánticos y Configuraciones Electrónicas",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Mecánica Cuántica, Números Cuánticos y Configuraciones Electrónicas?",
-        "opciones": [
-          "Cuantización de la energía, modelo de Bohr, números cuánticos principal, secundario, magnético y de ",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Cuantización de la energía, modelo de Bohr, números cuánticos principal, secundario, magnético y de ",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Mecánica Cuántica, Números Cuánticos y Configuraciones Electrónicas\n\n**Resolución Directa:** La estructura electrónica de los átomos explica el comportamiento químico de la materia a través de la física cuántica. La radiación electromagnética transporta energía en paquetes..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Anomalía Cuántica del Cobre",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál es la configuración electrónica en el estado fundamental para el átomo de Cobre ($Z = 29$) y cuántos electrones desapareados posee?",
+            "opciones": [
+                  "$[\\text{Ar}] 4s^1 3d^{10}$, con 1 electrón desapareado",
+                  "$[\\text{Ar}] 4s^2 3d^9$, con 1 electrón desapareado",
+                  "$[\\text{Ar}] 4s^2 3d^9$, con 0 electrones desapareados",
+                  "$[\\text{Ar}] 4s^0 3d^{11}$, con 2 electrones desapareados"
+            ],
+            "correcta": "$[\\text{Ar}] 4s^1 3d^{10}$, con 1 electrón desapareado",
+            "justificacion": "**Concepto Fundamental:** Anomalía de Aufbau por Estabilidad Termodinámica.\n\n**Resolución:** El cobre promociona un electrón del subnivel 4s para completar la subcapa 3d10 (completamente llena). Su configuración real es $[\\text{Ar}] 4s^1 3d^{10}$. El orbital 4s contiene 1 electrón solitario, por lo que tiene exactamente 1 electrón desapareado (paramagnético)."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Conjuntos Válidos de Números Cuánticos",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál de los siguientes conjuntos de números cuánticos $(n, l, m_l, m_s)$ es FÍSICAMENTE IMPOSIBLE para un electrón en un átomo?",
+            "opciones": [
+                  "$n = 2, l = 2, m_l = 0, m_s = +\\frac{1}{2}$",
+                  "$n = 3, l = 1, m_l = -1, m_s = -\\frac{1}{2}$",
+                  "$n = 4, l = 0, m_l = 0, m_s = +\\frac{1}{2}$",
+                  "$n = 3, l = 2, m_l = +2, m_s = -\\frac{1}{2}$"
+            ],
+            "correcta": "$n = 2, l = 2, m_l = 0, m_s = +\\frac{1}{2}$",
+            "justificacion": "**Concepto Fundamental:** Restricciones Cuánticas en los Orbitales.\n\n**Resolución:** El número cuántico azimutal $l$ solo puede tomar valores enteros desde $0$ hasta $n - 1$. Si $n = 2$, los valores permitidos para $l$ son únicamente $0$ y $1$. El valor $l = 2$ es físicamente imposible para el nivel principal $2$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Ionización de Metales de Transición",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál es la configuración electrónica en el estado fundamental para el ion Hierro(II) $\\text{Fe}^{2+}$ ($Z = 26$) y cuántos electrones desapareados contiene?",
+            "opciones": [
+                  "$[\\text{Ar}] 3d^6$, con 4 electrones desapareados",
+                  "$[\\text{Ar}] 4s^2 3d^4$, con 4 electrones desapareados",
+                  "$[\\text{Ar}] 3d^6$, con 0 electrones desapareados",
+                  "$[\\text{Ar}] 4s^1 3d^5$, con 6 electrones desapareados"
+            ],
+            "correcta": "$[\\text{Ar}] 3d^6$, con 4 electrones desapareados",
+            "justificacion": "**Concepto Fundamental:** Pérdida Preferencial de Electrones 4s en Cationes.\n\n**Resolución:** El átomo neutro de Hierro tiene configuración $[\\text{Ar}] 4s^2 3d^6$. Al ionizarse a $\\text{Fe}^{2+}$, se pierden primero los dos electrones del orbital más externo ($4s$), quedando $[\\text{Ar}] 3d^6$. En los 5 orbitales $d$, al aplicar la regla de Hund hay 1 par apareado y 4 electrones con espines desapareados paralelos."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-cuantica'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-cuantica"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-cuantica"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-cuantica"],
   },
   {
     "id": "santiago-qgi-tabla-guide",
@@ -525,339 +477,302 @@ researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
     "guideMetadata": {
       "title": "Principios de Química I: Tabla Periódica, Carga Nuclear Efectiva y Tendencias",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Fundamentos mecánicos de la ley periódica, cálculo de apantallamiento según las reglas de Slater, variación periódica de radios atómicos e iónicos, energías de ionización sucesivas y electronegatividad."
-    },
-    "phenomenonAndTheory": "La tabla periódica moderna organiza los elementos químicos según el orden creciente de su número atómico Z, reflejando la repetición periódica de sus configuraciones electrónicas de valencia. Todas las tendencias periódicas (radio atómico, radio iónico, energía de ionización, afinidad electrónica y electronegatividad) se explican mecanísticamente mediante dos factores físicos competitivos: el número cuántico principal n (que añade capas electrónicas haciendo crecer el átomo al descender en un grupo) y la Carga Nuclear Efectiva Z_ef = Z - S (la fuerza neta positiva que los electrones de valencia sienten del núcleo tras descontar el apantallamiento de los electrones internos). Al movernos de izquierda a derecha en un periodo, n permanece constante pero Z_ef aumenta drásticamente, atrayendo la nube electrónica con mayor fuerza y contrayendo el tamaño del átomo.",
+      "summary": "Ley periódica moderna, carga nuclear efectiva Z_ef y reglas de Slater, variación de radios atómicos e iónicos en series isoelectrónicas, energías de ionización sucesivas y afinidad electrónica."
+},
+    "phenomenonAndTheory": "La tabla periódica moderna organiza los elementos químicos en orden creciente de su número atómico Z, agrupando en columnas verticales (grupos o familias) aquellos con idéntica configuración electrónica de valencia y propiedades análogas. Las variaciones periódicas de tamaño y reactividad no son arbitrarias; responden al balance entre la atracción nuclear de los protones y la repulsión de los electrones internos, cuantificado por la Carga Nuclear Efectiva (Z_ef = Z - S), donde S es la constante de apantallamiento de Slater. A lo largo de un período (de izquierda a derecha), Z aumenta pero los electrones se añaden a la misma capa, por lo que el apantallamiento es imperfecto; Z_ef aumenta drásticamente y contrae la nube electrónica hacia el núcleo. Por ello, el radio atómico disminuye de izquierda a derecha y la primera energía de ionización aumenta sostenidamente, con caídas en subniveles llenos o semillenos.",
     "glossary": [
       {
-        "term": "Carga Nuclear Efectiva Z_ef",
-        "definition": "Carga nuclear positiva real que experimenta un electrón externo, reducida por la repulsión y blindaje de los electrones de capas interiores.",
-        "symbolOrUnit": "Z_ef = Z - S"
+            "term": "Carga Nuclear Efectiva (Z_ef)",
+            "symbolOrUnit": "Z_{\\text{ef}} = Z - S",
+            "definition": "Carga neta positiva del núcleo que experimenta realmente un electrón de valencia tras descontar el apantallamiento de electrones internos."
       },
       {
-        "term": "Efecto Pantalla (Apantallamiento S)",
-        "definition": "Disminución de la atracción nuclear sobre los electrones exteriores provocada por la nube electrónica intermedia que se interpone.",
-        "symbolOrUnit": "Constante S de Slater"
+            "term": "Radio Atómico",
+            "symbolOrUnit": "r_{\\text{at}} \\quad [\\mathrm{pm} \\text{ o } \\text{\\AA}]",
+            "definition": "Mitad de la distancia internuclear entre dos átomos idénticos unidos por un enlace covalente simple."
       },
       {
-        "term": "Radio Atómico",
-        "definition": "Mitad de la distancia internuclear entre dos átomos idénticos unidos mediante un enlace químico covalente.",
-        "symbolOrUnit": "pm o Angstroms"
+            "term": "Serie Isoelectrónica",
+            "symbolOrUnit": "\\text{Iones con igual número de } e^-",
+            "definition": "Conjunto de átomos o iones que poseen exactamente la misma configuración y número de electrones (ej. N³⁻, O²⁻, F⁻, Na⁺, Mg²⁺)."
       },
       {
-        "term": "Energía de Primera Ionización",
-        "definition": "Energía mínima requerida para arrancar el electrón más débilmente unido de un átomo gaseoso neutro en su estado fundamental.",
-        "symbolOrUnit": "kJ/mol"
-      },
-      {
-        "term": "Electronegatividad",
-        "definition": "Capacidad intrínseca que tiene un átomo enlazado en una molécula para atraer hacia sí los pares de electrones compartidos.",
-        "symbolOrUnit": "Escala de Pauling (0 a 4.0)"
+            "term": "Energía de Ionización (EI)",
+            "symbolOrUnit": "\\mathrm{X}(g) \\to \\mathrm{X}^+(g) + e^-",
+            "definition": "Energía mínima requerida para arrancar el electrón más débilmente unido a un átomo gaseoso en su estado fundamental."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Carga Nuclear Efectiva Z_ef",
-          "latex": "Z_ef = Z - S",
-          "application": "Carga nuclear positiva real que experimenta un electrón externo, reducida por la repulsión y blindaje de los electrones de capas interiores."
-        },
-        {
-          "name": "Efecto Pantalla (Apantallamiento S)",
-          "latex": "Constante S de Slater",
-          "application": "Disminución de la atracción nuclear sobre los electrones exteriores provocada por la nube electrónica intermedia que se interpone."
-        },
-        {
-          "name": "Radio Atómico",
-          "latex": "pm o Angstroms",
-          "application": "Mitad de la distancia internuclear entre dos átomos idénticos unidos mediante un enlace químico covalente."
-        }
+            {
+                  "name": "Ecuación de Carga Nuclear Efectiva",
+                  "latex": "Z_{\\text{ef}} = Z - S",
+                  "application": "Calcular la fuerza de atracción efectiva sobre la capa de valencia según las reglas empíricas de Slater."
+            },
+            {
+                  "name": "Tendencia del Radio en Series Isoelectrónicas",
+                  "latex": "r \\propto \\frac{1}{Z} \\quad (\\text{a electrones constantes})",
+                  "application": "A mayor número de protones Z, mayor contracción nuclear y menor radio iónico en especies isoelectrónicas."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Localizar los elementos bajo estudio en la tabla periódica identificando su periodo (nivel n) y grupo (columna de valencia).",
-        "Paso 2: Si los elementos están en el mismo periodo, evaluar el incremento de Z_ef: a mayor Z, mayor Z_ef, menor radio atómico y mayor energía de ionización.",
-        "Paso 3: Si los elementos están en el mismo grupo, evaluar el incremento de n: a mayor n, hay más capas de apantallamiento, mayor radio y menor energía de ionización.",
-        "Paso 4: Para comparar radios de especies isoelectrónicas (con igual número de electrones), ordenar por número atómico Z: la especie con más protones comprime más la nube y tiene menor radio.",
-        "Paso 5: Para justificar anomalías en energía de ionización (como N > O o Be > B), dibujar las cajitas de valencia mostrando subniveles llenos (s2) o semillenos (p3) con estabilidad extra.",
-        "Paso 6: Comparar el tamaño de cationes y aniones respecto a su átomo neutro: los cationes siempre son más pequeños y los aniones siempre son más grandes.",
-        "Regla 1: El radio atómico disminuye de izquierda a derecha a lo largo de un periodo y aumenta de arriba hacia abajo en un grupo.",
-        "Regla 2: La energía de ionización y la electronegatividad aumentan de izquierda a derecha y disminuyen de arriba hacia abajo.",
-        "Regla 3: Un catión siempre es significativamente más pequeño que su átomo neutro porque pierde electrones externos y aumenta Z_ef.",
-        "Regla 4: Un anión siempre es significativamente más grande que su átomo neutro debido a la repulsión entre electrones adicionales en la misma capa."
+            "Paso 1: Identificar la posición en la tabla (período y grupo) para los elementos a comparar.",
+            "Paso 2: Al comparar radios atómicos neutros: aumenta hacia abajo en un grupo (más capas n) y aumenta hacia la izquierda en un período (menor Z_ef).",
+            "Paso 3: Para series isoelectrónicas: contar los protones Z; el que tenga mayor Z siempre es el más pequeño.",
+            "Paso 4: Para aniones vs átomo neutro: el anión siempre es mayor que el átomo neutro (mayor repulsión electrónica).",
+            "Paso 5: Para cationes vs átomo neutro: el catión siempre es mucho menor (menor repulsión y pérdida de capa exterior)."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: Ordene las siguientes especies químicas en orden crecie...",
-        "problemStatement": "Ordene las siguientes especies químicas en orden creciente de radio iónico justiciando su respuesta mediante carga nuclear efectiva y estructura electrónica: O2- (Z = 8), F- (Z = 9), Na+ (Z = 11), Mg2+ (Z = 12). Explique además por qué la primera energía de ionización del Nitrógeno (Z = 7) es mayor que la del Oxígeno (Z = 8), a pesar de que el oxígeno tiene mayor número atómico.",
-        "deductiveSteps": [
-          "Paso 1: Analizamos el número de electrones de la serie O2-, F-, Na+, Mg2+: O2- tiene 8 + 2 = 10 e-; F- tiene 9 + 1 = 10 e-; Na+ tiene 11 - 1 = 10 e-; Mg2+ tiene 12 - 2 = 10 e-. Las cuatro especies tienen exactamente 10 electrones (son especies isoelectrónicas con configuración [Ne] 1s2 2s2 2p6).",
-          "Paso 2: Al tener exactamente la misma cantidad de electrones, el apantallamiento S es idéntico entre ellas. La fuerza de atracción nuclear depende exclusivamente del número de protones Z en el núcleo.",
-          "Paso 3: Evaluamos los protones: Mg2+ tiene 12 protones para atraer 10 electrones (Z_ef más alta, máxima contracción de la nube); Na+ tiene 11 protones; F- tiene 9 protones; O2- tiene solo 8 protones para retener 10 electrones (Z_ef más débil, mayor repulsión e expansión).",
-          "Paso 4: Orden creciente de radio iónico: Mg2+ < Na+ < F- < O2-.",
-          "Paso 5: Analizamos la anomalía de energía de ionización entre Nitrógeno (Z = 7) y Oxígeno (Z = 8). La configuración de valencia del Nitrógeno es 2s2 2p3 (subnivel 2p semilleno, con un electrón en cada uno de los orbitales 2px, 2py, 2pz sin repulsión mutua). La del Oxígeno es 2s2 2p4 (posee un orbital 2p con un par de electrones apareados).",
-          "Paso 6: En el átomo de oxígeno, los dos electrones que comparten el mismo orbital 2p experimentan una fuerte repulsión culombiana mutua. Esta repulsión facilita la expulsión de uno de ellos, haciendo que se requiera menos energía para ionizar al oxígeno (1314 kJ/mol) que al nitrógeno (1402 kJ/mol)."
-        ],
-        "finalResult": "En series isoelectrónicas, a mayor número atómico Z, mayor fuerza de atracción del núcleo y menor radio atómico o iónico."
+            "title": "Problema Canónico UCV (Parcial 1): Comparación Rigurosa de Radios en Serie Isoelectrónica",
+            "problemStatement": "Ordene de menor a mayor radio iónico las siguientes especies isoelectrónicas con 10 electrones: O²⁻ (Z=8), F⁻ (Z=9), Na⁺ (Z=11) y Mg²⁺ (Z=12). Justifique formalmente su respuesta en términos de carga nuclear efectiva.",
+            "deductiveSteps": [
+                  "Paso 1: Todas las especies tienen exactamente 10 electrones con la configuración del Neón: 1s² 2s² 2p⁶.",
+                  "Paso 2: Al tener la misma cantidad de electrones en el mismo nivel n = 2, la constante de apantallamiento S es prácticamente constante entre todos los iones.",
+                  "Paso 3: Evaluamos el número de protones en el núcleo atómico: O²⁻ tiene Z = 8; F⁻ tiene Z = 9; Na⁺ tiene Z = 11; Mg²⁺ tiene Z = 12.",
+                  "Paso 4: Evaluamos la carga nuclear efectiva Z_ef = Z - S: a mayor Z, mayor Z_ef. El Mg²⁺ tiene 12 protones atrayendo a los mismos 10 electrones, ejerciendo la máxima atracción coulombiana.",
+                  "Paso 5: El núcleo de Mg²⁺ comprime fuertemente la nube electrónica hacia el centro, dándole el menor radio. Por el contrario, O²⁻ solo tiene 8 protones para frenar la repulsión de 10 electrones, hinchando la nube.",
+                  "Paso 6: Orden de menor a mayor radio: Mg²⁺ < Na⁺ < F⁻ < O²⁻."
+            ],
+            "finalResult": "En especies isoelectrónicas, el radio iónico disminuye monotónicamente al aumentar el número atómico Z."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 1 UCV",
-        "correction": "Preguntar cuál es el elemento más electronegativo y el estudiante duda entre el Flúor y los gases nobles. Los gases nobles no tienen electronegatividad definida en la escala de Pauling por no formar enlaces ordinarios."
-      },
-      {
-        "trap": "Trampa de saltos de ionización",
-        "correction": "Preguntar cuántos electrones de valencia tiene un elemento si I1 = 800, I2 = 2420, I3 = 3660, I4 = 25000 kJ/mol. El salto gigantesco entre I3 e I4 demuestra que el elemento tiene exactamente 3 electrones de valencia (Grupo 13)."
-      },
-      {
-        "trap": "Trampa del radio atómico",
-        "correction": "Comparar dos elementos de grupos distintos sin verificar primero si están en periodos diferentes."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Decir que el oxígeno tiene mayor energía de ionización simplemente porque está más a la derecha, ignorando la excepción del subnivel p3 semilleno."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Creer que el anión O2- es más pequeño que el catión Mg2+ porque tiene menos protones."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Confundir energía de ionización (arrancar un electrón) con afinidad electrónica (capturar un electrón)."
+            "trap": "Trampa de creer que más carga positiva significa mayor radio",
+            "correction": "Confundir masa o número atómico con radio; a mayor carga positiva nuclear, mayor es la contracción y menor el radio."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Carga Nuclear Efectiva Z_ef?",
-          "back": "Carga nuclear positiva real que experimenta un electrón externo, reducida por la repulsión y blindaje de los electrones de capas interiores. (Notación: Z_ef = Z - S)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Efecto Pantalla (Apantallamiento S)?",
-          "back": "Disminución de la atracción nuclear sobre los electrones exteriores provocada por la nube electrónica intermedia que se interpone. (Notación: Constante S de Slater)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Radio Atómico?",
-          "back": "Mitad de la distancia internuclear entre dos átomos idénticos unidos mediante un enlace químico covalente. (Notación: pm o Angstroms)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Energía de Primera Ionización?",
-          "back": "Energía mínima requerida para arrancar el electrón más débilmente unido de un átomo gaseoso neutro en su estado fundamental. (Notación: kJ/mol)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Electronegatividad?",
-          "back": "Capacidad intrínseca que tiene un átomo enlazado en una molécula para atraer hacia sí los pares de electrones compartidos. (Notación: Escala de Pauling (0 a 4.0))"
-        }
+            {
+                  "front": "¿Por qué el radio atómico disminuye de izquierda a derecha a lo largo de un período en la tabla periódica?",
+                  "back": "Porque aumenta la carga nuclear Z mientras los electrones se incorporan al mismo nivel cuántico n; el apantallamiento es imperfecto, Z_ef aumenta y contrae la nube electrónica."
+            },
+            {
+                  "front": "¿Cuál es la regla para ordenar radios en una serie de iones isoelectrónicos?",
+                  "back": "A igual número de electrones, el radio es inversamente proporcional a Z: a mayor número de protones en el núcleo, menor radio iónico."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Carga Nuclear Efectiva Z_ef",
-          "Efecto Pantalla (Apantallamiento S)",
-          "Radio Atómico",
-          "Energía de Primera Ionización",
-          "Electronegatividad"
-        ],
-        "notes": [
-          "Paso 1: Localizar los elementos bajo estudio en la tabla periódica identificando su periodo (nivel n) y grupo (columna de valencia).",
-          "Paso 2: Si los elementos están en el mismo periodo, evaluar el incremento de Z_ef: a mayor Z, mayor Z_ef, menor radio atómico y mayor energía de ionización.",
-          "Paso 3: Si los elementos están en el mismo grupo, evaluar el incremento de n: a mayor n, hay más capas de apantallamiento, mayor radio y menor energía de ionización.",
-          "Paso 4: Para comparar radios de especies isoelectrónicas (con igual número de electrones), ordenar por número atómico Z: la especie con más protones comprime más la nube y tiene menor radio.",
-          "Paso 5: Para justificar anomalías en energía de ionización (como N > O o Be > B), dibujar las cajitas de valencia mostrando subniveles llenos (s2) o semillenos (p3) con estabilidad extra."
-        ],
-        "summary": "Fundamentos mecánicos de la ley periódica, cálculo de apantallamiento según las reglas de Slater, variación periódica de radios atómicos e iónicos, energías de ionización sucesivas y electronegatividad."
+            "cues": [
+                  "Z_ef = Z - S",
+                  "Radio Atómico",
+                  "Serie Isoelectrónica",
+                  "Energía de Ionización"
+            ],
+            "notes": [
+                  "1. Z_ef aumenta de izquierda a derecha en un período.",
+                  "2. Radio atómico aumenta hacia abajo y a la izquierda.",
+                  "3. Especies isoelectrónicas: mayor Z = menor radio.",
+                  "4. Cationes son más pequeños; aniones son más grandes."
+            ],
+            "summary": "Fundamento cuántico de las tendencias periódicas y cálculo de carga nuclear efectiva en la UCV."
       },
-      "conceptMapNodes": "Principios de Química I: Tabla Periódica, Carga Nuclear Efectiva y Tendencias\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Carga Nuclear Efectiva Z_ef, Efecto Pantalla (Apantallamiento S), Radio Atómico\n  └── Protocolo: Paso 1: Localizar los elementos bajo estudio en la tabla periódica identificando su periodo (nivel n) y grupo (columna de valencia). -> Paso 2: Si los elementos están en el mismo periodo, evaluar el incremento de Z_ef: a mayor Z, mayor Z_ef, menor radio atómico y mayor energía de ionización. -> Paso 3: Si los elementos están en el mismo grupo, evaluar el incremento de n: a mayor n, hay más capas de apantallamiento, mayor radio y menor energía de ionización."
-    },
+      "conceptMapNodes": "Tendencias Periódicas\n  ├── Carga Nuclear Efectiva: Z_ef = Z - S (Aumenta hacia la derecha)\n  ├── Radio Atómico: Crece hacia abajo e izquierda | Isoelectrónicos: menor radio a mayor Z\n  └── Energía de Ionización: Crece hacia arriba y a la derecha"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Tabla Periódica, Carga Nuclear Efectiva y Tendencias",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Tabla Periódica, Carga Nuclear Efectiva y Tendencias?",
-        "opciones": [
-          "Fundamentos mecánicos de la ley periódica, cálculo de apantallamiento según las reglas de Slater, va",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Fundamentos mecánicos de la ley periódica, cálculo de apantallamiento según las reglas de Slater, va",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Tabla Periódica, Carga Nuclear Efectiva y Tendencias\n\n**Resolución Directa:** La tabla periódica moderna organiza los elementos químicos según el orden creciente de su número atómico Z, reflejando la repetición periódica de sus configuraciones electrónicas d..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Series Isoelectrónicas y Radio",
+            "tipo": "opcion_multiple",
+            "pregunta": "Al comparar los iones isoelectrónicos $\\text{N}^{3-}$, $\\text{O}^{2-}$, $\\text{F}^{-}$ y $\\text{Na}^{+}$ (todos con 10 electrones), ¿cuál presenta el menor radio iónico y por qué?",
+            "opciones": [
+                  "$\\text{Na}^{+}$, porque posee el mayor número atómico ($Z = 11$) y mayor $Z_{\\text{ef}}$ atrayendo la nube con más fuerza",
+                  "$\\text{N}^{3-}$, porque tiene la mayor carga negativa neta",
+                  "$\\text{F}^{-}$, porque el flúor es el elemento con mayor electronegatividad",
+                  "Todos tienen idéntico radio por poseer exactamente 10 electrones"
+            ],
+            "correcta": "$\\text{Na}^{+}$, porque posee el mayor número atómico ($Z = 11$) y mayor $Z_{\\text{ef}}$ atrayendo la nube con más fuerza",
+            "justificacion": "**Concepto Fundamental:** Carga Nuclear Efectiva en Series Isoelectrónicas.\n\n**Resolución:** En especies isoelectrónicas el apantallamiento electrónico es similar. El sodio posee 11 protones atrayendo 10 electrones, lo que genera la mayor carga nuclear efectiva y contrae fuertemente la nube hacia el centro, haciéndolo el más pequeño de la serie."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Energías de Ionización Sucesivas",
+            "tipo": "opcion_multiple",
+            "pregunta": "Un elemento desconocido del período 3 presenta las siguientes energías de ionización sucesivas: $I_1 = 738\\,\\text{kJ/mol}$, $I_2 = 1450\\,\\text{kJ/mol}$, $I_3 = 7730\\,\\text{kJ/mol}$. ¿A qué grupo de la tabla periódica pertenece?",
+            "opciones": [
+                  "Al Grupo 2 (Alcalinotérreos, con 2 electrones de valencia)",
+                  "Al Grupo 1 (Alcalinos, con 1 electrón de valencia)",
+                  "Al Grupo 13 (Térreos, con 3 electrones de valencia)",
+                  "Al Grupo 16 (Calcógenos)"
+            ],
+            "correcta": "Al Grupo 2 (Alcalinotérreos, con 2 electrones de valencia)",
+            "justificacion": "**Concepto Fundamental:** Salto Abrupto en Energías de Ionización Sucesivas.\n\n**Resolución:** Entre $I_2$ ($1450\\,\\text{kJ/mol}$) e $I_3$ ($7730\\,\\text{kJ/mol}$) hay un salto brusco de más de 5 veces la energía. Esto indica que los dos primeros electrones pertenecían a la capa de valencia, y el tercer electrón proviene de un nivel interno cerrado de gas noble. Por tanto, el elemento tiene 2 electrones de valencia (Grupo 2, Magnesio)."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Variación Periódica del Radio",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál de los siguientes átomos neutros presenta el mayor radio atómico?",
+            "opciones": [
+                  "Potasio ($\\text{K}$, $Z = 19$)",
+                  "Calcio ($\\text{Ca}$, $Z = 20$)",
+                  "Sodio ($\\text{Na}$, $Z = 11$)",
+                  "Bromo ($\\text{Br}$, $Z = 35$)"
+            ],
+            "correcta": "Potasio ($\\text{K}$, $Z = 19$)",
+            "justificacion": "**Concepto Fundamental:** Tendencias del Radio Atómico en la Tabla Periódica.\n\n**Resolución:** El radio atómico aumenta hacia abajo en un grupo (el Potasio en el período 4 tiene más capas que el Sodio en el período 3) y aumenta hacia la izquierda en un período (el Potasio en el Grupo 1 tiene menor $Z_{\\text{ef}}$ que el Calcio en el Grupo 2 y el Bromo en el Grupo 17). Por tanto, el Potasio posee el mayor radio."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-tabla'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-medidas'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-tabla"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-tabla"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-tabla"],
   },
   {
     "id": "santiago-qgi-enlaces-guide",
     "evaluationEventId": "santiago-qgi-parcial-2",
     "guideMetadata": {
-      "title": "Principios de Química I: Enlace Iónico, Born-Haber, Estructuras de Lewis y Resonancia",
+      "title": "Principios de Química I: Enlace Iónico, Born-Haber, Estructuras de Lewis y Nomenclatura IUPAC",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Termodinámica del enlace iónico, balance entálpico de Born-Haber, algoritmo para estructuras de Lewis de moléculas poliatómicas, carga formal, híbridos de resonancia y octetos expandidos."
-    },
-    "phenomenonAndTheory": "Los átomos se combinan químicamente para alcanzar estados de mínima energía potencial compartiendo o transfiriendo electrones para adoptar la configuración estable de gas noble. En el enlace iónico, electrones de valencia se transfieren de metales electropositivos a no metales electronegativos, formando una red tridimensional cristalina estabilizada por la energía reticular (calculable mediante el ciclo termodinámico de Born-Haber). En el enlace covalente, los átomos comparten pares de electrones. Las estructuras de Lewis permiten representar las fórmulas moleculares mediante un recuento estricto de electrones de valencia. La carga formal CF = V - N - B/2 permite seleccionar la estructura más representativa entre posibles isómeros resonantes, identificando además las excepciones a la regla del octeto (octetos incompletos como BF3, radicales libres como NO y octetos expandidos como SF6 o PCl5).",
+      "summary": "Termodinámica del enlace iónico y ciclo de Born-Haber, enlace covalente, reglas de Lewis, cargas formales, resonancia, octetos expandidos y nomenclatura IUPAC sistemática estricta."
+},
+    "phenomenonAndTheory": "El enlace químico es la fuerza electrostática neta que mantiene unidos a los átomos para formar agregados estables de menor energía libre. Los enlaces iónicos se forman por transferencia de electrones entre metales y no metales; la estabilidad del cristal iónico depende de la Energía Reticular (U_0), deducida mediante el ciclo termodinámico de Born-Haber. Los enlaces covalentes se forman compartiendo pares de electrones. Para dibujar la estructura de Lewis más representativa, calculamos la Carga Formal (CF = V - N - B/2); la estructura más estable es aquella con cargas formales mínimas y cargas negativas en los átomos más electronegativos. Los elementos del tercer período en adelante (P, S, Cl, Xe) pueden expandir su octeto alojando 10 o 12 electrones gracias a sus orbitales 3d vacíos. La Escuela de Química de la UCV exige además el dominio absoluto de la Nomenclatura Sistemática IUPAC, utilizando prefijos multiplicativos (bis, tris, tetraquis) para sales con radicales poliatómicos.",
     "glossary": [
       {
-        "term": "Energía Reticular (U)",
-        "definition": "Energía liberada cuando un mol de un compuesto iónico sólido cristalino se forma a partir de sus iones gaseosos infinitamente separados.",
-        "symbolOrUnit": "kJ/mol (siempre exotérmica)"
+            "term": "Ciclo de Born-Haber",
+            "symbolOrUnit": "\\Delta H_f^\\circ = \\Delta H_{\\text{sub}} + \\frac{1}{2}D + EI + AE + U_0",
+            "definition": "Ciclo termodinámico que desglosa la formación de un cristal iónico en etapas elementales para calcular la energía reticular."
       },
       {
-        "term": "Ciclo de Born-Haber",
-        "definition": "Ciclo termodinámico que aplica la Ley de Hess relacionando la entalpía estándar de formación con sublimación, ionización, disociación y afinidad electrónica.",
-        "symbolOrUnit": "Delta H_f = sumatoria de pasos"
+            "term": "Carga Formal (CF)",
+            "symbolOrUnit": "\\mathrm{CF} = V - N - \\frac{B}{2}",
+            "definition": "Carga electrostática hipotética asignada a cada átomo en una estructura de Lewis asumiendo compartición equitativa."
       },
       {
-        "term": "Carga Formal (CF)",
-        "definition": "Carga eléctrica hipotética asignada a cada átomo en una estructura de Lewis asumiendo que los electrones enlazantes se comparten equitativamente.",
-        "symbolOrUnit": "CF = V - N - B/2"
+            "term": "Octeto Expandido",
+            "symbolOrUnit": "> 8\\, e^- \\text{ de valencia}",
+            "definition": "Capacidad de elementos no metálicos del período 3 o superior para alojar más de 8 electrones utilizando orbitales d disponibles."
       },
       {
-        "term": "Híbrido de Resonancia",
-        "definition": "Estructura electrónica real de una molécula que no puede describirse con una sola estructura de Lewis, resultante de la deslocalización de electrones pi.",
-        "symbolOrUnit": "Flecha de doble punta <->"
-      },
-      {
-        "term": "Octeto Expandido",
-        "definition": "Capacidad de elementos del tercer periodo en adelante (Si, P, S, Cl, Xe) para alojar más de 8 electrones de valencia usando orbitales d vacíos.",
-        "symbolOrUnit": "10 o 12 electrones de valencia"
+            "term": "Prefijo Multiplicativo IUPAC",
+            "symbolOrUnit": "\\text{bis, tris, tetraquis}",
+            "definition": "Prefijo que se antepone a aniones poliatómicos complejos para evitar ambigüedades numéricas en la nomenclatura sistemática."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Energía Reticular (U)",
-          "latex": "kJ/mol (siempre exotérmica)",
-          "application": "Energía liberada cuando un mol de un compuesto iónico sólido cristalino se forma a partir de sus iones gaseosos infinitamente separados."
-        },
-        {
-          "name": "Ciclo de Born-Haber",
-          "latex": "Delta H_f = sumatoria de pasos",
-          "application": "Ciclo termodinámico que aplica la Ley de Hess relacionando la entalpía estándar de formación con sublimación, ionización, disociación y afinidad electrónica."
-        },
-        {
-          "name": "Carga Formal (CF)",
-          "latex": "CF = V - N - B/2",
-          "application": "Carga eléctrica hipotética asignada a cada átomo en una estructura de Lewis asumiendo que los electrones enlazantes se comparten equitativamente."
-        }
+            {
+                  "name": "Ecuación de Carga Formal",
+                  "latex": "\\mathrm{CF} = V - N - \\frac{B}{2}",
+                  "application": "V: electrones de valencia libres, N: electrones no enlazantes, B: electrones compartidos en enlaces."
+            },
+            {
+                  "name": "Balance del Ciclo de Born-Haber",
+                  "latex": "U_0 = \\Delta H_f^\\circ - \\left( \\Delta H_{\\text{sub}} + \\mathrm{EI} + \\frac{1}{2}D + \\mathrm{AE} \\right)",
+                  "application": "Deducción de la energía reticular del cristal iónico a partir de magnitudes termoquímicas medibles."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Para estructuras de Lewis, sumar todos los electrones de valencia del grupo de cada átomo, añadiendo electrones si es un anión o restando si es un catión.",
-        "Paso 2: Elegir como átomo central al elemento menos electronegativo (el hidrógeno jamás puede ser central).",
-        "Paso 3: Conectar el átomo central con los átomos periféricos mediante enlaces simples (2 electrones cada uno).",
-        "Paso 4: Distribuir los electrones restantes como pares libres completando primero los octetos de los átomos periféricos (excepto H que solo admite 2).",
-        "Paso 5: Si sobran electrones, colocarlos como pares solitarios directamente sobre el átomo central.",
-        "Paso 6: Si al átomo central le faltan electrones para completar el octeto, convertir pares libres de los periféricos en enlaces dobles o triples, y calcular cargas formales.",
-        "Regla 1: La suma algebraica de las cargas formales de todos los átomos debe coincidir exactamente con la carga neta de la molécula o ion.",
-        "Regla 2: Las estructuras con cargas formales más cercanas a cero son siempre más estables que aquellas con cargas altas (+2, -2).",
-        "Regla 3: Si debe existir una carga formal negativa, debe residir sobre el átomo más electronegativo de la estructura.",
-        "Regla 4: Los elementos Boro y Berilio forman frecuentemente moléculas con octeto incompleto (BF3 tiene 6 electrones de valencia en B)."
+            "Paso 1: Contar los electrones de valencia totales sumando los electrones de cada átomo (sumar carga si es anión, restar si es catión).",
+            "Paso 2: Elegir el átomo central (el menos electronegativo, excepto el Hidrógeno que siempre es terminal).",
+            "Paso 3: Unir los ligandos con enlaces simples y completar octetos de los átomos externos con pares libres.",
+            "Paso 4: Colocar electrones sobrantes en el átomo central (octeto expandido si Z >= 15).",
+            "Paso 5: Calcular cargas formales para minimizar cargas y evaluar resonancia.",
+            "Paso 6: Para nomenclatura sistemática: usar bis, tris, tetraquis cuando el anión ya tiene prefijo numérico interior (ej. Fe2(SO4)3 = tris[tetraoxosulfato] de dihierro)."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: Dibuje la estructura de Lewis más estable para el ion s...",
-        "problemStatement": "Dibuje la estructura de Lewis más estable para el ion sulfato SO4(2-), determine la carga formal de cada átomo en dicha estructura explicando si cumple la regla del octeto estricto o si expande su octeto, y justifique por qué todas las longitudes de enlace S-O en el ion son idénticas en la realidad experimental.",
-        "deductiveSteps": [
-          "Paso 1: Contamos los electrones de valencia totales: Azufre (Grupo 16) aporta 6 e-; 4 Oxígenos (Grupo 16) aportan 4 * 6 = 24 e-; la carga negativa -2 aporta 2 e-. Total = 6 + 24 + 2 = 32 electrones de valencia (16 pares).",
-          "Paso 2: El átomo central es el Azufre (menos electronegativo que el oxígeno). Conectamos el S con 4 átomos de O mediante enlaces simples: 4 enlaces * 2 = 8 electrones consumidos. Quedan 32 - 8 = 24 electrones.",
-          "Paso 3: Completamos los octetos de los 4 oxígenos periféricos colocando 3 pares libres (6 electrones) en cada uno: 4 * 6 = 24 electrones consumidos. Quedan 0 electrones.",
-          "Paso 4: Evaluamos las cargas formales en la estructura con enlaces simples: para el Azufre: CF(S) = 6 - 0 - 8/2 = +2. Para cada Oxígeno: CF(O) = 6 - 6 - 2/2 = -1. La suma da (+2) + 4*(-1) = -2 (correcto). Sin embargo, una carga formal de +2 en el átomo central es desfavorable.",
-          "Paso 5: Como el Azufre pertenece al Periodo 3 de la tabla periódica, tiene orbitales 3d disponibles para expandir su octeto. Convertimos dos pares libres de dos oxígenos distintos en dos dobles enlaces S=O. Recalculamos cargas formales: para los dos oxígenos con doble enlace: CF = 6 - 4 - 4/2 = 0. Para los dos oxígenos con enlace simple: CF = 6 - 6 - 2/2 = -1. Para el Azufre central: CF(S) = 6 - 0 - 12/2 = 0. El azufre queda rodeado por 12 electrones pero con carga formal cero, logrando la estructura termodinámica más estable.",
-          "Paso 6: En la realidad física, los dobles enlaces no están fijos: existen 6 estructuras de resonancia equivalentes donde el doble enlace rota entre los 4 oxígenos. El ion real es un híbrido de resonancia con orden de enlace de 1.5 para cada enlace S-O, lo que explica por qué los cuatro enlaces tienen exactamente la misma longitud y fuerza."
-        ],
-        "finalResult": "La estructura de Lewis más estable minimiza las cargas formales a cero o coloca las cargas negativas en los átomos más electronegativos."
+            "title": "Problema Canónico UCV (Parcial 2): Estructura de Lewis del Ion Sulfato y Nomenclatura Sistemática",
+            "problemStatement": "a) Dibuje la estructura de Lewis más representativa del ion sulfato SO4²⁻ justificando la expansión del octeto del Azufre mediante el cálculo de cargas formales; b) Escriba su nombre IUPAC sistemático estricto y el nombre sistemático de la sal Fe2(SO4)3.",
+            "deductiveSteps": [
+                  "Paso 1: Electrones de valencia: S (Grupo 16) = 6; 4 átomos de O (Grupo 16) = 4 * 6 = 24; carga 2- = 2. Total = 6 + 24 + 2 = 32 electrones (16 pares).",
+                  "Paso 2: Estructura con solo enlaces simples (octeto estándar): S en el centro con 4 enlaces simples a cada O (8 electrones compartidos) y 3 pares libres en cada O (24 electrones no enlazantes). Cargas formales: Para cada O: CF = 6 - 6 - 2/2 = -1. Para el S: CF = 6 - 0 - 8/2 = +2. Esta estructura acumula demasiada separación de carga (+2 en S y cuatro cargas -1).",
+                  "Paso 3: Expansión del octeto: Como el Azufre está en el período 3, puede formar dobles enlaces usando orbitales 3d vacíos. Convertimos dos pares libres de oxígeno en dobles enlaces S=O.",
+                  "Paso 4: Cargas formales en la estructura expandida (dos enlaces dobles y dos simples): En los dos O con enlace doble: CF = 6 - 4 - 4/2 = 0. En los dos O con enlace simple: CF = 6 - 6 - 2/2 = -1. En el S central: CF = 6 - 0 - 12/2 = 0. Carga neta: 0 + 0 + (-1) + (-1) = -2. Esta estructura minimiza las cargas formales y es la más representativa.",
+                  "Paso 5: Nomenclatura sistemática del ion SO4²⁻: Se nombra como tetraoxosulfato(2-) o tetraoxosulfato(VI).",
+                  "Paso 6: Nomenclatura sistemática de Fe2(SO4)3: Al tener radical compuesto tetraoxosulfato, se utiliza el prefijo multiplicativo tris-: tris[tetraoxosulfato] de dihierro (o sulfato de hierro(III))."
+            ],
+            "finalResult": "La expansión del octeto reduce la carga formal del azufre a cero y los prefijos multiplicativos eliminan cualquier ambigüedad estequiométrica."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 2 UCV",
-        "correction": "Preguntar por la estructura del ozono O3 y olvidar colocar la carga formal +1 en el oxígeno central y -1 en el terminal."
+            "trap": "Trampa de intentar expandir octeto en elementos del período 2",
+            "correction": "Intentar expandir el octeto en Carbono, Nitrógeno u Oxígeno; jamás pueden tener más de 8 electrones por carecer de orbitales d."
       },
       {
-        "trap": "Trampa de Born-Haber",
-        "correction": "Confundir la afinidad electrónica (que suele ser exotérmica y tener signo negativo) con la energía de ionización al sumar los términos de la ley de Hess."
-      },
-      {
-        "trap": "Trampa de resonancia",
-        "correction": "Creer que la molécula oscila en el tiempo entre una estructura y otra: la molécula real es un híbrido estático permanente con electrones pi deslocalizados."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Intentar expandir el octeto en elementos del Periodo 2 como Nitrógeno, Carbono u Oxígeno: no tienen orbitales d y jamás pueden superar 8 electrones."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Dejar cargas formales de signo igual en átomos adyacentes sin intentar formar enlaces múltiples."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Olvidar encerrar el ion entre corchetes con su carga neta exterior al escribir la estructura de Lewis."
+            "trap": "Trampa de nomenclatura de sales",
+            "correction": "Llamar a Fe2(SO4)3 'tri-sulfato de di-hierro' en lugar de usar el prefijo multiplicativo canónico 'tris[tetraoxosulfato] de dihierro'."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Energía Reticular (U)?",
-          "back": "Energía liberada cuando un mol de un compuesto iónico sólido cristalino se forma a partir de sus iones gaseosos infinitamente separados. (Notación: kJ/mol (siempre exotérmica))"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Ciclo de Born-Haber?",
-          "back": "Ciclo termodinámico que aplica la Ley de Hess relacionando la entalpía estándar de formación con sublimación, ionización, disociación y afinidad electrónica. (Notación: Delta H_f = sumatoria de pasos)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Carga Formal (CF)?",
-          "back": "Carga eléctrica hipotética asignada a cada átomo en una estructura de Lewis asumiendo que los electrones enlazantes se comparten equitativamente. (Notación: CF = V - N - B/2)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Híbrido de Resonancia?",
-          "back": "Estructura electrónica real de una molécula que no puede describirse con una sola estructura de Lewis, resultante de la deslocalización de electrones pi. (Notación: Flecha de doble punta <->)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Octeto Expandido?",
-          "back": "Capacidad de elementos del tercer periodo en adelante (Si, P, S, Cl, Xe) para alojar más de 8 electrones de valencia usando orbitales d vacíos. (Notación: 10 o 12 electrones de valencia)"
-        }
+            {
+                  "front": "¿Cuál es la fórmula para calcular la carga formal de un átomo en una estructura de Lewis?",
+                  "back": "CF = V - N - B/2, donde V son los electrones de valencia libres, N los no enlazantes y B los electrones en enlaces compartidos."
+            },
+            {
+                  "front": "¿Por qué elementos como el Fósforo o el Azufre pueden expandir su octeto pero el Nitrógeno y el Oxígeno no?",
+                  "back": "Porque P y S pertenecen al período 3 y tienen orbitales 3d accesibles para albergar más de 8 electrones, mientras que N y O solo tienen orbitales 2s y 2p."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Energía Reticular (U)",
-          "Ciclo de Born-Haber",
-          "Carga Formal (CF)",
-          "Híbrido de Resonancia",
-          "Octeto Expandido"
-        ],
-        "notes": [
-          "Paso 1: Para estructuras de Lewis, sumar todos los electrones de valencia del grupo de cada átomo, añadiendo electrones si es un anión o restando si es un catión.",
-          "Paso 2: Elegir como átomo central al elemento menos electronegativo (el hidrógeno jamás puede ser central).",
-          "Paso 3: Conectar el átomo central con los átomos periféricos mediante enlaces simples (2 electrones cada uno).",
-          "Paso 4: Distribuir los electrones restantes como pares libres completando primero los octetos de los átomos periféricos (excepto H que solo admite 2).",
-          "Paso 5: Si sobran electrones, colocarlos como pares solitarios directamente sobre el átomo central."
-        ],
-        "summary": "Termodinámica del enlace iónico, balance entálpico de Born-Haber, algoritmo para estructuras de Lewis de moléculas poliatómicas, carga formal, híbridos de resonancia y octetos expandidos."
+            "cues": [
+                  "Ciclo Born-Haber",
+                  "Carga Formal",
+                  "Octeto Expandido",
+                  "Nomenclatura IUPAC"
+            ],
+            "notes": [
+                  "1. U_0: Energía reticular en ciclo de Born-Haber.",
+                  "2. CF = V - N - B/2 minimizada en la mejor estructura.",
+                  "3. Período 3 en adelante puede tener 10 o 12 electrones.",
+                  "4. Nomenclatura: Prefijos bis, tris, tetraquis para radicales poliatómicos."
+            ],
+            "summary": "Teoría del enlace químico, estructuras de Lewis, cargas formales y nomenclatura sistemática en la UCV."
       },
-      "conceptMapNodes": "Principios de Química I: Enlace Iónico, Born-Haber, Estructuras de Lewis y Resonancia\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Energía Reticular (U), Ciclo de Born-Haber, Carga Formal (CF)\n  └── Protocolo: Paso 1: Para estructuras de Lewis, sumar todos los electrones de valencia del grupo de cada átomo, añadiendo electrones si es un anión o restando si es un catión. -> Paso 2: Elegir como átomo central al elemento menos electronegativo (el hidrógeno jamás puede ser central). -> Paso 3: Conectar el átomo central con los átomos periféricos mediante enlaces simples (2 electrones cada uno)."
-    },
+      "conceptMapNodes": "Enlaces Químicos\n  ├── Enlace Iónico: Red cristalina y Ciclo de Born-Haber\n  ├── Enlace Covalente: Lewis -> Carga Formal CF = V - N - B/2 -> Octeto Expandido (n >= 3)\n  └── Nomenclatura IUPAC: Prefijos multiplicativos bis/tris/tetraquis"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Enlace Iónico, Born-Haber, Estructuras de Lewis y Resonancia",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Enlace Iónico, Born-Haber, Estructuras de Lewis y Resonancia?",
-        "opciones": [
-          "Termodinámica del enlace iónico, balance entálpico de Born-Haber, algoritmo para estructuras de Lewi",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Termodinámica del enlace iónico, balance entálpico de Born-Haber, algoritmo para estructuras de Lewi",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Enlace Iónico, Born-Haber, Estructuras de Lewis y Resonancia\n\n**Resolución Directa:** Los átomos se combinan químicamente para alcanzar estados de mínima energía potencial compartiendo o transfiriendo electrones para adoptar la configuración estable de gas noble. En..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Cálculo de Carga Formal",
+            "tipo": "opcion_multiple",
+            "pregunta": "En la estructura de Lewis del ion monóxido de carbono $\\text{C}\\equiv\\text{O}$ con enlace triple y un par libre en cada átomo, ¿cuáles son las cargas formales del Carbono y del Oxígeno respectivamente?",
+            "opciones": [
+                  "Carbono: $-1$, Oxígeno: $+1$",
+                  "Carbono: $0$, Oxígeno: $0$",
+                  "Carbono: $+1$, Oxígeno: $-1$",
+                  "Carbono: $-2$, Oxígeno: $+2$"
+            ],
+            "correcta": "Carbono: $-1$, Oxígeno: $+1$",
+            "justificacion": "**Concepto Fundamental:** Cálculo de Cargas Formales $\\text{CF} = V - N - \\frac{B}{2}$.\n\n**Resolución:** El Carbono (Grupo 14) tiene $V = 4$. Posee 1 par libre ($N = 2$) y 3 enlaces ($B = 6$). Por tanto: $\\text{CF}(\\text{C}) = 4 - 2 - 6/2 = -1$. El Oxígeno (Grupo 16) tiene $V = 6$. Posee 1 par libre ($N = 2$) y 3 enlaces ($B = 6$). Por tanto: $\\text{CF}(\\text{O}) = 6 - 2 - 6/2 = +1$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Octetos Expandidos",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál de las siguientes moléculas NO PUEDE presentar octeto expandido bajo ninguna circunstancia?",
+            "opciones": [
+                  "Trifluoruro de nitrógeno ($\\text{NF}_3$)",
+                  "Hexafluoruro de azufre ($\\text{SF}_6$)",
+                  "Pentacloruro de fósforo ($\\text{PCl}_5$)",
+                  "Tetrafluoruro de xenón ($\\text{XeF}_4$)"
+            ],
+            "correcta": "Trifluoruro de nitrógeno ($\\text{NF}_3$)",
+            "justificacion": "**Concepto Fundamental:** Límite Cuántico del Segundo Período.\n\n**Resolución:** El nitrógeno pertenece al período 2 de la tabla periódica, donde el nivel principal $n = 2$ solo dispone de subniveles $2s$ y $2p$ (máximo 8 electrones). Al carecer de orbitales $d$, no puede expandir el octeto. En cambio, $\\text{S}$, $\\text{P}$ y $\\text{Xe}$ pertenecen a los períodos 3 o superiores y sí pueden expandir su capa de valencia."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Nomenclatura Sistemática IUPAC",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál es el nombre sistemático IUPAC canónico para el compuesto $\\text{Fe}_2(\\text{SO}_4)_3$ según las normas oficiales de la Escuela de Química de la UCV?",
+            "opciones": [
+                  "Tris[tetraoxosulfato] de dihierro",
+                  "Tri-sulfato de di-hierro",
+                  "Sulfato férrico anhidro simple",
+                  "Tetraóxido de hierro y azufre"
+            ],
+            "correcta": "Tris[tetraoxosulfato] de dihierro",
+            "justificacion": "**Concepto Fundamental:** Nomenclatura Sistemática con Prefijos Multiplicativos.\n\n**Resolución:** Cuando el anión poliatómico ya lleva un prefijo de cantidad en su estructura interior (como tetraoxo- en el radical tetraoxosulfato), la IUPAC y la cátedra de la UCV exigen utilizar prefijos multiplicativos griegos entre corchetes: *tris[tetraoxosulfato] de dihierro* para evitar confusiones."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-enlaces'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-enlaces"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-enlaces"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-enlaces"],
   },
   {
     "id": "santiago-qgi-geometria-guide",
@@ -865,169 +780,148 @@ researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria'],
     "guideMetadata": {
       "title": "Principios de Química I: Modelo TRPEV, Geometría Molecular, Polaridad e Hibridación",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Predicción tridimensional según dominios electrónicos de VSEPR, distorsión angular por pares solitarios, suma vectorial de dipolos moleculares y teoría de orbitales híbridos sp, sp2, sp3, sp3d y sp3d2."
-    },
-    "phenomenonAndTheory": "La forma tridimensional de las moléculas gobierna sus propiedades químicas, reactividad biológica y estados físicos. El modelo de Repulsión de Pares de Electrones de la Capa de Valencia (TRPEV / VSEPR) establece que los pares de electrones que rodean al átomo central se repelen electrostáticamente y adoptan la disposición geométrica que maximiza su separación angular. Existe una distinción fundamental entre la geometría de pares de electrones (que incluye todos los dominios electrónicos) y la geometría molecular real (que describe únicamente la posición espacial de los núcleos atómicos). Los pares de electrones libres ocupan mayor volumen espacial y ejercen repulsiones más intensas que los pares enlazantes, comprimiendo los ángulos de enlace ideales. La suma vectorial de los momentos dipolares de enlace determina si la molécula presenta un momento dipolar neto y polaridad macroscópica.",
+      "summary": "Teoría de Repulsión de Pares de Electrones de la Capa de Valencia (TRPEV/VSEPR), distinción entre geometría electrónica y molecular, ángulos de enlace distorsionados, momento dipolar neto e hibridación."
+},
+    "phenomenonAndTheory": "La forma tridimensional de una molécula no es plana como se dibuja en el papel de Lewis; está gobernada por la repulsión electrostática de las nubes electrónicas de valencia que rodean al átomo central. El modelo TRPEV establece que los pares de electrones se ubican lo más lejos posible entre sí en el espacio para minimizar la energía potencial de repulsión. Existe una jerarquía estricta de repulsión: los pares libres ocupan un volumen angular mayor y repelen más fuertemente que los pares enlazantes (Par Libre - Par Libre > Par Libre - Enlace > Enlace - Enlace). Por ello, comprimen los ángulos de enlace ideales. Es vital distinguir entre Geometría de Pares de Electrones (que incluye enlaces y pares libres) y la Geometría Molecular (la disposición espacial real de los núcleos atómicos). La suma vectorial de los momentos dipolares individuales determina si la molécula es polar o no polar.",
     "glossary": [
       {
-        "term": "Dominio de Electrones (Número Estérico)",
-        "definition": "Cada par libre de electrones, enlace simple, enlace doble o enlace triple conectado al átomo central, que cuenta como una sola región de repulsión espacial.",
-        "symbolOrUnit": "NE = Enlaces sigma + Pares libres"
+            "term": "Número Estérico (SN)",
+            "symbolOrUnit": "\\mathrm{SN} = \\text{enlaces } \\sigma + \\text{pares libres}",
+            "definition": "Suma total de átomos enlazados más los pares de electrones solitarios que rodean al átomo central."
       },
       {
-        "term": "Geometría de Pares de Electrones",
-        "definition": "Arreglo espacial tridimensional adoptado por todos los dominios electrónicos: lineal (2), trigonal plana (3), tetraédrica (4), bipiramidal trigonal (5), octaédrica (6).",
-        "symbolOrUnit": "Geometría electrónica"
+            "term": "Geometría Molecular",
+            "symbolOrUnit": "\\text{Forma tridimensional real}",
+            "definition": "Disposición espacial únicamente de los átomos enlazados en la molécula, ignorando visualmente los pares libres."
       },
       {
-        "term": "Geometría Molecular",
-        "definition": "Disposición física real de los átomos en el espacio observada experimentalmente, sin incluir visualmente los pares libres.",
-        "symbolOrUnit": "Geometría de los núcleos"
-      },
-      {
-        "term": "Momento Dipolar Neto (mu)",
-        "definition": "Magnitud vectorial resultante de la suma vectorial de todos los momentos dipolares individuales de enlace en la molécula.",
-        "symbolOrUnit": "Debyes (D)"
-      },
-      {
-        "term": "Hibridación de Orbitales",
-        "definition": "Mezcla matemática de orbitales atómicos puros (s, p, d) en el átomo central para formar nuevos orbitales híbridos degenerados idénticos en energía y orientados geométricamente.",
-        "symbolOrUnit": "sp, sp2, sp3, sp3d, sp3d2"
+            "term": "Momento Dipolar Neto",
+            "symbolOrUnit": "\\vec{\\mu} = \\sum \\vec{\\mu}_i \\quad [\\text{Debye, D}]",
+            "definition": "Suma vectorial de todos los dipolos de enlace individuales en el espacio tridimensional."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Dominio de Electrones (Número Estérico)",
-          "latex": "NE = Enlaces sigma + Pares libres",
-          "application": "Cada par libre de electrones, enlace simple, enlace doble o enlace triple conectado al átomo central, que cuenta como una sola región de repulsión espacial."
-        },
-        {
-          "name": "Geometría de Pares de Electrones",
-          "latex": "Geometría electrónica",
-          "application": "Arreglo espacial tridimensional adoptado por todos los dominios electrónicos: lineal (2), trigonal plana (3), tetraédrica (4), bipiramidal trigonal (5), octaédrica (6)."
-        },
-        {
-          "name": "Geometría Molecular",
-          "latex": "Geometría de los núcleos",
-          "application": "Disposición física real de los átomos en el espacio observada experimentalmente, sin incluir visualmente los pares libres."
-        }
+            {
+                  "name": "Número Estérico e Hibridación",
+                  "latex": "\\mathrm{SN} = 2 \\,(sp), \\quad 3 \\,(sp^2), \\quad 4 \\,(sp^3), \\quad 5 \\,(sp^3d), \\quad 6 \\,(sp^3d^2)",
+                  "application": "Deducir el esquema de hibridación del átomo central a partir del conteo de dominios de electrones."
+            },
+            {
+                  "name": "Momento Dipolar Resultante",
+                  "latex": "\\vec{\\mu} = q \\cdot \\vec{d}, \\quad \\vec{\\mu}_{\\text{neto}} = \\vec{0} \\implies \\text{No polar}",
+                  "application": "Comprobar si la simetría de la molécula anula vectorialmente los dipolos polares individuales."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Dibujar la estructura de Lewis más estable de la molécula o ion poliatómico.",
-        "Paso 2: Contar el número estérico NE alrededor del átomo central sumando los átomos enlazados más los pares libres de electrones.",
-        "Paso 3: Determinar la geometría de pares electrónicos: 2 = lineal (180°), 3 = trigonal plana (120°), 4 = tetraédrica (109.5°), 5 = bipiramidal trigonal (90°/120°), 6 = octaédrica (90°).",
-        "Paso 4: Deducir la geometría molecular considerando los pares libres: si hay pares libres, la geometría molecular cambia (ej. tetraédrica con 1 par libre es piramidal trigonal; con 2 pares libres es angular).",
-        "Paso 5: Predecir la hibridación del átomo central asociando directamente el número de dominios: 2 dominios = sp, 3 = sp2, 4 = sp3, 5 = sp3d, 6 = sp3d2.",
-        "Paso 6: Evaluar la polaridad molecular: dibujar flechas de dipolo hacia los átomos más electronegativos y verificar si la simetría espacial anula la suma vectorial a cero.",
-        "Regla 1: Las repulsiones electrónicas decrecen en el orden: Par libre - Par libre > Par libre - Par enlazante > Par enlazante - Par enlazante.",
-        "Regla 2: Un enlace múltiple (doble o triple) cuenta como un único dominio electrónico al calcular la geometría VSEPR y la hibridación.",
-        "Regla 3: En geometrías bipiramidales trigonales (5 dominios), los pares solitarios siempre ocupan posiciones ecuatoriales.",
-        "Regla 4: La hibridación depende exclusivamente del número estérico de dominios: 2 = sp, 3 = sp2, 4 = sp3, 5 = sp3d, 6 = sp3d2."
+            "Paso 1: Dibujar la estructura de Lewis correcta minimizando cargas formales.",
+            "Paso 2: Calcular el número estérico SN = (átomos enlazados) + (pares libres sobre el átomo central).",
+            "Paso 3: Determinar la geometría electrónica básica (2: lineal, 3: trigonal plana, 4: tetraédrica, 5: bipiramidal trigonal, 6: octaédrica).",
+            "Paso 4: Ubicar los pares libres en las posiciones de menor repulsión (en SN=5, siempre en posiciones ecuatoriales a 120°; en SN=6, en posiciones axiales opuestas a 180°).",
+            "Paso 5: Nombrar la geometría molecular leyendo solo las posiciones de los átomos (balancín, forma de T, lineal, etc.).",
+            "Paso 6: Sumar los vectores de enlace para determinar si el momento dipolar neto es nulo o no nulo."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: Para las moléculas Agua (H2O), Trifluoruro de Boro (BF3...",
-        "problemStatement": "Para las moléculas Agua (H2O), Trifluoruro de Boro (BF3) y Tetrafluoruro de Xenón (XeF4): determine para cada una el número de dominios electrónicos en el átomo central, su geometría de pares electrónicos, su geometría molecular real, el ángulo de enlace aproximado, el estado de hibridación del átomo central y determine de forma analítica si la molécula es polar o apolar.",
-        "deductiveSteps": [
-          "Paso 1: Analizamos el Agua (H2O): Estructura de Lewis: el Oxígeno central tiene 2 enlaces simples con H y 2 pares libres de electrones. Número estérico NE = 2 + 2 = 4 dominios electrónicos.",
-          "Paso 2: Geometría de pares electrónicos del H2O: Tetraédrica. Geometría molecular: como hay 2 pares libres, los átomos de H forman una geometría Angular. Los 2 pares libres ejercen fuerte repulsión cerrando el ángulo tetraédrico ideal de 109.5° a 104.5°. Hibridación del O: sp3 (4 dominios). Polaridad: los enlaces O-H son muy polares y al tener geometría angular asimétrica, los dipolos no se cancelan: mu != 0, es una molécula Polar.",
-          "Paso 3: Analizamos el Trifluoruro de Boro (BF3): Estructura de Lewis: el Boro tiene 3 enlaces simples con F y 0 pares libres (octeto incompleto de 6 electrones). Número estérico NE = 3 + 0 = 3 dominios electrónicos.",
-          "Paso 4: Geometría de pares electrónicos de BF3: Trigonal Plana. Geometría molecular: Trigonal Plana. Ángulo de enlace: exactamente 120°. Hibridación del B: sp2 (3 dominios). Polaridad: los enlaces B-F son altamente polares, pero al estar orientados simétricamente a 120° en un plano coplanar, sus tres vectores se cancelan vectorialmente: mu = 0, es una molécula Apolar.",
-          "Paso 5: Analizamos el Tetrafluoruro de Xenón (XeF4): Estructura de Lewis: Xenón aporta 8 e- y 4 F aportan 4 * 7 = 28 e-. Total = 36 e- (18 pares). Se forman 4 enlaces Xe-F (8 e-) y se completan octetos de F (24 e-). Sobran 4 electrones que se colocan como 2 pares libres sobre el Xe. Número estérico NE = 4 enlaces + 2 pares libres = 6 dominios electrónicos.",
-          "Paso 6: Geometría de pares electrónicos de XeF4: Octaédrica. Geometría molecular: para minimizar repulsión, los dos pares libres se ubican en posiciones axiales opuestas a 180°, dejando a los 4 átomos de flúor en el plano ecuatorial: geometría Cuadrada Plana. Ángulos de enlace F-Xe-F: 90°. Hibridación del Xe: sp3d2 (6 dominios). Polaridad: por la simetría centrosimétrica cuadrada, los 4 dipolos Xe-F opuestos se cancelan dos a dos, y los dos pares libres también se cancelan mutuamente: mu = 0, es una molécula Apolar."
-        ],
-        "finalResult": "Una molécula es no polar si todos sus enlaces periféricos son idénticos y su geometría molecular no tiene pares libres que rompan la simetría."
+            "title": "Problema Canónico UCV (Parcial 2): Geometría Molecular y Polaridad del Tetrafluoruro de Azufre (SF4)",
+            "problemStatement": "Para la molécula de tetrafluoruro de azufre (SF4): a) Dibuje la estructura de Lewis; b) Determine el número estérico y la hibridación del átomo central; c) Indique la geometría de pares y la geometría molecular con los ángulos aproximados; d) Justifique si la molécula es polar o no polar.",
+            "deductiveSteps": [
+                  "Paso 1: Electrones de valencia: S (6) + 4 F (4 * 7 = 28) = 34 electrones (17 pares).",
+                  "Paso 2: Estructura de Lewis: S enlazado a 4 átomos de F (8 electrones compartidos). Los 4 F completan sus octetos con 3 pares libres cada uno (24 electrones). Restan: 34 - (8 + 24) = 2 electrones (1 par libre) que se ubican en el átomo central de Azufre.",
+                  "Paso 3: Número estérico: SN = 4 enlaces + 1 par libre = 5. Hibridación del S: sp³d.",
+                  "Paso 4: Geometría de pares: Bipiramidal trigonal. Para minimizar repulsión, el par libre se ubica en el plano ecuatorial (interactúa a 120° con solo 2 enlaces axiales a 90°).",
+                  "Paso 5: Geometría molecular: Al ocultar el par libre ecuatorial, los 4 átomos de flúor forman una estructura de Balancín (see-saw o subibaja).",
+                  "Paso 6: Ángulos y polaridad: La repulsión del par libre comprime los enlaces axiales hacia adentro, haciendo que el ángulo axial sea menor a 180° (aprox. 173°) y el ecuatorial menor a 120° (aprox. 102°). Debido a esta asimetría angular, los dipolos de enlace S-F altamente polares no se cancelan vectorialmente: momento dipolar neto mu != 0. La molécula es POLAR."
+            ],
+            "finalResult": "En geometrías con SN = 5, los pares libres siempre prefieren posiciones ecuatoriales para minimizar la repulsión a 90 grados."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 2 UCV",
-        "correction": "Preguntar por la geometría del ion I3- (triyoduro). Tiene 3 pares libres y 2 enlaces en el átomo central (5 dominios), por lo que su geometría molecular es perfectamente Lineal con ángulo de 180°."
+            "trap": "Trampa de confundir geometría de pares con geometría molecular",
+            "correction": "Responder que el agua o el SF4 son 'tetraédricas'; el tetraedro es la geometría de pares, la geometría molecular del H2O es angular y del SF4 es balancín."
       },
       {
-        "trap": "Trampa de hibridación",
-        "correction": "Atribuir hibridación sp3 al Boro en BF3 porque tiene tres enlaces, olvidando que solo tiene 3 dominios (hibridación sp2)."
-      },
-      {
-        "trap": "Trampa del NH3 vs BF3",
-        "correction": "Creer que el amoníaco es plano trigonal como el BF3; el amoníaco tiene un par libre en el nitrógeno que lo hace piramidal trigonal y fuertemente polar."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Confundir geometría electrónica con geometría molecular: decir que el agua es tetraédrica en vez de angular."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Asumir que una molécula con enlaces polares siempre es polar: olvidar que la simetría espacial puede anular el momento dipolar resultante."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "En bipirámide trigonal (5 dominios), colocar los pares libres en posiciones axiales en vez de ecuatoriales: en el ecuador tienen ángulos de 120° con menor repulsión."
+            "trap": "Trampa de posición en bipirámide trigonal",
+            "correction": "Colocar el par libre en una posición axial en SN = 5; en posición axial tendría 3 repulsiones desfavorables a 90 grados."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Dominio de Electrones (Número Estérico)?",
-          "back": "Cada par libre de electrones, enlace simple, enlace doble o enlace triple conectado al átomo central, que cuenta como una sola región de repulsión espacial. (Notación: NE = Enlaces sigma + Pares libres)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Geometría de Pares de Electrones?",
-          "back": "Arreglo espacial tridimensional adoptado por todos los dominios electrónicos: lineal (2), trigonal plana (3), tetraédrica (4), bipiramidal trigonal (5), octaédrica (6). (Notación: Geometría electrónica)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Geometría Molecular?",
-          "back": "Disposición física real de los átomos en el espacio observada experimentalmente, sin incluir visualmente los pares libres. (Notación: Geometría de los núcleos)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Momento Dipolar Neto (mu)?",
-          "back": "Magnitud vectorial resultante de la suma vectorial de todos los momentos dipolares individuales de enlace en la molécula. (Notación: Debyes (D))"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Hibridación de Orbitales?",
-          "back": "Mezcla matemática de orbitales atómicos puros (s, p, d) en el átomo central para formar nuevos orbitales híbridos degenerados idénticos en energía y orientados geométricamente. (Notación: sp, sp2, sp3, sp3d, sp3d2)"
-        }
+            {
+                  "front": "¿Por qué en una geometría bipiramidal trigonal (SN = 5) los pares solitarios se ubican siempre en el plano ecuatorial?",
+                  "back": "Porque en el plano ecuatorial solo tienen 2 vecinos a 90 grados y 2 a 120 grados, minimizando drásticamente la repulsión electrostática comparado con la posición axial."
+            },
+            {
+                  "front": "¿Cuál es la geometría molecular de una especie con 4 enlaces y 2 pares libres (SN = 6, como el XeF4)?",
+                  "back": "Cuadrada plana (los dos pares libres se ubican en posiciones axiales opuestas a 180 grados para anular sus repulsiones mutuas)."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Dominio de Electrones (Número Estérico)",
-          "Geometría de Pares de Electrones",
-          "Geometría Molecular",
-          "Momento Dipolar Neto (mu)",
-          "Hibridación de Orbitales"
-        ],
-        "notes": [
-          "Paso 1: Dibujar la estructura de Lewis más estable de la molécula o ion poliatómico.",
-          "Paso 2: Contar el número estérico NE alrededor del átomo central sumando los átomos enlazados más los pares libres de electrones.",
-          "Paso 3: Determinar la geometría de pares electrónicos: 2 = lineal (180°), 3 = trigonal plana (120°), 4 = tetraédrica (109.5°), 5 = bipiramidal trigonal (90°/120°), 6 = octaédrica (90°).",
-          "Paso 4: Deducir la geometría molecular considerando los pares libres: si hay pares libres, la geometría molecular cambia (ej. tetraédrica con 1 par libre es piramidal trigonal; con 2 pares libres es angular).",
-          "Paso 5: Predecir la hibridación del átomo central asociando directamente el número de dominios: 2 dominios = sp, 3 = sp2, 4 = sp3, 5 = sp3d, 6 = sp3d2."
-        ],
-        "summary": "Predicción tridimensional según dominios electrónicos de VSEPR, distorsión angular por pares solitarios, suma vectorial de dipolos moleculares y teoría de orbitales híbridos sp, sp2, sp3, sp3d y sp3d2."
+            "cues": [
+                  "Número Estérico SN",
+                  "TRPEV / VSEPR",
+                  "Balancín vs Cuadrada Plana",
+                  "Polaridad Neta"
+            ],
+            "notes": [
+                  "1. SN = Enlaces sigma + Pares libres.",
+                  "2. Jerarquía: Par libre - Par libre > Par libre - Enlace > Enlace - Enlace.",
+                  "3. SN = 5 con 1 par libre: Balancín (polar).",
+                  "4. SN = 6 con 2 pares libres: Cuadrada plana (no polar)."
+            ],
+            "summary": "Determinación de geometrías moleculares espaciales, hibridación y momentos dipolares netos."
       },
-      "conceptMapNodes": "Principios de Química I: Modelo TRPEV, Geometría Molecular, Polaridad e Hibridación\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Dominio de Electrones (Número Estérico), Geometría de Pares de Electrones, Geometría Molecular\n  └── Protocolo: Paso 1: Dibujar la estructura de Lewis más estable de la molécula o ion poliatómico. -> Paso 2: Contar el número estérico NE alrededor del átomo central sumando los átomos enlazados más los pares libres de electrones. -> Paso 3: Determinar la geometría de pares electrónicos: 2 = lineal (180°), 3 = trigonal plana (120°), 4 = tetraédrica (109.5°), 5 = bipiramidal trigonal (90°/120°), 6 = octaédrica (90°)."
-    },
+      "conceptMapNodes": "Geometría Molecular TRPEV\n  ├── Número Estérico SN = Enlaces + Pares libres\n  ├── Repulsión: Pares libres distorsionan ángulos\n  └── Formas: Balancín (SN 5, 1 par) | Forma de T (SN 5, 2 pares) | Cuadrada plana (SN 6, 2 pares)"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Modelo TRPEV, Geometría Molecular, Polaridad e Hibridación",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Modelo TRPEV, Geometría Molecular, Polaridad e Hibridación?",
-        "opciones": [
-          "Predicción tridimensional según dominios electrónicos de VSEPR, distorsión angular por pares solitar",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Predicción tridimensional según dominios electrónicos de VSEPR, distorsión angular por pares solitar",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Modelo TRPEV, Geometría Molecular, Polaridad e Hibridación\n\n**Resolución Directa:** La forma tridimensional de las moléculas gobierna sus propiedades químicas, reactividad biológica y estados físicos. El modelo de Repulsión de Pares de Electrones de la Capa de Val..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Geometría TRPEV del SF4",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál es la geometría molecular real del tetrafluoruro de azufre ($\\text{SF}_4$) según el modelo de repulsión de pares de electrones de la capa de valencia (TRPEV)?",
+            "opciones": [
+                  "Balancín (o subibaja / see-saw)",
+                  "Tetraédrica regular",
+                  "Cuadrada plana",
+                  "Piramidal trigonal"
+            ],
+            "correcta": "Balancín (o subibaja / see-saw)",
+            "justificacion": "**Concepto Fundamental:** Geometría de Pares vs Geometría Molecular con $\\text{SN} = 5$.\n\n**Resolución:** El átomo central de Azufre (Grupo 16) tiene 6 electrones de valencia. Forma 4 enlaces simples con F (4 electrones) y le queda 1 par libre (2 electrones). El número estérico es $4 + 1 = 5$ (geometría de pares bipiramidal trigonal). El par libre se ubica en el plano ecuatorial a $120^\\circ$ para minimizar repulsión, dejando una geometría molecular de Balancín (see-saw)."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Geometría Cuadrada Plana del XeF4",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál es la geometría molecular y el momento dipolar neto del tetrafluoruro de xenón ($\\text{XeF}_4$)?",
+            "opciones": [
+                  "Cuadrada plana, no polar ($\\vec{\\mu} = 0$)",
+                  "Tetraédrica, polar ($\\vec{\\mu} \\neq 0$)",
+                  "Balancín, polar ($\\vec{\\mu} \\neq 0$)",
+                  "Octaédrica perfecta, polar"
+            ],
+            "correcta": "Cuadrada plana, no polar ($\\vec{\\mu} = 0$)",
+            "justificacion": "**Concepto Fundamental:** Disposición Axial de Pares Libres en $\\text{SN} = 6$.\n\n**Resolución:** El Xenón tiene 8 electrones de valencia. En $\\text{XeF}_4$ forma 4 enlaces y conserva 2 pares libres: $\\text{SN} = 4 + 2 = 6$ (geometría de pares octaédrica). Los dos pares libres se ubican en polos axiales opuestos a $180^\\circ$, cancelando su efecto. Los 4 átomos de Flúor forman una geometría cuadrada plana perfectamente simétrica, cancelando los dipolos de enlace: $\\vec{\\mu}_{\\text{neto}} = 0$ (molécula no polar)."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Distorsión Angular por Pares Libres",
+            "tipo": "opcion_multiple",
+            "pregunta": "En la serie de hidruros isoelectrónicos $\\text{CH}_4$, $\\text{NH}_3$ y $\\text{H}_2\\text{O}$ (todos con hibridación aproximada $sp^3$ y $\\text{SN} = 4$), ¿por qué el ángulo de enlace disminuye progresivamente ($109.5^\\circ \\to 107.3^\\circ \\to 104.5^\\circ$)?",
+            "opciones": [
+                  "Porque los pares libres ocupan un volumen mayor y ejercen mayor repulsión sobre los pares enlazantes adyacentes, cerrando el ángulo",
+                  "Porque el hidrógeno cambia de estado de oxidación",
+                  "Porque la masa del átomo central aumenta",
+                  "Porque los enlaces dobles acortan la distancia interatómica"
+            ],
+            "correcta": "Porque los pares libres ocupan un volumen mayor y ejercen mayor repulsión sobre los pares enlazantes adyacentes, cerrando el ángulo",
+            "justificacion": "**Concepto Fundamental:** Jerarquía de Repulsiones Angulares en TRPEV.\n\n**Resolución:** Los pares no enlazantes (solitarios) están atraídos por un solo núcleo atómico, extendiendo su nube de carga y ocupando mayor volumen angular. El metano tiene 0 pares libres ($109.5^\\circ$), el amoníaco tiene 1 par libre que comprime los enlaces a $107.3^\\circ$, y el agua tiene 2 pares libres que ejercen una repulsión aún mayor cerrando el ángulo a $104.5^\\circ$."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-geometria'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-geometria"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-geometria"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-geometria"],
   },
   {
     "id": "santiago-qgi-estequiometria-guide",
@@ -1035,170 +929,158 @@ researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria'],
     "guideMetadata": {
       "title": "Principios de Química I: Estequiometría, Reactivo Limitante, Pureza y Rendimiento",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Conversiones mol-gramo, balanceo sistemático de ecuaciones, identificación matemática del reactivo limitante por relaciones estequiométricas, corrección por pureza y cálculo de rendimiento porcentual."
-    },
-    "phenomenonAndTheory": "La estequiometría es la contabilidad cuantitativa de la materia en las reacciones químicas, cimentada en la Ley de Conservación de la Masa. Dado que los átomos no se pueden contar individualmente en una balanza ordinaria, el mol conecta el microcosmos molecular con las masas macroscópicas mediante el número de Avogadro (6.022 * 10^23 entidades/mol). Toda ecuación química debe balancearse para que la cantidad de átomos de cada elemento sea idéntica en reactivos y productos. En la práctica real, los reactivos rara vez se mezclan en proporciones exactas: aquel reactivo que se consume completamente primero frena en seco la reacción y se denomina reactivo limitante. Todos los cálculos teóricos de producto formado y reactivo en exceso sobrante deben derivarse obligatoriamente a partir del reactivo limitante.",
+      "summary": "Concepto de mol y número de Avogadro, balanceo de reacciones químicas, cuadro ICF de balance de masas, cálculo analítico de reactivo limitante, impurezas minerales y porcentaje de rendimiento."
+},
+    "phenomenonAndTheory": "La estequiometría es el corazón cuantitativo de la química general. Traduce las relaciones microscópicas de átomos y moléculas expresadas en una ecuación química balanceada a magnitudes macroscópicas medibles en el laboratorio (gramos, moles, litros). Un mol equivale exactamente a 6.022 x 10²³ partículas (Número de Avogadro). En la práctica industrial y de laboratorio, los reactivos rara vez se mezclan en proporciones estequiométricas exactas. Aquel reactivo cuya relación molar entre moles disponibles y su coeficiente estequiométrico sea mínima es el Reactivo Limitante: se agota por completo y determina la cantidad máxima teórica de producto que puede sintetizarse. Además, los minerales reales contienen impurezas inertes que deben descontarse antes de realizar cualquier cálculo estequiométrico, y las pérdidas experimentales reducen el rendimiento real por debajo del 100%.",
     "glossary": [
       {
-        "term": "Mol",
-        "definition": "Cantidad de sustancia que contiene exactamente tantas partículas elementales como átomos hay en exactamente 12 gramos del isótopo puro de Carbono-12.",
-        "symbolOrUnit": "6.022 * 10^23 partículas"
+            "term": "Mol",
+            "symbolOrUnit": "n = \\frac{m}{M} \\quad [\\mathrm{mol}]",
+            "definition": "Cantidad de sustancia que contiene exactamente 6.022 x 10²³ entidades elementales (átomos, moléculas, iones)."
       },
       {
-        "term": "Masa Molar (M)",
-        "definition": "Masa en gramos de exactamente un mol de átomos, moléculas o unidades fórmula de una sustancia química.",
-        "symbolOrUnit": "g/mol"
+            "term": "Reactivo Limitante",
+            "symbolOrUnit": "\\min\\left(\\frac{n_i}{c_i}\\right)",
+            "definition": "Sustancia que se consume totalmente primero en la reacción química, deteniendo el proceso y fijando el rendimiento teórico."
       },
       {
-        "term": "Reactivo Limitante",
-        "definition": "Sustancia que se agota por completo en primer lugar durante una reacción química, determinando el límite máximo teórico de producto formado.",
-        "symbolOrUnit": "Determina el rendimiento"
+            "term": "Pureza Porcentual",
+            "symbolOrUnit": "\\%P = \\frac{m_{\\text{pura}}}{m_{\\text{muestra}}} \\times 100",
+            "definition": "Fracción de masa de sustancia químicamente reactiva contenida en una muestra comercial o mineral impuro."
       },
       {
-        "term": "Reactivo en Exceso",
-        "definition": "Sustancia presente en una cantidad molar superior a la requerida por la estequiometría de la reacción, de la cual queda una porción sin reaccionar.",
-        "symbolOrUnit": "Masa sobrante > 0"
-      },
-      {
-        "term": "Rendimiento Porcentual",
-        "definition": "Razón porcentual entre la masa de producto realmente obtenida en el laboratorio y la masa teórica máxima predicha por la estequiometría.",
-        "symbolOrUnit": "% = (Real / Teórico) * 100"
+            "term": "Rendimiento Porcentual",
+            "symbolOrUnit": "\\%R = \\frac{\\text{Rendimiento Real}}{\\text{Rendimiento Teórico}} \\times 100",
+            "definition": "Porcentaje de producto realmente obtenido en el laboratorio frente al valor estequiométrico ideal calculado."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Mol",
-          "latex": "6.022 * 10^23 partículas",
-          "application": "Cantidad de sustancia que contiene exactamente tantas partículas elementales como átomos hay en exactamente 12 gramos del isótopo puro de Carbono-12."
-        },
-        {
-          "name": "Masa Molar (M)",
-          "latex": "g/mol",
-          "application": "Masa en gramos de exactamente un mol de átomos, moléculas o unidades fórmula de una sustancia química."
-        },
-        {
-          "name": "Reactivo Limitante",
-          "latex": "Determina el rendimiento",
-          "application": "Sustancia que se agota por completo en primer lugar durante una reacción química, determinando el límite máximo teórico de producto formado."
-        }
+            {
+                  "name": "Conversión Masa a Moles",
+                  "latex": "n = \\frac{m}{M}, \\quad m = n \\cdot M",
+                  "application": "Transformar gramos pesados en balanza a moles moleculares mediante la masa molar."
+            },
+            {
+                  "name": "Criterio de Reactivo Limitante",
+                  "latex": "\\text{Cociente Molar} = \\frac{n_{\\text{reactivo}}}{\\text{Coeficiente Estequiométrico}}",
+                  "application": "El reactivo con el menor cociente molar es el limitante indiscutible de la reacción."
+            },
+            {
+                  "name": "Rendimiento Porcentual",
+                  "latex": "\\%\\text{Rendimiento} = \\frac{m_{\\text{real}}}{m_{\\text{teórico}}} \\times 100\\%",
+                  "application": "Comparar la masa obtenida experimentalmente en el laboratorio con el cálculo estequiométrico."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Escribir la ecuación química con fórmulas correctas y balancear todos los coeficientes estequiométricos por tanteo o método algebraico.",
-        "Paso 2: Si los reactivos tienen impurezas, multiplicar la masa cruda por el porcentaje de pureza dividido entre 100 para obtener la masa pura real.",
-        "Paso 3: Convertir las masas puras de todos los reactivos suministrados a moles dividiendo entre sus respectivas masas molares: n = m / M.",
-        "Paso 4: Identificar el reactivo limitante dividiendo los moles calculados de cada reactivo entre su propio coeficiente estequiométrico: el menor valor numérico es el reactivo limitante.",
-        "Paso 5: Utilizar exclusivamente los moles del reactivo limitante para calcular los moles teóricos de producto formado mediante la razón de coeficientes.",
-        "Paso 6: Convertir los moles de producto a gramos teóricos y calcular el rendimiento porcentual si el enunciado reporta una masa experimental.",
-        "Regla 1: Nunca realices un cálculo estequiométrico sin verificar primero que la ecuación química esté perfectamente balanceada.",
-        "Regla 2: Siempre convierte gramos a moles antes de aplicar los factores de conversión estequiométricos de la ecuación.",
-        "Regla 3: El reactivo limitante es el único dato válido para calcular la cantidad teórica de cualquier producto formado.",
-        "Regla 4: El rendimiento porcentual de una reacción química jamás puede superar el 100% en condiciones reales sin violar las leyes de la física."
+            "Paso 1: Escribir y verificar el balanceo estequiométrico de la ecuación química.",
+            "Paso 2: Si el problema da pureza del mineral, multiplicar primero la masa de muestra por el porcentaje de pureza para obtener los gramos puros.",
+            "Paso 3: Convertir todos los gramos de reactivos a moles dividiendo entre sus masas molares.",
+            "Paso 4: Dividir los moles de cada reactivo entre su respectivo coeficiente en la ecuación balanceada.",
+            "Paso 5: El reactivo con el menor cociente es el Reactivo Limitante. Descartar los otros para el cálculo de productos.",
+            "Paso 6: Usar los moles del reactivo limitante para calcular los moles de producto y multiplicar por el porcentaje de rendimiento si aplica."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: En un proceso de síntesis inorgánica en el laboratorio ...",
-        "problemStatement": "En un proceso de síntesis inorgánica en el laboratorio de la UCV, se hacen reaccionar 50.0 g de dióxido de manganeso impuro (MnO2 con pureza del 87.0%, Masa molar = 86.94 g/mol) con 120.0 mL de una disolución concentrada de ácido clorhídrico comercial (densidad = 1.18 g/mL, 37.0% en masa de HCl, Masa molar = 36.46 g/mol) según la reacción: MnO2(s) + 4 HCl(ac) -> MnCl2(ac) + Cl2(g) + 2 H2O(l). Calcule: a) Cuál es el reactivo limitante; b) Los gramos de Cloro gaseoso Cl2 (Masa molar = 70.90 g/mol) que se forman teóricamente; c) Los gramos del reactivo en exceso que quedan sin reaccionar; d) El rendimiento de la reacción si se recolectan 24.5 g de gas cloro.",
-        "deductiveSteps": [
-          "Paso 1: Verificamos el balanceo de la ecuación: 1 Mn, 2 O, 4 H, 4 Cl a ambos lados. La ecuación está balanceada.",
-          "Paso 2: Calculamos la masa pura y moles disponibles de MnO2: Masa pura = 50.0 g * (87.0 / 100) = 43.5 g de MnO2 puro. Moles de MnO2 = 43.5 g / 86.94 g/mol = 0.5003 moles.",
-          "Paso 3: Calculamos la masa pura y moles disponibles de HCl: Masa de disolución = 120.0 mL * 1.18 g/mL = 141.6 g. Masa pura de HCl = 141.6 g * (37.0 / 100) = 52.392 g de HCl puro. Moles de HCl = 52.392 g / 36.46 g/mol = 1.437 moles.",
-          "Paso 4: Determinamos el reactivo limitante comparando la relación mol/coeficiente: Para MnO2: 0.5003 / 1 = 0.5003. Para HCl: 1.437 / 4 = 0.3592. Como 0.3592 < 0.5003, el Ácido Clorhídrico (HCl) es el reactivo limitante en seco. El MnO2 es el reactivo en exceso.",
-          "Paso 5: Calculamos el rendimiento teórico de Cl2 a partir de los 1.437 moles de HCl limitante: según la estequiometría, 4 moles de HCl producen 1 mol de Cl2. Moles de Cl2 teóricos = 1.437 moles HCl * (1 mol Cl2 / 4 moles HCl) = 0.35925 moles de Cl2. Masa teórica de Cl2 = 0.35925 moles * 70.90 g/mol = 25.47 g de Cl2.",
-          "Paso 6: Calculamos el exceso consumido y sobrante de MnO2: Moles de MnO2 consumidos = 1.437 moles HCl * (1 mol MnO2 / 4 moles HCl) = 0.35925 moles de MnO2. Moles de MnO2 sobrantes = 0.5003 - 0.35925 = 0.14105 moles. Masa de MnO2 puro sobrante = 0.14105 moles * 86.94 g/mol = 12.26 g de MnO2 sin reaccionar.",
-          "Paso 7: Calculamos el porcentaje de rendimiento: % Rendimiento = (Masa real experimental / Masa teórica) * 100 = (24.5 g / 25.47 g) * 100 = 96.2%."
-        ],
-        "finalResult": "El reactivo limitante es siempre aquel que arroja el menor cociente entre sus moles disponibles y su coeficiente estequiométrico en la ecuación."
+            "title": "Problema Canónico UCV (Guía Oficial de Química I): Síntesis de Magnetita con Pureza y Rendimiento",
+            "problemStatement": "En la guía oficial de la UCV se plantea: Se hacen reaccionar 168.0 g de un mineral de hierro con 80.0% de pureza en Fe con 72.0 g de vapor de agua según: 3 Fe(s) + 4 H2O(g) -> Fe3O4(s) + 4 H2(g). a) Determine cuál es el reactivo limitante; b) Calcule la masa teórica de magnetita (Fe3O4) que se puede obtener; c) Si en el laboratorio se recolectaron 110.0 g de Fe3O4, calcule el rendimiento porcentual de la reacción. (Masas atómicas: Fe = 55.85 g/mol, H = 1.01 g/mol, O = 16.00 g/mol).",
+            "deductiveSteps": [
+                  "Paso 1: Masa pura de hierro: m(Fe puro) = 168.0 g * 0.80 = 134.4 g de Fe puro.",
+                  "Paso 2: Moles disponibles: Moles de Fe = 134.4 g / 55.85 g/mol = 2.406 moles de Fe. Moles de H2O = 72.0 g / 18.02 g/mol = 3.996 moles de H2O.",
+                  "Paso 3: Identificación del Reactivo Limitante: Para Fe: 2.406 / 3 = 0.802. Para H2O: 3.996 / 4 = 0.999. Como 0.802 < 0.999, el REACTIVO LIMITANTE ES EL HIERRO (Fe).",
+                  "Paso 4: Moles teóricos de magnetita Fe3O4: Según la estequiometría: 3 moles de Fe producen 1 mol de Fe3O4. Moles de Fe3O4 = 2.406 moles Fe * (1 mol Fe3O4 / 3 moles Fe) = 0.802 moles de Fe3O4.",
+                  "Paso 5: Masa molar de Fe3O4: M = 3(55.85) + 4(16.00) = 167.55 + 64.00 = 231.55 g/mol. Masa teórica: m_teórica = 0.802 moles * 231.55 g/mol = 185.7 g de Fe3O4.",
+                  "Paso 6: Rendimiento porcentual: %R = (m_real / m_teórica) * 100 = (110.0 g / 185.7 g) * 100 = 59.2%."
+            ],
+            "finalResult": "El cálculo correcto requiere purificar la masa mineral antes de evaluar el cociente limitante y contrastar con el producto real."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 2 UCV",
-        "correction": "Dar la disolución de un reactivo con densidad y porcentaje en masa (% m/m) y el estudiante olvida multiplicar volumen por densidad para hallar la masa total de la solución."
+            "trap": "Trampa de comparar gramos directamente",
+            "correction": "Declarar reactivo limitante al que tiene menos gramos; la estequiometría opera en moles atómicos, no en gramos brutos."
       },
       {
-        "trap": "Trampa de moléculas biatómicas",
-        "correction": "Calcular la masa molar del gas cloro Cl2 como 35.45 g/mol en vez de multiplicarla por 2 (70.90 g/mol)."
-      },
-      {
-        "trap": "Trampa del reactivo sobrante",
-        "correction": "Reportar los moles consumidos en vez de restar los moles consumidos a los moles iniciales para dar los sobrantes."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Comparar las masas en gramos (50 g vs 52 g) para decir cuál es el reactivo limitante: la química no reacciona gramo a gramo sino mol a mol."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "No corregir la masa por el porcentaje de pureza antes de calcular los moles."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Calcular el producto a partir del reactivo en exceso en lugar del reactivo limitante, obteniendo una cantidad de producto que viola la conservación de masa."
+            "trap": "Trampa de olvidar la pureza",
+            "correction": "Usar los 168 g del mineral directamente en los cálculos molares sin descontar el 20% de ganga inerte."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Mol?",
-          "back": "Cantidad de sustancia que contiene exactamente tantas partículas elementales como átomos hay en exactamente 12 gramos del isótopo puro de Carbono-12. (Notación: 6.022 * 10^23 partículas)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Masa Molar (M)?",
-          "back": "Masa en gramos de exactamente un mol de átomos, moléculas o unidades fórmula de una sustancia química. (Notación: g/mol)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Reactivo Limitante?",
-          "back": "Sustancia que se agota por completo en primer lugar durante una reacción química, determinando el límite máximo teórico de producto formado. (Notación: Determina el rendimiento)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Reactivo en Exceso?",
-          "back": "Sustancia presente en una cantidad molar superior a la requerida por la estequiometría de la reacción, de la cual queda una porción sin reaccionar. (Notación: Masa sobrante > 0)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Rendimiento Porcentual?",
-          "back": "Razón porcentual entre la masa de producto realmente obtenida en el laboratorio y la masa teórica máxima predicha por la estequiometría. (Notación: % = (Real / Teórico) * 100)"
-        }
+            {
+                  "front": "¿Cómo se identifica con certeza absoluta cuál es el reactivo limitante en una reacción química?",
+                  "back": "Dividiendo los moles disponibles de cada reactivo entre su respectivo coeficiente estequiométrico; el menor cociente resultante identifica al reactivo limitante."
+            },
+            {
+                  "front": "¿Qué fórmula define el rendimiento porcentual de una reacción química?",
+                  "back": "%Rendimiento = (Cantidad Real Obtenida en Laboratorio / Cantidad Teórica Calculada por Estequiometría) x 100."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Mol",
-          "Masa Molar (M)",
-          "Reactivo Limitante",
-          "Reactivo en Exceso",
-          "Rendimiento Porcentual"
-        ],
-        "notes": [
-          "Paso 1: Escribir la ecuación química con fórmulas correctas y balancear todos los coeficientes estequiométricos por tanteo o método algebraico.",
-          "Paso 2: Si los reactivos tienen impurezas, multiplicar la masa cruda por el porcentaje de pureza dividido entre 100 para obtener la masa pura real.",
-          "Paso 3: Convertir las masas puras de todos los reactivos suministrados a moles dividiendo entre sus respectivas masas molares: n = m / M.",
-          "Paso 4: Identificar el reactivo limitante dividiendo los moles calculados de cada reactivo entre su propio coeficiente estequiométrico: el menor valor numérico es el reactivo limitante.",
-          "Paso 5: Utilizar exclusivamente los moles del reactivo limitante para calcular los moles teóricos de producto formado mediante la razón de coeficientes."
-        ],
-        "summary": "Conversiones mol-gramo, balanceo sistemático de ecuaciones, identificación matemática del reactivo limitante por relaciones estequiométricas, corrección por pureza y cálculo de rendimiento porcentual."
+            "cues": [
+                  "Mol = m / M",
+                  "Cociente Molar Limitante",
+                  "Descuento de Pureza",
+                  "Rendimiento %"
+            ],
+            "notes": [
+                  "1. Siempre balancear la ecuación primero.",
+                  "2. Masa pura = Masa total * %Pureza.",
+                  "3. Limitante: menor moles / coeficiente.",
+                  "4. Todo cálculo de producto parte del limitante."
+            ],
+            "summary": "Cálculos estequiométricos fundamentales, balance de masas con reactivo limitante y rendimiento de reacción."
       },
-      "conceptMapNodes": "Principios de Química I: Estequiometría, Reactivo Limitante, Pureza y Rendimiento\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Mol, Masa Molar (M), Reactivo Limitante\n  └── Protocolo: Paso 1: Escribir la ecuación química con fórmulas correctas y balancear todos los coeficientes estequiométricos por tanteo o método algebraico. -> Paso 2: Si los reactivos tienen impurezas, multiplicar la masa cruda por el porcentaje de pureza dividido entre 100 para obtener la masa pura real. -> Paso 3: Convertir las masas puras de todos los reactivos suministrados a moles dividiendo entre sus respectivas masas molares: n = m / M."
-    },
+      "conceptMapNodes": "Estequiometría\n  ├── Pureza: m_pura = m_muestra * %P\n  ├── Moles: n = m / M\n  └── Limitante: min(n_i / c_i) -> Rige la producción y el %Rendimiento"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Estequiometría, Reactivo Limitante, Pureza y Rendimiento",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Estequiometría, Reactivo Limitante, Pureza y Rendimiento?",
-        "opciones": [
-          "Conversiones mol-gramo, balanceo sistemático de ecuaciones, identificación matemática del reactivo l",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Conversiones mol-gramo, balanceo sistemático de ecuaciones, identificación matemática del reactivo l",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Estequiometría, Reactivo Limitante, Pureza y Rendimiento\n\n**Resolución Directa:** La estequiometría es la contabilidad cuantitativa de la materia en las reacciones químicas, cimentada en la Ley de Conservación de la Masa. Dado que los átomos no se pueden contar ..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Reactivo Limitante en Amoníaco",
+            "tipo": "opcion_multiple",
+            "pregunta": "Se mezclan $2.0\\,\\text{moles}$ de gas $\\text{N}_2$ con $3.0\\,\\text{moles}$ de gas $\\text{H}_2$ para sintetizar amoníaco según $\\text{N}_2(g) + 3\\,\\text{H}_2(g) \\to 2\\,\\text{NH}_3(g)$. ¿Cuántos moles de $\\text{NH}_3$ se pueden producir como máximo teórico?",
+            "opciones": [
+                  "$2.0\\,\\text{moles de } \\text{NH}_3$",
+                  "$4.0\\,\\text{moles de } \\text{NH}_3$",
+                  "$1.0\\,\\text{mol de } \\text{NH}_3$",
+                  "$3.0\\,\\text{moles de } \\text{NH}_3$"
+            ],
+            "correcta": "$2.0\\,\\text{moles de } \\text{NH}_3$",
+            "justificacion": "**Concepto Fundamental:** Determinación de Reactivo Limitante.\n\n**Resolución:** Comparamos los cocientes moles/coeficiente: Para $\\text{N}_2$: $2.0 / 1 = 2.0$. Para $\\text{H}_2$: $3.0 / 3 = 1.0$. Como $1.0 < 2.0$, el $\\text{H}_2$ es el reactivo limitante. Los $3.0$ moles de $\\text{H}_2$ producen teóricamente: $3.0\\,\\text{mol H}_2 \\times \\frac{2\\,\\text{mol NH}_3}{3\\,\\text{mol H}_2} = 2.0\\,\\text{moles de } \\text{NH}_3$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Pureza Mineral y Reactivo Limitante",
+            "tipo": "opcion_multiple",
+            "pregunta": "Una muestra de $100.0\\,\\text{g}$ de carbonato de calcio comercial $\\text{CaCO}_3$ ($M = 100.09\\,\\text{g/mol}$) con $90.0\\%$ de pureza se descompone térmicamente: $\\text{CaCO}_3(s) \\to \\text{CaO}(s) + \\text{CO}_2(g)$. ¿Cuántos moles de gas $\\text{CO}_2$ se liberan?",
+            "opciones": [
+                  "$0.90\\,\\text{moles de } \\text{CO}_2$",
+                  "$1.00\\,\\text{mol de } \\text{CO}_2$",
+                  "$0.45\\,\\text{moles de } \\text{CO}_2$",
+                  "$90.0\\,\\text{moles de } \\text{CO}_2$"
+            ],
+            "correcta": "$0.90\\,\\text{moles de } \\text{CO}_2$",
+            "justificacion": "**Concepto Fundamental:** Descuento de Pureza en Estequiometría.\n\n**Resolución:** Masa pura de $\\text{CaCO}_3 = 100.0\\,\\text{g} \\times 0.90 = 90.0\\,\\text{g}$. Moles puros de $\\text{CaCO}_3 = 90.0\\,\\text{g} / 100.09\\,\\text{g/mol} \\approx 0.90\\,\\text{moles}$. Según la estequiometría $1:1$, se liberan exactamente $0.90\\,\\text{moles de } \\text{CO}_2$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Cálculo de Rendimiento Porcentual",
+            "tipo": "opcion_multiple",
+            "pregunta": "En una reacción química el cálculo estequiométrico predice una masa teórica de $50.0\\,\\text{g}$ de producto, pero tras el proceso de filtración y secado en laboratorio se obtienen $42.5\\,\\text{g}$. ¿Cuál es el rendimiento porcentual?",
+            "opciones": [
+                  "$85.0\\%$",
+                  "$92.5\\%$",
+                  "$80.0\\%$",
+                  "$117.6\\%$"
+            ],
+            "correcta": "$85.0\\%$",
+            "justificacion": "**Concepto Fundamental:** Rendimiento Porcentual Experimental.\n\n**Resolución:** $\\%R = \\frac{\\text{Masa Real}}{\\text{Masa Teórica}} \\times 100 = \\frac{42.5\\,\\text{g}}{50.0\\,\\text{g}} \\times 100 = 85.0\\%$."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-estequiometria'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-estequiometria"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-estequiometria"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-estequiometria"],
   },
   {
     "id": "santiago-qgi-disoluciones-reacciones-guide",
@@ -1206,169 +1088,155 @@ researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-estequiometria'],
     "guideMetadata": {
       "title": "Principios de Química I: Reacciones Acuosas, Solubilidad, Neutralización y Redox Ion-Electrón",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Disociación electrolítica, reglas de solubilidad de sales inorgánicas, ecuaciones moleculares e iónicas netas, estequiometría de titulaciones ácido-base y balanceo metódico de semirreacciones redox."
-    },
-    "phenomenonAndTheory": "La gran mayoría de los procesos químicos ocurren en fase acuosa, donde el agua polar actúa como disolvente facilitando la interacción iónica. Los solutos se dividen en electrolitos fuertes (que se disocian al 100% en iones libres conduciendo fuertemente la corriente), electrolitos débiles (que se ionizan parcialmente en equilibrio dinámico) y no electrolitos (que se disuelven como moléculas neutras intactas). Las reacciones acuosas abarcan tres grandes familias: 1) Reacciones de precipitación, descritas por reglas de solubilidad y sintetizadas en ecuaciones iónicas netas donde se eliminan los iones espectadores; 2) Reacciones ácido-base de Brønsted-Lowry, basadas en la transferencia de protones H+ y analizadas mediante titulaciones volumétricas estandarizadas; y 3) Reacciones de óxido-reducción (Redox), donde ocurre transferencia neta de electrones, balanceadas rigurosamente por el método del ion-electrón en medio ácido o básico.",
+      "summary": "Electrolitos fuertes y débiles, reglas de solubilidad y ecuaciones iónicas netas, neutralización ácido-base, preparación de disoluciones de laboratorio y balanceo redox por ion-electrón en medio ácido y básico."
+},
+    "phenomenonAndTheory": "La gran mayoría de los procesos químicos tienen lugar en disolución acuosa donde el agua actúa como disolvente polar solvatando iones. Las sustancias se clasifican en electrolitos fuertes (se disocian completamente al 100%), electrolitos débiles y no electrolitos. En las reacciones de precipitación, las reglas de solubilidad permiten predecir qué pares de iones formarán un sólido insoluble, resumiéndose en la Ecuación Iónica Neta eliminando a los iones espectadores. En las reacciones redox (óxido-reducción), hay transferencia de electrones entre especies; para balancearlas rigurosamente en la UCV no se utiliza el tanteo simple, sino el método del Ion-Electrón: se separan las semirreacciones de oxidación y reducción, se balancean los elementos principales, luego el oxígeno con H2O, el hidrógeno con H+ (o OH- en medio básico), y finalmente las cargas eléctricas agregando electrones antes de sumar.",
     "glossary": [
       {
-        "term": "Ecuación Iónica Neta",
-        "definition": "Ecuación química depurada que muestra exclusivamente las especies iónicas y moleculares que participan directamente en la formación de precipitados o enlaces.",
-        "symbolOrUnit": "Sin iones espectadores"
+            "term": "Ecuación Iónica Neta",
+            "symbolOrUnit": "\\text{Iones participantes reales}",
+            "definition": "Ecuación que incluye exclusivamente a las especies químicas que participan directamente en la formación de precipitados, gases o electrolitos débiles."
       },
       {
-        "term": "Ion Espectador",
-        "definition": "Ion presente en la disolución acuosa que no experimenta ninguna transformación química ni cambio en su estado de agregación durante el proceso.",
-        "symbolOrUnit": "Se cancela a ambos lados"
+            "term": "Semirreacción de Oxidación",
+            "symbolOrUnit": "\\text{Pérdida de } e^- \\quad (\\text{Aumento de E.O.})",
+            "definition": "Proceso donde una sustancia pierde electrones aumentando su estado de oxidación y actuando como agente reductor."
       },
       {
-        "term": "Punto de Equivalencia",
-        "definition": "Momento estequiométrico en una titulación donde la cantidad de equivalentes o moles de ácido añadidos neutraliza exactamente a la base presente.",
-        "symbolOrUnit": "Moles H+ = Moles OH-"
-      },
-      {
-        "term": "Oxidación / Reducción",
-        "definition": "La oxidación es la pérdida neta de electrones (aumento de número de oxidación); la reducción es la ganancia de electrones (disminución de número de oxidación).",
-        "symbolOrUnit": "LEO dice GER"
-      },
-      {
-        "term": "Método del Ion-Electrón",
-        "definition": "Procedimiento algorítmico que separa la reacción redox en dos semirreacciones balanceando sucesivamente elementos, oxígeno (con H2O), hidrógeno (con H+) y carga (con e-).",
-        "symbolOrUnit": "Balance de masa y carga"
+            "term": "Semirreacción de Reducción",
+            "symbolOrUnit": "\\text{Ganancia de } e^- \\quad (\\text{Disminución de E.O.})",
+            "definition": "Proceso donde una sustancia gana electrones reduciendo su estado de oxidación y actuando como agente oxidante."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Ecuación Iónica Neta",
-          "latex": "Sin iones espectadores",
-          "application": "Ecuación química depurada que muestra exclusivamente las especies iónicas y moleculares que participan directamente en la formación de precipitados o enlaces."
-        },
-        {
-          "name": "Ion Espectador",
-          "latex": "Se cancela a ambos lados",
-          "application": "Ion presente en la disolución acuosa que no experimenta ninguna transformación química ni cambio en su estado de agregación durante el proceso."
-        },
-        {
-          "name": "Punto de Equivalencia",
-          "latex": "Moles H+ = Moles OH-",
-          "application": "Momento estequiométrico en una titulación donde la cantidad de equivalentes o moles de ácido añadidos neutraliza exactamente a la base presente."
-        }
+            {
+                  "name": "Método Ion-Electrón (Medio Ácido)",
+                  "latex": "\\text{Oxígenos con } \\mathrm{H_2O}, \\quad \\text{Hidrógenos con } \\mathrm{H^+}, \\quad \\text{Cargas con } e^-",
+                  "application": "Secuencia estricta de balanceo en presencia de ácidos acuosos."
+            },
+            {
+                  "name": "Conversión a Medio Básico",
+                  "latex": "\\mathrm{H^+} + \\mathrm{OH^-} \\to \\mathrm{H_2O}",
+                  "application": "Sumar a ambos lados tantos OH- como H+ haya presentes y simplificar moléculas de agua."
+            },
+            {
+                  "name": "Ecuación de Dilución",
+                  "latex": "C_1 V_1 = C_2 V_2",
+                  "application": "Conservación de los moles de soluto al agregar solvente para preparar soluciones diluidas."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Para precipitación, consultar las reglas de solubilidad: sales de metales alcalinos y nitratos (NO3-) son siempre solubles; haluros son solubles excepto con Ag+, Pb(2+), Hg2(2+).",
-        "Paso 2: Escribir la ecuación molecular balanceada y disociar en iones acuosos únicamente las sustancias solubles y electrolitos fuertes (sólidos, líquidos y gases permanecen intactos).",
-        "Paso 3: Cancelar los iones espectadores que aparecen idénticos a la izquierda y derecha para obtener la ecuación iónica neta.",
-        "Paso 4: Para balanceo redox por ion-electrón en medio ácido, identificar los números de oxidación y escribir las dos semirreacciones separadas.",
-        "Paso 5: En cada semirreacción: balancear átomos distintos de O y H; balancear O agregando moléculas de H2O; balancear H agregando protones H+; balancear la carga neta agregando electrones e-.",
-        "Paso 6: Multiplicar las semirreacciones por números enteros para igualar el número de electrones transferidos, sumarlas cancelando electrones e intermediarios, y simplificar.",
-        "Regla 1: Todos los nitratos (NO3-), acetatos (CH3COO-) y sales de metales alcalinos del Grupo 1 son 100% solubles en agua.",
-        "Regla 2: Los precipitados insolubles, los gases desprendidos y el agua líquida jamás se disocian en la ecuación iónica neta.",
-        "Regla 3: En medio ácido los oxígenos se balancean con H2O y los hidrógenos con protones H+; en medio básico se neutralizan los H+ añadiendo OH- a ambos lados.",
-        "Regla 4: El número total de electrones cedidos en la oxidación debe ser idéntico al número total de electrones captados en la reducción."
+            "Paso 1: Asignar números de oxidación a todos los elementos para identificar quién se oxida y quién se reduce.",
+            "Paso 2: Escribir las semirreacciones de oxidación y reducción en forma iónica (separando sales solubles y ácidos fuertes).",
+            "Paso 3: Balancear átomos distintos de H y O.",
+            "Paso 4: Balancear O agregando H2O en el lado deficitario.",
+            "Paso 5: Balancear H agregando H+ en el lado deficitario.",
+            "Paso 6: Balancear cargas eléctricas netas sumando electrones en el lado más positivo.",
+            "Paso 7: Multiplicar las semirreacciones por factores mínimos para igualar los electrones transferidos y sumar cancelando términos repetidos."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: En el laboratorio de la Escuela de Química de la UCV, s...",
-        "problemStatement": "En el laboratorio de la Escuela de Química de la UCV, se mezcla una disolución de permanganato de potasio (KMnO4) con oxalato de sodio (Na2C2O4) en medio ácido acuoso con ácido sulfúrico (H2SO4), generando iones Manganeso (Mn2+) y desprendimiento de gas Dióxido de Carbono (CO2). Balancee la reacción redox completa mediante el método del ion-electrón en medio ácido y determine cuántos mililitros de una disolución 0.0200 M de KMnO4 se requieren para titular exactamente 25.0 mL de una disolución 0.0500 M de Na2C2O4.",
-        "deductiveSteps": [
-          "Paso 1: Identificamos las especies iónicas activas en la reacción: el ion permanganato MnO4(-) se reduce a Mn(2+) (el manganeso baja de estado de oxidación +7 a +2). El ion oxalato C2O4(2-) se oxida a CO2 (el carbono sube de +3 a +4). El K+, Na+ y SO4(2-) son iones espectadores.",
-          "Paso 2: Balanceamos la semirreacción de reducción: MnO4(-) -> Mn(2+). 1 Mn a ambos lados. Agregamos 4 H2O a la derecha para balancear los 4 oxígenos: MnO4(-) -> Mn(2+) + 4 H2O. Agregamos 8 H(+) a la izquierda para balancear hidrógenos: MnO4(-) + 8 H(+) -> Mn(2+) + 4 H2O. Balanceamos carga: izquierda tiene -1 + 8 = +7; derecha tiene +2. Agregamos 5 e- a la izquierda: MnO4(-) + 8 H(+) + 5 e- -> Mn(2+) + 4 H2O.",
-          "Paso 3: Balanceamos la semirreacción de oxidación: C2O4(2-) -> CO2. Balanceamos carbonos colocando coeficiente 2 al CO2: C2O4(2-) -> 2 CO2. Oxígenos ya balanceados (4 = 4). Balanceamos carga: izquierda tiene -2; derecha tiene 0. Agregamos 2 e- a la derecha: C2O4(2-) -> 2 CO2 + 2 e-.",
-          "Paso 4: Igualamos electrones multiplicando la reducción por 2 y la oxidación por 5 (mínimo común múltiplo 10 e-): 2 MnO4(-) + 16 H(+) + 10 e- -> 2 Mn(2+) + 8 H2O, y 5 C2O4(2-) -> 10 CO2 + 10 e-.",
-          "Paso 5: Sumamos y cancelamos los 10 e-: 2 MnO4(-) + 5 C2O4(2-) + 16 H(+) -> 2 Mn(2+) + 10 CO2 + 8 H2O. Verificamos balance de átomos y carga: átomos balanceados; carga izquierda = 2*(-1) + 5*(-2) + 16*(+1) = +4; carga derecha = 2*(+2) = +4. Ecuación iónica neta perfectamente balanceada.",
-          "Paso 6: Calculamos la titulación volumétrica: Moles de oxalato disponibles = M * V = 0.0500 mol/L * 0.0250 L = 0.00125 moles de C2O4(2-). Por la estequiometría de la ecuación neta, 5 moles de oxalato reaccionan con 2 moles de permanganato: Moles de KMnO4 necesarios = 0.00125 moles oxalato * (2 moles KMnO4 / 5 moles oxalato) = 0.000500 moles de KMnO4. Calculamos el volumen de KMnO4 0.0200 M: V = n / M = 0.000500 mol / 0.0200 mol/L = 0.0250 L = 25.0 mL."
-        ],
-        "finalResult": "En el método ion-electrón, el balance de carga es tan obligatorio como el balance de masa: si las cargas no coinciden, la ecuación está mala."
+            "title": "Problema Canónico UCV (Parcial 3): Balanceo Redox por Ion-Electrón en Medio Ácido",
+            "problemStatement": "Balancee por el método del ion-electrón en medio ácido la siguiente reacción de laboratorio de la UCV: Dicromato de potasio con sulfato de hierro(II) en ácido sulfúrico: Cr2O7²⁻ + Fe²⁺ + H⁺ -> Cr³⁺ + Fe³⁺ + H2O. Identifique el agente oxidante y el agente reductor.",
+            "deductiveSteps": [
+                  "Paso 1: Asignamos estados de oxidación: En Cr2O7²⁻, el Cromo pasa de +6 a +3 (se reduce, agente oxidante). El Hierro pasa de Fe²⁺ a Fe³⁺ (se oxida, agente reductor).",
+                  "Paso 2: Semirreacción de oxidación: Fe²⁺ -> Fe³⁺ + 1 e⁻.",
+                  "Paso 3: Semirreacción de reducción (átomos distintos de O): Cr2O7²⁻ -> 2 Cr³⁺.",
+                  "Paso 4: Balance de oxígeno: El lado izquierdo tiene 7 O, agregamos 7 H2O a la derecha: Cr2O7²⁻ -> 2 Cr³⁺ + 7 H2O.",
+                  "Paso 5: Balance de hidrógeno: La derecha tiene 14 H, agregamos 14 H⁺ a la izquierda: Cr2O7²⁻ + 14 H⁺ -> 2 Cr³⁺ + 7 H2O.",
+                  "Paso 6: Balance de cargas: Lado izquierdo: (-2) + (+14) = +12. Lado derecho: 2(+3) + 0 = +6. Para pasar de +12 a +6, sumamos 6 e⁻ a la izquierda: Cr2O7²⁻ + 14 H⁺ + 6 e⁻ -> 2 Cr³⁺ + 7 H2O.",
+                  "Paso 7: Igualar electrones y sumar: Multiplicamos la semirreacción de oxidación por 6: 6 Fe²⁺ -> 6 Fe³⁺ + 6 e⁻. Sumamos ambas semirreacciones cancelando los 6 e⁻: Cr2O7²⁻ + 14 H⁺ + 6 Fe²⁺ -> 2 Cr³⁺ + 6 Fe³⁺ + 7 H2O."
+            ],
+            "finalResult": "El método ion-electrón garantiza la conservación simultánea de masa atómica y carga electrostática neta."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 3 UCV",
-        "correction": "Pedir balancear en medio básico y el estudiante deja protones H+ en la ecuación final. Se deben neutralizar sumando OH- en ambos lados para formar agua."
+            "trap": "Trampa de balancear cargas sin balancear electrones",
+            "correction": "Olvidar multiplicar las semirreacciones cruzadas para igualar los electrones antes de sumar."
       },
       {
-        "trap": "Trampa de iones espectadores",
-        "correction": "Escribir el precipitado AgCl(s) como iones separados Ag+ + Cl- en la ecuación iónica neta."
-      },
-      {
-        "trap": "Trampa del peróxido de hidrógeno",
-        "correction": "Olvidar que en el H2O2 el estado de oxidación del oxígeno es -1 y no -2."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Balancear el oxígeno con átomos elementales de O o con gas O2 en vez de usar agua H2O en medio acuoso."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Olvidar verificar el balance de carga eléctrica al terminar el método ion-electrón."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Aplicar la fórmula ciega C1*V1 = C2*V2 en titulaciones redox sin considerar la razón estequiométrica (2 a 5 en este caso)."
+            "trap": "Trampa de disociar electrolitos débiles",
+            "correction": "Disociar ácidos débiles como HF o ácido acético en la ecuación iónica; los electrolitos débiles se escriben enteros en forma molecular."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Ecuación Iónica Neta?",
-          "back": "Ecuación química depurada que muestra exclusivamente las especies iónicas y moleculares que participan directamente en la formación de precipitados o enlaces. (Notación: Sin iones espectadores)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Ion Espectador?",
-          "back": "Ion presente en la disolución acuosa que no experimenta ninguna transformación química ni cambio en su estado de agregación durante el proceso. (Notación: Se cancela a ambos lados)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Punto de Equivalencia?",
-          "back": "Momento estequiométrico en una titulación donde la cantidad de equivalentes o moles de ácido añadidos neutraliza exactamente a la base presente. (Notación: Moles H+ = Moles OH-)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Oxidación / Reducción?",
-          "back": "La oxidación es la pérdida neta de electrones (aumento de número de oxidación); la reducción es la ganancia de electrones (disminución de número de oxidación). (Notación: LEO dice GER)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Método del Ion-Electrón?",
-          "back": "Procedimiento algorítmico que separa la reacción redox en dos semirreacciones balanceando sucesivamente elementos, oxígeno (con H2O), hidrógeno (con H+) y carga (con e-). (Notación: Balance de masa y carga)"
-        }
+            {
+                  "front": "¿Cuál es la diferencia entre un agente oxidante y un agente reductor?",
+                  "back": "El agente oxidante provoca la oxidación de otra especie ganando electrones (él mismo se reduce); el agente reductor pierde electrones (él mismo se oxida)."
+            },
+            {
+                  "front": "¿Cómo se balancean los oxígenos e hidrógenos en el método ion-electrón en medio ácido?",
+                  "back": "Se añaden moléculas de H2O en el lado que carece de oxígeno, y luego iones H+ en el lado opuesto para balancear los hidrógenos."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Ecuación Iónica Neta",
-          "Ion Espectador",
-          "Punto de Equivalencia",
-          "Oxidación / Reducción",
-          "Método del Ion-Electrón"
-        ],
-        "notes": [
-          "Paso 1: Para precipitación, consultar las reglas de solubilidad: sales de metales alcalinos y nitratos (NO3-) son siempre solubles; haluros son solubles excepto con Ag+, Pb(2+), Hg2(2+).",
-          "Paso 2: Escribir la ecuación molecular balanceada y disociar en iones acuosos únicamente las sustancias solubles y electrolitos fuertes (sólidos, líquidos y gases permanecen intactos).",
-          "Paso 3: Cancelar los iones espectadores que aparecen idénticos a la izquierda y derecha para obtener la ecuación iónica neta.",
-          "Paso 4: Para balanceo redox por ion-electrón en medio ácido, identificar los números de oxidación y escribir las dos semirreacciones separadas.",
-          "Paso 5: En cada semirreacción: balancear átomos distintos de O y H; balancear O agregando moléculas de H2O; balancear H agregando protones H+; balancear la carga neta agregando electrones e-."
-        ],
-        "summary": "Disociación electrolítica, reglas de solubilidad de sales inorgánicas, ecuaciones moleculares e iónicas netas, estequiometría de titulaciones ácido-base y balanceo metódico de semirreacciones redox."
+            "cues": [
+                  "Electrolitos Fuertes",
+                  "Iones Espectadores",
+                  "Ion-Electrón",
+                  "Agente Oxidante"
+            ],
+            "notes": [
+                  "1. Ecuación iónica neta elimina iones espectadores.",
+                  "2. Oxidación = Pérdida de electrones; Reducción = Ganancia.",
+                  "3. Medio ácido: H2O para oxígeno, H+ para hidrógeno.",
+                  "4. Electrones transferidos deben cancelarse al sumar."
+            ],
+            "summary": "Reacciones acuosas, solubilidad y metodología del ion-electrón en disoluciones de la UCV."
       },
-      "conceptMapNodes": "Principios de Química I: Reacciones Acuosas, Solubilidad, Neutralización y Redox Ion-Electrón\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Ecuación Iónica Neta, Ion Espectador, Punto de Equivalencia\n  └── Protocolo: Paso 1: Para precipitación, consultar las reglas de solubilidad: sales de metales alcalinos y nitratos (NO3-) son siempre solubles; haluros son solubles excepto con Ag+, Pb(2+), Hg2(2+). -> Paso 2: Escribir la ecuación molecular balanceada y disociar en iones acuosos únicamente las sustancias solubles y electrolitos fuertes (sólidos, líquidos y gases permanecen intactos). -> Paso 3: Cancelar los iones espectadores que aparecen idénticos a la izquierda y derecha para obtener la ecuación iónica neta."
-    },
+      "conceptMapNodes": "Reacciones Acuosas y Redox\n  ├── Acuosas: Precipitaciones -> Ecuación Iónica Neta\n  └── Redox: Ion-Electrón (Oxidación pierde e- | Reducción gana e-) -> Medio ácido (H2O, H+)"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Reacciones Acuosas, Solubilidad, Neutralización y Redox Ion-Electrón",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Reacciones Acuosas, Solubilidad, Neutralización y Redox Ion-Electrón?",
-        "opciones": [
-          "Disociación electrolítica, reglas de solubilidad de sales inorgánicas, ecuaciones moleculares e ióni",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Disociación electrolítica, reglas de solubilidad de sales inorgánicas, ecuaciones moleculares e ióni",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Reacciones Acuosas, Solubilidad, Neutralización y Redox Ion-Electrón\n\n**Resolución Directa:** La gran mayoría de los procesos químicos ocurren en fase acuosa, donde el agua polar actúa como disolvente facilitando la interacción iónica. Los solutos se dividen en electrolitos..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Balanceo Redox Ion-Electrón",
+            "tipo": "opcion_multiple",
+            "pregunta": "En el balanceo de la semirreacción de reducción del ion permanganato en medio ácido: $\\text{MnO}_4^- \\to \\text{Mn}^{2+}$, ¿cuántos protones $\\text{H}^+$ y cuántos electrones $e^-$ se requieren en el lado de los reactivos?",
+            "opciones": [
+                  "$8\\,\\text{H}^+$ y $5\\,e^-$",
+                  "$4\\,\\text{H}^+$ y $3\\,e^-$",
+                  "$8\\,\\text{H}^+$ y $7\\,e^-$",
+                  "$14\\,\\text{H}^+$ y $6\\,e^-$"
+            ],
+            "correcta": "$8\\,\\text{H}^+$ y $5\\,e^-$",
+            "justificacion": "**Concepto Fundamental:** Balanceo de Semirreacción por Ion-Electrón.\n\n**Resolución:** Partimos de $\\text{MnO}_4^- \\to \\text{Mn}^{2+}$. Balanceamos 4 oxígenos añadiendo $4\\,\\text{H}_2\\text{O}$ a la derecha. Balanceamos 8 hidrógenos añadiendo $8\\,\\text{H}^+$ a la izquierda. Carga a la izquierda: $-1 + 8 = +7$. Carga a la derecha: $+2$. Para igualar cargas, sumamos $5\\,e^-$ a la izquierda: $\\text{MnO}_4^- + 8\\,\\text{H}^+ + 5\\,e^- \\to \\text{Mn}^{2+} + 4\\,\\text{H}_2\\text{O}$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Identificación de Agentes Redox",
+            "tipo": "opcion_multiple",
+            "pregunta": "En la reacción de laboratorio: $\\text{Zn}(s) + 2\\,\\text{HCl}(aq) \\to \\text{ZnCl}_2(aq) + \\text{H}_2(g)$, ¿cuál especie química actúa como agente reductor?",
+            "opciones": [
+                  "El Zinc metálico $\\text{Zn}(s)$, porque se oxida de $0$ a $+2$ cediendo electrones",
+                  "El ion $\\text{H}^+$, porque se reduce",
+                  "El ion cloruro $\\text{Cl}^-$, porque es un ion espectador",
+                  "El gas hidrógeno $\\text{H}_2$"
+            ],
+            "correcta": "El Zinc metálico $\\text{Zn}(s)$, porque se oxida de $0$ a $+2$ cediendo electrones",
+            "justificacion": "**Concepto Fundamental:** Agente Reductor vs Agente Oxidante.\n\n**Resolución:** El estado de oxidación del Zinc cambia de $0$ (sólido neutro) a $+2$ en $\\text{ZnCl}_2$. Al oxidarse perdiendo electrones, reduce a los protones $\\text{H}^+$ (que pasan de $+1$ a $0$ en $\\text{H}_2$), actuando como agente reductor."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Dilución de Reactivos Concentrados",
+            "tipo": "opcion_multiple",
+            "pregunta": "Se desea preparar $500\\,\\text{mL}$ de disolución acuosa de $\\text{HCl}$ $0.20\\,\\text{M}$ a partir de una disolución concentrada patrón de $\\text{HCl}$ $2.0\\,\\text{M}$. ¿Qué volumen de disolución concentrada debe pipetearse?",
+            "opciones": [
+                  "$50\\,\\text{mL}$",
+                  "$25\\,\\text{mL}$",
+                  "$100\\,\\text{mL}$",
+                  "$5.0\\,\\text{mL}$"
+            ],
+            "correcta": "$50\\,\\text{mL}$",
+            "justificacion": "**Concepto Fundamental:** Conservación de Moles en Diluciones $C_1 V_1 = C_2 V_2$.\n\n**Resolución:** Despejamos el volumen inicial: $V_1 = \\frac{C_2 V_2}{C_1} = \\frac{(0.20\\,\\text{M})(500\\,\\text{mL})}{2.0\\,\\text{M}} = \\frac{100}{2.0} = 50\\,\\text{mL}$."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-disoluciones-reacciones'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-disoluciones']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-disoluciones'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-disoluciones-reacciones"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-disoluciones-reacciones"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-disoluciones-reacciones"],
   },
   {
     "id": "santiago-qgi-gases-guide",
@@ -1376,169 +1244,157 @@ researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-disoluciones'],
     "guideMetadata": {
       "title": "Principios de Química I: Gases Ideales, Presiones Parciales de Dalton y Ecuación de Van der Waals",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Leyes clásicas de los gases, ecuación general PV=nRT, densidad y masa molar de vapores, recolección de gases sobre agua, teoría cinético-molecular y desviaciones reales por Van der Waals."
-    },
-    "phenomenonAndTheory": "El estado gaseoso se distingue por la ausencia de volumen y forma fijos, ocupando la totalidad del recipiente que lo contiene mediante colisiones moleculares elásticas contra las paredes que originan la presión macroscópica. Las leyes empíricas de Boyle (P*V constante a T fija), Charles (V/T constante a P fija) y Avogadro (V/n constante a T y P fijas) se integran en la Ecuación de Estado del Gas Ideal PV = nRT. En mezclas gaseosas, la Ley de Presiones Parciales de Dalton establece que la presión total es la suma directa de las presiones que ejercería cada gas individualmente. En los gases recolectados sobre agua en el laboratorio, se debe corregir la presión barométrica restando la presión de vapor saturado del agua. A presiones elevadas y bajas temperaturas, los gases reales se desvían de la idealidad debido a las fuerzas atractivas intermoleculares (corregidas por el factor a) y al volumen propio excluido de las moléculas (corregido por el factor b) en la ecuación de Van der Waals.",
+      "summary": "Ecuación de estado del gas ideal PV = nRT, cálculo de densidad y masa molar de gases, ley de presiones parciales de Dalton para gases recolectados sobre agua, ley de efusión de Graham y desviaciones reales por Van der Waals."
+},
+    "phenomenonAndTheory": "El estado gaseoso se caracteriza por moléculas en movimiento caótico continuo separadas por distancias enormes comparadas con sus diámetros atómicos. El modelo del gas ideal asume dos postulados esenciales: las moléculas no tienen volumen propio (puntos materiales) y no existen fuerzas intermoleculares de atracción o repulsión entre ellas. La ecuación general de estado PV = nRT unifica las leyes empíricas de Boyle, Charles y Avogadro. En mezclas gaseosas, la Ley de Dalton establece que la presión total es la suma de las presiones parciales que ejercería cada gas si ocupara solo el volumen; esto es crucial al recolectar gases sobre agua en laboratorio, donde debe restarse la presión de vapor saturado del agua a esa temperatura. A altas presiones o bajas temperaturas, los gases reales se desvían del comportamiento ideal, requiriendo la ecuación de Van der Waals con correcciones para el volumen molecular propio (b) y las atracciones electrostáticas (a).",
     "glossary": [
       {
-        "term": "Gas Ideal",
-        "definition": "Modelo físico hipotético de partículas puntuales sin volumen propio entre las cuales no existen fuerzas de atracción ni repulsión interpersonal.",
-        "symbolOrUnit": "PV = nRT"
+            "term": "Ecuación del Gas Ideal",
+            "symbolOrUnit": "PV = nRT",
+            "definition": "Ecuación de estado que relaciona presión (atm), volumen (L), moles y temperatura absoluta (K) con la constante R = 0.08206 atm L / mol K."
       },
       {
-        "term": "Presión Parcial (Pi)",
-        "definition": "Presión que ejercería un componente gaseoso individual si ocupara por sí solo el volumen total del recipiente a la misma temperatura.",
-        "symbolOrUnit": "Pi = Xi * P_total"
+            "term": "Presión Parcial (Dalton)",
+            "symbolOrUnit": "P_i = X_i P_{\\text{total}}",
+            "definition": "Presión que ejerce un gas individual dentro de una mezcla gaseosa, proporcional a su fracción molar Xi."
       },
       {
-        "term": "Presión de Vapor del Agua (P_H2O)",
-        "definition": "Presión ejercida por el vapor en equilibrio dinámico con su líquido a una temperatura fija, que se debe restar al recolectar gases sobre agua.",
-        "symbolOrUnit": "P_seco = P_total - P_H2O"
+            "term": "Gas Recolectado Sobre Agua",
+            "symbolOrUnit": "P_{\\text{gas seco}} = P_{\\text{atm}} - P_{\\mathrm{H_2O}}(T)",
+            "definition": "Corrección barométrica obligatoria para descontar la presión de vapor de agua saturada que se mezcla con el gas."
       },
       {
-        "term": "Constante Universal de los Gases (R)",
-        "definition": "Constante física fundamental que relaciona la energía térmica con la temperatura y la cantidad de sustancia.",
-        "symbolOrUnit": "0.08206 atm L / (mol K) = 8.314 J / (mol K)"
-      },
-      {
-        "term": "Ecuación de Van der Waals",
-        "definition": "Modificación de la ley del gas ideal que introduce correcciones empíricas a y b para modelar las atracciones intermoleculares y el volumen molecular finito.",
-        "symbolOrUnit": "(P + a*n^2/V^2)(V - n*b) = nRT"
+            "term": "Ley de Difusión de Graham",
+            "symbolOrUnit": "\\frac{r_1}{r_2} = \\sqrt{\\frac{M_2}{M_1}}",
+            "definition": "Relación inversamente proporcional entre la velocidad de difusión o efusión de un gas y la raíz cuadrada de su masa molar."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Gas Ideal",
-          "latex": "PV = nRT",
-          "application": "Modelo físico hipotético de partículas puntuales sin volumen propio entre las cuales no existen fuerzas de atracción ni repulsión interpersonal."
-        },
-        {
-          "name": "Presión Parcial (Pi)",
-          "latex": "Pi = Xi * P_total",
-          "application": "Presión que ejercería un componente gaseoso individual si ocupara por sí solo el volumen total del recipiente a la misma temperatura."
-        },
-        {
-          "name": "Presión de Vapor del Agua (P_H2O)",
-          "latex": "P_seco = P_total - P_H2O",
-          "application": "Presión ejercida por el vapor en equilibrio dinámico con su líquido a una temperatura fija, que se debe restar al recolectar gases sobre agua."
-        }
+            {
+                  "name": "Ecuación General de los Gases Ideales",
+                  "latex": "PV = nRT = \\frac{m}{M}RT \\implies \\rho = \\frac{PM}{RT}",
+                  "application": "Calcular variables de estado, densidad o masa molar de cualquier gas en condiciones dadas."
+            },
+            {
+                  "name": "Corrección de Dalton Sobre Agua",
+                  "latex": "P_{\\text{gas}} = P_{\\text{total}} - P_{\\mathrm{H_2O}}^\\circ(T)",
+                  "application": "Restar la presión de vapor de agua tabulada a la temperatura de trabajo del laboratorio."
+            },
+            {
+                  "name": "Ecuación de Van der Waals (Gases Reales)",
+                  "latex": "\\left( P + \\frac{n^2 a}{V^2} \\right) (V - nb) = nRT",
+                  "application": "Modelar gases reales corrigiendo atracciones moleculares (a) y volumen co-propio ocupado (b)."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Convertir todas las variables dadas a unidades consistentes con la constante R elegida: P en atm, V en litros, T en Kelvin (K = °C + 273.15) y n en moles.",
-        "Paso 2: Si el gas se recolecta en laboratorio sobre agua, restar inmediatamente la presión de vapor del agua a la temperatura del experimento: P_gas_seco = P_barométrica - P_vapor.",
-        "Paso 3: Para calcular la densidad o masa molar de un gas desconocido, emplear la fórmula derivada: M = (rho * R * T) / P o rho = (P * M) / (R * T).",
-        "Paso 4: En mezclas gaseosas, calcular la fracción molar Xi = ni / n_total y determinar las presiones parciales mediante Pi = Xi * P_total.",
-        "Paso 5: En problemas estequiométricos con gases, usar la relación PV = nRT para convertir volúmenes a moles antes de usar los coeficientes de la reacción.",
-        "Paso 6: Si el problema exige modelado real de Van der Waals, sustituir los coeficientes a y b resolviendo la ecuación de presión o volumen correspondiente.",
-        "Regla 1: La temperatura en cualquier ecuación de estado de gases debe expresarse estrictamente en la escala absoluta de Kelvin.",
-        "Regla 2: En CNTP (Condiciones Normales de Presión y Temperatura: 1 atm y 0 °C), exactamente un mol de cualquier gas ideal ocupa 22.414 Litros.",
-        "Regla 3: La presión parcial de un gas es directamente proporcional a su fracción molar: Pi = Xi * P_total.",
-        "Regla 4: Los gases reales se comportan de forma más ideal a presiones muy bajas y temperaturas muy altas (lejos de la condensación)."
+            "Paso 1: Convertir siempre la temperatura a Kelvin absolutos sumando 273.15 (T = t °C + 273.15).",
+            "Paso 2: Convertir la presión a atmósferas (1 atm = 760 mmHg = 101325 Pa).",
+            "Paso 3: Si el gas se recolecta sobre agua, buscar la presión de vapor de agua a esa temperatura y restarla de la presión barométrica total.",
+            "Paso 4: Utilizar R = 0.08206 atm L / mol K cuando la presión esté en atmósferas y el volumen en litros.",
+            "Paso 5: Para la ley de Graham: el gas más ligero siempre se mueve, difunde o escapa más rápido."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: En el laboratorio de Principios de Química I de la UCV,...",
-        "problemStatement": "En el laboratorio de Principios de Química I de la UCV, se calienta una muestra de 1.500 g de clorato de potasio impuro (KClO3, Masa molar = 122.55 g/mol) descomponiéndose según: 2 KClO3(s) -> 2 KCl(s) + 3 O2(g). El gas oxígeno generado se recolecta sobre agua en una probeta invertida a 25.0 °C y una presión barométrica de 754.0 mmHg, ocupando un volumen de 425.0 mL. Sabiendo que la presión de vapor del agua a 25.0 °C es 23.8 mmHg: a) Calcule los moles de oxígeno seco recolectados; b) Calcule la masa de KClO3 puro que reaccionó; c) Determine el porcentaje de pureza de la muestra inicial.",
-        "deductiveSteps": [
-          "Paso 1: Corregimos la presión del gas oxígeno seco aplicando la ley de presiones parciales de Dalton: P_O2 = P_total - P_vapor_agua = 754.0 mmHg - 23.8 mmHg = 730.2 mmHg.",
-          "Paso 2: Convertimos todas las variables a unidades estándar: Presión P = 730.2 mmHg / 760 mmHg/atm = 0.9608 atm. Volumen V = 425.0 mL / 1000 = 0.4250 L. Temperatura absoluta T = 25.0 + 273.15 = 298.15 K.",
-          "Paso 3: Calculamos los moles de O2 seco mediante la ecuación del gas ideal PV = nRT: n_O2 = (P * V) / (R * T) = (0.9608 atm * 0.4250 L) / (0.08206 atm L / (mol K) * 298.15 K) = 0.40834 / 24.466 = 0.01669 moles de O2.",
-          "Paso 4: Por la estequiometría de la reacción, 2 moles de KClO3 producen 3 moles de O2: Moles de KClO3 puro reaccionado = 0.01669 moles O2 * (2 moles KClO3 / 3 moles O2) = 0.01113 moles de KClO3.",
-          "Paso 5: Calculamos la masa en gramos de KClO3 puro: Masa pura = 0.01113 moles * 122.55 g/mol = 1.364 g de KClO3.",
-          "Paso 6: Calculamos el porcentaje de pureza de la muestra inicial: % Pureza = (Masa pura de KClO3 / Masa total de la muestra) * 100 = (1.364 g / 1.500 g) * 100 = 90.9% de pureza."
-        ],
-        "finalResult": "Recolectar un gas sobre agua siempre atrapa vapor de agua; la presión del gas seco es la diferencia entre la presión atmosférica y el vapor saturado."
+            "title": "Problema Canónico UCV (Parcial 3): Recolección de Oxígeno Sobre Agua en Laboratorio",
+            "problemStatement": "En el laboratorio de Química I de la UCV, se descompone térmicamente clorato de potasio obteniéndose gas oxígeno (O2), el cual se recolecta sobre agua a 25.0 °C en una probeta invertida. El volumen medido es 450.0 mL y la presión barométrica en Caracas ese día es de 755.0 mmHg. Sabiendo que la presión de vapor del agua a 25.0 °C es 23.8 mmHg, calcule los gramos de O2 seco recolectados.",
+            "deductiveSteps": [
+                  "Paso 1: Presión seca de O2 por la ley de Dalton: P(O2) = P_total - P(H2O) = 755.0 mmHg - 23.8 mmHg = 731.2 mmHg.",
+                  "Paso 2: Conversión de unidades a estándar: Presión: P = 731.2 mmHg / 760.0 mmHg/atm = 0.9621 atm. Volumen: V = 450.0 mL / 1000 mL/L = 0.4500 L. Temperatura: T = 25.0 + 273.15 = 298.15 K.",
+                  "Paso 3: Moles de gas O2 usando PV = nRT: n = PV / (RT) = (0.9621 atm * 0.4500 L) / (0.08206 atm L / mol K * 298.15 K).",
+                  "Paso 4: Evaluación numérica: n = 0.4329 / 24.466 = 0.01769 moles de O2.",
+                  "Paso 5: Masa en gramos de O2: Masa molar de O2 = 2 * 16.00 = 32.00 g/mol. Masa = n * M = 0.01769 moles * 32.00 g/mol = 0.566 g de O2.",
+                  "Paso 6: Redondeo de cifras significativas: La medida de volumen (450.0 mL) tiene 4 cifras y la presión tiene 4 cifras. Se reportan 0.566 g de O2."
+            ],
+            "finalResult": "Ignorar la presión de vapor del agua sobreestima falsamente la masa de gas recolectada en el laboratorio."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 3 UCV",
-        "correction": "Preguntar cuál gas se desvía más de la idealidad entre He, CH4 y NH3 a presiones altas. El NH3 se desvía más por poseer enlaces de hidrógeno intermoleculares intensos (factor a grande)."
+            "trap": "Trampa de usar temperatura en grados Celsius",
+            "correction": "Sustituir t = 25 °C en PV = nRT; la escala de los gases exige temperatura termodinámica absoluta en Kelvin."
       },
       {
-        "trap": "Trampa de unidades de presión",
-        "correction": "Mezclar Torr con Pascales sin usar la relación: 1 atm = 760 Torr = 101325 Pa."
-      },
-      {
-        "trap": "Trampa de la velocidad cuadrática media",
-        "correction": "Olvidar que la masa molar M en v_rms = sqrt(3RT/M) debe expresarse en kg/mol y R en 8.314 J/(mol K)."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Usar la temperatura en grados Celsius (°C) en la ecuación PV = nRT en lugar de sumar 273.15 para convertir a Kelvin."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Olvidar restar la presión de vapor del agua al recolectar gases sobre agua, sobrestimando los moles de gas producidos."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Emplear la constante R = 8.314 J/(mol K) cuando la presión está en atmósferas y el volumen en litros: debe usarse R = 0.08206."
+            "trap": "Trampa de no restar el vapor de agua",
+            "correction": "Usar la presión atmosférica directa como presión del gas; el gas recolectado está húmedo y saturado de vapor de agua."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Gas Ideal?",
-          "back": "Modelo físico hipotético de partículas puntuales sin volumen propio entre las cuales no existen fuerzas de atracción ni repulsión interpersonal. (Notación: PV = nRT)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Presión Parcial (Pi)?",
-          "back": "Presión que ejercería un componente gaseoso individual si ocupara por sí solo el volumen total del recipiente a la misma temperatura. (Notación: Pi = Xi * P_total)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Presión de Vapor del Agua (P_H2O)?",
-          "back": "Presión ejercida por el vapor en equilibrio dinámico con su líquido a una temperatura fija, que se debe restar al recolectar gases sobre agua. (Notación: P_seco = P_total - P_H2O)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Constante Universal de los Gases (R)?",
-          "back": "Constante física fundamental que relaciona la energía térmica con la temperatura y la cantidad de sustancia. (Notación: 0.08206 atm L / (mol K) = 8.314 J / (mol K))"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Ecuación de Van der Waals?",
-          "back": "Modificación de la ley del gas ideal que introduce correcciones empíricas a y b para modelar las atracciones intermoleculares y el volumen molecular finito. (Notación: (P + a*n^2/V^2)(V - n*b) = nRT)"
-        }
+            {
+                  "front": "¿Por qué debe restarse la presión de vapor de agua al recolectar un gas sobre una cuba hidroneumática?",
+                  "back": "Porque el espacio gaseoso no contiene únicamente el gas producido, sino también moléculas de agua que se evaporaron hasta alcanzar el equilibrio líquido-vapor a esa temperatura."
+            },
+            {
+                  "front": "¿Qué gas difunde más rápido según la ley de Graham: el amoníaco (NH3, M = 17 g/mol) o el cloruro de hidrógeno (HCl, M = 36.5 g/mol)?",
+                  "back": "El amoníaco NH3, porque al tener menor masa molecular sus moléculas se desplazan a mayor velocidad promedio cuadrática (v es inversamente proporcional a la raíz cuadrada de M)."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Gas Ideal",
-          "Presión Parcial (Pi)",
-          "Presión de Vapor del Agua (P_H2O)",
-          "Constante Universal de los Gases (R)",
-          "Ecuación de Van der Waals"
-        ],
-        "notes": [
-          "Paso 1: Convertir todas las variables dadas a unidades consistentes con la constante R elegida: P en atm, V en litros, T en Kelvin (K = °C + 273.15) y n en moles.",
-          "Paso 2: Si el gas se recolecta en laboratorio sobre agua, restar inmediatamente la presión de vapor del agua a la temperatura del experimento: P_gas_seco = P_barométrica - P_vapor.",
-          "Paso 3: Para calcular la densidad o masa molar de un gas desconocido, emplear la fórmula derivada: M = (rho * R * T) / P o rho = (P * M) / (R * T).",
-          "Paso 4: En mezclas gaseosas, calcular la fracción molar Xi = ni / n_total y determinar las presiones parciales mediante Pi = Xi * P_total.",
-          "Paso 5: En problemas estequiométricos con gases, usar la relación PV = nRT para convertir volúmenes a moles antes de usar los coeficientes de la reacción."
-        ],
-        "summary": "Leyes clásicas de los gases, ecuación general PV=nRT, densidad y masa molar de vapores, recolección de gases sobre agua, teoría cinético-molecular y desviaciones reales por Van der Waals."
+            "cues": [
+                  "PV = nRT",
+                  "P_gas = P_total - P_H2O",
+                  "Ley de Graham",
+                  "Van der Waals"
+            ],
+            "notes": [
+                  "1. T siempre en Kelvin (T = °C + 273.15).",
+                  "2. R = 0.08206 atm L / mol K.",
+                  "3. Gases sobre agua: restar P_vapor de H2O.",
+                  "4. Graham: velocidad inversamente proporcional a raíz de M."
+            ],
+            "summary": "Ecuaciones de estado de gases ideales y reales, leyes de Dalton y comportamiento cinético-molecular."
       },
-      "conceptMapNodes": "Principios de Química I: Gases Ideales, Presiones Parciales de Dalton y Ecuación de Van der Waals\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Gas Ideal, Presión Parcial (Pi), Presión de Vapor del Agua (P_H2O)\n  └── Protocolo: Paso 1: Convertir todas las variables dadas a unidades consistentes con la constante R elegida: P en atm, V en litros, T en Kelvin (K = °C + 273.15) y n en moles. -> Paso 2: Si el gas se recolecta en laboratorio sobre agua, restar inmediatamente la presión de vapor del agua a la temperatura del experimento: P_gas_seco = P_barométrica - P_vapor. -> Paso 3: Para calcular la densidad o masa molar de un gas desconocido, emplear la fórmula derivada: M = (rho * R * T) / P o rho = (P * M) / (R * T)."
-    },
+      "conceptMapNodes": "Gases Ideales y Reales\n  ├── Ecuación de Estado: PV = nRT -> Densidad d = PM / RT\n  ├── Mezclas: Dalton P_total = sum(P_i) | Gases sobre agua: P_gas = P_barométrica - P_H2O(T)\n  └── Cinética: Graham (menor M difunde más rápido) | Reales: Van der Waals"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Gases Ideales, Presiones Parciales de Dalton y Ecuación de Van der Waals",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Gases Ideales, Presiones Parciales de Dalton y Ecuación de Van der Waals?",
-        "opciones": [
-          "Leyes clásicas de los gases, ecuación general PV=nRT, densidad y masa molar de vapores, recolección ",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Leyes clásicas de los gases, ecuación general PV=nRT, densidad y masa molar de vapores, recolección ",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Gases Ideales, Presiones Parciales de Dalton y Ecuación de Van der Waals\n\n**Resolución Directa:** El estado gaseoso se distingue por la ausencia de volumen y forma fijos, ocupando la totalidad del recipiente que lo contiene mediante colisiones moleculares elásticas contra las p..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Gases Recolectados Sobre Agua",
+            "tipo": "opcion_multiple",
+            "pregunta": "Se recolecta gas nitrógeno sobre agua a $20^\\circ\\text{C}$ registrándose una presión barométrica total de $760\\,\\text{mmHg}$. Si la presión de vapor del agua a $20^\\circ\\text{C}$ es $17.5\\,\\text{mmHg}$, ¿cuál es la presión parcial del gas nitrógeno seco?",
+            "opciones": [
+                  "$742.5\\,\\text{mmHg}$",
+                  "$777.5\\,\\text{mmHg}$",
+                  "$760.0\\,\\text{mmHg}$",
+                  "$17.5\\,\\text{mmHg}$"
+            ],
+            "correcta": "$742.5\\,\\text{mmHg}$",
+            "justificacion": "**Concepto Fundamental:** Ley de Dalton para Gases Recolectados Sobre Agua.\n\n**Resolución:** Por la ley de Dalton: $P_{\\text{total}} = P_{\\text{gas}} + P_{\\text{vapor } \\text{H}_2\\text{O}} \\implies P_{\\text{N}_2} = 760.0\\,\\text{mmHg} - 17.5\\,\\text{mmHg} = 742.5\\,\\text{mmHg}$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Ley de Efusión de Graham",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuántas veces más rápido se difunde el gas helio ($\\text{He}$, $M = 4.0\\,\\text{g/mol}$) en comparación con el gas dióxido de azufre ($\\text{SO}_2$, $M = 64.0\\,\\text{g/mol}$) a la misma temperatura?",
+            "opciones": [
+                  "Exactamente $4.0$ veces más rápido",
+                  "Exactamente $16.0$ veces más rápido",
+                  "Exactamente $2.0$ veces más rápido",
+                  "Ambos se difunden a la misma velocidad por ser gases"
+            ],
+            "correcta": "Exactamente $4.0$ veces más rápido",
+            "justificacion": "**Concepto Fundamental:** Ley de Graham de Difusión Gaseosa.\n\n**Resolución:** La ley de Graham establece: $\\frac{r_{\\text{He}}}{r_{\\text{SO}_2}} = \\sqrt{\\frac{M_{\\text{SO}_2}}{M_{\\text{He}}}} = \\sqrt{\\frac{64.0}{4.0}} = \\sqrt{16} = 4.0$. El helio se difunde 4 veces más rápido."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Cálculo de Densidad de Gases",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál es la densidad del gas dióxido de carbono $\\text{CO}_2$ ($M = 44.01\\,\\text{g/mol}$) en condiciones normales de presión y temperatura (CNPT: $1.0\\,\\text{atm}$ y $273.15\\,\\text{K}$)?",
+            "opciones": [
+                  "$1.96\\,\\text{g/L}$",
+                  "$0.51\\,\\text{g/L}$",
+                  "$44.0\\,\\text{g/L}$",
+                  "$2.85\\,\\text{g/L}$"
+            ],
+            "correcta": "$1.96\\,\\text{g/L}$",
+            "justificacion": "**Concepto Fundamental:** Densidad de Gases Ideales $\\rho = \\frac{PM}{RT}$.\n\n**Resolución:** $\\rho = \\frac{(1.0\\,\\text{atm})(44.01\\,\\text{g/mol})}{(0.08206\\,\\text{atm L/mol K})(273.15\\,\\text{K})} = \\frac{44.01}{22.414} \\approx 1.963\\,\\text{g/L}$."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-gases'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-gases']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-gases'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-gases"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-gases"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-gases"],
   },
   {
     "id": "santiago-qgi-disoluciones-coligativas-guide",
@@ -1546,169 +1402,154 @@ researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-gases'],
     "guideMetadata": {
       "title": "Principios de Química I: Disoluciones Ideales, Concentración y Propiedades Coligativas",
       "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-      "summary": "Termodinámica de la disolución, conversiones directas entre Molaridad y Molalidad mediante densidad, Ley de Raoult, descenso crioscópico, presión osmótica y factor i de van t Hoff."
-    },
-    "phenomenonAndTheory": "Una disolución ideal es una mezcla homogénea donde las fuerzas intermoleculares entre moléculas de soluto y disolvente son idénticas a las fuerzas entre moléculas del disolvente puro, ocurriendo sin cambio neto de entalpía (Delta H_disolución = 0). Las formas cuantitativas de concentración física y química (molaridad, molalidad, fracción molar y porcentajes en masa) permiten cuantificar con precisión la composición de la fase. Las propiedades coligativas son aquellas propiedades físicas de las disoluciones que dependen exclusivamente de la cantidad numérica de partículas de soluto presentes en una masa fija de disolvente y no de la identidad química de las mismas. Comprenden cuatro efectos fundamentales: 1) El descenso de la presión de vapor del disolvente (Ley de Raoult); 2) El aumento ebulloscópico; 3) El descenso crioscópico del punto de congelación; y 4) La presión osmótica. En solutos electrolíticos que se disocian en iones, estas fórmulas se multiplican por el factor de van t Hoff (i).",
+      "summary": "Unidades de concentración física y química (M, m, X, %m/m, %m/v), Ley de Raoult para presión de vapor, aumento ebulloscópico, descenso crioscópico, presión osmótica y factor de van 't Hoff i."
+},
+    "phenomenonAndTheory": "Las propiedades coligativas son aquellas propiedades físicas de las disoluciones que dependen exclusivamente del número total de partículas de soluto presentes en una masa o volumen dado de disolvente, y no de la naturaleza química de dichas partículas. Existen cuatro propiedades coligativas fundamentales: la disminución de la presión de vapor (Ley de Raoult), la elevación del punto de ebullición (ebulloscopía), el descenso del punto de congelación (crioscopía) y la presión osmótica. Cuando un soluto no volátil se disuelve en agua, estabiliza la fase líquida reduciendo su potencial químico; por tanto, el agua hierve a mayor temperatura y congela a menor temperatura bajo cero. Si el soluto es un electrolito que se disocia en iones libres (como NaCl o CaCl2), cada mol de sal genera múltiples moles de partículas, amplificando el efecto coligativo según el factor de van 't Hoff (i).",
     "glossary": [
       {
-        "term": "Molaridad (M)",
-        "definition": "Concentración volumétrica definida como el número de moles de soluto disueltos en exactamente un litro de disolución total.",
-        "symbolOrUnit": "mol / L"
+            "term": "Molaridad (M)",
+            "symbolOrUnit": "M = \\frac{n_{\\text{soluto}}}{V_{\\text{disolución}} [\\mathrm{L}]}",
+            "definition": "Concentración expresada en número de moles de soluto por litro de disolución total."
       },
       {
-        "term": "Molalidad (m)",
-        "definition": "Concentración gravimétrica definida como el número de moles de soluto disueltos por cada kilogramo de disolvente puro (independiente de la temperatura).",
-        "symbolOrUnit": "mol / kg disolvente"
+            "term": "Molalidad (m)",
+            "symbolOrUnit": "m = \\frac{n_{\\text{soluto}}}{m_{\\text{disolvente}} [\\mathrm{kg}]}",
+            "definition": "Concentración independiente de la temperatura expresada en moles de soluto por kilogramo de disolvente puro."
       },
       {
-        "term": "Ley de Raoult",
-        "definition": "Ley que establece que la presión de vapor de un disolvente en una disolución ideal es igual a su presión de vapor puro multiplicada por su fracción molar.",
-        "symbolOrUnit": "P1 = X1 * P1°"
+            "term": "Factor de van 't Hoff (i)",
+            "symbolOrUnit": "i = \\frac{\\text{moles de partículas reales en disolución}}{\\text{moles de fórmula disuelta}}",
+            "definition": "Número de iones disociados en solución ideal: i = 1 para no electrolitos (glucosa), i = 2 para NaCl, i = 3 para CaCl2, i = 4 para AlCl3."
       },
       {
-        "term": "Descenso Crioscópico (Delta Tf)",
-        "definition": "Disminución en la temperatura de congelación de una disolución respecto al disolvente puro, proporcional a la molalidad de partículas disueltas.",
-        "symbolOrUnit": "Delta Tf = Kf * m * i"
-      },
-      {
-        "term": "Factor de van t Hoff (i)",
-        "definition": "Número real de partículas o iones que se generan por cada unidad de soluto que se disuelve en el medio acuoso.",
-        "symbolOrUnit": "i = 1 para no electrolitos; i > 1 para sales"
+            "term": "Presión Osmótica (Pi)",
+            "symbolOrUnit": "\\Pi = i M R T",
+            "definition": "Presión hidrostática requerida para detener el flujo espontáneo de disolvente a través de una membrana semipermeable."
       }
-    ],
+],
     "formulasAndStrategies": {
       "coreFormulas": [
-        {
-          "name": "Molaridad (M)",
-          "latex": "mol / L",
-          "application": "Concentración volumétrica definida como el número de moles de soluto disueltos en exactamente un litro de disolución total."
-        },
-        {
-          "name": "Molalidad (m)",
-          "latex": "mol / kg disolvente",
-          "application": "Concentración gravimétrica definida como el número de moles de soluto disueltos por cada kilogramo de disolvente puro (independiente de la temperatura)."
-        },
-        {
-          "name": "Ley de Raoult",
-          "latex": "P1 = X1 * P1°",
-          "application": "Ley que establece que la presión de vapor de un disolvente en una disolución ideal es igual a su presión de vapor puro multiplicada por su fracción molar."
-        }
+            {
+                  "name": "Descenso Crioscópico",
+                  "latex": "\\Delta T_f = K_f \\cdot m \\cdot i, \\quad T_f = T_f^\\circ - \\Delta T_f",
+                  "application": "Calcular el nuevo punto de congelación bajo cero de una solución acuosa (Kf = 1.86 °C kg/mol para agua)."
+            },
+            {
+                  "name": "Aumento Ebulloscópico",
+                  "latex": "\\Delta T_b = K_b \\cdot m \\cdot i, \\quad T_b = T_b^\\circ + \\Delta T_b",
+                  "application": "Calcular la temperatura de ebullición superior a 100 °C (Kb = 0.512 °C kg/mol para agua)."
+            },
+            {
+                  "name": "Presión Osmótica",
+                  "latex": "\\Pi = i M R T",
+                  "application": "Determinar masas molares de macromoléculas a partir de medidas de presión osmótica."
+            }
       ],
       "mnemonicsAndPatterns": [
-        "Paso 1: Asumir una base de cálculo conveniente (por ejemplo, 100 g de disolución si se dan porcentajes en masa, o 1 L si se da molaridad).",
-        "Paso 2: Emplear la densidad de la disolución (d = masa / volumen) como puente de conversión entre magnitudes de masa y magnitudes de volumen.",
-        "Paso 3: Calcular por separado la masa de soluto y la masa neta de disolvente puro (Masa_disolvente = Masa_total - Masa_soluto).",
-        "Paso 4: Identificar si el soluto es un no electrolito molecular (i = 1) o un electrolito iónico (contar los iones formados, ej. NaCl -> 2 iones, i aprox 2; CaCl2 -> 3 iones, i aprox 3).",
-        "Paso 5: Para descenso crioscópico o aumento ebulloscópico, calcular la molalidad m = moles_soluto / kg_disolvente y sustituir en Delta T = K * m * i.",
-        "Paso 6: Para determinar la masa molar desconocida de una macromolécula, despejar M a partir de la presión osmótica Pi = (moles / V) * R * T * i = (m_soluto / (M * V)) * R * T.",
-        "Regla 1: Para pasar de concentraciones en masa a concentraciones volumétricas, la densidad de la disolución es el puente imprescindible.",
-        "Regla 2: El factor i de van t Hoff para solutos moleculares neutros como glucosa, sacarosa o urea es estrictamente igual a 1.",
-        "Regla 3: En el cálculo de propiedades coligativas, la adición de un soluto no volátil siempre disminuye la presión de vapor, eleva el punto de ebullición y disminuye el punto de congelación.",
-        "Regla 4: La presión osmótica Pi = M*R*T*i es la técnica experimental más precisa para determinar pesos moleculares de proteínas y polímeros."
+            "Paso 1: Identificar si el soluto es un no electrolito (i = 1, como glucosa, sacarosa o urea) o un electrolito (sales o ácidos fuertes disociados).",
+            "Paso 2: Calcular el factor de van 't Hoff ideal i contando los iones producidos por unidad de fórmula (ej. Na2SO4 -> 2 Na+ + 1 SO4²- implica i = 3).",
+            "Paso 3: Para crioscopía y ebulloscopía, utilizar estrictamente la Molalidad (moles de soluto / kg de agua), NO la Molaridad.",
+            "Paso 4: Multiplicar Delta Tf = Kf * m * i y recordar que la temperatura de congelación es negativa: Tf = 0 - Delta Tf.",
+            "Paso 5: Para ebullición, sumar al punto normal: Tb = 100 + Delta Tb."
       ]
-    },
+},
     "stepByStepExamples": [
       {
-        "title": "Problema Canónico UCV #1: Una disolución acuosa concentrada contiene 24.0% en mas...",
-        "problemStatement": "Una disolución acuosa concentrada contiene 24.0% en masa de cloruro de calcio (CaCl2, Masa molar = 110.98 g/mol) y posee una densidad de 1.21 g/mL a 20 °C. a) Calcule la molaridad y la molalidad de la disolución; b) Sabiendo que la constante crioscópica del agua es Kf = 1.86 °C kg/mol y asumiendo disociación iónica completa de la sal, determine la temperatura a la cual comenzará a congelar dicha disolución.",
-        "deductiveSteps": [
-          "Paso 1: Tomamos como base de cálculo exactamente 100.0 g de disolución. Por tener 24.0% en masa: Masa de soluto CaCl2 = 24.0 g; Masa de disolvente agua = 100.0 g - 24.0 g = 76.0 g de H2O = 0.0760 kg.",
-          "Paso 2: Calculamos los moles de CaCl2 presentes en la muestra: Moles = 24.0 g / 110.98 g/mol = 0.2163 moles de CaCl2.",
-          "Paso 3: Calculamos la molalidad (m): m = moles de soluto / kg de agua = 0.2163 moles / 0.0760 kg = 2.846 mol/kg = 2.85 m.",
-          "Paso 4: Calculamos el volumen de los 100.0 g de disolución usando la densidad d = 1.21 g/mL: Volumen = Masa / d = 100.0 g / 1.21 g/mL = 82.64 mL = 0.08264 L.",
-          "Paso 5: Calculamos la molaridad (M): M = moles de soluto / litros de disolución = 0.2163 moles / 0.08264 L = 2.617 mol/L = 2.62 M.",
-          "Paso 6: Evaluamos la congelación: el cloruro de calcio es un electrolito fuerte que se disocia en tres iones: CaCl2(ac) -> Ca(2+) + 2 Cl(-). Por tanto, el factor de van t Hoff teórico es i = 1 + 2 = 3 partículas por unidad fórmula.",
-          "Paso 7: Calculamos el descenso del punto de congelación: Delta Tf = Kf * m * i = 1.86 °C kg/mol * 2.846 mol/kg * 3 = 15.88 °C. Como el agua pura congela a 0.00 °C, la temperatura de congelación final de la disolución es: T_congelación = 0.00 °C - 15.88 °C = -15.88 °C (aprox -15.9 °C)."
-        ],
-        "finalResult": "La molalidad no cambia con la temperatura porque se basa en masas, mientras que la molaridad sí varía por la dilatación térmica del volumen."
+            "title": "Problema Canónico UCV (Parcial 3): Descenso Crioscópico Comparativo con Factor de van 't Hoff",
+            "problemStatement": "En el laboratorio se preparan disoluciones acuosas 0.10 m de cuatro sustancias distintas: a) Glucosa (C6H12O6); b) Cloruro de sodio (NaCl); c) Cloruro de calcio (CaCl2); d) Cloruro de aluminio (AlCl3). Calcule el punto de congelación exacto de cada una asumiendo comportamiento ideal (Kf del agua = 1.86 °C kg/mol) y ordénelas de mayor a menor punto de congelación.",
+            "deductiveSteps": [
+                  "Paso 1: Determinamos el factor de van 't Hoff i para cada sustancia: Glucosa: no electrolito => i = 1. NaCl: se disocia en Na+ + Cl- => i = 2. CaCl2: se disocia en Ca²⁺ + 2 Cl- => i = 3. AlCl3: se disocia en Al³⁺ + 3 Cl- => i = 4.",
+                  "Paso 2: Como todas tienen la misma molalidad m = 0.10 mol/kg, el descenso crioscópico es Delta Tf = Kf * m * i = 1.86 * 0.10 * i = 0.186 * i °C.",
+                  "Paso 3: Calculamos Delta Tf y la temperatura de congelación Tf = 0 - Delta Tf: Para Glucosa: Delta Tf = 0.186 * 1 = 0.186 °C => Tf = -0.186 °C. Para NaCl: Delta Tf = 0.186 * 2 = 0.372 °C => Tf = -0.372 °C. Para CaCl2: Delta Tf = 0.186 * 3 = 0.558 °C => Tf = -0.558 °C. Para AlCl3: Delta Tf = 0.186 * 4 = 0.744 °C => Tf = -0.744 °C.",
+                  "Paso 4: Orden de mayor a menor punto de congelación (el valor más alto es el más cercano a cero): Tf(Glucosa) [-0.186 °C] > Tf(NaCl) [-0.372 °C] > Tf(CaCl2) [-0.558 °C] > Tf(AlCl3) [-0.744 °C]."
+            ],
+            "finalResult": "A mayor número de iones disociados, mayor es el descenso crioscópico y menor es la temperatura de congelación resultante."
       }
-    ],
+],
     "commonErrorsAlerts": [
       {
-        "trap": "Trampa del Parcial 3 UCV",
-        "correction": "Preguntar cuál disolución acuosa 0.1 m tiene el menor punto de congelación entre Glucosa, NaCl y AlCl3. El AlCl3 se disocia en 4 iones (i = 4), produciendo el mayor descenso crioscópico y por ende la temperatura más baja bajo cero."
+            "trap": "Trampa del factor de van 't Hoff en electrolitos",
+            "correction": "Olvidar multiplicar por i en sales solubles como NaCl o CaCl2, tratando a todas las disoluciones como si fueran glucosa."
       },
       {
-        "trap": "Trampa de la fracción molar",
-        "correction": "En la ley de Raoult Delta P = X_soluto * P_disolvente°, usar la fracción molar del disolvente en lugar de la del soluto al calcular la caída directa de presión."
-      },
-      {
-        "trap": "Trampa de unidades en ósmosis",
-        "correction": "Usar la presión en mmHg en la fórmula Pi = MRT sin convertir a atmósferas."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Confundir kilogramos de disolución con kilogramos de disolvente en el denominador de la molalidad: se debe restar la masa del soluto."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Olvidar incluir el factor de van t Hoff i para sales iónicas, cometiendo un error de factor 2 o 3 en la respuesta."
-      },
-      {
-        "trap": "Error Frecuente de Cálculo",
-        "correction": "Reportar la temperatura de congelación con signo positivo: el descenso crioscópico implica que la solución congela por debajo de 0 °C."
+            "trap": "Trampa de signo en temperatura de congelación",
+            "correction": "Reportar que el agua congela a +0.74 °C; el descenso significa que congela bajo cero (-0.74 °C)."
       }
-    ],
+],
     "studyTechniquesHub": {
       "activeRecallFlashcards": [
-        {
-          "front": "¿Cuál es la definición y significado físico de: Molaridad (M)?",
-          "back": "Concentración volumétrica definida como el número de moles de soluto disueltos en exactamente un litro de disolución total. (Notación: mol / L)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Molalidad (m)?",
-          "back": "Concentración gravimétrica definida como el número de moles de soluto disueltos por cada kilogramo de disolvente puro (independiente de la temperatura). (Notación: mol / kg disolvente)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Ley de Raoult?",
-          "back": "Ley que establece que la presión de vapor de un disolvente en una disolución ideal es igual a su presión de vapor puro multiplicada por su fracción molar. (Notación: P1 = X1 * P1°)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Descenso Crioscópico (Delta Tf)?",
-          "back": "Disminución en la temperatura de congelación de una disolución respecto al disolvente puro, proporcional a la molalidad de partículas disueltas. (Notación: Delta Tf = Kf * m * i)"
-        },
-        {
-          "front": "¿Cuál es la definición y significado físico de: Factor de van t Hoff (i)?",
-          "back": "Número real de partículas o iones que se generan por cada unidad de soluto que se disuelve en el medio acuoso. (Notación: i = 1 para no electrolitos; i > 1 para sales)"
-        }
+            {
+                  "front": "¿Por qué una disolución 0.1 m de CaCl2 congela a menor temperatura que una disolución 0.1 m de NaCl?",
+                  "back": "Porque CaCl2 genera 3 iones por unidad fórmula (i = 3) mientras que NaCl solo genera 2 iones (i = 2); al haber mayor concentración de partículas en solución, el descenso crioscópico Delta Tf = Kf * m * i es 1.5 veces mayor."
+            },
+            {
+                  "front": "¿Por qué en crioscopía y ebulloscopía se usa Molalidad (m) en lugar de Molaridad (M)?",
+                  "back": "Porque la molalidad relaciona moles con la masa de disolvente (kg), la cual no varía con la temperatura, mientras que el volumen de la disolución se dilata o contrae al cambiar la temperatura."
+            }
       ],
       "cornellSynthesis": {
-        "cues": [
-          "Molaridad (M)",
-          "Molalidad (m)",
-          "Ley de Raoult",
-          "Descenso Crioscópico (Delta Tf)",
-          "Factor de van t Hoff (i)"
-        ],
-        "notes": [
-          "Paso 1: Asumir una base de cálculo conveniente (por ejemplo, 100 g de disolución si se dan porcentajes en masa, o 1 L si se da molaridad).",
-          "Paso 2: Emplear la densidad de la disolución (d = masa / volumen) como puente de conversión entre magnitudes de masa y magnitudes de volumen.",
-          "Paso 3: Calcular por separado la masa de soluto y la masa neta de disolvente puro (Masa_disolvente = Masa_total - Masa_soluto).",
-          "Paso 4: Identificar si el soluto es un no electrolito molecular (i = 1) o un electrolito iónico (contar los iones formados, ej. NaCl -> 2 iones, i aprox 2; CaCl2 -> 3 iones, i aprox 3).",
-          "Paso 5: Para descenso crioscópico o aumento ebulloscópico, calcular la molalidad m = moles_soluto / kg_disolvente y sustituir en Delta T = K * m * i."
-        ],
-        "summary": "Termodinámica de la disolución, conversiones directas entre Molaridad y Molalidad mediante densidad, Ley de Raoult, descenso crioscópico, presión osmótica y factor i de van t Hoff."
+            "cues": [
+                  "Propiedades Coligativas",
+                  "Factor de van 't Hoff i",
+                  "Descenso Crioscópico",
+                  "Presión Osmótica"
+            ],
+            "notes": [
+                  "1. Dependen del número de partículas, no de su identidad química.",
+                  "2. i = iones disociados (1 para no electrolitos).",
+                  "3. Delta Tf = Kf * m * i (congelación bajo cero).",
+                  "4. Presión osmótica Pi = i M R T."
+            ],
+            "summary": "Termodinámica de disoluciones ideales, factor de van 't Hoff y cálculo riguroso de propiedades coligativas en la UCV."
       },
-      "conceptMapNodes": "Principios de Química I: Disoluciones Ideales, Concentración y Propiedades Coligativas\n  ├── Fundamento: Principios de Química I · Código 3401 (UCV Ciencias)\n  ├── Ecuaciones: Molaridad (M), Molalidad (m), Ley de Raoult\n  └── Protocolo: Paso 1: Asumir una base de cálculo conveniente (por ejemplo, 100 g de disolución si se dan porcentajes en masa, o 1 L si se da molaridad). -> Paso 2: Emplear la densidad de la disolución (d = masa / volumen) como puente de conversión entre magnitudes de masa y magnitudes de volumen. -> Paso 3: Calcular por separado la masa de soluto y la masa neta de disolvente puro (Masa_disolvente = Masa_total - Masa_soluto)."
-    },
+      "conceptMapNodes": "Propiedades Coligativas\n  ├── Raoult: Disminución de presión de vapor\n  ├── Ebulloscopía: Delta Tb = Kb * m * i  (Sube de 100 °C)\n  ├── Crioscopía: Delta Tf = Kf * m * i  (Baja de 0 °C)\n  └── Presión Osmótica: Pi = i M R T"
+},
     "generatedQuestions": [
       {
-        "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
-        "tema": "Principios de Química I: Disoluciones Ideales, Concentración y Propiedades Coligativas",
-        "tipo": "opcion_multiple",
-        "pregunta": "¿Cuál es el principio rector fundamental que gobierna el tema: Principios de Química I: Disoluciones Ideales, Concentración y Propiedades Coligativas?",
-        "opciones": [
-          "Termodinámica de la disolución, conversiones directas entre Molaridad y Molalidad mediante densidad,",
-          "Se resuelve únicamente mediante tabulación mecánica ciega",
-          "No posee relevancia en el primer semestre de Ciencias",
-          "Depende de variables no medibles en el laboratorio"
-        ],
-        "correcta": "Termodinámica de la disolución, conversiones directas entre Molaridad y Molalidad mediante densidad,",
-        "justificacion": "**Concepto Fundamental:** Principios de Química I: Disoluciones Ideales, Concentración y Propiedades Coligativas\n\n**Resolución Directa:** Una disolución ideal es una mezcla homogénea donde las fuerzas intermoleculares entre moléculas de soluto y disolvente son idénticas a las fuerzas entre moléculas del disolvente pu..."
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Factor de van 't Hoff y Crioscopía",
+            "tipo": "opcion_multiple",
+            "pregunta": "¿Cuál de las siguientes disoluciones acuosas $0.10\\,\\text{m}$ registrará el punto de congelación más bajo (menor temperatura bajo cero)?",
+            "opciones": [
+                  "Cloruro de aluminio $\\text{AlCl}_3$ ($i \\approx 4$)",
+                  "Cloruro de sodio $\\text{NaCl}$ ($i \\approx 2$)",
+                  "Cloruro de calcio $\\text{CaCl}_2$ ($i \\approx 3$)",
+                  "Glucosa $\\text{C}_6\\text{H}_{12}\\text{O}_6$ ($i = 1$)"
+            ],
+            "correcta": "Cloruro de aluminio $\\text{AlCl}_3$ ($i \\approx 4$)",
+            "justificacion": "**Concepto Fundamental:** Descenso Crioscópico Proporcional a $m \\cdot i$.\n\n**Resolución:** El descenso crioscópico es $\\Delta T_f = K_f \\cdot m \\cdot i$. A igual molalidad ($0.10\\,\\text{m}$), la sal que produzca mayor número de iones disociados generará el mayor descenso de temperatura. $\\text{AlCl}_3$ se disocia en $1\\,\\text{Al}^{3+}$ y $3\\,\\text{Cl}^-$, dando $i = 4$. Esto produce el mayor $\\Delta T_f$ y por tanto el punto de congelación más bajo."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Ley de Raoult y Presión de Vapor",
+            "tipo": "opcion_multiple",
+            "pregunta": "A $25^\\circ\\text{C}$, la presión de vapor del agua pura es $23.8\\,\\text{mmHg}$. Se disuelven $0.50\\,\\text{moles}$ de glucosa (soluto no volátil) en $4.50\\,\\text{moles}$ de agua. Según la Ley de Raoult, ¿cuál es la presión de vapor de la disolución resultante?",
+            "opciones": [
+                  "$21.4\\,\\text{mmHg}$",
+                  "$23.8\\,\\text{mmHg}$",
+                  "$2.38\\,\\text{mmHg}$",
+                  "$26.2\\,\\text{mmHg}$"
+            ],
+            "correcta": "$21.4\\,\\text{mmHg}$",
+            "justificacion": "**Concepto Fundamental:** Ley de Raoult para Solutos No Volátiles.\n\n**Resolución:** La fracción molar del solvente agua es $X_{\\text{agua}} = \\frac{4.50}{0.50 + 4.50} = \\frac{4.50}{5.00} = 0.90$. La presión de vapor de la disolución es $P_{\\text{disolución}} = X_{\\text{agua}} \\cdot P_{\\text{agua}}^\\circ = 0.90 \\times 23.8\\,\\text{mmHg} = 21.42\\,\\text{mmHg} \\approx 21.4\\,\\text{mmHg}$."
+      },
+      {
+            "area": "Principios de Química I · Código 3401 (UCV Ciencias)",
+            "tema": "Cálculo de Molalidad",
+            "tipo": "opcion_multiple",
+            "pregunta": "Se disuelven $18.0\\,\\text{g}$ de glucosa ($\\text{C}_6\\text{H}_{12}\\text{O}_6$, $M = 180.16\\,\\text{g/mol}$) en $200.0\\,\\text{g}$ de agua destilada. ¿Cuál es la molalidad ($m$) de la disolución?",
+            "opciones": [
+                  "$0.50\\,\\text{m}$ (o $\\text{mol/kg}$)",
+                  "$0.10\\,\\text{m}$",
+                  "$0.05\\,\\text{m}$",
+                  "$0.90\\,\\text{m}$"
+            ],
+            "correcta": "$0.50\\,\\text{m}$ (o $\\text{mol/kg}$)",
+            "justificacion": "**Concepto Fundamental:** Definición de Molalidad $m = \\frac{n_{\\text{soluto}}}{m_{\\text{solvente}} [\\mathrm{kg}]}$.\n\n**Resolución:** Moles de glucosa: $n = 18.0\\,\\text{g} / 180.16\\,\\text{g/mol} \\approx 0.10\\,\\text{moles}$. Masa de agua en kilogramos: $200.0\\,\\text{g} / 1000 = 0.200\\,\\text{kg}$. Molalidad: $m = \\frac{0.10\\,\\text{mol}}{0.200\\,\\text{kg}} = 0.50\\,\\text{mol/kg}$."
       }
-    ],
-    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG['santiago-qgi-disoluciones-coligativas'],
-    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-gases']],
-researchPrompt: SANTIAGO_RESEARCH_PROMPTS['santiago-prompt-qgi-gases'],
+],
+    multimediaResources: SANTIAGO_MULTIMEDIA_CATALOG["santiago-qgi-disoluciones-coligativas"],
+    researchPrompts: [SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-disoluciones-coligativas"]],
+    researchPrompt: SANTIAGO_RESEARCH_PROMPTS["santiago-prompt-qgi-disoluciones-coligativas"],
   }
 ];
