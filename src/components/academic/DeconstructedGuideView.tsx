@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Film, Eye, Download, Printer, FileText } from 'lucide-react';
+import { Film, Eye, Download, Printer, FileText, Video, ExternalLink, Copy, Check, Sparkles } from 'lucide-react';
 import type {
   DeconstructedAcademicGuide,
 } from '../../types/deconstruction.types';
@@ -22,6 +22,8 @@ import {
   exportGuideToPdf,
   OFFICIAL_NOTION_PDF_LINKS,
 } from '../../utils/documentExport';
+import { SANTIAGO_MULTIMEDIA_CATALOG } from '../../data/santiago_multimedia';
+import { SANTIAGO_RESEARCH_PROMPTS } from '../../data/santiago_prompts';
 import {
   DESIGN_THEORY_QUESTIONS,
   NOTION_COLOR_QUESTIONS,
@@ -42,6 +44,8 @@ type TabType =
   | 'STEP_BY_STEP'
   | 'ALERTS'
   | 'STUDY_TECHNIQUES'
+  | 'MULTIMEDIA'
+  | 'RESEARCH_PROMPT'
   | 'KINETIC_VIDEO'
   | 'INTERACTIVE_LAB'
   | 'EVALUATION';
@@ -367,6 +371,23 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   } = guide;
 
   const totalQuestions = generatedQuestions?.length || 0;
+  const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null);
+  const [activeVideoModal, setActiveVideoModal] = useState<string | null>(null);
+
+  // Obtener recursos multimedia de la guía o catálogo oficial
+  const multimediaList = (guide.multimediaResources && guide.multimediaResources.length > 0)
+    ? guide.multimediaResources
+    : (guide.id && SANTIAGO_MULTIMEDIA_CATALOG[guide.id.replace('-guide', '')])
+    || (guide.evaluationEventId && SANTIAGO_MULTIMEDIA_CATALOG[guide.evaluationEventId])
+    || [];
+
+  // Obtener prompts de investigación asociados a la guía o tema
+  const promptList = (guide.researchPrompts && guide.researchPrompts.length > 0)
+    ? guide.researchPrompts
+    : Object.values(SANTIAGO_RESEARCH_PROMPTS).filter(
+        (p) => p.evaluationId === guide.evaluationEventId || (guide.id && p.id.includes(guide.id.replace('santiago-', '').replace('-guide', '')))
+      );
+
   const flashcards = studyTechniquesHub?.activeRecallFlashcards || [];
   // Etiquetas de pilares según disciplina (por defecto: ciencias)
   const labels = PILLAR_LABELS[guide.discipline ?? 'science'];
@@ -639,6 +660,34 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
         >
           <LayersIcon className="w-3.5 h-3.5" />
           <span>6. Técnicas de Estudio</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('MULTIMEDIA')}
+          className={`py-2.5 px-3 text-xs font-bold rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            activeTab === 'MULTIMEDIA'
+              ? 'bg-blue-600 text-white shadow-soft-sm ring-1 ring-blue-400'
+              : 'text-blue-700 hover:bg-blue-50'
+          }`}
+        >
+          <Video className="w-3.5 h-3.5" />
+          <span>7. Multimedia</span>
+          <span className="text-[10px] opacity-75">({multimediaList.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('RESEARCH_PROMPT')}
+          className={`py-2.5 px-3 text-xs font-bold rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            activeTab === 'RESEARCH_PROMPT'
+              ? 'bg-indigo-600 text-white shadow-soft-sm ring-1 ring-indigo-400'
+              : 'text-indigo-700 hover:bg-indigo-50'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>8. Prompt IA (Santiago)</span>
+          {promptList.length > 0 && (
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          )}
         </button>
 
         <button
@@ -1049,6 +1098,68 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
               </div>
             )}
 
+            
+            {/* SECCIÓN D: TÉCNICA ESPECIAL - PROMPT DE INVESTIGACIÓN (ARQUITECTURA SANTIAGO) */}
+            <div className="space-y-3 pt-6 border-t border-slate-200/80">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 font-sans flex items-center gap-1.5">
+                    <span>📋 Técnica: Prompts de Investigación (Arquitectura Santiago)</span>
+                  </h3>
+                  <span className="text-xs text-slate-500 font-mono">
+                    Estructura en 4 bloques continuos sin preámbulos para generar informes o proyectos con IA
+                  </span>
+                </div>
+                <button
+                  onClick={() => setActiveTab('RESEARCH_PROMPT')}
+                  className="py-1 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-200 transition-all cursor-pointer"
+                >
+                  Ver Pilar de Prompts 📋
+                </button>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-indigo-50/40 border border-indigo-200/80 text-xs text-slate-700 space-y-2">
+                <p className="leading-relaxed">
+                  Esta técnica organiza tus instrucciones en un flujo continuo y orientado al propósito final:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-1">
+                  <span className="p-2 rounded-lg bg-white border border-indigo-100 font-mono">
+                    1. Disparador + Insumo ("Quiero que...")
+                  </span>
+                  <span className="p-2 rounded-lg bg-white border border-indigo-100 font-mono">
+                    2. Requisitos ("Aparte de que...")
+                  </span>
+                  <span className="p-2 rounded-lg bg-white border border-indigo-100 font-mono">
+                    3. Por Qué del Proyecto ("Porque voy a...")
+                  </span>
+                  <span className="p-2 rounded-lg bg-white border border-indigo-100 font-mono">
+                    4. Escalabilidad ("Esto para poder que...")
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* SECCIÓN E: TÉCNICA ESPECIAL - INMERSIÓN MULTIMEDIA */}
+            <div className="space-y-3 pt-6 border-t border-slate-200/80">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 font-sans flex items-center gap-1.5">
+                    <span>🎬 Técnica: Inmersión Audiovisual Curada</span>
+                  </h3>
+                  <span className="text-xs text-slate-500 font-mono">
+                    Refuerzo conceptual mediante clases de 3Blue1Brown, Walter Lewin y locuciones continuas
+                  </span>
+                </div>
+                <button
+                  onClick={() => setActiveTab('MULTIMEDIA')}
+                  className="py-1 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0F52BA] text-xs font-bold border border-blue-200 transition-all cursor-pointer"
+                >
+                  Ver Videos y Audios 🎬
+                </button>
+              </div>
+            </div>
+
+
             {/* SECCIÓN C: MAPA CONCEPTUAL / NODOS JERÁRQUICOS */}
             {studyTechniquesHub?.conceptMapNodes && (
               <div className="space-y-3 pt-6 border-t border-slate-200/80">
@@ -1060,6 +1171,382 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        
+        {/* PILAR 7: RECURSOS MULTIMEDIA (VIDEOS, AUDIOS E INFOGRAFÍAS) */}
+        {activeTab === 'MULTIMEDIA' && (
+          <div className="space-y-6 max-w-4xl mx-auto py-2 animate-fadeIn">
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-50/80 via-white to-sky-50/80 border border-blue-200/90 shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🎬</span>
+                  <h2 className="text-base font-bold text-slate-900 font-sans">
+                    Recursos Multimedia Curados de Estudio
+                  </h2>
+                </div>
+                <p className="text-xs text-slate-600">
+                  Videos de alta calidad (3Blue1Brown, Walter Lewin MIT, El Traductor de Ingeniería), locuciones de audio y diagramas HD.
+                </p>
+              </div>
+              <span className="px-3 py-1 rounded-xl bg-blue-100 text-[#0F52BA] text-xs font-bold font-mono self-start sm:self-auto">
+                {multimediaList.length} Recursos Disponibles
+              </span>
+            </div>
+
+            {/* A. VIDEOS EDUCATIVOS VERIFICADOS */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-bold text-slate-900 font-sans flex items-center gap-2">
+                <span>📹 Videos Explicativos Seleccionados</span>
+              </h3>
+
+              {multimediaList.filter((m) => m.type === 'video').length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {multimediaList.filter((m) => m.type === 'video').map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-soft hover:border-blue-300 transition-all flex flex-col justify-between space-y-3"
+                    >
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-blue-50 text-[#0F52BA]">
+                            {item.authorOrSource || 'Clase Magistral'}
+                          </span>
+                          {item.durationOrSize && (
+                            <span className="text-[10px] font-mono text-slate-400">
+                              ⏱️ {item.durationOrSize}
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
+                        {item.embedUrl && (
+                          <button
+                            onClick={() => setActiveVideoModal(item.embedUrl!)}
+                            className="flex-1 py-2 px-3 rounded-xl bg-[#0F52BA] hover:bg-[#0c4194] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                          >
+                            <PlayIcon className="w-3.5 h-3.5 text-white" />
+                            <span>Ver Video Aquí</span>
+                          </button>
+                        )}
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                          title="Abrir en pestaña nueva de YouTube"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
+                          <span>YouTube ↗</span>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-500">
+                  No se han registrado videos adicionales para este tema específico.
+                </div>
+              )}
+            </div>
+
+            {/* B. AUDIOS DE SÍNTESIS Y LOCUCIÓN */}
+            <div className="space-y-3 pt-4 border-t border-slate-200/80">
+              <h3 className="text-sm font-bold text-slate-900 font-sans flex items-center gap-2">
+                <span>🎙️ Audios de Síntesis y Locución Guiada</span>
+              </h3>
+
+              <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/90 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+                      Audio-Guía del Fenómeno & Principios Clave
+                    </h4>
+                    <p className="text-xs text-slate-500">
+                      Escucha la narración continua en voz alta mientras repasas o descansas la vista.
+                    </p>
+                  </div>
+                  <AudioGuidePlayer
+                    guideTitle={guideMetadata.title}
+                    guideText={`${phenomenonAndTheory}. ${guideMetadata.summary}`}
+                  />
+                </div>
+
+                {multimediaList.filter((m) => m.type === 'audio').map((aud) => (
+                  <div
+                    key={aud.id}
+                    className="p-3 rounded-xl bg-white border border-slate-200 text-xs flex items-center justify-between gap-3"
+                  >
+                    <div className="space-y-0.5">
+                      <span className="font-bold text-slate-900 block">{aud.title}</span>
+                      <span className="text-slate-500 block">{aud.description}</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 shrink-0">
+                      {aud.durationOrSize || 'Audio'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* C. DIAGRAMAS E INFOGRAFÍAS VECTORIALES */}
+            <div className="space-y-3 pt-4 border-t border-slate-200/80">
+              <h3 className="text-sm font-bold text-slate-900 font-sans flex items-center gap-2">
+                <span>📊 Diagramas Conceptuales & Esquemas Visuales</span>
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {multimediaList.filter((m) => m.type === 'image' || m.type === 'simulation').map((img) => (
+                  <div
+                    key={img.id}
+                    className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-soft space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-slate-900 leading-snug">
+                        {img.title}
+                      </h4>
+                      <span className="text-[10px] font-mono text-slate-400">
+                        {img.authorOrSource || 'Esquema'}
+                      </span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center p-2 min-h-[160px]">
+                      <img
+                        src={img.url}
+                        alt={img.title}
+                        className="max-h-[220px] object-contain rounded-lg hover:scale-105 transition-transform"
+                        onError={(e) => {
+                          // Fallback si la imagen no carga
+                          (e.target as any).style.display = 'none';
+                        }}
+                      />
+                    </div>
+
+                    <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                      {img.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PILAR 8: PROMPTS DE INVESTIGACIÓN (ARQUITECTURA SANTIAGO RIVERO) */}
+        {activeTab === 'RESEARCH_PROMPT' && (
+          <div className="space-y-6 max-w-4xl mx-auto py-2 animate-fadeIn">
+            {/* Cabecera de la Arquitectura */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-50 via-white to-purple-50 border border-indigo-200/90 shadow-soft space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-base">📋</span>
+                <h2 className="text-base font-bold text-indigo-950 font-sans">
+                  Prompts de Investigación y Elaboración (Arquitectura Santiago)
+                </h2>
+              </div>
+              <p className="text-xs text-slate-700 leading-relaxed">
+                Flujo encadenado en bloque continuo de 4 partes: Disparador de acción + Sub-requisitos aditivos ('Aparte de') + Visión arquitectónica de proyecto ('Porque voy a') + Meta de automatización y escalabilidad ('Esto para poder que'). Sin saludos robóticos ni fórmulas de relleno.
+              </p>
+            </div>
+
+            {/* Listado de Prompts Calibrados */}
+            {promptList.length > 0 ? (
+              <div className="space-y-6">
+                {promptList.map((prompt) => {
+                  const isCopied = copiedPromptId === prompt.id;
+                  return (
+                    <div
+                      key={prompt.id}
+                      className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-indigo-200/80 shadow-soft-lg space-y-5"
+                    >
+                      {/* Metadatos del Prompt */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-indigo-100">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[11px] font-bold font-mono">
+                              {prompt.deliverableLabel}
+                            </span>
+                            <span className="text-xs text-slate-400 font-mono">
+                              {prompt.targetAudience}
+                            </span>
+                          </div>
+                          <h3 className="text-sm sm:text-base font-extrabold text-slate-900 mt-1">
+                            {prompt.title}
+                          </h3>
+                        </div>
+
+                        {/* Botón Maestro Copiar Prompt */}
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(prompt.promptText);
+                            setCopiedPromptId(prompt.id);
+                            setTimeout(() => setCopiedPromptId(null), 3000);
+                          }}
+                          className={`py-2 px-4 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-soft active:scale-95 cursor-pointer ${
+                            isCopied
+                              ? 'bg-emerald-600 text-white'
+                              : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                          }`}
+                        >
+                          {isCopied ? (
+                            <>
+                              <Check className="w-4 h-4 text-white" />
+                              <span>¡Prompt Copiado al Portapapeles! ✓</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-4 h-4 text-white" />
+                              <span>Copiar Prompt para AGY / IA</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Bloque Continuo del Prompt */}
+                      <div className="space-y-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-indigo-900 font-mono block">
+                          Texto del Prompt (Flujo Continuo Santiago):
+                        </span>
+                        <div className="p-4 rounded-2xl bg-indigo-50/40 border border-indigo-200/70 font-sans text-xs sm:text-sm text-slate-800 leading-relaxed relative selection:bg-indigo-200">
+                          "{prompt.promptText}"
+                        </div>
+                      </div>
+
+                      {/* Anatomía de los 4 Bloques */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <div className="p-3 rounded-xl bg-blue-50/50 border border-blue-200/60 text-xs space-y-1">
+                          <span className="font-bold text-[#0F52BA] flex items-center gap-1">
+                            <span>1️⃣</span> Disparador & Insumo Inicial
+                          </span>
+                          <p className="text-slate-600">
+                            Comienza directamente con "Quiero que analizando [datos/material]..." sin preámbulos de cortesía.
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-purple-50/50 border border-purple-200/60 text-xs space-y-1">
+                          <span className="font-bold text-purple-700 flex items-center gap-1">
+                            <span>2️⃣</span> Sub-requisitos ('Aparte de')
+                          </span>
+                          <p className="text-slate-600">
+                            Encadena las variables clave usando "...aparte de que..." para sumar capas analíticas y de formato.
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-200/60 text-xs space-y-1">
+                          <span className="font-bold text-emerald-700 flex items-center gap-1">
+                            <span>3️⃣</span> Por Qué Arquitectónico
+                          </span>
+                          <p className="text-slate-600">
+                            Explica el destino con "...porque voy a entregar/presentar...", dándole a la IA visión de producto.
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-amber-50/50 border border-amber-200/60 text-xs space-y-1">
+                          <span className="font-bold text-amber-700 flex items-center gap-1">
+                            <span>4️⃣</span> Meta de Escalabilidad
+                          </span>
+                          <p className="text-slate-600">
+                            Cierra con "...esto para poder que...", conectando el entregable con la utilidad práctica posterior.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Requisitos de Salida (Listas Planas Sin Subdividir) */}
+                      {prompt.outputRequirements && prompt.outputRequirements.length > 0 && (
+                        <div className="space-y-2 pt-2 border-t border-slate-100">
+                          <span className="text-xs font-bold uppercase tracking-wider text-slate-700 font-mono block">
+                            Requisitos de Salida (Formato Plano sin Subpuntos):
+                          </span>
+                          <ul className="space-y-1.5 text-xs text-slate-700 font-sans">
+                            {prompt.outputRequirements.map((req, rIdx) => (
+                              <li key={rIdx} className="flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-1.5 shrink-0" />
+                                <span className="leading-relaxed">{req}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Herramientas Recomendadas */}
+                      {prompt.suggestedTools && prompt.suggestedTools.length > 0 && (
+                        <div className="pt-2 flex flex-wrap items-center gap-1.5">
+                          <span className="text-[11px] font-bold text-slate-500 font-mono">
+                            Herramientas Sugeridas:
+                          </span>
+                          {prompt.suggestedTools.map((tool, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className="px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-mono border border-slate-200"
+                            >
+                              {tool}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Plantilla Maestra si la guía no tiene un prompt específico */
+              <div className="p-5 sm:p-6 rounded-3xl bg-white border border-indigo-200 space-y-4">
+                <h3 className="text-sm font-bold text-slate-900 font-sans">
+                  Plantilla Maestra de Prompt (Generador Estilo Santiago)
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                  Usa este formato para pedirle a AGY o a tu asistente de IA cualquier desglose o material para esta materia:
+                </p>
+                <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-200 text-xs text-slate-800 leading-relaxed font-mono">
+                  "Quiero que analizando este material de {guideMetadata.title} me armes una guía de estudio completa y deconstruida paso a paso, aparte de que me incluyas las fórmulas clave en LaTeX, los errores o trampas más comunes donde uno suele caer en los parciales y un banco de preguntas prácticas con su explicación, porque voy a subir esto al módulo de estudio de mi app de productividad para practicar antes del examen, esto para poder que domine la resolución mecánica de los problemas y no me sorprendan con preguntas capciosas."
+                </div>
+                <button
+                  onClick={() => {
+                    const text = `Quiero que analizando este material de ${guideMetadata.title} me armes una guía de estudio completa y deconstruida paso a paso, aparte de que me incluyas las fórmulas clave en LaTeX, los errores o trampas más comunes donde uno suele caer en los parciales y un banco de preguntas prácticas con su explicación, porque voy a subir esto al módulo de estudio de mi app de productividad para practicar antes del examen, esto para poder que domine la resolución mecánica de los problemas y no me sorprendan con preguntas capciosas.`;
+                    navigator.clipboard.writeText(text);
+                    setCopiedPromptId('template');
+                    setTimeout(() => setCopiedPromptId(null), 3000);
+                  }}
+                  className="btn-brand text-xs py-2 px-4 flex items-center gap-2 cursor-pointer"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>{copiedPromptId === 'template' ? '¡Plantilla Copiada! ✓' : 'Copiar Plantilla Maestra'}</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* MODAL REPRODUCTOR DE VIDEO EMBEBIDO */}
+        {activeVideoModal && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-slate-950 rounded-2xl border border-slate-800 max-w-3xl w-full overflow-hidden shadow-2xl relative animate-fadeIn">
+              <div className="p-3 bg-slate-900 flex items-center justify-between text-white border-b border-slate-800">
+                <span className="text-xs font-bold font-mono">Reproductor de Video Universitario</span>
+                <button
+                  onClick={() => setActiveVideoModal(null)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                >
+                  <XIcon className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="aspect-video w-full bg-black">
+                <iframe
+                  src={activeVideoModal}
+                  title="Reproductor de Video"
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            </div>
           </div>
         )}
 

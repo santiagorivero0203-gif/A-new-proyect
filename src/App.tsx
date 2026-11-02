@@ -88,7 +88,12 @@ const AppContent: React.FC = () => {
         return (
           <AcademicPlannerView
             onLaunchExam={startExam}
-            onNavigateToGuides={() => navigateToTab('GUIDES')}
+            onNavigateToGuides={(guideId) => {
+              if (guideId) {
+                sessionStorage.setItem('cpe_auto_open_guide_id', guideId);
+              }
+              navigateToTab('GUIDES');
+            }}
           />
         );
 

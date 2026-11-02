@@ -287,6 +287,38 @@ export function exportGuideToWord(guide: DeconstructedAcademicGuide): void {
   </table>
   ` : ''}
 
+  ${guide.multimediaResources && guide.multimediaResources.length > 0 ? `
+  <h2>Recursos Multimedia Recomendados</h2>
+  ${guide.multimediaResources.map(m => `
+    <div class="card" style="margin-bottom: 8pt;">
+      <p style="margin: 0; font-weight: bold; color: #0f52ba;">[${escapeXml(m.type.toUpperCase())}] ${escapeXml(m.title)} (${escapeXml(m.durationOrSize || m.authorOrSource || '')})</p>
+      <p style="margin: 3pt 0; color: #475569; font-size: 9.5pt;">${escapeXml(m.description)}</p>
+      <p style="margin: 0; font-size: 9pt;"><a href="${escapeXml(m.url)}" style="color: #0f52ba;">${escapeXml(m.url)}</a></p>
+    </div>
+  `).join('')}
+  ` : ''}
+
+  ${guide.researchPrompts && guide.researchPrompts.length > 0 ? `
+  <h2>Prompts de Investigación y Elaboración (Arquitectura Santiago)</h2>
+  ${guide.researchPrompts.map(p => `
+    <div class="callout" style="background-color: #f5f3ff; border-left: 4pt solid #6366f1; margin-bottom: 12pt;">
+      <p style="margin: 0 0 4pt 0; font-weight: bold; color: #4338ca; text-transform: uppercase; font-size: 8.5pt;">${escapeXml(p.deliverableLabel)} • ${escapeXml(p.targetAudience)}</p>
+      <h3 style="margin: 0 0 6pt 0; color: #1e1b4b;">${escapeXml(p.title)}</h3>
+      <div style="background-color: #ffffff; border: 1pt solid #ddd6fe; padding: 8pt; border-radius: 4pt; font-size: 9.5pt; font-style: italic; color: #1e293b;">
+        "${escapeXml(p.promptText)}"
+      </div>
+      ${p.outputRequirements && p.outputRequirements.length > 0 ? `
+        <div style="margin-top: 6pt;">
+          <strong style="font-size: 9pt; color: #475569;">Requisitos de Salida:</strong>
+          <ul style="margin: 4pt 0; padding-left: 16pt; font-size: 9pt;">
+            ${p.outputRequirements.map(req => `<li>${escapeXml(req)}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+    </div>
+  `).join('')}
+  ` : ''}
+
   ${generatedQuestions && generatedQuestions.length > 0 ? `
   <h2>7. Banco de Autoevaluación & Modelos de Examen (${generatedQuestions.length} Reactivos)</h2>
   ${generatedQuestions.map((q, idx) => `
@@ -686,6 +718,44 @@ export function exportGuideToPdf(guide: DeconstructedAcademicGuide): void {
         </div>
       </div>
     ` : ''}
+  </div>
+  ` : ''}
+
+  ${guide.multimediaResources && guide.multimediaResources.length > 0 ? `
+  <div class="avoid-break page-break">
+    <h2>Recursos Multimedia Recomendados</h2>
+    <div style="margin-top: 6px;">
+      ${guide.multimediaResources.map(m => `
+        <div class="card avoid-break" style="margin-bottom: 6px; font-size: 9pt;">
+          <strong>[${escapeXml(m.type.toUpperCase())}] ${escapeXml(m.title)}</strong> (${escapeXml(m.durationOrSize || m.authorOrSource || '')})
+          <p style="margin: 3px 0 0 0; color: #475569;">${escapeXml(m.description)}</p>
+          <a href="${escapeXml(m.url)}" style="color: #0f52ba; font-size: 8pt; text-decoration: underline;">${escapeXml(m.url)}</a>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+  ` : ''}
+
+  ${guide.researchPrompts && guide.researchPrompts.length > 0 ? `
+  <div class="avoid-break page-break">
+    <h2>Prompts de Investigación y Elaboración (Arquitectura Santiago)</h2>
+    ${guide.researchPrompts.map(p => `
+      <div class="card avoid-break" style="margin-bottom: 10px; border-left: 4px solid #6366f1;">
+        <span style="font-size: 8pt; font-weight: bold; color: #4338ca; text-transform: uppercase;">${escapeXml(p.deliverableLabel)} • ${escapeXml(p.targetAudience)}</span>
+        <h3 style="margin: 4px 0 6px 0; font-size: 10.5pt; color: #0f172a;">${escapeXml(p.title)}</h3>
+        <div style="background-color: #f5f3ff; border: 1px solid #ddd6fe; padding: 8px; border-radius: 4px; font-size: 8.5pt; color: #1e1b4b; line-height: 1.4; font-style: italic;">
+          "${escapeXml(p.promptText)}"
+        </div>
+        ${p.outputRequirements && p.outputRequirements.length > 0 ? `
+          <div style="margin-top: 6px;">
+            <strong style="font-size: 8pt; color: #475569;">Requisitos de Salida:</strong>
+            <ul style="margin: 3px 0; padding-left: 16px; font-size: 8pt; color: #334155;">
+              ${p.outputRequirements.map(req => `<li>${escapeXml(req)}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+      </div>
+    `).join('')}
   </div>
   ` : ''}
 

@@ -28,7 +28,7 @@ type PlannerTab = 'CALENDAR' | 'SCHEDULE' | 'PLANS' | 'REMINDERS' | 'NOTES';
 
 interface AcademicPlannerViewProps {
   onLaunchExam?: (config: ExamConfig) => void;
-  onNavigateToGuides?: () => void;
+  onNavigateToGuides?: (guideId?: string) => void;
 }
 
 export const AcademicPlannerView: React.FC<AcademicPlannerViewProps> = ({

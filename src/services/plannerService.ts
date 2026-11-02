@@ -47,6 +47,38 @@ export const plannerService = {
   getEvents(userId: string = 'default'): EvaluationEvent[] {
     const key = getEventsKey(userId);
     const data = localStorage.getItem(key);
+    // Inicialización automática canónica para Santiago Rivero (1er Semestre Física UCV)
+    if (userId === 'santiago_fisica_ucv' || userId === 'santiago-003-uuid' || userId.includes('santiago')) {
+      if (data) {
+        try {
+          const parsed: EvaluationEvent[] = JSON.parse(data);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const hasEnrichedData = parsed.some((e) => e.guideId || e.researchPrompt || e.multimediaResources);
+            if (hasEnrichedData && parsed.length >= SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS.length) {
+              return parsed;
+            }
+            // Fusionar con el catálogo enriquecido preservando notas y calificaciones del usuario
+            const merged = SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS.map((def) => {
+              const existing = parsed.find((p) => p.id === def.id || (p.subject === def.subject && p.title === def.title));
+              return existing
+                ? {
+                    ...def,
+                    scoreObtained: existing.scoreObtained ?? def.scoreObtained,
+                    notes: existing.notes || def.notes,
+                  }
+                : def;
+            });
+            this.saveEvents(userId, merged);
+            return merged;
+          }
+        } catch {
+          // Fallback a inicialización canónica
+        }
+      }
+      this.saveEvents(userId, SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS);
+      return SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS;
+    }
+
     if (data) {
       try {
         const parsed = JSON.parse(data);
@@ -60,12 +92,6 @@ export const plannerService = {
     if (userId === 'andres_bachillerato_1' || userId === 'andres-001-uuid' || userId.includes('andres')) {
       this.saveEvents(userId, ANDRES_DEFAULT_EVALUATION_EVENTS);
       return ANDRES_DEFAULT_EVALUATION_EVENTS;
-    }
-
-    // Inicialización automática canónica para Santiago Rivero (1er Semestre Física UCV)
-    if (userId === 'santiago_fisica_ucv' || userId === 'santiago-003-uuid' || userId.includes('santiago')) {
-      this.saveEvents(userId, SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS);
-      return SANTIAGO_SEMESTER_1_DEFAULT_EVALUATIONS;
     }
 
 

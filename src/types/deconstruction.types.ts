@@ -105,6 +105,51 @@ export interface DeconstructedQuestion {
 }
 
 /**
+ * Recursos Multimedia Integrados (Videos, Audios, Infografías y Simulaciones)
+ */
+export type MultimediaType = 'video' | 'audio' | 'image' | 'simulation';
+
+export interface MultimediaResource {
+  id: string;
+  type: MultimediaType;
+  title: string;
+  url: string; // URL de YouTube, audio stream, enlace de imagen o simulación interactiva
+  embedUrl?: string; // URL de incrustación si aplica (ej. youtube-nocookie.com/embed/...)
+  thumbnail?: string;
+  durationOrSize?: string; // ej. "14:20 min", "Audio 5:30", "Diagrama Vectorial HD"
+  authorOrSource?: string; // ej. "3Blue1Brown", "Walter Lewin - MIT", "El Traductor de Ingeniería", "UCV Ciencias"
+  description: string;
+}
+
+/**
+ * Arquitectura de Prompt de Investigación y Elaboración (Especificación Santiago Rivero)
+ * Sigue el flujo de 4 bloques continuos:
+ * 1. Disparador de Acción + Método de Entrada ("Quiero que analizando...")
+ * 2. Especificación del Entregable + Sub-requisitos ("...aparte de que...")
+ * 3. El "Por Qué" Arquitectónico ("...porque voy a...")
+ * 4. La Meta de Automatización / Escalabilidad ("...esto para poder que...")
+ */
+export type ResearchDeliverableType =
+  | 'informe_laboratorio'
+  | 'trabajo_escrito'
+  | 'proyecto_simulacion'
+  | 'taller_practico'
+  | 'analisis_literario';
+
+export interface SantiagoResearchPrompt {
+  id: string;
+  evaluationId?: string;
+  title: string;
+  deliverableType: ResearchDeliverableType;
+  deliverableLabel: string; // ej. "Informe de Laboratorio con Incertidumbres", "Proyecto Computacional"
+  promptText: string; // Redacción en bloque continuo siguiendo la sintaxis natural de Santiago
+  targetAudience: string; // ej. "Facultad de Ciencias UCV", "Bachillerato General"
+  outputRequirements: string[]; // Lista plana sin subpuntos de restricciones de salida
+  suggestedTools: string[]; // ej. ["Python / NumPy / Matplotlib", "SciDAVis", "Overleaf LaTeX"]
+  purposeContext: string; // Resumen del objetivo arquitectónico
+}
+
+/**
  * Estructura Completa de la Guía de Estudio Hiper-Compleja
  * Producida por el Motor de Deconstrucción Académica (Gemini API)
  */
@@ -112,6 +157,7 @@ export interface DeconstructedAcademicGuide {
   id?: string;
   userId?: string;
   documentId?: string;
+  evaluationEventId?: string; // Conexión directa con el calendario de evaluaciones
   createdAt?: string;
   sourceType?: 'document' | 'topic_prompt';
   /**
@@ -128,6 +174,8 @@ export interface DeconstructedAcademicGuide {
   commonErrorsAlerts: CommonErrorAlert[];
   studyTechniquesHub: StudyTechniquesHub;
   generatedQuestions: DeconstructedQuestion[];
+  multimediaResources?: MultimediaResource[];
+  researchPrompts?: SantiagoResearchPrompt[];
 }
 
 /**

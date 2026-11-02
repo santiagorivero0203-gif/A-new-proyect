@@ -1,3 +1,5 @@
+import type { MultimediaResource, SantiagoResearchPrompt } from './deconstruction.types';
+
 /**
  * Tipos de datos para el Sistema Integral de Planificación Académica
  * Recordatorios, Calendario de Evaluaciones, Planes de Evaluación y Cuaderno de Notas
@@ -23,6 +25,9 @@ export interface EvaluationEvent {
   topics?: string[];
   scoreObtained?: number; // Calificación sobre 20 puntos
   notes?: string;
+  guideId?: string; // Enlace con la Guía Deconstruida correspondiente
+  multimediaResources?: MultimediaResource[]; // Videos, audios y diagramas temáticos
+  researchPrompt?: SantiagoResearchPrompt; // Prompt con arquitectura Santiago para informes o proyectos
 }
 
 export interface StudyReminder {

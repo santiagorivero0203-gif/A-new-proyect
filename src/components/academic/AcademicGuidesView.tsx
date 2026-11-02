@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
   simadiBankService,
@@ -85,10 +85,28 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
   const [andresSubjectFilter, setAndresSubjectFilter] = useState<
     'TODAS' | 'Matemática' | 'Biología' | 'Física' | 'Castellano' | 'Diseño'
   >('TODAS');
+  // Filtro temático de asignaturas exclusivo para Santiago Rivero
+  const [santiagoSubjectFilter, setSantiagoSubjectFilter] = useState<
+    'TODAS' | 'Física I' | 'Cálculo I' | 'Álgebra Lineal' | 'Laboratorio I'
+  >('TODAS');
 
   // Estado para Guías Deconstruidas con Gemini IA
   const [selectedDeconstructedGuide, setSelectedDeconstructedGuide] =
     useState<DeconstructedAcademicGuide | null>(null);
+
+  // Escuchar si hay una guía específica solicitada desde el Calendario
+  useEffect(() => {
+    const autoGuideId = sessionStorage.getItem('cpe_auto_open_guide_id');
+    if (autoGuideId) {
+      sessionStorage.removeItem('cpe_auto_open_guide_id');
+      const found = SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.find((g) => g.id === autoGuideId)
+        || ALL_ANDRES_DECONSTRUCTED_GUIDES.find((g) => g.id === autoGuideId)
+        || ALL_MAFE_DECONSTRUCTED_GUIDES.find((g) => g.id === autoGuideId);
+      if (found) {
+        setSelectedDeconstructedGuide(found);
+      }
+    }
+  }, []);
 
   // Estado del Selector de Temas
   const [selectedArea, setSelectedArea] = useState<string>('Razonamiento Lógico Numérico');
@@ -352,14 +370,14 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                   Licenciatura en Física · Facultad de Ciencias UCV
                 </span>
                 <span className="text-[10px] font-mono text-slate-300">
-                  Semestre I • {SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.length} Guías Deconstruidas • {SANTIAGO_SEMESTER_1_QUESTIONS.length} Reactivos Analíticos
+                  Semestre I • {SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.length} Guías Oficiales • {SANTIAGO_SEMESTER_1_QUESTIONS.length} Reactivos
                 </span>
               </div>
               <h3 className="text-lg font-bold text-white tracking-tight font-sans">
                 Mi Centro Académico · Primer Semestre UCV
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
-                Temario oficial de Física I (Mecánica ℝ³ y leyes de Newton), Cálculo I (Axiomas reales, límites ε-δ y derivadas), Álgebra Lineal & Geometría Analítica (Planos, matrices y determinantes) y Laboratorio I de Física (Metrología y propagación de incertidumbres).
+                Temario oficial con guías de estudio deconstruidas en 7 pilares, recursos de video, audios de síntesis y prompts de investigación con arquitectura Santiago para cada evaluación y tema.
               </p>
             </div>
 
@@ -379,78 +397,133 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
             </div>
           </div>
 
-          {/* Grid de las 4 Guías Oficiales Deconstruidas de Semestre I */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.map((guide) => (
-              <div
-                key={guide.id}
-                className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-blue-200/90 dark:border-blue-900/40 hover:border-[#0F52BA] transition-all shadow-soft flex flex-col justify-between space-y-4"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/80 text-[#0F52BA] dark:text-blue-300 font-mono">
-                      {guide.guideMetadata.area}
-                    </span>
-                    <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md">
-                      {guide.generatedQuestions?.length || 5} Reactivos
-                    </span>
+          {/* Filtros de Asignatura de Semestre I para Santiago */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 w-fit">
+              {[
+                { id: 'TODAS', label: `Todas (${SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.length})` },
+                { id: 'Física I', label: 'Física I' },
+                { id: 'Cálculo I', label: 'Cálculo I' },
+                { id: 'Álgebra Lineal', label: 'Álgebra Lineal' },
+                { id: 'Laboratorio I', label: 'Laboratorio I' },
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setSantiagoSubjectFilter(f.id as any)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                    santiagoSubjectFilter === f.id
+                      ? 'bg-[#0F52BA] text-white shadow-soft-sm font-bold'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            <span className="text-xs text-slate-500 font-mono">
+              {santiagoSubjectFilter === 'TODAS'
+                ? `Mostrando las ${SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.length} guías`
+                : `Filtro activo: ${santiagoSubjectFilter}`}
+            </span>
+          </div>
+
+          {/* Grid de Guías Oficiales Deconstruidas de Semestre I */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES.filter((guide) => {
+              if (santiagoSubjectFilter === 'TODAS') return true;
+              return guide.guideMetadata.area.toLowerCase().includes(santiagoSubjectFilter.toLowerCase());
+            }).map((guide) => {
+              const multimediaCount = guide.multimediaResources?.length || 0;
+              const hasPrompts = guide.researchPrompts && guide.researchPrompts.length > 0;
+
+              return (
+                <div
+                  key={guide.id}
+                  className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-blue-200/90 dark:border-blue-900/40 hover:border-[#0F52BA] transition-all shadow-soft flex flex-col justify-between space-y-4"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex flex-wrap items-center justify-between gap-1">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/80 text-[#0F52BA] dark:text-blue-300 font-mono">
+                        {guide.guideMetadata.area}
+                      </span>
+                      <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md">
+                        {guide.generatedQuestions?.length || 5} Reactivos
+                      </span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug font-sans">
+                      {guide.guideMetadata.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 font-sans">
+                      {guide.guideMetadata.summary}
+                    </p>
+
+                    {/* Píldoras de Multimedia y Prompts si aplican */}
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {multimediaCount > 0 && (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/70 font-mono flex items-center gap-1">
+                          <span>🎬</span>
+                          <span>{multimediaCount} Multimedia</span>
+                        </span>
+                      )}
+                      {hasPrompts && (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/70 font-mono flex items-center gap-1">
+                          <span>📋</span>
+                          <span>Prompt IA</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-mono text-slate-400">
+                      <span>• {guide.glossary?.length || 0} términos</span>
+                      <span>• {guide.formulasAndStrategies?.coreFormulas?.length || 0} fórmulas</span>
+                      <span>• {guide.studyTechniquesHub?.activeRecallFlashcards?.length || 0} flashcards</span>
+                    </div>
                   </div>
 
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug font-sans">
-                    {guide.guideMetadata.title}
-                  </h3>
+                  {/* Barra de Acciones y Descarga de Documentos (PDF / Word) */}
+                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => exportGuideToPdf(guide)}
+                        className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 text-[#0F52BA] dark:text-blue-300 border border-blue-200/90 dark:border-blue-800/60 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                        title="Descargar o Guardar como PDF de alta resolución"
+                      >
+                        <span>📄 PDF (.pdf)</span>
+                      </button>
+                      <button
+                        onClick={() => exportGuideToWord(guide)}
+                        className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                        title="Descargar guía completa en formato Microsoft Word (.doc)"
+                      >
+                        <span>📝 Word (.doc)</span>
+                      </button>
+                    </div>
 
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 font-sans">
-                    {guide.guideMetadata.summary}
-                  </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setSelectedDeconstructedGuide(guide)}
+                        className="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-900 hover:bg-black text-white flex items-center justify-center gap-1.5 transition-all shadow-soft cursor-pointer active:scale-[0.98]"
+                      >
+                        <BookOpenIcon className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Ver Guía</span>
+                      </button>
 
-                  <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-mono text-slate-400">
-                    <span>• {guide.glossary?.length || 0} términos</span>
-                    <span>• {guide.formulasAndStrategies?.coreFormulas?.length || 0} modelos</span>
-                    <span>• {guide.studyTechniquesHub?.activeRecallFlashcards?.length || 0} flashcards</span>
+                      <button
+                        onClick={() => handleStartExamFromDeconstructed(guide)}
+                        className="py-2 px-3.5 rounded-xl text-xs font-bold bg-[#0F52BA] hover:bg-[#0c4194] text-white shadow-soft flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98]"
+                        title="Simular examen con preguntas de esta guía"
+                      >
+                        <PlayIcon className="w-3.5 h-3.5 text-white" />
+                        <span>Examen</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-
-                {/* Barra de Acciones y Descarga de Documentos (PDF / Word) */}
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => exportGuideToPdf(guide)}
-                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 text-[#0F52BA] dark:text-blue-300 border border-blue-200/90 dark:border-blue-800/60 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
-                      title="Descargar o Guardar como PDF de alta resolución"
-                    >
-                      <span>📄 PDF (.pdf)</span>
-                    </button>
-                    <button
-                      onClick={() => exportGuideToWord(guide)}
-                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
-                      title="Descargar guía completa en formato Microsoft Word (.doc)"
-                    >
-                      <span>📝 Word (.doc)</span>
-                    </button>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setSelectedDeconstructedGuide(guide)}
-                      className="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-900 hover:bg-black text-white flex items-center justify-center gap-1.5 transition-all shadow-soft cursor-pointer active:scale-[0.98]"
-                    >
-                      <BookOpenIcon className="w-3.5 h-3.5 text-blue-400" />
-                      <span>Ver Guía</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleStartExamFromDeconstructed(guide)}
-                      className="py-2 px-3.5 rounded-xl text-xs font-bold bg-[#0F52BA] hover:bg-[#0c4194] text-white shadow-soft flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98]"
-                      title="Simular examen con preguntas de esta guía"
-                    >
-                      <PlayIcon className="w-3.5 h-3.5 text-white" />
-                      <span>Examen</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

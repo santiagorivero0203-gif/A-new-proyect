@@ -15,7 +15,7 @@ import { EmptyState } from '../common/EmptyState';
 interface AcademicCalendarViewProps {
   events: EvaluationEvent[];
   onLaunchExam?: (config: ExamConfig) => void;
-  onNavigateToGuides?: () => void;
+  onNavigateToGuides?: (guideId?: string) => void;
   onSelectEvent?: (event: EvaluationEvent) => void;
   onOpenCreateEvent?: () => void;
 }
@@ -39,6 +39,7 @@ export const AcademicCalendarView: React.FC<AcademicCalendarViewProps> = ({
   const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 9, 12)); // Octubre 2026
   const [selectedEvent, setSelectedEvent] = useState<EvaluationEvent | null>(null);
   const [filterSubject, setFilterSubject] = useState<string>('TODAS');
+  const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null);
   const [notifGranted, setNotifGranted] = useState<boolean>(() => {
     return notificationService.getPermissionStatus() === 'granted';
   });
@@ -506,6 +507,73 @@ export const AcademicCalendarView: React.FC<AcademicCalendarViewProps> = ({
               </div>
             )}
 
+            {/* Prompt de Investigación con Arquitectura Santiago si aplica */}
+            {selectedEvent.researchPrompt && (
+              <div className="p-4 rounded-2xl bg-indigo-50/80 border border-indigo-200/90 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm">📋</span>
+                    <span className="text-xs font-bold text-indigo-950 font-sans">
+                      Prompt de Investigación (Arquitectura Santiago)
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-bold">
+                    {selectedEvent.researchPrompt.deliverableLabel}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed bg-white/95 p-3 rounded-xl border border-indigo-100 font-sans">
+                  "{selectedEvent.researchPrompt.promptText}"
+                </p>
+                <div className="flex items-center justify-between gap-2 pt-0.5">
+                  <span className="text-[11px] text-indigo-700 font-mono">
+                    4 Bloques continuos • Sin relleno
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedEvent.researchPrompt!.promptText);
+                      setCopiedPromptId(selectedEvent.researchPrompt!.id);
+                      setTimeout(() => setCopiedPromptId(null), 2500);
+                    }}
+                    className="py-1 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold transition-all shadow-soft-xs flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>{copiedPromptId === selectedEvent.researchPrompt.id ? '¡Copiado! ✓' : 'Copiar Prompt'}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Recursos Multimedia Asociados */}
+            {selectedEvent.multimediaResources && selectedEvent.multimediaResources.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                  <span>🎬 Recursos Multimedia ({selectedEvent.multimediaResources.length}):</span>
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {selectedEvent.multimediaResources.map((res) => (
+                    <a
+                      key={res.id}
+                      href={res.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2.5 rounded-xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-blue-300 transition-all text-xs flex items-center gap-2.5 group"
+                    >
+                      <span className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-xs group-hover:scale-105 transition-transform shadow-soft-2xs">
+                        {res.type === 'video' ? '▶️' : res.type === 'audio' ? '🎙️' : '📊'}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <span className="font-bold text-slate-900 group-hover:text-[#0F52BA] truncate block">
+                          {res.title}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono block">
+                          {res.durationOrSize || res.authorOrSource}
+                        </span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Conexión Viva: Botones de Estudio y Simulación */}
             <div className="pt-3 border-t border-slate-100 space-y-2.5">
               <button
@@ -521,8 +589,9 @@ export const AcademicCalendarView: React.FC<AcademicCalendarViewProps> = ({
 
               <button
                 onClick={() => {
+                  const guideId = selectedEvent.guideId;
                   setSelectedEvent(null);
-                  if (onNavigateToGuides) onNavigateToGuides();
+                  if (onNavigateToGuides) onNavigateToGuides(guideId);
                 }}
                 className="w-full py-3 px-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
               >
