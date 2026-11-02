@@ -4,7 +4,7 @@ import type { UserProfile, AcademicProfileId, MainTabType } from '../types';
  * Pestañas de la barra lateral recomendadas por perfil académico
  */
 export const DEFAULT_PROFILE_SIDEBAR_TABS: Record<AcademicProfileId, MainTabType[]> = {
-  andres_bachillerato_1: ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'MATH_LAB', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
+  andres_bachillerato_1: ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'],
   prima_bachillerato_5: ['PRODUCTIVITY', 'EXAMS', 'PLANNER', 'GUIDES', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
   santiago_fisica_ucv: ['PRODUCTIVITY', 'UCV_COURSE', 'MATH_LAB', 'SCIENCE_LAB', 'EXAMS', 'PLANNER', 'GUIDES', 'STORAGE', 'SETTINGS'],
   mafe_diseno_ucab: ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'CREATIVE_BOARD', 'DESIGN_PALETTE', 'PLANNER', 'STORAGE', 'SETTINGS'],
@@ -23,11 +23,11 @@ export const MOCK_PROFILES: Record<AcademicProfileId, UserProfile> = {
     institution: '1er Año de Bachillerato (Secundaria)',
     academic_goal: 'Transición a bachillerato y técnicas de estudio fundamentales',
     preferences: {
-      theme: 'light',
+      theme: 'dark',
       sound_enabled: true,
       focus_duration: 25,
       compact_mode: false,
-      sidebar_tabs: ['PRODUCTIVITY', 'GUIDES', 'EXAMS', 'PLANNER', 'MATH_LAB', 'SCIENCE_LAB', 'HUMANITIES_LAB', 'STORAGE', 'SETTINGS'],
+      sidebar_tabs: ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'],
     },
     created_at: '2026-09-15T10:00:00Z',
     updated_at: '2026-10-12T14:30:00Z',

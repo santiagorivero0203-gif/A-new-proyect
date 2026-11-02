@@ -53,6 +53,18 @@ function getHydratedProfile(profileId: AcademicProfileId): UserProfile {
         if (!tabs.includes('EXAMS')) tabs.splice(2, 0, 'EXAMS');
       }
 
+      // Auto-reparar caché local de Andrés: simplificar su vista escondiendo módulos universitarios complejos
+      if (profileId === 'andres_bachillerato_1') {
+        return {
+          ...base,
+          preferences: {
+            ...base.preferences,
+            ...parsed,
+            sidebar_tabs: ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'],
+          },
+        };
+      }
+
       return {
         ...base,
         preferences: {
@@ -193,17 +205,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     try {
       const savedTheme = localStorage.getItem('cpe_theme');
-      if (savedTheme === 'rose_pastel') {
-        document.documentElement.classList.remove('dark');
+      if (savedTheme === 'playstation_dark') {
+        document.documentElement.classList.remove('theme-rose-pastel');
+        document.documentElement.classList.add('dark', 'theme-playstation-dark');
+      } else if (savedTheme === 'rose_pastel') {
+        document.documentElement.classList.remove('dark', 'theme-playstation-dark');
         document.documentElement.classList.add('theme-rose-pastel');
       } else if (savedTheme === 'dark') {
-        document.documentElement.classList.remove('theme-rose-pastel');
+        document.documentElement.classList.remove('theme-rose-pastel', 'theme-playstation-dark');
         document.documentElement.classList.add('dark');
       } else if (savedTheme === 'light') {
-        document.documentElement.classList.remove('dark', 'theme-rose-pastel');
+        document.documentElement.classList.remove('dark', 'theme-rose-pastel', 'theme-playstation-dark');
       } else {
         const savedProfile = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (savedProfile === 'mafe_diseno_ucab') {
+        if (savedProfile === 'andres_bachillerato_1') {
+          document.documentElement.classList.remove('theme-rose-pastel');
+          document.documentElement.classList.add('dark', 'theme-playstation-dark');
+          localStorage.setItem('cpe_theme', 'playstation_dark');
+        } else if (savedProfile === 'mafe_diseno_ucab') {
           document.documentElement.classList.add('theme-rose-pastel');
           localStorage.setItem('cpe_theme', 'rose_pastel');
         }
@@ -222,14 +241,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCurrentUser(hydrated);
     localStorage.setItem(LOCAL_STORAGE_KEY, profileId);
 
-    // Si cambia al perfil de María Fernanda y no tiene tema fijado, activar la atmósfera Rose Pastel
-    if (profileId === 'mafe_diseno_ucab') {
+    // Si cambia al perfil de Andrés Rivero, activar automáticamente el tema PlayStation/Gemini Dark
+    if (profileId === 'andres_bachillerato_1') {
+      document.documentElement.classList.remove('theme-rose-pastel');
+      document.documentElement.classList.add('dark', 'theme-playstation-dark');
+      localStorage.setItem('cpe_theme', 'playstation_dark');
+      localStorage.setItem('studynexus_theme', 'playstation_dark');
+    } else if (profileId === 'mafe_diseno_ucab') {
+      document.documentElement.classList.remove('dark', 'theme-playstation-dark');
+      document.documentElement.classList.add('theme-rose-pastel');
+      localStorage.setItem('cpe_theme', 'rose_pastel');
+      localStorage.setItem('studynexus_theme', 'rose_pastel');
+    } else {
+      document.documentElement.classList.remove('theme-rose-pastel', 'theme-playstation-dark');
       const current = localStorage.getItem('cpe_theme');
-      if (!current || current === 'light') {
+      if (current === 'playstation_dark' || current === 'rose_pastel') {
+        localStorage.setItem('cpe_theme', 'light');
         document.documentElement.classList.remove('dark');
-        document.documentElement.classList.add('theme-rose-pastel');
-        localStorage.setItem('cpe_theme', 'rose_pastel');
-        localStorage.setItem('studynexus_theme', 'rose_pastel');
       }
     }
   };
@@ -242,6 +270,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Obtiene las pestañas de la barra lateral configuradas para cualquier perfil
    */
   const getProfileSidebarTabs = (profileId: AcademicProfileId): MainTabType[] => {
+    if (profileId === 'andres_bachillerato_1') {
+      return ['PRODUCTIVITY', 'PLANNER', 'GUIDES', 'EXAMS', 'STORAGE'];
+    }
+
     try {
       const savedPrefs = localStorage.getItem(`cpe_profile_prefs_${profileId}`);
       if (savedPrefs) {
@@ -264,11 +296,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const defaultTabs = [
       ...(DEFAULT_PROFILE_SIDEBAR_TABS[profileId] || [
         'PRODUCTIVITY',
+        'PLANNER',
         'GUIDES',
         'EXAMS',
-        'PLANNER',
         'STORAGE',
-        'TOOLS',
       ]),
     ];
     if (profileId === 'santiago_fisica_ucv' && !defaultTabs.includes('UCV_COURSE')) {

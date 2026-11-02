@@ -1358,13 +1358,668 @@ export const ANDRES_SPANISH_BARRABAS_GUIDE: DeconstructedAcademicGuide = {
 };
 
 // =====================================================================
-// 7. GUÍAS OFICIALES REUNIDAS PARA EL PERFIL DE ANDRÉS
+// GUÍA 5: MATEMÁTICAS · POTENCIACIÓN EN ℤ, FACTORES PRIMOS Y M.C.M.
+// =====================================================================
+export const ANDRES_MATH_POWERS_MCM_GUIDE: DeconstructedAcademicGuide = {
+  id: 'andres-math-powers-factors',
+  userId: ANDRES_PROFILE,
+  sourceType: 'document',
+  discipline: 'science',
+  createdAt: '2026-11-01T00:00:00.000Z',
+  guideMetadata: {
+    title: 'Potenciación en ℤ, Factores Primos, m.c.m. y M.C.D.',
+    area: 'Matemática · 1er Año Bachillerato',
+    summary:
+      'Guía oficial para la evaluación sumativa de matemática. Domina las propiedades de los exponentes en números enteros, el comportamiento del signo según exponente par o impar, descomposición en factores primos y las reglas mnemotécnicas para calcular m.c.m. y M.C.D. sin dudar.',
+  },
+  phenomenonAndTheory: [
+    '### UNIDAD I: POTENCIACIÓN EN ℤ Y COMPORTAMIENTO DEL SIGNO',
+    'La potenciación es una multiplicación abreviada donde la **base** se multiplica por sí misma tantas veces como indique el **exponente**:',
+    '$$a^n = a \\cdot a \\cdot \\dots \\cdot a \\quad (n\\text{ veces})$$',
+    '',
+    '> **Regla de Oro de los Signos en Potenciación:**',
+    '> • Base negativa elevada a exponente PAR da resultado POSITIVO: $(-3)^2 = (-3) \\cdot (-3) = +9$.',
+    '> • Base negativa elevada a exponente IMPAR da resultado NEGATIVO: $(-2)^3 = (-2) \\cdot (-2) \\cdot (-2) = -8$.',
+    '> • ¡Cuidado con el paréntesis! $-3^2 = -(3 \\cdot 3) = -9$, mientras que $(-3)^2 = +9$.',
+    '',
+    '### UNIDAD II: PROPIEDADES FUNDAMENTALES DE LAS POTENCIAS',
+    '• **Producto de potencias de igual base:** Se copia la base y se suman los exponentes: $a^m \\cdot a^n = a^{m+n}$.',
+    '• **Cociente de potencias de igual base:** Se copia la base y se restan los exponentes: $\\frac{a^m}{a^n} = a^{m-n}$.',
+    '• **Potencia de una potencia:** Se multiplican los exponentes: $(a^m)^n = a^{m \\cdot n}$.',
+    '• **Exponente cero:** Todo número distinto de cero elevado a la cero es igual a 1: $a^0 = 1$.',
+    '',
+    '### UNIDAD III: DESCOMPOSICIÓN EN FACTORES PRIMOS',
+    'Un número primo solo tiene dos divisores: el 1 y él mismo ($2, 3, 5, 7, 11, 13, \\dots$).',
+    'Para descomponer un número compuesto, dividimos sucesivamente entre números primos:',
+    'Ejemplo: $60 = 2^2 \\cdot 3 \\cdot 5$.',
+    '',
+    '### UNIDAD IV: MÍNIMO COMÚN MÚLTIPLO (m.c.m.) Y MÁXIMO COMÚN DIVISOR (M.C.D.)',
+    '> **Regla Mnemotécnica Infalible:**',
+    '> • **m.c.m. (El Goloso):** Factores COMUNES Y NO COMUNES con su MAYOR exponente. Es el número más pequeño que contiene a todos.',
+    '> • **M.C.D. (El Exigente):** SOLO factores COMUNES con su MENOR exponente. Es el divisor más grande que divide exactamente a todos.',
+  ].join('\n'),
+  glossary: [
+    { term: 'Base', symbolOrUnit: 'a', definition: 'Factor numérico que se repite en una multiplicación abreviada.' },
+    { term: 'Exponente', symbolOrUnit: 'n', definition: 'Indica cuántas veces se multiplica la base por sí misma.' },
+    { term: 'Número Primo', symbolOrUnit: 'p ∈ ℙ', definition: 'Entero mayor que 1 divisible únicamente entre 1 y sí mismo.' },
+    { term: 'm.c.m.', symbolOrUnit: 'm.c.m.(a,b)', definition: 'Mínimo Común Múltiplo: menor entero positivo divisible entre los números dados.' },
+    { term: 'M.C.D.', symbolOrUnit: 'M.C.D.(a,b)', definition: 'Máximo Común Divisor: mayor entero positivo que divide simultáneamente a los números dados.' },
+  ],
+  formulasAndStrategies: {
+    coreFormulas: [
+      { name: 'Producto de Potencias', latex: '$$a^m \\cdot a^n = a^{m+n}$$', application: 'Suma de exponentes al multiplicar bases iguales.' },
+      { name: 'Cociente de Potencias', latex: '$$\\frac{a^m}{a^n} = a^{m-n}$$', application: 'Resta de exponentes al dividir bases iguales.' },
+      { name: 'Potencia de Potencia', latex: '$$(a^m)^n = a^{m \\cdot n}$$', application: 'Multiplicación directa de exponentes.' },
+      { name: 'Fórmula del m.c.m. y M.C.D.', latex: '$$\\text{m.c.m.}(a,b) \\cdot \\text{M.C.D.}(a,b) = a \\cdot b$$', application: 'Comprobación de cálculo para dos números enteros.' },
+    ],
+    mnemonicsAndPatterns: [
+      'El m.c.m. es "goloso": quiere todos los factores (comunes y no comunes) al mayor exponente.',
+      'El M.C.D. es "exigente": solo admite los que están repetidos en todos al menor exponente.',
+      'Base negativa + exponente par = ¡Fiesta positiva (+)!',
+    ],
+  },
+  stepByStepExamples: [
+    {
+      title: 'Cálculo del m.c.m. y M.C.D. entre 24 y 36',
+      problemStatement: 'Descomponer 24 y 36 en factores primos y hallar su m.c.m. y su M.C.D.',
+      deductiveSteps: [
+        'Paso 1: Descomponer 24 = 24/2 = 12, 12/2 = 6, 6/2 = 3, 3/3 = 1 => 24 = 2³ · 3¹.',
+        'Paso 2: Descomponer 36 = 36/2 = 18, 18/2 = 9, 9/3 = 3, 3/3 = 1 => 36 = 2² · 3².',
+        'Paso 3: Para M.C.D.: Tomamos comunes con menor exponente => 2² · 3¹ = 4 · 3 = 12.',
+        'Paso 4: Para m.c.m.: Tomamos comunes y no comunes con mayor exponente => 2³ · 3² = 8 · 9 = 72.',
+      ],
+      finalResult: 'M.C.D.(24, 36) = 12  |  m.c.m.(24, 36) = 72.',
+    },
+  ],
+  commonErrorsAlerts: [
+    {
+      trap: 'Olvidar el paréntesis al elevar números negativos: escribir -5² creyendo que da +25.',
+      correction: 'El exponente solo afecta al signo si está encerrado entre paréntesis: (-5)² = +25, mientras que -5² = -25.',
+    },
+    {
+      trap: 'Confundir las reglas de m.c.m. y M.C.D., tomando el mayor exponente para el M.C.D.',
+      correction: 'El divisor común no puede ser más grande que los números originales. Recuerda: M.C.D. = menor exponente.',
+    },
+  ],
+  studyTechniquesHub: {
+    activeRecallFlashcards: [
+      { front: '¿Cuál es el signo del resultado de (-2)⁵?', back: 'Negativo (-32), porque la base es negativa y el exponente es impar.' },
+      { front: '¿Qué regla se aplica al multiplicar x⁴ · x³?', back: 'Se copia la base y se suman los exponentes: x⁴⁺³ = x⁷.' },
+      { front: '¿Cómo se elige el m.c.m. a partir de factores primos?', back: 'Factores comunes y no comunes con su mayor exponente.' },
+      { front: '¿Cuánto vale cualquier número elevado a la 0 (distinto de 0)?', back: 'Vale exactamente 1 (a⁰ = 1).' },
+    ],
+    cornellSynthesis: {
+      cues: ['Potencia de base negativa', 'Propiedades de potencias', 'Factores primos', 'm.c.m. vs M.C.D.'],
+      notes: [
+        'Exponente par = positivo; exponente impar = negativo.',
+        'Bases iguales al multiplicar = se suman exponentes.',
+        'Bases iguales al dividir = se restan exponentes.',
+        'm.c.m. = comunes y no comunes con mayor exponente.',
+        'M.C.D. = solo comunes con menor exponente.',
+      ],
+      summary: 'La potenciación simplifica cálculos algebraicos. Dominar los factores primos y la regla de m.c.m./M.C.D. es la llave para aprobar fracciones y ecuaciones.',
+    },
+    conceptMapNodes: 'Potenciación -> Exponentes -> Factores Primos -> m.c.m. / M.C.D.',
+  },
+  generatedQuestions: [
+    {
+      area: 'Matemática',
+      tema: 'Propiedades de la Potenciación',
+      tipo: 'opcion_multiple',
+      pregunta: 'Simplifica la expresión: \\(2^3 \\cdot 2^4\\)',
+      opciones: ['\\(2^7 = 128\\)', '\\(2^{12} = 4096\\)', '\\(4^7\\)', '\\(2^1 = 2\\)'],
+      correcta: '\\(2^7 = 128\\)',
+      justificacion: '**Resolución:** Producto de potencias de igual base: se copia la base 2 y se suman los exponentes (3 + 4 = 7). 2⁷ = 128.',
+    },
+    {
+      area: 'Matemática',
+      tema: 'Cálculo de m.c.m.',
+      tipo: 'opcion_multiple',
+      pregunta: '¿Cuál es el mínimo común múltiplo (m.c.m.) entre 12 y 18?',
+      opciones: ['36', '6', '72', '216'],
+      correcta: '36',
+      justificacion: '**Resolución:** 12 = 2² · 3 y 18 = 2 · 3². m.c.m. = 2² · 3² = 4 · 9 = 36.',
+    },
+  ],
+};
+
+// =====================================================================
+// GUÍA 6: MATEMÁTICAS · GEOMETRÍA BÁSICA, POLÍGONOS Y PERÍMETROS
+// =====================================================================
+export const ANDRES_MATH_GEOMETRY_GUIDE: DeconstructedAcademicGuide = {
+  id: 'andres-math-geometry-perimeters',
+  userId: ANDRES_PROFILE,
+  sourceType: 'document',
+  discipline: 'science',
+  createdAt: '2026-11-01T00:00:00.000Z',
+  guideMetadata: {
+    title: 'Geometría Básica, Polígonos, Ángulos y Perímetros',
+    area: 'Matemática · 1er Año Bachillerato',
+    summary:
+      'Guía oficial para el proyecto de geometría y dibujo técnico escolar. Aprende a clasificar ángulos, polígonos regulares e irregulares, el uso correcto de regla y compás, y el cálculo deductivo de perímetros en figuras cotidianas.',
+  },
+  phenomenonAndTheory: [
+    '### UNIDAD I: ELEMENTOS GEOMÉTRICOS FUNDAMENTALES',
+    '• **Punto:** Marca sin dimensiones que indica una posición en el plano.',
+    '• **Recta:** Sucesión infinita de puntos alineados en una misma dirección.',
+    '• **Segmento:** Porción de recta delimitada por dos puntos extremos ($A$ y $B$).',
+    '• **Semirrecta:** Recta con punto de origen pero sin fin.',
+    '',
+    '### UNIDAD II: CLASIFICACIÓN DE ÁNGULOS',
+    '> **Tipos de Ángulos:**',
+    '> • **Agudo:** Mide menos de $90^\\circ$ (abertura cerrada).',
+    '> • **Recto:** Mide exactamente $90^\\circ$ (forma de esquina perfecta "L").',
+    '> • **Obtuso:** Mide más de $90^\\circ$ y menos de $180^\\circ$.',
+    '> • **Llano:** Mide exactamente $180^\\circ$ (línea recta completa).',
+    '',
+    '### UNIDAD III: POLÍGONOS Y SU PERÍMETRO',
+    'Un polígono es una figura geométrica plana y cerrada formada por segmentos rectos.',
+    'El **Perímetro ($P$)** es la suma total de las longitudes de todos sus lados:',
+    '$$P = l_1 + l_2 + l_3 + \\dots + l_n$$',
+    '• **Triángulo equilátero:** $P = 3 \\cdot l$.',
+    '• **Cuadrado:** $P = 4 \\cdot l$.',
+    '• **Rectángulo:** $P = 2 \\cdot b + 2 \\cdot h$.',
+  ].join('\n'),
+  glossary: [
+    { term: 'Perímetro', symbolOrUnit: 'P (cm / m)', definition: 'Medida del contorno o frontera exterior de una figura geométrica cerrada.' },
+    { term: 'Ángulo Recto', symbolOrUnit: '90°', definition: 'Ángulo formado por dos rectas perpendiculares; equivale a un cuarto de vuelta.' },
+    { term: 'Polígono Regular', symbolOrUnit: 'Figura n-lados', definition: 'Figura plana cuyos lados y ángulos interiores son todos exactamente iguales.' },
+    { term: 'Compás', symbolOrUnit: 'Instrumento', definition: 'Herramienta de precisión para trazar circunferencias y transportar distancias iguales.' },
+  ],
+  formulasAndStrategies: {
+    coreFormulas: [
+      { name: 'Perímetro del Rectángulo', latex: '$$P = 2b + 2h$$', application: 'Cálculo del borde de canchas, hojas y tarjetas navideñas.' },
+      { name: 'Perímetro del Polígono Regular', latex: '$$P = n \\cdot l$$', application: 'Multiplicar número de lados por la longitud de un lado.' },
+    ],
+    mnemonicsAndPatterns: [
+      'Perímetro viene de "peri" (alrededor) y "metrón" (medida): medir lo que caminas alrededor.',
+      'Ángulo recto = la esquina de tu cuaderno (90°).',
+    ],
+  },
+  stepByStepExamples: [
+    {
+      title: 'Perímetro de una Tarjeta Navideña Rectangular',
+      problemStatement: 'Andrés desea colocar una cinta dorada alrededor de su tarjeta navideña de 15 cm de ancho y 20 cm de largo. ¿Cuánta cinta necesita?',
+      deductiveSteps: [
+        'Paso 1: Identificar la figura: Es un rectángulo con base b = 15 cm y altura h = 20 cm.',
+        'Paso 2: Aplicar la fórmula: P = 2b + 2h.',
+        'Paso 3: Sustituir datos: P = 2(15 cm) + 2(20 cm) = 30 cm + 40 cm = 70 cm.',
+      ],
+      finalResult: 'Andrés necesita exactamente 70 cm de cinta dorada.',
+    },
+  ],
+  commonErrorsAlerts: [
+    {
+      trap: 'Confundir perímetro con área y multiplicar base por altura en lugar de sumar los lados.',
+      correction: 'Perímetro es longitud lineal (cm), área es superficie plana (cm²). Para perímetro siempre sumas los bordes.',
+    },
+  ],
+  studyTechniquesHub: {
+    activeRecallFlashcards: [
+      { front: '¿Cuánto mide un ángulo recto?', back: 'Exactamente 90 grados.' },
+      { front: '¿Cómo se calcula el perímetro de un pentágono regular de lado 6 cm?', back: 'P = 5 · 6 cm = 30 cm.' },
+      { front: '¿Qué es un ángulo agudo?', back: 'Un ángulo que mide menos de 90 grados.' },
+    ],
+    cornellSynthesis: {
+      cues: ['Punto y recta', 'Tipos de ángulos', 'Perímetro'],
+      notes: [
+        'Rectas perpendiculares forman 90°.',
+        'Perímetro = suma de todos los lados.',
+        'Figuras regulares: P = n × lado.',
+      ],
+      summary: 'La geometría elemental permite dimensionar objetos del mundo real mediante la suma de sus bordes y el trazado con instrumentos técnicos.',
+    },
+    conceptMapNodes: 'Geometría -> Ángulos -> Polígonos -> Perímetro',
+  },
+  generatedQuestions: [
+    {
+      area: 'Matemática',
+      tema: 'Cálculo de Perímetro',
+      tipo: 'opcion_multiple',
+      pregunta: 'Un triángulo equilátero tiene un lado que mide 8 cm. ¿Cuál es su perímetro?',
+      opciones: ['24 cm', '16 cm', '64 cm', '32 cm'],
+      correcta: '24 cm',
+      justificacion: '**Resolución:** En un triángulo equilátero los 3 lados son iguales: P = 8 + 8 + 8 = 3 · 8 = 24 cm.',
+    },
+  ],
+};
+
+// =====================================================================
+// GUÍA 7: BIOLOGÍA · BIOSEGURIDAD, MENISCO Y CAMBIOS DE FASE
+// =====================================================================
+export const ANDRES_BIOLOGY_SAFETY_MATTER_GUIDE: DeconstructedAcademicGuide = {
+  id: 'andres-bio-safety-matter',
+  userId: ANDRES_PROFILE,
+  sourceType: 'document',
+  discipline: 'science',
+  createdAt: '2026-11-01T00:00:00.000Z',
+  guideMetadata: {
+    title: 'Bioseguridad, Menisco Volumétrico y Cambios de Fase',
+    area: 'Biología y Ciencias Naturales · 1er Año Bachillerato',
+    summary:
+      'Guía oficial para la práctica de laboratorio y la prueba de estados de la materia. Conoce el protocolo de seguridad escolar, técnica de lectura a la base del menisco, y las diferencias moleculares entre sólido, líquido y gas.',
+  },
+  phenomenonAndTheory: [
+    '### UNIDAD I: NORMAS DE BIOSEGURIDAD EN EL LABORATORIO ESCOLAR',
+    'El laboratorio de ciencias es un entorno de descubrimiento que exige máxima disciplina:',
+    '• **Bata de laboratorio:** Blanca, de manga larga y abotonada para proteger piel y ropa.',
+    '• **Comportamiento:** Prohibido correr, jugar o probar sustancias químicas con la boca.',
+    '• **Calentamiento:** Nunca apuntar la boca de un tubo de ensayo hacia un compañero.',
+    '',
+    '### UNIDAD II: MEDICIÓN DE VOLUMEN Y LECTURA DEL MENISCO',
+    'Cuando se vierte agua en una probeta de vidrio, la superficie del líquido se curva debido a la tensión superficial:',
+    '> **Técnica del Menisco Cóncavo:**',
+    '> • Coloca la probeta sobre una mesa plana.',
+    '> • Sitúa tu ojo **exactamente a la misma altura** horizontal de la superficie del líquido (evitando el error de paralaje).',
+    '> • La medida correcta se toma en la **base o punto más bajo** de la curva del menisco.',
+    '',
+    '### UNIDAD III: ESTADOS DE LA MATERIA Y CAMBIOS DE FASE',
+    '• **Sólido:** Forma y volumen definidos; moléculas muy unidas vibrando en su lugar.',
+    '• **Líquido:** Volumen constante, forma adaptable al recipiente; moléculas resbalan entre sí.',
+    '• **Gaseoso:** Forma y volumen variables; partículas dispersas a gran velocidad.',
+    '',
+    '**Cambios de Estado Térmicos:**',
+    '• **Fusión:** Sólido a líquido (hielo derritiéndose).',
+    '• **Evaporación/Ebullición:** Líquido a gas.',
+    '• **Condensación:** Gas a líquido (rocío en las ventanas).',
+    '• **Solidificación:** Líquido a sólido (agua en el congelador).',
+  ].join('\n'),
+  glossary: [
+    { term: 'Menisco', symbolOrUnit: 'Curvatura', definition: 'Curva que forma la superficie libre de un líquido en un tubo estrecho o probeta.' },
+    { term: 'Error de Paralaje', symbolOrUnit: 'Desviación', definition: 'Error de lectura producido al no colocar la vista perpendicular a la escala de medición.' },
+    { term: 'Probeta Graduada', symbolOrUnit: 'mL', definition: 'Instrumento cilíndrico de vidrio o plástico con escala para medir volúmenes líquidos.' },
+    { term: 'Fusión', symbolOrUnit: 'Sólido -> Líquido', definition: 'Cambio de fase que experimenta una sustancia al absorber calor.' },
+  ],
+  formulasAndStrategies: {
+    coreFormulas: [
+      { name: 'Volumen por Desplazamiento', latex: '$$V_{\\text{sólido}} = V_{\\text{final}} - V_{\\text{inicial}}$$', application: 'Medición de sólidos irregulares sumergidos en probeta.' },
+      { name: 'Masa vs Peso', latex: '$$P = m \\cdot g$$', application: 'Distinción entre cantidad de materia (kg) y fuerza gravitatoria (N).' },
+    ],
+    mnemonicsAndPatterns: [
+      'Al menisco míralo "ojo a ojo": si lo miras desde arriba o abajo, la lectura se falsea.',
+      'Sólido = soldados en fila; Líquido = personas bailando; Gas = niños corriendo en el patio.',
+    ],
+  },
+  stepByStepExamples: [
+    {
+      title: 'Medir el Volumen de una Piedra Irregular',
+      problemStatement: 'Una probeta tiene 50 mL de agua. Al introducir una piedra, el nivel sube a 68 mL. ¿Cuál es el volumen de la piedra?',
+      deductiveSteps: [
+        'Paso 1: Anotar volumen inicial de líquido: V₁ = 50 mL.',
+        'Paso 2: Anotar volumen con la piedra sumergida: V₂ = 68 mL.',
+        'Paso 3: Aplicar fórmula: V = V₂ - V₁ = 68 mL - 50 mL = 18 mL.',
+      ],
+      finalResult: 'El volumen de la piedra es exactamente 18 mL (o 18 cm³).',
+    },
+  ],
+  commonErrorsAlerts: [
+    {
+      trap: 'Tomar la lectura en la parte alta de los bordes del agua en lugar de la base del menisco.',
+      correction: 'Siempre se lee la parte inferior más profunda de la curva del menisco con el ojo a la misma altura.',
+    },
+  ],
+  studyTechniquesHub: {
+    activeRecallFlashcards: [
+      { front: '¿Cómo se lee correctamente el menisco en una probeta?', back: 'A la altura visual de la base o punto más bajo de la curvatura.' },
+      { front: '¿Qué cambio de estado ocurre cuando el vapor de agua forma gotas en el espejo?', back: 'Condensación (gas a líquido).' },
+      { front: '¿Por qué es obligatorio abotonarse la bata en el laboratorio?', back: 'Para evitar que reactivos derramados alcancen la ropa o la piel.' },
+    ],
+    cornellSynthesis: {
+      cues: ['Bioseguridad', 'Lectura de menisco', 'Estados de materia', 'Cambios térmicos'],
+      notes: [
+        'Bata blanca abotonada obligatoria.',
+        'Menisco: lectura en el fondo de la curva.',
+        'Fusión = sólido a líquido.',
+        'Condensación = gas a líquido.',
+      ],
+      summary: 'El trabajo de laboratorio combina rigor de seguridad personal con precisión en la lectura de instrumentos volumétricos.',
+    },
+    conceptMapNodes: 'Ciencias -> Laboratorio -> Menisco -> Estados de la Materia',
+  },
+  generatedQuestions: [
+    {
+      area: 'Biología',
+      tema: 'Técnica de Medición Volumétrica',
+      tipo: 'opcion_multiple',
+      pregunta: 'Al medir agua en una probeta, ¿dónde debe situarse la mirada para evitar el error de paralaje?',
+      opciones: [
+        'A la misma altura horizontal de la base del menisco',
+        'Mirando desde arriba hacia el fondo de la probeta',
+        'Mirando desde abajo en ángulo de 45 grados',
+        'En los bordes superiores donde el agua toca el vidrio',
+      ],
+      correcta: 'A la misma altura horizontal de la base del menisco',
+      justificacion: '**Técnica Experimental:** Para evitar el error de paralaje, la línea de visión debe estar exactamente en el mismo plano horizontal que la base de la curvatura del líquido.',
+    },
+  ],
+};
+
+// =====================================================================
+// GUÍA 8: FÍSICA · CONVERSIÓN DE UNIDADES SI Y CIRCUITOS BÁSICOS
+// =====================================================================
+export const ANDRES_PHYSICS_UNITS_CIRCUITS_GUIDE: DeconstructedAcademicGuide = {
+  id: 'andres-phys-units-circuits',
+  userId: ANDRES_PROFILE,
+  sourceType: 'document',
+  discipline: 'science',
+  createdAt: '2026-11-01T00:00:00.000Z',
+  guideMetadata: {
+    title: 'Magnitudes SI, Factores de Conversión y Circuitos Eléctricos',
+    area: 'Física · 1er Año Bachillerato (Prof. Antonio Gonzales)',
+    summary:
+      'Guía oficial para el taller en parejas y la tarjeta navideña de física. Domina la conversión de unidades de longitud, masa y tiempo en el Sistema Internacional, y la estructura de un circuito cerrado con batería de 3V y LED.',
+  },
+  phenomenonAndTheory: [
+    '### UNIDAD I: EL SISTEMA INTERNACIONAL DE UNIDADES (SI)',
+    'Para que los científicos de todo el mundo se entiendan, se acordaron unidades oficiales:',
+    '• **Longitud:** metro ($\\text{m}$).',
+    '• **Masa:** kilogramo ($\\text{kg}$).',
+    '• **Tiempo:** segundo ($\\text{s}$).',
+    '',
+    '### UNIDAD II: MÉTODO DEL FACTOR DE CONVERSIÓN',
+    'Un factor de conversión es una fracción igual a la unidad que cancela la unidad antigua y coloca la nueva:',
+    '> **Equivalencias Fundamentales:**',
+    '> • $1\\text{ km} = 1000\\text{ m}$',
+    '> • $1\\text{ m} = 100\\text{ cm} = 1000\\text{ mm}$',
+    '> • $1\\text{ kg} = 1000\\text{ g}$',
+    '> • $1\\text{ hora} = 60\\text{ min} = 3600\\text{ segundos}$',
+    '',
+    '### UNIDAD III: CIRCUITOS ELÉCTRICOS BÁSICOS',
+    'La corriente eléctrica es el flujo ordenado de electrones a través de un conductor cerrado:',
+    '• **Fuente de energía:** Pila de botón o batería ($3\\text{V}$).',
+    '• **Conductor:** Cable de cobre o cinta adhesiva de cobre.',
+    '• **Receptor:** Diodo LED (transforma energía eléctrica en luz).',
+    '• **Interruptor:** Dispositivo que abre (apaga) o cierra (enciende) el paso de corriente.',
+  ].join('\n'),
+  glossary: [
+    { term: 'Magnitud Fundamental', symbolOrUnit: 'SI', definition: 'Propiedad física que se mide directamente sin depender de otras (longitud, masa, tiempo).' },
+    { term: 'Factor de Conversión', symbolOrUnit: 'Fracción', definition: 'Razón matemática que permite cambiar de una unidad a otra manteniendo la misma cantidad.' },
+    { term: 'Diodo LED', symbolOrUnit: 'Componente', definition: 'Semiconductor que emite luz cuando la corriente circula en el sentido correcto (polo positivo a ánodo).' },
+    { term: 'Circuito Cerrado', symbolOrUnit: 'Bucle', definition: 'Camino continuo sin cortes que permite el paso constante de corriente eléctrica.' },
+  ],
+  formulasAndStrategies: {
+    coreFormulas: [
+      { name: 'Conversión de Horas a Segundos', latex: '$$t(\\text{s}) = t(\\text{h}) \\cdot 3600$$', application: 'Cálculo de tiempo en problemas cinemáticos del SI.' },
+      { name: 'Conversión de Kilómetros a Metros', latex: '$$d(\\text{m}) = d(\\text{km}) \\cdot 1000$$', application: 'Conversión de distancias en problemas de física.' },
+    ],
+    mnemonicsAndPatterns: [
+      'De unidad grande a pequeña: MULTIPLICAS (bajas escalones).',
+      'De unidad pequeña a grande: DIVIDES (subes escalones).',
+      'La pata larga del LED va al polo positivo (+) de la pila.',
+    ],
+  },
+  stepByStepExamples: [
+    {
+      title: 'Convertir 2.5 Horas a Segundos',
+      problemStatement: 'Un automóvil viaja durante 2.5 horas. Expresa ese tiempo en segundos en el Sistema Internacional.',
+      deductiveSteps: [
+        'Paso 1: Plantear la equivalencia: 1 hora = 3600 segundos.',
+        'Paso 2: Escribir el factor de conversión: 2.5 h · (3600 s / 1 h).',
+        'Paso 3: Cancelar las horas y multiplicar: 2.5 · 3600 = 9000 s.',
+      ],
+      finalResult: '2.5 horas equivalen a 9000 segundos.',
+    },
+  ],
+  commonErrorsAlerts: [
+    {
+      trap: 'Creer que 1 hora tiene 100 segundos o 60 segundos.',
+      correction: '1 hora = 60 minutos, y cada minuto tiene 60 segundos: 60 × 60 = 3600 segundos.',
+    },
+    {
+      trap: 'Conectar el LED al revés en la tarjeta de física navideña.',
+      correction: 'Los LEDs tienen polaridad: la pata más larga es el ánodo (+) y debe tocar el polo positivo de la pila.',
+    },
+  ],
+  studyTechniquesHub: {
+    activeRecallFlashcards: [
+      { front: '¿Cuál es la unidad oficial de tiempo en el Sistema Internacional?', back: 'El segundo (s).' },
+      { front: '¿Cuántos metros hay en 3.2 kilómetros?', back: '3200 metros (3.2 × 1000).' },
+      { front: '¿Qué se necesita para que un LED encienda?', back: 'Un circuito cerrado conectado a una fuente de energía con polaridad correcta.' },
+    ],
+    cornellSynthesis: {
+      cues: ['Unidades SI', 'Factores de conversión', 'Circuito eléctrico', 'Polaridad LED'],
+      notes: [
+        'SI: metro (m), kilogramo (kg), segundo (s).',
+        '1 h = 3600 s; 1 km = 1000 m.',
+        'Circuito cerrado = enciende.',
+        'Ánodo (+) = pata larga.',
+      ],
+      summary: 'La física exige precisión matemática en las unidades para describir fenómenos reales como el movimiento y la electricidad.',
+    },
+    conceptMapNodes: 'Física -> Sistema Internacional -> Conversiones -> Circuitos',
+  },
+  generatedQuestions: [
+    {
+      area: 'Física',
+      tema: 'Conversión de Unidades SI',
+      tipo: 'opcion_multiple',
+      pregunta: '¿A cuántos metros equivalen 0.75 kilómetros?',
+      opciones: ['750 metros', '75 metros', '7500 metros', '0.00075 metros'],
+      correcta: '750 metros',
+      justificacion: '**Resolución:** 1 km = 1000 m. Multiplicamos 0.75 · 1000 = 750 metros.',
+    },
+  ],
+};
+
+// =====================================================================
+// GUÍA 9: CASTELLANO · ORACIÓN BIMEMBRE, ACENTUACIÓN Y ORTOGRAFÍA
+// =====================================================================
+export const ANDRES_SPANISH_SYNTAX_ACCENTS_GUIDE: DeconstructedAcademicGuide = {
+  id: 'andres-cas-syntax-accents',
+  userId: ANDRES_PROFILE,
+  sourceType: 'document',
+  discipline: 'design',
+  createdAt: '2026-11-01T00:00:00.000Z',
+  guideMetadata: {
+    title: 'Sintaxis de la Oración Bimembre, Núcleos y Reglas de Acentuación',
+    area: 'Castellano y Literatura · 1er Año Bachillerato',
+    summary:
+      'Guía oficial para el juego didáctico de gramática y la evaluación de ortografía. Aprende a separar sujeto y predicado, ubicar los núcleos oracionales, y aplicar con seguridad las reglas de tildación en agudas, graves y esdrújulas.',
+  },
+  phenomenonAndTheory: [
+    '### UNIDAD I: LA ORACIÓN BIMEMBRE (DOS MIEMBROS)',
+    'Una oración bimembre comunica un sentido completo y se divide en dos bloques inseparables:',
+    '• **Sujeto ($S$):** De quién o de qué se habla en la oración.',
+    '  - **Núcleo del Sujeto ($NS$):** Es la palabra más importante del sujeto; siempre es un sustantivo o pronombre.',
+    '• **Predicado ($P$):** Lo que se dice o predica sobre el sujeto.',
+    '  - **Núcleo del Predicado ($NP$):** Siempre es un **verbo conjugado**.',
+    '',
+    'Ejemplo: `[Los científicos del colegio] [investigan en el laboratorio].`',
+    '- Sujeto: "Los científicos del colegio" (Núcleo: científicos).',
+    '- Predicado: "investigan en el laboratorio" (Núcleo: investigan).',
+    '',
+    '### UNIDAD II: SÍLABA TÓNICA Y CLASIFICACIÓN DE PALABRAS',
+    'La **sílaba tónica** es aquella que se pronuncia con mayor fuerza o intensidad de voz:',
+    '> **Las 3 Reglas de Oro de Acentuación Española:**',
+    '> 1. **Agudas:** Fuerza en la **última sílaba**. Llevan tilde SOLO si terminan en **N, S o VOCAL** (ej: camión, compás, café).',
+    '> 2. **Graves o Llanas:** Fuerza en la **penúltima sílaba**. Llevan tilde si NO terminan en N, S ni Vocal (ej: árbol, lápiz, cóndor).',
+    '> 3. **Esdrújulas:** Fuerza en la **antepenúltima sílaba**. ¡LLEVAN TILDE SIEMPRE sin excepción! (ej: brújula, química, teléfono).',
+  ].join('\n'),
+  glossary: [
+    { term: 'Oración Bimembre', symbolOrUnit: 'S + P', definition: 'Estructura sintáctica compuesta por sujeto y predicado con sentido completo.' },
+    { term: 'Sílaba Tónica', symbolOrUnit: 'Acento Prosódico', definition: 'Sílaba que recibe la mayor fuerza de pronunciación en una palabra.' },
+    { term: 'Tilde', symbolOrUnit: '´ (signo)', definition: 'Signo gráfico que se escribe sobre la vocal tónica según las reglas ortográficas.' },
+    { term: 'Palabra Esdrújula', symbolOrUnit: 'Antepenúltima', definition: 'Palabra cuya sílaba tónica es la antepenúltima; siempre se acentúa ortográficamente.' },
+  ],
+  formulasAndStrategies: {
+    coreFormulas: [
+      { name: 'Estructura Bimembre', latex: '$$\\text{Oración} = \\text{Sujeto}(NS) + \\text{Predicado}(NP)$$', application: 'Análisis sintáctico escolar de oraciones.' },
+      { name: 'Regla SEGA', latex: '$$\\text{Sobreesdrújula} \\leftarrow \\text{Esdrújula} \\leftarrow \\text{Grave} \\leftarrow \\text{Aguda}$$', application: 'Mnemotecnia de derecha a izquierda para ubicar la sílaba tónica.' },
+    ],
+    mnemonicsAndPatterns: [
+      'Aprende la palabra "SEGA" de derecha a izquierda: A (última), G (penúltima), E (antepenúltima), S (ante-antepenúltima).',
+      'Las esdrújulas son las más fáciles del idioma: ¡toditas llevan tilde!',
+    ],
+  },
+  stepByStepExamples: [
+    {
+      title: 'Análisis Sintáctico y Acentuación',
+      problemStatement: 'Analiza la oración: "Andrés resolvió la ecuación difícil".',
+      deductiveSteps: [
+        'Paso 1: ¿De quién se habla? De "Andrés" (Sujeto). Su núcleo es Andrés (sustantivo propio).',
+        'Paso 2: ¿Qué se dice? "resolvió la ecuación difícil" (Predicado). Su núcleo es resolvió (verbo).',
+        'Paso 3: Analizar "difícil": sílaba tónica "fí" (penúltima). Termina en consonante "l" (no es n, s ni vocal) => Lleva tilde por ser grave.',
+      ],
+      finalResult: 'Sujeto: Andrés (NS). Predicado: resolvió (NP). "Difícil" lleva tilde por regla de palabra grave.',
+    },
+  ],
+  commonErrorsAlerts: [
+    {
+      trap: 'Poner tilde a palabras graves que terminan en vocal (escribir "exámen" en singular).',
+      correction: 'Examen es grave terminada en n, por lo que NO lleva tilde en singular. En plural sí: exámenes (esdrújula).',
+    },
+  ],
+  studyTechniquesHub: {
+    activeRecallFlashcards: [
+      { front: '¿Cuándo se tildan las palabras agudas?', back: 'Cuando terminan en N, S o Vocal.' },
+      { front: '¿Cuál es el núcleo del predicado en una oración?', back: 'El verbo conjugado.' },
+      { front: '¿Por qué la palabra "música" lleva tilde obligatoria?', back: 'Porque es una palabra esdrújula y todas las esdrújulas se tildan.' },
+    ],
+    cornellSynthesis: {
+      cues: ['Sujeto y Predicado', 'Núcleos oracionales', 'Regla SEGA', 'Acentuación'],
+      notes: [
+        'Sujeto = quién realiza la acción (NS: sustantivo).',
+        'Predicado = la acción realizada (NP: verbo).',
+        'Aguda = última sílaba (tilda en n, s, vocal).',
+        'Grave = penúltima sílaba (tilda si no termina en n, s, vocal).',
+        'Esdrújula = antepenúltima (se tildan todas).',
+      ],
+      summary: 'La sintaxis y la acentuación son las herramientas maestras para escribir y comunicar ideas con claridad e impecabilidad.',
+    },
+    conceptMapNodes: 'Gramática -> Sintaxis (S + P) -> Sílaba Tónica -> Regla SEGA',
+  },
+  generatedQuestions: [
+    {
+      area: 'Castellano',
+      tema: 'Clasificación por Acentuación',
+      tipo: 'opcion_multiple',
+      pregunta: '¿Cuál de las siguientes opciones contiene una palabra esdrújula correctamente tildada?',
+      opciones: ['Brújula', 'Balón', 'Césped', 'Café'],
+      correcta: 'Brújula',
+      justificacion: '**Resolución:** "Brújula" tiene la fuerza en la antepenúltima sílaba (brú-ju-la) y por tanto es esdrújula, llevando tilde siempre.',
+    },
+  ],
+};
+
+// =====================================================================
+// GUÍA 10: DISEÑO E INFORMÁTICA · LENGUAJE VISUAL, COLOR Y HARDWARE
+// =====================================================================
+export const ANDRES_DESIGN_COLOR_GRID_GUIDE: DeconstructedAcademicGuide = {
+  id: 'andres-design-color-grid',
+  userId: ANDRES_PROFILE,
+  sourceType: 'document',
+  discipline: 'design',
+  createdAt: '2026-11-01T00:00:00.000Z',
+  guideMetadata: {
+    title: 'Elementos Visuales, Círculo Cromático y Hardware Escolar',
+    area: 'Diseño Digital & Informática · 1er Año Bachillerato',
+    summary:
+      'Guía oficial para los proyectos de dibujo técnico, láminas de color y examen de computación. Comprende los bloques visuales fundamentales (punto, línea, plano), armonías cromáticas de 12 tonos y la arquitectura básica del computador.',
+  },
+  phenomenonAndTheory: [
+    '### UNIDAD I: LOS ELEMENTOS BÁSICOS DEL LENGUAJE VISUAL',
+    'Toda imagen, afiche o interfaz se construye a partir de elementos primarios:',
+    '• **Punto:** La unidad gráfica más simple; genera atracción visual y foco de atención.',
+    '• **Línea:** El punto en movimiento; define formas, contornos y direcciones (vertical = estabilidad, diagonal = dinamismo).',
+    '• **Plano:** Superficie bidimensional delimitada por líneas.',
+    '• **Textura:** Cualidad táctil o visual de una superficie (suave, rugosa, metálica).',
+    '',
+    '### UNIDAD II: TEORÍA DEL COLOR Y CÍRCULO CROMÁTICO',
+    'El círculo cromático de 12 tonos organiza los colores según su origen:',
+    '> **Clasificación Cromática:**',
+    '> • **Colores Primarios:** No se obtienen por mezcla: Amarillo, Azul y Rojo.',
+    '> • **Colores Secundarios:** Mezcla de dos primarios en partes iguales: Verde (Azul+Amarillo), Naranja (Amarillo+Rojo), Violeta (Azul+Rojo).',
+    '> • **Colores Terciarios:** Mezcla de un primario con un secundario adyacente (ej: Amarillo-Verdoso, Azul-Violáceo).',
+    '> • **Temperatura:** Cálidos (rojos, amarillos, naranjas) transmiten energía; Fríos (azules, verdes, violetas) transmiten calma.',
+    '',
+    '### UNIDAD III: COMPUTACIÓN Y HARDWARE ESCOLAR',
+    'Un computador es un sistema que procesa datos mediante dos componentes inseparables:',
+    '• **Hardware:** Parte física y tangible que puedes tocar.',
+    '  - **CPU (Procesador):** El cerebro que ejecuta instrucciones.',
+    '  - **Memoria RAM:** Memoria rápida y volátil que guarda lo que estás usando en el momento.',
+    '  - **Almacenamiento (Disco Duro/SSD):** Guarda tus archivos y fotos de forma permanente.',
+    '  - **Periféricos:** Entrada (teclado, ratón) y Salida (monitor, impresora).',
+    '• **Software:** Programas e instrucciones lógicas que dan órdenes al hardware.',
+  ].join('\n'),
+  glossary: [
+    { term: 'Círculo Cromático', symbolOrUnit: 'Rueda 12 Colores', definition: 'Representación gráfica circular ordenada de los colores primarios, secundarios y terciarios.' },
+    { term: 'Hardware', symbolOrUnit: 'Físico', definition: 'Conjunto de componentes electrónicos y mecánicos tangibles de una computadora.' },
+    { term: 'CPU', symbolOrUnit: 'Unidad Central', definition: 'Procesador principal del computador que ejecuta los programas e instrucciones.' },
+    { term: 'Memoria RAM', symbolOrUnit: 'Memoria Volátil', definition: 'Memoria de acceso aleatorio que almacena datos temporales mientras el equipo está encendido.' },
+  ],
+  formulasAndStrategies: {
+    coreFormulas: [
+      { name: 'Mezcla Secundaria', latex: '$$\\text{Primario A} + \\text{Primario B} = \\text{Secundario}$$', application: 'Obtención de Verde, Naranja y Violeta con pintura o tintas.' },
+      { name: 'Esquema de Von Neumann', latex: '$$\\text{Entrada} \\rightarrow \\text{Procesador (CPU/RAM)} \\rightarrow \\text{Salida}$$', application: 'Flujo universal de información en computadoras.' },
+    ],
+    mnemonicsAndPatterns: [
+      'Primarios = los 3 mosqueteros que no se mezclan (Amarillo, Azul, Rojo).',
+      'RAM es como la pizarra del salón (se borra al apagar); Disco Duro es tu cuaderno (queda guardado).',
+    ],
+  },
+  stepByStepExamples: [
+    {
+      title: 'Creación de un Color Terciario',
+      problemStatement: '¿Cómo se obtiene el color Azul-Verdoso en el círculo cromático?',
+      deductiveSteps: [
+        'Paso 1: Identificar el color primario: Azul.',
+        'Paso 2: Identificar el color secundario adyacente: Verde (que proviene de Azul + Amarillo).',
+        'Paso 3: Al mezclar mayor proporción de Azul con Verde se obtiene el terciario Azul-Verdoso (o Turquesa).',
+      ],
+      finalResult: 'Azul (primario) + Verde (secundario) = Azul-Verdoso (terciario).',
+    },
+  ],
+  commonErrorsAlerts: [
+    {
+      trap: 'Confundir la memoria RAM con el disco de almacenamiento y temer que al apagar se borren las fotos guardadas en el disco.',
+      correction: 'El disco duro o SSD guarda de forma permanente. La RAM solo guarda lo que tienes abierto en pantalla en ese segundo.',
+    },
+  ],
+  studyTechniquesHub: {
+    activeRecallFlashcards: [
+      { front: '¿Cuáles son los 3 colores primarios tradicionales?', back: 'Amarillo, Azul y Rojo.' },
+      { front: '¿Qué diferencia hay entre hardware y software?', back: 'Hardware es la parte física tangible; software son los programas e instrucciones digitales.' },
+      { front: '¿Qué sensaciones transmiten los colores cálidos vs fríos?', back: 'Cálidos transmiten energía y cercanía; fríos transmiten calma y serenidad.' },
+    ],
+    cornellSynthesis: {
+      cues: ['Punto y línea', 'Círculo cromático', 'Hardware vs Software', 'CPU y RAM'],
+      notes: [
+        'Primarios: Amarillo, Azul, Rojo.',
+        'Secundarios: Verde, Naranja, Violeta.',
+        'Hardware = lo que se puede tocar.',
+        'CPU = cerebro; RAM = memoria temporal.',
+      ],
+      summary: 'El diseño y la tecnología se unen para comunicar ideas visuales y materializarlas a través de herramientas informáticas estructuradas.',
+    },
+    conceptMapNodes: 'Diseño & Computación -> Color -> Hardware -> Software',
+  },
+  generatedQuestions: [
+    {
+      area: 'Diseño',
+      tema: 'Teoría del Color',
+      tipo: 'opcion_multiple',
+      pregunta: '¿Cuál de los siguientes colores es secundario?',
+      opciones: ['Verde', 'Amarillo', 'Rojo', 'Azul'],
+      correcta: 'Verde',
+      justificacion: '**Resolución:** El verde es secundario porque se obtiene de la mezcla en partes iguales de dos colores primarios: Azul + Amarillo.',
+    },
+  ],
+};
+
+// =====================================================================
+// 7. GUÍAS OFICIALES REUNIDAS PARA EL PERFIL DE ANDRÉS (10 GUÍAS TOTALES)
 // =====================================================================
 export const ALL_ANDRES_DECONSTRUCTED_GUIDES: DeconstructedAcademicGuide[] = [
   ANDRES_MATH_Z_EQUATIONS_GUIDE,
+  ANDRES_MATH_POWERS_MCM_GUIDE,
+  ANDRES_MATH_GEOMETRY_GUIDE,
   ANDRES_BIOLOGY_METHOD_LAB_GUIDE,
+  ANDRES_BIOLOGY_SAFETY_MATTER_GUIDE,
   ANDRES_PHYSICS_MACHINES_GUIDE,
+  ANDRES_PHYSICS_UNITS_CIRCUITS_GUIDE,
   ANDRES_SPANISH_BARRABAS_GUIDE,
+  ANDRES_SPANISH_SYNTAX_ACCENTS_GUIDE,
+  ANDRES_DESIGN_COLOR_GRID_GUIDE,
 ];
 
 // =====================================================================
