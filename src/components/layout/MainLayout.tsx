@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { Sidebar } from './Sidebar';
 import type { MainTabType } from './Sidebar';
 import { Header } from './Header';
@@ -29,6 +30,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const { academicProfile, user } = useAuth();
+  const isAndres =
+    academicProfile === 'andres_bachillerato_1' || user?.academic_profile === 'andres_bachillerato_1';
 
   // Atajo de teclado global: Cmd + K / Ctrl + K
   React.useEffect(() => {
@@ -95,14 +99,16 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
       {/* Contenedor Unificado de Disparadores Flotantes (Calculadora + Scratchpad) */}
       <div className="fixed bottom-5 right-6 z-40 hidden sm:flex items-center gap-2.5 print:hidden">
-        <button
-          onClick={() => setIsCalculatorOpen(true)}
-          className="flex items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 shadow-soft-md hover:shadow-soft-lg border border-slate-200/90 hover:bg-slate-50 transition-all active:scale-95"
-          title="Abrir Calculadora Científica (no interrumpe el examen)"
-        >
-          <Calculator className="w-4 h-4 text-[#0F52BA]" />
-          <span>Calculadora</span>
-        </button>
+        {!isAndres && (
+          <button
+            onClick={() => setIsCalculatorOpen(true)}
+            className="flex items-center gap-2 rounded-2xl bg-white dark:bg-slate-800 px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-soft-md hover:shadow-soft-lg border border-slate-200/90 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-95"
+            title="Abrir Calculadora Científica (no interrumpe el examen)"
+          >
+            <Calculator className="w-4 h-4 text-[#0F52BA] dark:text-blue-400" />
+            <span>Calculadora</span>
+          </button>
+        )}
 
         <button
           onClick={() => setIsScratchpadOpen(true)}

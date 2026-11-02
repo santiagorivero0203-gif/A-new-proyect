@@ -19,6 +19,15 @@ interface HeaderProps {
 /**
  * Mapeo de títulos de migas de pan según la pestaña activa
  */
+
+const ANDRES_BREADCRUMBS: Record<string, string> = {
+  PRODUCTIVITY: 'Mi Resumen',
+  PLANNER: 'Mi Calendario',
+  EXAMS: 'Mis Exámenes (1er Año)',
+  GUIDES: 'Mis Guías de Estudio',
+  STORAGE: 'Mis Archivos & Vault',
+};
+
 const TAB_BREADCRUMBS: Record<string, string> = {
   PRODUCTIVITY: 'Panel de Control',
   PLANNER: 'Agenda & Evaluaciones',
@@ -46,32 +55,50 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAccountManager,
   currentTab,
 }) => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, academicProfile } = useAuth();
+  const isAndres =
+    academicProfile === 'andres_bachillerato_1' || user?.academic_profile === 'andres_bachillerato_1';
   const { session, isExamActive } = useExam();
   const { navigateToTab } = useNavigation();
-  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark' | 'rose_pastel'>(() => {
+  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark' | 'rose_pastel' | 'playstation_dark'>(() => {
     if (typeof document !== 'undefined') {
+      if (document.documentElement.classList.contains('theme-playstation-dark')) return 'playstation_dark';
       if (document.documentElement.classList.contains('theme-rose-pastel')) return 'rose_pastel';
       if (document.documentElement.classList.contains('dark')) return 'dark';
     }
     const saved = typeof window !== 'undefined' ? localStorage.getItem('cpe_theme') : null;
-    return saved === 'rose_pastel' ? 'rose_pastel' : saved === 'dark' ? 'dark' : 'light';
+    return saved === 'playstation_dark'
+      ? 'playstation_dark'
+      : saved === 'rose_pastel'
+      ? 'rose_pastel'
+      : saved === 'dark'
+      ? 'dark'
+      : 'light';
   });
 
   const cycleTheme = () => {
-    const nextTheme = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'rose_pastel' : 'light';
+    let nextTheme: 'light' | 'dark' | 'rose_pastel' | 'playstation_dark' = 'light';
+    if (isAndres) {
+      nextTheme = currentTheme === 'playstation_dark' ? 'light' : 'playstation_dark';
+    } else {
+      nextTheme = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'rose_pastel' : 'light';
+    }
     setCurrentTheme(nextTheme);
     localStorage.setItem('cpe_theme', nextTheme);
     localStorage.setItem('studynexus_theme', nextTheme);
-    document.documentElement.classList.remove('dark', 'theme-rose-pastel');
-    if (nextTheme === 'dark') {
+    document.documentElement.classList.remove('dark', 'theme-rose-pastel', 'theme-playstation-dark');
+    if (nextTheme === 'playstation_dark') {
+      document.documentElement.classList.add('dark', 'theme-playstation-dark');
+    } else if (nextTheme === 'dark') {
       document.documentElement.classList.add('dark');
     } else if (nextTheme === 'rose_pastel') {
       document.documentElement.classList.add('theme-rose-pastel');
     }
   };
 
-  const breadcrumbSection = TAB_BREADCRUMBS[currentTab] || 'Panel de Control';
+  const breadcrumbSection = isAndres
+    ? (ANDRES_BREADCRUMBS[currentTab] || 'Mi Espacio')
+    : (TAB_BREADCRUMBS[currentTab] || 'Panel de Control');
 
   // Iniciales del estudiante para el avatar
   const initials = user?.full_name
@@ -142,7 +169,9 @@ export const Header: React.FC<HeaderProps> = ({
           }
           aria-label="Alternar tema de interfaz"
         >
-          {currentTheme === 'rose_pastel' ? (
+          {currentTheme === 'playstation_dark' ? (
+            <span className="text-sm select-none" title="Tema PlayStation 5 / Gemini Dark">🎮</span>
+          ) : currentTheme === 'rose_pastel' ? (
             <span className="text-sm select-none">🌸</span>
           ) : currentTheme === 'dark' ? (
             <Moon className="w-4 h-4 text-indigo-400" />

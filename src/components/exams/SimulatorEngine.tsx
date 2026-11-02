@@ -6,6 +6,7 @@ import { ExamResultsReport } from './ExamResultsReport';
 import { LayersIcon, PlayIcon, AtomIcon } from '../common/Icons';
 import { UCV_EXAM_BANK, UCV_CURRICULUM_MODULES } from '../../data/ucv_intro_course_data';
 import { PROFILE_TAILORED_EXAMS, getQuestionsForTailoredExam } from '../../lib/questionBank';
+import { ALL_ANDRES_QUESTIONS, ANDRES_TAILORED_EXAMS } from '../../data/andres_curriculum_hub';
 import type { AcademicSubject, ExamConfig, Question } from '../../types/exam.types';
 
 interface SimulatorEngineProps {
@@ -36,7 +37,9 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
     resetExam,
   } = useExam();
 
-  const { academicProfile } = useAuth();
+  const { academicProfile, user } = useAuth();
+  const isAndres =
+    academicProfile === 'andres_bachillerato_1' || user?.academic_profile === 'andres_bachillerato_1';
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<AcademicSubject | 'TODAS'>('TODAS');
   const [selectedUcvModuleId, setSelectedUcvModuleId] = useState<string>(UCV_CURRICULUM_MODULES[0].id);
   const [activeProfileTab, setActiveProfileTab] = useState<
@@ -85,6 +88,210 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
         onRetake={() => startExam(session.config, session.questions)}
         onNewExam={resetExam}
       />
+    );
+  }
+
+  // VISTA EXCLUSIVA Y CALIBRADA PARA ANDRÉS RIVERO (1ER AÑO DE BACHILLERATO)
+  if (isAndres) {
+    return (
+      <div className="space-y-8 max-w-5xl mx-auto">
+        {/* Banner de Recuperación de Sesión */}
+        {recoverableSession && (
+          <div className="p-5 rounded-3xl bg-blue-950/60 border-2 border-[#0070d1]/50 shadow-[0_4px_20px_rgba(0,112,209,0.2)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn text-white">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <h3 className="text-sm font-bold text-white font-sans">
+                  Sesión de examen en curso detectada
+                </h3>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                Tienes una evaluación sin finalizar: <strong>{recoverableSession.config.title}</strong> con{' '}
+                <strong>{Object.keys(recoverableSession.userAnswers).length}</strong> de{' '}
+                <strong>{recoverableSession.questions.length}</strong> preguntas respondidas.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={discardRecoveredSession}
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                Descartar
+              </button>
+              <button
+                onClick={resumeRecoveredSession}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] shadow-[0_0_15px_rgba(0,112,209,0.5)] transition-all flex items-center gap-1.5"
+              >
+                <span>Retomar donde lo dejé</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Encabezado PlayStation 5 / Gemini Dark */}
+        <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#0a1128] via-[#0d1527] to-[#050811] border border-[#0070d1]/40 shadow-[0_8px_30px_rgba(0,112,209,0.18)] text-white space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-white/10 gap-3">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#0070d1]/20 text-[#38bdf8] border border-[#0070d1]/40 text-xs font-bold font-sans">
+                <span>🎮</span>
+                <span>Colegio Consolación · 1er Año Bachillerato</span>
+              </div>
+              <h2 className="text-2xl font-bold text-white tracking-tight font-sans">
+                Mis Exámenes y Pruebas de Práctica
+              </h2>
+              <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                11 evaluaciones correspondientes a cada tema de tu cronograma escolar, con cronómetro, selección simple y explicaciones paso a paso sin fórmulas complejas.
+              </p>
+            </div>
+
+            <button
+              onClick={() => {
+                startExam(
+                  {
+                    mode: 'HIGH_SCHOOL_EXAM',
+                    title: 'Simulacro General 1er Año Bachillerato (Todas las Materias)',
+                    totalQuestions: 15,
+                    timeLimitSeconds: 50 * 60,
+                    allowPause: true,
+                    shuffleQuestions: true,
+                  },
+                  ALL_ANDRES_QUESTIONS
+                );
+              }}
+              className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] text-white text-xs font-bold transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(0,112,209,0.4)] active:scale-95 shrink-0 border border-[#38bdf8]/30 cursor-pointer"
+            >
+              <PlayIcon className="w-3.5 h-3.5 text-white" />
+              <span>Simulacro General (15 Preguntas)</span>
+            </button>
+          </div>
+
+          {/* Filtro por Materia para Andrés */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
+            {[
+              { id: 'TODAS', label: `Todas (${ANDRES_TAILORED_EXAMS.length})` },
+              { id: 'Matemática', label: '📐 Matemática (3)' },
+              { id: 'Biología', label: '🔬 Biología (2)' },
+              { id: 'Física', label: '⚡ Física (2)' },
+              { id: 'Castellano', label: '📖 Castellano (2)' },
+              { id: 'Diseño', label: '🎨 Computación & Diseño (1)' },
+            ].map((subj) => (
+              <button
+                key={subj.id}
+                onClick={() => setSelectedSubjectFilter(subj.id as any)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
+                  selectedSubjectFilter === subj.id
+                    ? 'bg-[#0070d1] text-white border-[#0070d1] shadow-[0_0_12px_rgba(0,112,209,0.5)] font-bold'
+                    : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {subj.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Grid de Exámenes de Andrés */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {ANDRES_TAILORED_EXAMS.filter((ex) => {
+            if (selectedSubjectFilter === 'TODAS') return true;
+            return ex.targetSubject.toLowerCase() === selectedSubjectFilter.toLowerCase();
+          }).map((ex) => (
+            <div
+              key={ex.id}
+              className="p-5 rounded-2xl bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-blue-900/40 hover:border-[#0070d1] dark:hover:border-[#38bdf8] flex flex-col justify-between space-y-4 shadow-soft transition-all"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/80 text-[#0070d1] dark:text-[#38bdf8] border border-blue-200 dark:border-blue-800/40">
+                    {ex.badge} • {ex.questionCount} Preguntas
+                  </span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                    ⏱️ {ex.durationMinutes} min
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
+                  {ex.title}
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  {ex.description}
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  const questions = getQuestionsForTailoredExam(ex);
+                  startExam(
+                    {
+                      mode: 'HIGH_SCHOOL_EXAM',
+                      title: ex.title,
+                      totalQuestions: Math.max(1, Math.min(ex.questionCount, questions.length || ex.questionCount)),
+                      timeLimitSeconds: ex.durationMinutes * 60,
+                      allowPause: true,
+                      shuffleQuestions: true,
+                      subject: ex.targetSubject,
+                    },
+                    questions
+                  );
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(0,112,209,0.35)] active:scale-95 cursor-pointer"
+              >
+                <PlayIcon className="w-3.5 h-3.5 text-white" />
+                <span>Iniciar Examen de Práctica</span>
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Cuestionario Rápido por Materia para Andrés */}
+        <div className="p-6 rounded-3xl bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-blue-900/40 shadow-soft space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white font-sans">
+                Práctica Rápida de Repaso
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Genera un quiz express de 5 preguntas aleatorias de tu temario escolar para practicar en 15 minutos.
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+              {selectedSubjectFilter === 'TODAS'
+                ? 'Preguntas seleccionadas de todas tus materias escolares'
+                : `Preguntas de ${selectedSubjectFilter} (1er Año)`}
+            </span>
+            <button
+              onClick={() => {
+                const pool =
+                  selectedSubjectFilter === 'TODAS'
+                    ? ALL_ANDRES_QUESTIONS
+                    : ALL_ANDRES_QUESTIONS.filter((q) => q.subject.toLowerCase() === selectedSubjectFilter.toLowerCase());
+                startExam(
+                  {
+                    mode: 'QUICK_PRACTICE',
+                    title:
+                      selectedSubjectFilter === 'TODAS'
+                        ? 'Quiz Express: Todas mis materias'
+                        : `Quiz Express: ${selectedSubjectFilter}`,
+                    subject: selectedSubjectFilter === 'TODAS' ? undefined : (selectedSubjectFilter as any),
+                    totalQuestions: Math.min(5, pool.length || 5),
+                    timeLimitSeconds: 15 * 60,
+                    allowPause: true,
+                    shuffleQuestions: true,
+                  },
+                  pool
+                );
+              }}
+              className="py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black dark:bg-[#131d36] dark:hover:bg-[#1a2747] text-white text-xs font-bold transition-all border border-transparent dark:border-blue-800/40 cursor-pointer self-end sm:self-auto"
+            >
+              Comenzar Quiz Express (5 Preguntas)
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
 

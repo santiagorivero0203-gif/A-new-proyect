@@ -76,6 +76,10 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
   const [activeTab, setActiveTab] = useState<CategoryTab>(defaultTab);
   const [selectedGuide, setSelectedGuide] = useState<SimadiGuide | null>(null);
   const [detailTab, setDetailTab] = useState<DetailTab>('THEORY');
+  // Filtro temático de asignaturas exclusivo para Andrés Rivero
+  const [andresSubjectFilter, setAndresSubjectFilter] = useState<
+    'TODAS' | 'Matemática' | 'Biología' | 'Física' | 'Castellano' | 'Diseño'
+  >('TODAS');
 
   // Estado para Guías Deconstruidas con Gemini IA
   const [selectedDeconstructedGuide, setSelectedDeconstructedGuide] =
@@ -140,13 +144,25 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
       } else if (guide.id === 'mafe-math-design-ucab') {
         questions = [...NOTION_MATH_QUESTIONS];
       } else if (guide.id === 'andres-math-z-equations') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática');
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática' && ['andres-q-mat-001', 'andres-q-mat-002', 'andres-q-mat-003', 'andres-q-mat-007', 'andres-q-mat-008'].includes(q.id));
+      } else if (guide.id === 'andres-math-powers-factors') {
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática' && ['andres-q-mat-004', 'andres-q-mat-005', 'andres-q-mat-006', 'andres-q-mat-014', 'andres-q-mat-015', 'andres-q-mat-016'].includes(q.id));
+      } else if (guide.id === 'andres-math-geometry-perimeters') {
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática' && ['andres-q-mat-009', 'andres-q-mat-010', 'andres-q-mat-011', 'andres-q-mat-012', 'andres-q-mat-013'].includes(q.id));
       } else if (guide.id === 'andres-bio-lab-method') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Biología');
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Biología' && ['andres-q-bio-001', 'andres-q-bio-002', 'andres-q-bio-003', 'andres-q-bio-005', 'andres-q-bio-010'].includes(q.id));
+      } else if (guide.id === 'andres-bio-safety-matter') {
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Biología' && ['andres-q-bio-004', 'andres-q-bio-006', 'andres-q-bio-007', 'andres-q-bio-008', 'andres-q-bio-009'].includes(q.id));
       } else if (guide.id === 'andres-phys-machines-units') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Física');
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Física' && ['andres-q-fis-001', 'andres-q-fis-003', 'andres-q-fis-004', 'andres-q-fis-006'].includes(q.id));
+      } else if (guide.id === 'andres-phys-units-circuits') {
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Física' && ['andres-q-fis-002', 'andres-q-fis-005', 'andres-q-fis-007', 'andres-q-fis-008', 'andres-q-fis-009', 'andres-q-fis-010'].includes(q.id));
       } else if (guide.id === 'andres-cas-barrabas-grammar') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Castellano');
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Castellano' && ['andres-q-cas-001', 'andres-q-cas-002', 'andres-q-cas-004', 'andres-q-cas-005', 'andres-q-cas-009'].includes(q.id));
+      } else if (guide.id === 'andres-cas-syntax-accents') {
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Castellano' && ['andres-q-cas-003', 'andres-q-cas-006', 'andres-q-cas-007', 'andres-q-cas-008'].includes(q.id));
+      } else if (guide.id === 'andres-design-color-grid') {
+        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Diseño' || q.id.startsWith('andres-q-des-') || q.id.startsWith('andres-q-inf-'));
       } else {
         questions = isAndres ? ALL_ANDRES_QUESTIONS.slice(0, 10) : ALL_MAFE_QUESTIONS.slice(0, 10);
       }
@@ -180,109 +196,120 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
           </span>
         </div>
 
-        {/* Pestañas de Categoría */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/70">
-          {/* Si es Mafe, mostrar primero su pestaña destacada */}
-          {isMafe && (
+        {/* Pestañas de Categoría - Si es Andrés, mostrar EXCLUSIVAMENTE sus materias */}
+        {isAndres ? (
+          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/70 dark:border-blue-900/40">
+            {[
+              { id: 'TODAS', label: `📚 Todas (${ALL_ANDRES_DECONSTRUCTED_GUIDES.length})` },
+              { id: 'Matemática', label: '📐 Matemática (3)' },
+              { id: 'Biología', label: '🔬 Biología (2)' },
+              { id: 'Física', label: '⚡ Física (2)' },
+              { id: 'Castellano', label: '📖 Castellano (2)' },
+              { id: 'Diseño', label: '🎨 Computación & Diseño (1)' },
+            ].map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setAndresSubjectFilter(f.id as any)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  andresSubjectFilter === f.id
+                    ? 'bg-[#0070d1] text-white shadow-soft-sm font-bold'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/70">
+            {/* Si es Mafe, mostrar primero su pestaña destacada */}
+            {isMafe && (
+              <button
+                onClick={() => setActiveTab('mafe_curriculum')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                  activeTab === 'mafe_curriculum'
+                    ? 'bg-rose-600 text-white shadow-soft-sm font-bold'
+                    : 'text-rose-700 bg-rose-50/70 hover:bg-rose-100 border border-rose-200/60'
+                }`}
+              >
+                <span>🎨 Mi Programa UCAB (3 Guías)</span>
+              </button>
+            )}
+
             <button
-              onClick={() => setActiveTab('mafe_curriculum')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                activeTab === 'mafe_curriculum'
-                  ? 'bg-rose-600 text-white shadow-soft-sm font-bold'
-                  : 'text-rose-700 bg-rose-50/70 hover:bg-rose-100 border border-rose-200/60'
+              onClick={() => setActiveTab('ALL')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'ALL'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span>🎨 Mi Programa UCAB (3 Guías)</span>
+              Todas ({guides.length})
             </button>
-          )}
-
-          {/* Si es Andrés, mostrar primero su pestaña destacada */}
-          {isAndres && (
             <button
-              onClick={() => setActiveTab('andres_curriculum')}
+              onClick={() => setActiveTab('ucv_ciencias')}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                activeTab === 'andres_curriculum'
-                  ? 'bg-emerald-600 text-white shadow-soft-sm font-bold'
-                  : 'text-emerald-700 bg-emerald-50/70 hover:bg-emerald-100 border border-emerald-200/60'
+                activeTab === 'ucv_ciencias'
+                  ? 'bg-[#0F52BA] text-white shadow-soft-sm font-bold'
+                  : 'text-blue-700 bg-blue-50/70 hover:bg-blue-100 border border-blue-200/60'
               }`}
             >
-              <span>📚 Mi 1er Año Bachillerato ({ALL_ANDRES_DECONSTRUCTED_GUIDES.length} Guías)</span>
+              <AtomIcon className="w-3.5 h-3.5" />
+              <span>Curso UCV (7 Módulos)</span>
             </button>
-          )}
-
-          <button
-            onClick={() => setActiveTab('ALL')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'ALL'
-                ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Todas ({guides.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('ucv_ciencias')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
-              activeTab === 'ucv_ciencias'
-                ? 'bg-[#0F52BA] text-white shadow-soft-sm font-bold'
-                : 'text-blue-700 bg-blue-50/70 hover:bg-blue-100 border border-blue-200/60'
-            }`}
-          >
-            <AtomIcon className="w-3.5 h-3.5" />
-            <span>Curso UCV (7 Módulos)</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('verbal')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'verbal'
-                ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Verbal
-          </button>
-          <button
-            onClick={() => setActiveTab('logico')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'logico'
-                ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Lógico & Matemático
-          </button>
-          <button
-            onClick={() => setActiveTab('ciencia')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'ciencia'
-                ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Ciencias
-          </button>
-          <button
-            onClick={() => setActiveTab('TOPIC_SELECTOR')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'TOPIC_SELECTOR'
-                ? 'bg-slate-900 text-white shadow-soft-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Selector de Temas
-          </button>
-          <button
-            onClick={() => setActiveTab('AI_DECONSTRUCTED')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
-              activeTab === 'AI_DECONSTRUCTED'
-                ? 'bg-[#0F52BA] text-white shadow-soft-sm font-bold'
-                : 'text-[#0F52BA] hover:bg-blue-50'
-            }`}
-          >
-            <SparklesIcon className="w-3.5 h-3.5" />
-            <span>Análisis con IA ({deconstructedGuides.length})</span>
-          </button>
-        </div>
+            <button
+              onClick={() => setActiveTab('verbal')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'verbal'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Verbal
+            </button>
+            <button
+              onClick={() => setActiveTab('logico')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'logico'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Lógico & Matemático
+            </button>
+            <button
+              onClick={() => setActiveTab('ciencia')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'ciencia'
+                  ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Ciencias
+            </button>
+            <button
+              onClick={() => setActiveTab('TOPIC_SELECTOR')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'TOPIC_SELECTOR'
+                  ? 'bg-slate-900 text-white shadow-soft-sm font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Selector de Temas
+            </button>
+            <button
+              onClick={() => setActiveTab('AI_DECONSTRUCTED')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                activeTab === 'AI_DECONSTRUCTED'
+                  ? 'bg-[#0F52BA] text-white shadow-soft-sm font-bold'
+                  : 'text-[#0F52BA] hover:bg-blue-50'
+              }`}
+            >
+              <SparklesIcon className="w-3.5 h-3.5" />
+              <span>Análisis con IA ({deconstructedGuides.length})</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* VISTA 0: PROGRAMA EXCLUSIVO DE MARÍA FERNANDA (DISEÑO INTEGRAL UCAB) */}
@@ -450,23 +477,27 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
       )}
 
       {/* VISTA 0B: PROGRAMA EXCLUSIVO DE ANDRÉS RIVERO (1ER AÑO DE BACHILLERATO) */}
-      {activeTab === 'andres_curriculum' && (
+      {(isAndres || activeTab === 'andres_curriculum') && (
         <div className="space-y-6 animate-fadeIn">
-          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-emerald-50 via-white to-teal-50/50 border-2 border-emerald-200/80 shadow-soft flex flex-col md:flex-row md:items-center justify-between gap-4">
+          {/* Banner de Presentación PlayStation / Gemini Dark */}
+          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-[#0a1128] via-[#0d1527] to-[#050811] border border-[#0070d1]/40 shadow-[0_4px_24px_rgba(0,112,209,0.15)] flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
             <div className="space-y-1.5 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300/80 font-mono">
-                  Personalizado para Andrés Rivero · 12 años
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#0070d1]/20 text-[#38bdf8] border border-[#0070d1]/50 font-mono">
+                  Personalizado para Andrés Rivero · 1er Año Bachillerato
                 </span>
-                <span className="text-[10px] font-mono text-slate-500">
-                  1er Año Bachillerato (Colegio Consolación) • {ALL_ANDRES_DECONSTRUCTED_GUIDES.length} Guías Oficiales • {ALL_ANDRES_QUESTIONS.length} Reactivos Calibrados
+                <span className="text-[10px] font-mono text-slate-300">
+                  Colegio Consolación • {ALL_ANDRES_DECONSTRUCTED_GUIDES.length} Guías Oficiales en 7 Pilares • {ALL_ANDRES_QUESTIONS.length} Reactivos
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 tracking-tight font-sans">
-                Mi Centro Académico & Exámenes de 1er Año
+              <h3 className="text-lg font-bold text-white tracking-tight font-sans flex items-center gap-2">
+                <span>Mis Guías Temáticas Deconstruidas</span>
+                <span className="text-xs font-normal text-[#38bdf8] font-mono px-2 py-0.5 rounded-md bg-blue-950/60 border border-blue-800/40">
+                  {andresSubjectFilter === 'TODAS' ? 'Mostrando todas las 10 guías' : `Filtro: ${andresSubjectFilter}`}
+                </span>
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
-                Temario oficial del I Momento Pedagógico: Matemáticas (Números Enteros ℤ y la balanza de ecuaciones), Biología (Método Científico, Laboratorio y Estados de la Materia), Física (Prof. Antonio Gonzales: Unidades SI y Máquinas Simples) y Castellano (Oración Bimembre, Acentuación y cuento &quot;Barrabás&quot;).
+              <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
+                Guías de estudio estructuradas con el Método de 7 Pilares (Conceptos clave, Fórmulas, Ejemplos resueltos, Errores comunes, Mnemotecnias, Cornell y Flashcards). Descarga en Word o PDF para llevar al colegio.
               </p>
             </div>
 
@@ -478,7 +509,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                     '1er Año Bachillerato · Simulacro General (Todas las Guías)'
                   )
                 }
-                className="bg-emerald-600 hover:bg-emerald-700 active:scale-[0.97] text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-soft flex items-center gap-1.5 transition-all cursor-pointer"
+                className="bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] active:scale-[0.97] text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-[0_0_20px_rgba(0,112,209,0.4)] flex items-center gap-1.5 transition-all cursor-pointer border border-[#38bdf8]/30"
               >
                 <PlayIcon className="w-3.5 h-3.5 text-white" />
                 <span>Simular Examen Completo ({ALL_ANDRES_QUESTIONS.length})</span>
@@ -486,32 +517,35 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
             </div>
           </div>
 
-          {/* Grid de las 4 Guías Oficiales Deconstruidas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {ALL_ANDRES_DECONSTRUCTED_GUIDES.map((guide) => (
+          {/* Grid de las 10 Guías Deconstruidas para Andrés */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {ALL_ANDRES_DECONSTRUCTED_GUIDES.filter((guide) => {
+              if (andresSubjectFilter === 'TODAS') return true;
+              return guide.guideMetadata.area.toLowerCase().includes(andresSubjectFilter.toLowerCase());
+            }).map((guide) => (
               <div
                 key={guide.id}
-                className="p-5 rounded-3xl bg-white border border-emerald-200/90 hover:border-emerald-400 transition-all shadow-soft flex flex-col justify-between space-y-4"
+                className="p-5 rounded-3xl bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-blue-900/40 hover:border-[#0070d1] dark:hover:border-[#38bdf8] transition-all shadow-soft flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-mono">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/80 text-[#0070d1] dark:text-[#38bdf8] font-mono border border-blue-200 dark:border-blue-800/40">
                       {guide.guideMetadata.area}
                     </span>
-                    <span className="text-[10px] font-mono text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded-md">
-                      {guide.generatedQuestions?.length || 0} Reactivos
+                    <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/50 dark:border-emerald-800/40">
+                      {guide.generatedQuestions?.length || 5} Reactivos
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-slate-900 leading-snug font-sans">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug font-sans">
                     {guide.guideMetadata.title}
                   </h3>
 
-                  <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 font-sans">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 font-sans">
                     {guide.guideMetadata.summary}
                   </p>
 
-                  <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-mono text-slate-400">
+                  <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-mono text-slate-400 dark:text-slate-500">
                     <span>• {guide.glossary?.length || 0} términos</span>
                     <span>• {guide.formulasAndStrategies?.coreFormulas?.length || 0} modelos</span>
                     <span>• {guide.studyTechniquesHub?.activeRecallFlashcards?.length || 0} flashcards</span>
@@ -519,18 +553,18 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                 </div>
 
                 {/* Barra de Acciones y Descarga de Documentos (PDF / Word) */}
-                <div className="pt-3 border-t border-slate-100 space-y-2">
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => exportGuideToPdf(guide)}
-                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-blue-50 hover:bg-blue-100 text-[#0F52BA] border border-blue-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-900/60 text-[#0F52BA] dark:text-[#38bdf8] border border-blue-200/90 dark:border-blue-800/50 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
                       title="Descargar o Guardar como PDF de alta resolución"
                     >
                       <span>📄 PDF (.pdf)</span>
                     </button>
                     <button
                       onClick={() => exportGuideToWord(guide)}
-                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/90 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                      className="flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700 flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
                       title="Descargar guía completa en formato Microsoft Word (.doc)"
                     >
                       <span>📝 Word (.doc)</span>
@@ -540,15 +574,15 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setSelectedDeconstructedGuide(guide)}
-                      className="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-900 hover:bg-black text-white flex items-center justify-center gap-1.5 transition-all shadow-soft cursor-pointer active:scale-[0.98]"
+                      className="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-900 hover:bg-black dark:bg-[#131d36] dark:hover:bg-[#1a2747] text-white flex items-center justify-center gap-1.5 transition-all shadow-soft cursor-pointer active:scale-[0.98] border border-transparent dark:border-blue-800/30"
                     >
-                      <BookOpenIcon className="w-3.5 h-3.5 text-emerald-400" />
+                      <BookOpenIcon className="w-3.5 h-3.5 text-[#38bdf8]" />
                       <span>Ver Guía</span>
                     </button>
 
                     <button
                       onClick={() => handleStartExamFromDeconstructed(guide)}
-                      className="py-2 px-3.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-soft flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98]"
+                      className="py-2 px-3.5 rounded-xl text-xs font-bold bg-[#0070d1] hover:bg-[#005fb3] text-white shadow-soft flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98]"
                       title="Simular examen con preguntas de esta guía"
                     >
                       <PlayIcon className="w-3.5 h-3.5 text-white" />
@@ -558,16 +592,6 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
-            <span>¿Quieres consultar otros temas o preparar el ingreso a la universidad? Cambia a la pestaña <strong>«Todas»</strong> en la barra superior.</span>
-            <button
-              onClick={() => setActiveTab('ALL')}
-              className="text-[#0F52BA] font-bold hover:underline"
-            >
-              Ver todas las guías →
-            </button>
           </div>
         </div>
       )}

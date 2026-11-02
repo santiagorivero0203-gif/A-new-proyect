@@ -41,6 +41,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenAccountManager,
 }) => {
   const { user, academicProfile, getProfileSidebarTabs } = useAuth();
+  const isAndres =
+    academicProfile === 'andres_bachillerato_1' || user?.academic_profile === 'andres_bachillerato_1';
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
 
   const navigationTabs: { id: MainTabType; name: string; icon: React.ReactNode; badge?: string }[] = [
@@ -266,7 +268,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </nav>
 
             {/* Acceso directo a personalizar si hay pestañas ocultas */}
-            {visibleTabs.length < navigationTabs.length && (
+            {!isAndres && visibleTabs.length < navigationTabs.length && (
               <button
                 onClick={() => setIsCustomizerOpen(true)}
                 className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-700 hover:bg-white border border-dashed border-slate-200 transition-all mt-2 group"
