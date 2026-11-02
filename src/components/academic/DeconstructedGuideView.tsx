@@ -31,7 +31,8 @@ import {
   LayersIcon,
 } from '../common/Icons';
 import { AudioGuidePlayer } from './AudioGuidePlayer';
-import { KineticReelPlayer } from './KineticReelPlayer';
+import { KineticReelPlayer, type BeatScene } from './KineticReelPlayer';
+import { ANDRES_MULTIMEDIA_CATALOG, getAndresPlaylistForSubject } from '../../data/andres_multimedia';
 import { InteractiveDesignPlayground } from './InteractiveDesignPlayground';
 import { EnhancedFlashcardDeck } from './EnhancedFlashcardDeck';
 import {
@@ -369,6 +370,92 @@ const EditorialTheoryRenderer: React.FC<EditorialTheoryRendererProps> = ({ conte
   );
 };
 
+/**
+ * Generador dinámico de escenas cinéticas para KineticReelPlayer adaptadas a cualquier materia
+ */
+function buildKineticScenesFromGuide(guide: DeconstructedAcademicGuide): BeatScene[] {
+  const meta = guide.guideMetadata;
+  const rawTheory = typeof guide.phenomenonAndTheory === "string"
+    ? guide.phenomenonAndTheory
+    : (Array.isArray(guide.phenomenonAndTheory) ? (guide.phenomenonAndTheory as string[]).join(" ") : "");
+
+  const cleanTheory = rawTheory.replace(/[#*_~`]/g, " ").replace(/\\(?:frac|cdot|dots|quad|text)/g, " ").replace(/\s+/g, " ").trim();
+  const firstSentence = cleanTheory.split(/[.!?]\s+/)[0] || meta.summary || "";
+  const glossaryItems = (guide.glossary || []).slice(0, 3);
+  const formulas = guide.formulasAndStrategies?.coreFormulas || [];
+  const alerts = guide.commonErrorsAlerts || [];
+
+  return [
+    {
+      beatNumber: 1,
+      type: "hero",
+      badge: `${(meta.area || "CURRÍCULO ACADÉMICO").toUpperCase()} · REEL DE ESTUDIO`,
+      kicker: meta.area || "REPASO CINÉTICO",
+      title: `Domina: *${meta.title}*`,
+      sub: firstSentence.length > 150 ? firstSentence.slice(0, 150) + "..." : firstSentence,
+      durationSeconds: 4.5,
+    },
+    {
+      beatNumber: 2,
+      type: "points",
+      badge: "CONCEPTOS CLAVE · DEDUCCIÓN",
+      kicker: "FUNDAMENTOS TEÓRICOS",
+      title: "Los pilares que *debes dominar*",
+      sub: "Definiciones esenciales sin relleno innecesario:",
+      points: glossaryItems.length > 0
+        ? glossaryItems.map(g => ({
+            label: `${g.term} ${g.symbolOrUnit ? `(${g.symbolOrUnit})` : ""}`,
+            desc: g.definition.length > 95 ? g.definition.slice(0, 95) + "..." : g.definition,
+          }))
+        : [
+            { label: "Estructura Modular", desc: "Análisis deductivo paso a paso enfocado en la resolución de problemas." },
+            { label: "Rigor Metodológico", desc: "Dominio de los principios sin memorización ciega de fórmulas." }
+          ],
+      durationSeconds: 5.5,
+    },
+    {
+      beatNumber: 3,
+      type: "showcase",
+      badge: "FÓRMULAS & ESTRATEGIAS",
+      kicker: "RESOLUCIÓN RÁPIDA",
+      title: formulas.length > 0 ? `Aplica: *${formulas[0].name}*` : "Estrategia de Resolución",
+      sub: formulas.length > 0 ? formulas[0].application : "Asegura cada paso metodológico en el procedimiento escrito.",
+      points: formulas.slice(0, 3).map(f => ({
+        label: f.name,
+        desc: f.application,
+      })),
+      durationSeconds: 5.0,
+    },
+    {
+      beatNumber: 4,
+      type: "points",
+      badge: "ALERTA DE EXAMEN · ZERO TRAMPAS",
+      kicker: "DONDE TODOS SE EQUIVOCAN",
+      title: "¡Evita estos *errores críticos*!",
+      sub: "Detalles que restan puntos en la corrección oficial:",
+      points: alerts.length > 0
+        ? alerts.slice(0, 2).map(a => ({
+            label: "Trampa habitual",
+            desc: a.trap.length > 95 ? a.trap.slice(0, 95) + "..." : a.trap,
+          }))
+        : [
+            { label: "Atención a Signos y Unidades", desc: "Verifica los signos en potencias y la consistencia en el Sistema Internacional." },
+            { label: "Comprobación de Resultados", desc: "Sustituye la respuesta en la ecuación o problema original para validar." }
+          ],
+      durationSeconds: 5.0,
+    },
+    {
+      beatNumber: 5,
+      type: "cta",
+      badge: "EVALUACIÓN SUMATIVA OFICIAL",
+      kicker: "SIMULADOR INTERACTIVO",
+      title: `¿Listo para el examen de *${meta.title.split(/[:·-]/)[0].trim()}*?`,
+      sub: "Pon a prueba tus conocimientos con el banco calibrado de reactivos y retroalimentación paso a paso.",
+      durationSeconds: 4.5,
+    },
+  ];
+}
+
 export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   guide,
   onClose,
@@ -426,15 +513,22 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   }, 0);
   const scorePercentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
 
-  // Obtener recursos multimedia de la guía o catálogo oficial
+  // Detección de perfil de guía (Andrés o Santiago/Mafe)
+  const isAndresGuide = guide.id?.startsWith('andres-') || guide.guideMetadata.area?.includes('1er Año');
+
+  // Obtener recursos multimedia de la guía o catálogo oficial (Andrés o Santiago)
   const multimediaList = (guide.multimediaResources && guide.multimediaResources.length > 0)
     ? guide.multimediaResources
-    : (guide.id && SANTIAGO_MULTIMEDIA_CATALOG[guide.id.replace('-guide', '')])
+    : (guide.id && ANDRES_MULTIMEDIA_CATALOG[guide.id.replace('-guide', '')])
+    || (guide.evaluationEventId && ANDRES_MULTIMEDIA_CATALOG[guide.evaluationEventId])
+    || (guide.id && SANTIAGO_MULTIMEDIA_CATALOG[guide.id.replace('-guide', '')])
     || (guide.evaluationEventId && SANTIAGO_MULTIMEDIA_CATALOG[guide.evaluationEventId])
     || [];
 
   // Obtener lista de reproducción oficial correspondiente al área o materia de la guía
-  const curatedPlaylist = guide.curatedPlaylist || getPlaylistForSubject(guide.guideMetadata.area || guide.id || '');
+  const curatedPlaylist = guide.curatedPlaylist
+    || (isAndresGuide ? getAndresPlaylistForSubject(guide.guideMetadata.area || guide.id || '') : null)
+    || getPlaylistForSubject(guide.guideMetadata.area || guide.id || '');
 
   // Obtener prompts de investigación asociados a la guía o tema
   const promptList = (guide.researchPrompts && guide.researchPrompts.length > 0)
@@ -1789,8 +1883,8 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
 
             <KineticReelPlayer
               title={guideMetadata.title}
-              subject={guideMetadata.area || 'Diseño Integral'}
-              videoSrc="/videos/mafe_teoria_diseno.mp4"
+              subject={guideMetadata.area || 'Ciencias & Diseño'}
+              scenes={buildKineticScenesFromGuide(guide)}
               onCtaClick={handleLaunchSimulator}
             />
           </div>

@@ -121,7 +121,7 @@ export interface PlaylistItem {
 
 export interface CuratedPlaylist {
   id: string;
-  subjectKey: 'matematica1' | 'quimica1' | 'fisica1';
+  subjectKey: 'matematica1' | 'quimica1' | 'fisica1' | string;
   subjectTitle: string;
   title: string;
   description: string;

@@ -67,29 +67,28 @@ export function sanitizeLatex(raw: string): string {
     );
   }
 
-  // 4. Si aún queda algún \text{ en una expresión con subíndices/superíndices, forzar \mathrm{
-  if (cleaned.includes('_') || cleaned.includes('^')) {
-    cleaned = cleaned.replace(/\\text\{/g, '\\mathrm{');
-  }
-
   return cleaned;
 }
 
 /**
- * Detecta si una cadena corresponde a un párrafo de texto en lenguaje natural
+ * Detecta si una cadena corresponde a un párrafo de texto en lenguaje natural en prosa
  * en lugar de una fórmula matemática pura.
  */
 function isNaturalLanguageParagraph(text: string): boolean {
   if (!text) return false;
-  // Si contiene múltiples palabras en español separadas por espacios y no está envuelto en $
+  // Si contiene comandos matemáticos explícitos de LaTeX, NUNCA es prosa simple
+  if (/\\(frac|sqrt|cdot|dots|quad|sum|int|lim|to|right|left|alpha|beta|gamma|Delta|pi|in|neq|le|ge|mathbb)/.test(text)) {
+    return false;
+  }
+  // Palabras comunes gramaticales del español que denotan oraciones completas
+  const spanishWords = /\b(el|la|los|las|un|una|unos|unas|de|del|en|para|por|con|que|como|es|son|se|al|su|sus|este|esta|estos|estas)\b/i;
   const words = text.trim().split(/\s+/);
-  const hasMultipleWords = words.length >= 4;
   const isWrappedInMath =
     (text.startsWith('$') && text.endsWith('$')) ||
     (text.startsWith('\\[') && text.endsWith('\\]')) ||
     (text.startsWith('\\(') && text.endsWith('\\)'));
 
-  return hasMultipleWords && !isWrappedInMath;
+  return words.length >= 6 && spanishWords.test(text) && !isWrappedInMath;
 }
 
 /**
@@ -101,8 +100,7 @@ export function renderLatexToHtml(
 ): string {
   if (!latex) return '';
 
-  // PROTECCIÓN VITAL: Si se pasa un párrafo de texto en prosa en vez de una fórmula pura,
-  // delegar a renderLatex con displayMode=false para evitar que KaTeX una todas las letras en cursiva matemática.
+  // PROTECCIÓN: Si accidentalmente se pasa un párrafo de texto en prosa en vez de una fórmula pura
   if (isNaturalLanguageParagraph(latex)) {
     return renderLatex(latex, false);
   }
@@ -113,16 +111,24 @@ export function renderLatexToHtml(
   try {
     return katex.renderToString(safeLatex, {
       displayMode: options.displayMode ?? true,
-      throwOnError: true,
+      throwOnError: false, // Permite a KaTeX renderizar sin abortar
       strict: false,
       trust: true,
     });
   } catch {
-    // Fallback semántico limpio con <sub> y <sup> (CERO texto rojo)
+    // Fallback semántico limpio con <sub> y <sup> (CERO texto rojo ni comandos crudos)
     return safeLatex
       .replace(/\\(?:mathrm|text|textbf)\{([^{}]+)\}/g, '$1')
+      .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '<span class="inline-flex flex-col items-center justify-center align-middle mx-1 text-xs"><span class="border-b border-current px-1">$1</span><span class="px-1">$2</span></span>')
       .replace(/\\longrightarrow|\\rightarrow|\\to/g, ' &rarr; ')
       .replace(/\\rightleftharpoons/g, ' &#8652; ')
+      .replace(/\\cdot/g, ' &sdot; ')
+      .replace(/\\dots/g, ' &hellip; ')
+      .replace(/\\quad/g, ' &emsp; ')
+      .replace(/\\mathbb\{Z\}/g, 'ℤ')
+      .replace(/\\mathbb\{R\}/g, 'ℝ')
+      .replace(/\\mathbb\{N\}/g, 'ℕ')
+      .replace(/\\mathbb\{Q\}/g, 'ℚ')
       .replace(/_\{([^}]+)\}|_([0-9a-zA-Z]+)/g, '<sub>$1$2</sub>')
       .replace(/\^\{([^}]+)\}|\^([0-9a-zA-Z+-]+)/g, '<sup>$1$2</sup>')
       .replace(/\\,/g, ' ')
@@ -165,7 +171,15 @@ function formatPlainTextSegment(rawText: string): string {
   // 2c. Citas y notas destacadas tipo blockquote (> o &gt;)
   t = t.replace(/(?:^|\n)&gt;\s*([^\n]+)/g, '<div class="my-2.5 pl-3.5 py-2 border-l-4 border-blue-500 bg-blue-50/70 dark:bg-blue-950/40 rounded-r-xl text-slate-800 dark:text-slate-200 font-medium">$1</div>');
 
-  // 3. Reemplazo de flechas y símbolos matemáticos que hayan quedado sueltos en texto plano
+  // 3. Reemplazo de comandos de LaTeX sueltos que hayan quedado en texto plano
+  t = t.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '<span class="inline-flex flex-col items-center justify-center align-middle mx-1 text-xs"><span class="border-b border-current px-1">$1</span><span class="px-1">$2</span></span>');
+  t = t.replace(/\\dots/g, '&hellip;');
+  t = t.replace(/\\quad/g, '&emsp;');
+  t = t.replace(/\\cdot/g, '&sdot;');
+  t = t.replace(/\\mathbb\{Z\}/g, 'ℤ');
+  t = t.replace(/\\mathbb\{R\}/g, 'ℝ');
+  t = t.replace(/\\mathbb\{N\}/g, 'ℕ');
+  t = t.replace(/\\mathbb\{Q\}/g, 'ℚ');
   t = t.replace(/\\longrightarrow/g, ' &rarr; ');
   t = t.replace(/\\longleftarrow/g, ' &larr; ');
   t = t.replace(/\\rightarrow/g, ' &rarr; ');
@@ -192,12 +206,22 @@ function formatPlainTextSegment(rawText: string): string {
   t = t.replace(/\\gamma\b/g, '&gamma;');
   t = t.replace(/\\omega\b/g, '&omega;');
   t = t.replace(/\\infty\b/g, '&infin;');
-  t = t.replace(/\\cdot/g, '&sdot;');
 
   // 4. Limpieza de secuencias anómalas de dólares ($$$ -> $)
   t = t.replace(/\${3,}/g, '$');
 
   return t;
+}
+
+/**
+ * Normaliza y repara fórmulas matemáticas en textos donde faltan delimitadores de cierre
+ */
+function repairUnclosedMathDelimiters(text: string): string {
+  let res = text;
+  // Reparar casos comunes donde se abrió $ pero terminó con signo de puntuación sin cerrar $:
+  // Ej: "resultado: $(-3)^2 = (+9)." -> "resultado: $(-3)^2 = (+9)$."
+  res = res.replace(/\$([^\$\n]*?[=+\-*/^_{}][^\$\n]*?)(\s*[.,;:]\s*|\s*$)/g, '$$$1$$$2');
+  return res;
 }
 
 /**
@@ -218,13 +242,23 @@ export function renderLatex(content: string | undefined | null, displayMode: boo
   }
 
   const computeResult = (): string => {
+    // Si la cadena completa es un bloque matemático $$...$$ o \[...\]
+    if (
+      (trimmed.startsWith('$$') && trimmed.endsWith('$$')) ||
+      (trimmed.startsWith('\\[') && trimmed.endsWith('\\]'))
+    ) {
+      const expr = trimmed.startsWith('$$') ? trimmed.slice(2, -2) : trimmed.slice(2, -2);
+      return renderLatexToHtml(expr, { displayMode: true });
+    }
+
     // Caso A: Modo bloque explícito para fórmulas puras
     if (displayMode && !isNaturalLanguageParagraph(trimmed)) {
       return renderLatexToHtml(trimmed, { displayMode: true });
     }
 
-    // Normalizar triples signos de dólar accidentales
-    const normalized = trimmed.replace(/\${3,}/g, '$');
+    // Normalizar triples signos de dólar accidentales y auto-reparar delimitadores incompletos
+    let normalized = trimmed.replace(/\${3,}/g, '$');
+    normalized = repairUnclosedMathDelimiters(normalized);
 
     // Caso B: Verificación de presencia de fórmulas matemáticas
     const hasDollarMath = normalized.includes('$');
