@@ -197,7 +197,11 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
       } else if (guide.id === 'santiago-lab1-errors-guide') {
         questions = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.topic.includes('Incertidumbre'));
       } else {
-        questions = isAndres ? ALL_ANDRES_QUESTIONS.slice(0, 10) : ALL_MAFE_QUESTIONS.slice(0, 10);
+        questions = isSantiago
+          ? SANTIAGO_SEMESTER_1_QUESTIONS.slice(0, 10)
+          : isAndres
+          ? ALL_ANDRES_QUESTIONS.slice(0, 10)
+          : ALL_MAFE_QUESTIONS.slice(0, 10);
       }
     }
 

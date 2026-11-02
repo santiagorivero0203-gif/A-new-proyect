@@ -107,6 +107,29 @@ export interface DeconstructedQuestion {
 /**
  * Recursos Multimedia Integrados (Videos, Audios, Infografías y Simulaciones)
  */
+export interface PlaylistItem {
+  id: string;
+  topicNumber: number;
+  topicName: string;
+  title: string;
+  author: string;
+  duration: string;
+  url: string;
+  embedUrl: string;
+  description: string;
+}
+
+export interface CuratedPlaylist {
+  id: string;
+  subjectKey: 'matematica1' | 'quimica1' | 'fisica1';
+  subjectTitle: string;
+  title: string;
+  description: string;
+  curator: string;
+  playlistUrl: string;
+  videos: PlaylistItem[];
+}
+
 export type MultimediaType = 'video' | 'audio' | 'image' | 'simulation';
 
 export interface MultimediaResource {
@@ -175,6 +198,7 @@ export interface DeconstructedAcademicGuide {
   studyTechniquesHub: StudyTechniquesHub;
   generatedQuestions: DeconstructedQuestion[];
   multimediaResources?: MultimediaResource[];
+  curatedPlaylist?: CuratedPlaylist;
   researchPrompts?: SantiagoResearchPrompt[];
   researchPrompt?: SantiagoResearchPrompt;
 }

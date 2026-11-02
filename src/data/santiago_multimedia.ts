@@ -12,7 +12,7 @@
  * Amigos de la Química, CrashCourse Química), guiones de audio claros para lectura/audición y diagramas.
  */
 
-import type { MultimediaResource } from '../types/deconstruction.types';
+import type { MultimediaResource, CuratedPlaylist } from '../types/deconstruction.types';
 
 export const SANTIAGO_MULTIMEDIA_CATALOG: Record<string, MultimediaResource[]> = {
   // =========================================================================
@@ -696,3 +696,288 @@ export const SANTIAGO_MULTIMEDIA_CATALOG: Record<string, MultimediaResource[]> =
     },
   ],
 };
+
+// =========================================================================
+// LISTAS DE REPRODUCCIÓN CURADAS POR MATERIA (PLAYLISTS DEL PENSUM UCV)
+// =========================================================================
+export const SANTIAGO_SUBJECT_PLAYLISTS: Record<'matematica1' | 'quimica1' | 'fisica1', CuratedPlaylist> = {
+  // 1. LISTA DE REPRODUCCIÓN: MATEMÁTICA I (PEDRO ALSON)
+  matematica1: {
+    id: 'playlist-mat1-alson',
+    subjectKey: 'matematica1',
+    subjectTitle: 'Matemática I · Métodos de Graficación',
+    title: 'Lista de Reproducción Oficial: Métodos de Graficación (Pedro Alson)',
+    description:
+      'Serie audiovisual secuencial completa que cubre los 7 temas canónicos del texto de Pedro Alson: lectura de curvas, operaciones y curva recíproca, modelo de pantallas y linealización cuadrática, soluciones múltiples, hipérbolas canónicas, inecuaciones visuales y la función derivada f prime.',
+    curator: 'Cátedra Pedro Alson & El Traductor de Ingeniería',
+    playlistUrl: 'https://www.youtube.com/playlist?list=PLD231EAA6E96E14B8',
+    videos: [
+      {
+        id: 'pl-mat1-01',
+        topicNumber: 1,
+        topicName: 'Estudio de Curvas',
+        title: 'El Lenguaje Visual de las Funciones Continuas y Caminos de Ida/Vuelta',
+        author: 'El Traductor de Ingeniería',
+        duration: '22:40 min',
+        url: 'https://www.youtube.com/watch?v=kYJ5kQz9N6E',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/kYJ5kQz9N6E',
+        description: 'Fundamentos de continuidad, monotonía, cotas y preimágenes.',
+      },
+      {
+        id: 'pl-mat1-02',
+        topicNumber: 2,
+        topicName: 'Operaciones con Curvas',
+        title: 'Suma, Producto, Curva Recíproca 1/f(x) y Composición con la Bisectriz',
+        author: 'El Traductor de Ingeniería',
+        duration: '25:10 min',
+        url: 'https://www.youtube.com/watch?v=0kFp6yHrn2Y',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/0kFp6yHrn2Y',
+        description: 'Operaciones geométricas de ordenadas y polos asintóticos.',
+      },
+      {
+        id: 'pl-mat1-03',
+        topicNumber: 3,
+        topicName: 'Teclas y Fórmulas',
+        title: 'El Modelo de Teclas y Pantallas: Linealización por Completación de Cuadrados',
+        author: 'Cátedra Pedro Alson (ERRO)',
+        duration: '21:00 min',
+        url: 'https://www.youtube.com/watch?v=p4vWd2Gz3hY',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/p4vWd2Gz3hY',
+        description: 'Diagramas de flujo y colapso de ramificaciones para despejes exactos.',
+      },
+      {
+        id: 'pl-mat1-04',
+        topicNumber: 4,
+        topicName: 'Soluciones Múltiples',
+        title: 'Resolución Gráfica de Ecuaciones No Lineales y Trascendentes',
+        author: '3Blue1Brown (Español)',
+        duration: '23:15 min',
+        url: 'https://www.youtube.com/watch?v=7_WjG2dYq1I',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/7_WjG2dYq1I',
+        description: 'Separación estratégica de miembros y conteo visual de raíces.',
+      },
+      {
+        id: 'pl-mat1-05',
+        topicNumber: 5,
+        topicName: 'Rectas, Parábolas e Hipérbolas',
+        title: 'La Hipérbola Homográfica Canónica f(x) = v + k/(x - h) y Áreas Triangulares',
+        author: 'El Traductor de Ingeniería',
+        duration: '26:40 min',
+        url: 'https://www.youtube.com/watch?v=rWJ8r2E_kQY',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/rWJ8r2E_kQY',
+        description: 'Asíntotas ortogonales y familias de rectas en el Parcial 2.',
+      },
+      {
+        id: 'pl-mat1-06',
+        topicNumber: 6,
+        topicName: 'Inecuaciones y Transformadas',
+        title: 'Resolución Visual de Inecuaciones Gráficas y Transformadas de Módulo',
+        author: 'JulioProfe',
+        duration: '22:15 min',
+        url: 'https://www.youtube.com/watch?v=vVj_p_b8eR4',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/vVj_p_b8eR4',
+        description: 'Sombra sobre el eje real y transformadas |f(x)| y f(|x|).',
+      },
+      {
+        id: 'pl-mat1-07',
+        topicNumber: 7,
+        topicName: 'Límites y Derivadas',
+        title: 'Límites Visuales y Trazado Cualitativo de la Función Derivada f prime',
+        author: '3Blue1Brown (Español)',
+        duration: '28:10 min',
+        url: 'https://www.youtube.com/watch?v=b4_97C_vYl0',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/b4_97C_vYl0',
+        description: 'Pendiente de la recta tangente y concavidad sin cálculo ciego.',
+      },
+    ],
+  },
+
+  // 2. LISTA DE REPRODUCCIÓN: PRINCIPIOS DE QUÍMICA I (CÓDIGO 3401 UCV)
+  quimica1: {
+    id: 'playlist-qgi-3401',
+    subjectKey: 'quimica1',
+    subjectTitle: 'Principios de Química I (Código 3401)',
+    title: 'Lista de Reproducción Oficial: Principios de Química General I',
+    description:
+      'Curso audiovisual integral que cubre los 10 temas de Química Universitaria: propiedades de la materia, modelos atómicos e isótopos, mecánica cuántica y configuraciones de Cr/Cu, tendencias periódicas, enlaces y Lewis expandido, geometría molecular TRPEV, estequiometría de masas con reactivo limitante, reacciones acuosas y redox ion-electrón, gases ideales/reales y disoluciones con propiedades coligativas.',
+    curator: 'Amigos de la Química & CrashCourse Química',
+    playlistUrl: 'https://www.youtube.com/playlist?list=PL8dPuuaLjXtPHzzYuWy6fYEaX9mQQ8oGr',
+    videos: [
+      {
+        id: 'pl-qgi-01',
+        topicNumber: 1,
+        topicName: 'Propiedades y Medidas',
+        title: 'Materia, Medidas, Análisis Dimensional y Cifras Significativas',
+        author: 'CrashCourse Química (Español)',
+        duration: '18:50 min',
+        url: 'https://www.youtube.com/watch?v=hB9E6fWf8hU',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/hB9E6fWf8hU',
+        description: 'Metrología química y cálculo de densidad en el laboratorio.',
+      },
+      {
+        id: 'pl-qgi-02',
+        topicNumber: 2,
+        topicName: 'Teoría Atómica e Isótopos',
+        title: 'Leyes Ponderales, Rutherford y Cálculo de Masa Atómica Promedio',
+        author: 'Amigos de la Química',
+        duration: '15:10 min',
+        url: 'https://www.youtube.com/watch?v=F2Y4P1V7s8U',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/F2Y4P1V7s8U',
+        description: 'Estructura nuclear, nucleidos y abundancia isotópica.',
+      },
+      {
+        id: 'pl-qgi-03',
+        topicNumber: 3,
+        topicName: 'Estructura Electrónica',
+        title: 'Números Cuánticos, Orbitales Atómicos y Excepciones de Cromo y Cobre',
+        author: 'Amigos de la Química',
+        duration: '24:15 min',
+        url: 'https://www.youtube.com/watch?v=yW6aX0z6pYI',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/yW6aX0z6pYI',
+        description: 'Reglas de Aufbau, Pauli y Hund con anomalías cuánticas.',
+      },
+      {
+        id: 'pl-qgi-04',
+        topicNumber: 4,
+        topicName: 'Tabla Periódica',
+        title: 'Tendencias Periódicas: Carga Nuclear Efectiva Z_ef, Radio e Ionización',
+        author: 'Amigos de la Química',
+        duration: '22:30 min',
+        url: 'https://www.youtube.com/watch?v=pD4J7kL2p_A',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/pD4J7kL2p_A',
+        description: 'Mecanismo físico de apantallamiento y series isoelectrónicas.',
+      },
+      {
+        id: 'pl-qgi-05',
+        topicNumber: 5,
+        topicName: 'Enlaces Químicos',
+        title: 'Estructuras de Lewis, Carga Formal, Resonancia y Octeto Expandido',
+        author: 'Amigos de la Química',
+        duration: '26:10 min',
+        url: 'https://www.youtube.com/watch?v=cIuXl7o66vI',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/cIuXl7o66vI',
+        description: 'Enlace iónico (Born-Haber) y covalente en especies poliatómicas.',
+      },
+      {
+        id: 'pl-qgi-06',
+        topicNumber: 6,
+        topicName: 'Geometría Molecular',
+        title: 'Modelo TRPEV / VSEPR, Hibridación de Orbitales y Polaridad Molecular',
+        author: 'El Traductor de Ingeniería',
+        duration: '28:40 min',
+        url: 'https://www.youtube.com/watch?v=keHS-CASZfc',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/keHS-CASZfc',
+        description: 'Geometría de dominios vs molecular y suma vectorial de dipolos.',
+      },
+      {
+        id: 'pl-qgi-07',
+        topicNumber: 7,
+        topicName: 'Estequiometría de Reacción',
+        title: 'El Concepto de Mol, Reactivo Limitante, Pureza y Rendimiento',
+        author: 'Amigos de la Química',
+        duration: '25:20 min',
+        url: 'https://www.youtube.com/watch?v=F3a3S7x6u6M',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/F3a3S7x6u6M',
+        description: 'Cuadros ICF cuantitativos y cálculo de masa sobrante.',
+      },
+      {
+        id: 'pl-qgi-08',
+        topicNumber: 8,
+        topicName: 'Reacciones Acuosas y Redox',
+        title: 'Reglas de Solubilidad, Neutralización y Balanceo Redox por Ion-Electrón',
+        author: 'Amigos de la Química',
+        duration: '27:50 min',
+        url: 'https://www.youtube.com/watch?v=y3hR9e8Z9hY',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/y3hR9e8Z9hY',
+        description: 'Ecuaciones iónicas netas y semirreacciones en medio ácido/básico.',
+      },
+      {
+        id: 'pl-qgi-09',
+        topicNumber: 9,
+        topicName: 'Gases',
+        title: 'Leyes de Gases, PV = nRT, Presiones Parciales y Van der Waals',
+        author: 'CrashCourse Química (Español)',
+        duration: '23:30 min',
+        url: 'https://www.youtube.com/watch?v=w7M_p6k1E2s',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/w7M_p6k1E2s',
+        description: 'Corrección por vapor de agua sobre probeta y gases reales.',
+      },
+      {
+        id: 'pl-qgi-10',
+        topicNumber: 10,
+        topicName: 'Disoluciones y Coligativas',
+        title: 'Unidades de Concentración y Propiedades Coligativas con van t Hoff',
+        author: 'Unicoos · Química Universitaria',
+        duration: '26:00 min',
+        url: 'https://www.youtube.com/watch?v=qR1Q_V7z_wE',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/qR1Q_V7z_wE',
+        description: 'Descenso crioscópico, Ley de Raoult y presión osmótica.',
+      },
+    ],
+  },
+
+  // 3. LISTA DE REPRODUCCIÓN: FÍSICA I (MECÁNICA CLÁSICA UCV)
+  fisica1: {
+    id: 'playlist-fis1-ucv',
+    subjectKey: 'fisica1',
+    subjectTitle: 'Física I · Mecánica Clásica',
+    title: 'Lista de Reproducción Oficial: Mecánica Clásica Universitaria',
+    description:
+      'Clases magistrales de nivel universitario con experimentos reales del MIT y rigor matemático: cinemática vectorial en ℝ³ y triedro intrínseco, dinámica newtoniana con DCL y fricción, y teoremas de trabajo y conservación de la energía mecánica.',
+    curator: 'Prof. Walter Lewin (MIT 8.01) & El Traductor de Ingeniería',
+    playlistUrl: 'https://www.youtube.com/playlist?list=PLyQSN7X0g32CoW25q_uD93N3X_E4aGz4p',
+    videos: [
+      {
+        id: 'pl-fis1-01',
+        topicNumber: 1,
+        topicName: 'Cinemática Vectorial',
+        title: 'Cinemática en 2D y 3D: Aceleración Normal, Tangencial y Curvatura',
+        author: 'Prof. Walter Lewin · MIT 8.01',
+        duration: '48:30 min',
+        url: 'https://www.youtube.com/watch?v=kKKM8Y-u7ds',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/kKKM8Y-u7ds',
+        description: 'Triedro intrínseco de Frenet, radio de curvatura y tiro parabólico.',
+      },
+      {
+        id: 'pl-fis1-02',
+        topicNumber: 2,
+        topicName: 'Leyes de Newton y Dinámica',
+        title: 'Las Leyes de Newton, Diagramas de Cuerpo Libre (DCL) y Rozamiento',
+        author: 'Prof. Walter Lewin · MIT 8.01',
+        duration: '51:20 min',
+        url: 'https://www.youtube.com/watch?v=apJZ11XgMlg',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/apJZ11XgMlg',
+        description: 'Dinámica de planos inclinados, fricción estática vs cinética y poleas.',
+      },
+      {
+        id: 'pl-fis1-03',
+        topicNumber: 3,
+        topicName: 'Trabajo y Energía Mecánica',
+        title: 'Trabajo, Fuerzas Vivas y Conservación de la Energía Mecánica',
+        author: 'Prof. Walter Lewin · MIT 8.01',
+        duration: '49:15 min',
+        url: 'https://www.youtube.com/watch?v=wWnfJ0-xXRE',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/wWnfJ0-xXRE',
+        description: 'Fuerzas conservativas, energía potencial elástica/gravitatoria y disipación.',
+      },
+    ],
+  },
+};
+
+/**
+ * Helper para obtener la lista de reproducción oficial correspondiente al área o materia
+ */
+export function getPlaylistForSubject(subjectOrArea: string): CuratedPlaylist | undefined {
+  const lower = subjectOrArea.toLowerCase();
+  if (lower.includes('matemática') || lower.includes('matematica') || lower.includes('alson') || lower.includes('curva') || lower.includes('mat1')) {
+    return SANTIAGO_SUBJECT_PLAYLISTS.matematica1;
+  }
+  if (lower.includes('química') || lower.includes('quimica') || lower.includes('qgi') || lower.includes('3401')) {
+    return SANTIAGO_SUBJECT_PLAYLISTS.quimica1;
+  }
+  if (lower.includes('física') || lower.includes('fisica') || lower.includes('mecanica') || lower.includes('fis1')) {
+    return SANTIAGO_SUBJECT_PLAYLISTS.fisica1;
+  }
+  return undefined;
+}
+

@@ -1,5 +1,22 @@
 import React, { useState } from 'react';
-import { Film, Eye, Download, Printer, FileText, Video, ExternalLink, Copy, Check, Sparkles } from 'lucide-react';
+import {
+  Film,
+  Eye,
+  Download,
+  Printer,
+  FileText,
+  Video,
+  ExternalLink,
+  Copy,
+  Check,
+  Sparkles,
+  ListVideo,
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
+  Award,
+  Trophy,
+} from 'lucide-react';
 import type {
   DeconstructedAcademicGuide,
 } from '../../types/deconstruction.types';
@@ -22,7 +39,10 @@ import {
   exportGuideToPdf,
   OFFICIAL_NOTION_PDF_LINKS,
 } from '../../utils/documentExport';
-import { SANTIAGO_MULTIMEDIA_CATALOG } from '../../data/santiago_multimedia';
+import {
+  SANTIAGO_MULTIMEDIA_CATALOG,
+  getPlaylistForSubject,
+} from '../../data/santiago_multimedia';
 import { SANTIAGO_RESEARCH_PROMPTS } from '../../data/santiago_prompts';
 import {
   DESIGN_THEORY_QUESTIONS,
@@ -30,6 +50,7 @@ import {
   NOTION_MATH_QUESTIONS,
   ALL_MAFE_QUESTIONS,
 } from '../../data/mafe_curriculum_hub';
+import { SANTIAGO_SEMESTER_1_QUESTIONS } from '../../data/santiago_curriculum_hub';
 
 export interface DeconstructedGuideViewProps {
   guide: DeconstructedAcademicGuide;
@@ -356,8 +377,10 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   const [activeTab, setActiveTab] = useState<TabType>('THEORY');
   const [fontSizeMode, setFontSizeMode] = useState<'normal' | 'medium' | 'large'>('medium');
 
-  // Estado para justificaciones de preguntas desplegables
+  // Estado para justificaciones de preguntas desplegables y examen de prueba interactivo
   const [expandedQuestionIdx, setExpandedQuestionIdx] = useState<number | null>(null);
+  const [userSelectedAnswers, setUserSelectedAnswers] = useState<Record<number, string>>({});
+  const [revealedExplanations, setRevealedExplanations] = useState<Record<number, boolean>>({});
 
   const {
     guideMetadata,
@@ -374,12 +397,44 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null);
   const [activeVideoModal, setActiveVideoModal] = useState<string | null>(null);
 
+  // Manejador del Examen de Prueba Interactivo
+  const handleSelectAnswer = (qIdx: number, optionText: string) => {
+    setUserSelectedAnswers((prev) => ({
+      ...prev,
+      [qIdx]: optionText,
+    }));
+    // Al seleccionar una opción, desplegar automáticamente la justificación pedagógica
+    setRevealedExplanations((prev) => ({
+      ...prev,
+      [qIdx]: true,
+    }));
+  };
+
+  const handleResetQuiz = () => {
+    setUserSelectedAnswers({});
+    setRevealedExplanations({});
+    setExpandedQuestionIdx(null);
+  };
+
+  const answeredCount = Object.keys(userSelectedAnswers).length;
+  const correctCount = (generatedQuestions || []).reduce((acc, q, idx) => {
+    const chosen = userSelectedAnswers[idx];
+    if (chosen && chosen.trim() === q.correcta.trim()) {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
+  const scorePercentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
   // Obtener recursos multimedia de la guía o catálogo oficial
   const multimediaList = (guide.multimediaResources && guide.multimediaResources.length > 0)
     ? guide.multimediaResources
     : (guide.id && SANTIAGO_MULTIMEDIA_CATALOG[guide.id.replace('-guide', '')])
     || (guide.evaluationEventId && SANTIAGO_MULTIMEDIA_CATALOG[guide.evaluationEventId])
     || [];
+
+  // Obtener lista de reproducción oficial correspondiente al área o materia de la guía
+  const curatedPlaylist = guide.curatedPlaylist || getPlaylistForSubject(guide.guideMetadata.area || guide.id || '');
 
   // Obtener prompts de investigación asociados a la guía o tema
   const promptList = (guide.researchPrompts && guide.researchPrompts.length > 0)
@@ -396,7 +451,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   const notionPdfs = guide.id ? OFFICIAL_NOTION_PDF_LINKS[guide.id] : undefined;
 
   /**
-   * Conecta directamente con el Simulador de Exámenes con salvaguarda a banco completo
+   * Conecta directamente con el Simulador de Exámenes con salvaguarda a banco completo de Santiago
    */
   const handleLaunchSimulator = () => {
     if (!onStartExamWithQuestions) return;
@@ -405,7 +460,37 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
       guideMetadata.title
     );
     if (!adaptedQuestions || adaptedQuestions.length === 0) {
-      if (guide.id === 'mafe-design-theory-official') {
+      const areaLower = (guideMetadata.area || guide.id || '').toLowerCase();
+      let santiagoMatches: Question[] = [];
+      if (
+        areaLower.includes('matemática') ||
+        areaLower.includes('matematica') ||
+        areaLower.includes('alson') ||
+        areaLower.includes('curva') ||
+        areaLower.includes('mat1')
+      ) {
+        santiagoMatches = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.subject === 'Matemática');
+      } else if (
+        areaLower.includes('química') ||
+        areaLower.includes('quimica') ||
+        areaLower.includes('qgi') ||
+        areaLower.includes('3401')
+      ) {
+        santiagoMatches = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.subject === 'Química');
+      } else if (
+        areaLower.includes('física') ||
+        areaLower.includes('fisica') ||
+        areaLower.includes('mecanica') ||
+        areaLower.includes('fis1')
+      ) {
+        santiagoMatches = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.subject === 'Física');
+      } else if (guide.id?.includes('santiago') || guide.evaluationEventId?.includes('santiago')) {
+        santiagoMatches = SANTIAGO_SEMESTER_1_QUESTIONS;
+      }
+
+      if (santiagoMatches.length > 0) {
+        adaptedQuestions = [...santiagoMatches];
+      } else if (guide.id === 'mafe-design-theory-official') {
         adaptedQuestions = [...DESIGN_THEORY_QUESTIONS];
       } else if (guide.id === 'mafe-color-clase4-ucab') {
         adaptedQuestions = [...NOTION_COLOR_QUESTIONS];
@@ -671,8 +756,10 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           }`}
         >
           <Video className="w-3.5 h-3.5" />
-          <span>7. Multimedia</span>
-          <span className="text-[10px] opacity-75">({multimediaList.length})</span>
+          <span>7. Multimedia & Playlists</span>
+          <span className="text-[10px] opacity-75">
+            ({multimediaList.length + (curatedPlaylist ? curatedPlaylist.videos.length : 0)})
+          </span>
         </button>
 
         <button
@@ -699,7 +786,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           }`}
         >
           <Film className="w-3.5 h-3.5" />
-          <span>🎬 Reel Cinético</span>
+          <span>9. Reel Cinético</span>
         </button>
 
         <button
@@ -711,7 +798,7 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           }`}
         >
           <Eye className="w-3.5 h-3.5" />
-          <span>🧪 Laboratorio Visual</span>
+          <span>10. Laboratorio Visual</span>
         </button>
 
         <button
@@ -722,8 +809,14 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
               : 'text-emerald-800 hover:bg-emerald-50'
           }`}
         >
-          <span>7. Autoevaluación</span>
+          <Award className="w-3.5 h-3.5" />
+          <span>11. Examen de Prueba</span>
           <span className="text-[10px] opacity-75">({totalQuestions})</span>
+          {answeredCount > 0 && (
+            <span className="px-1.5 py-0.2 rounded-full bg-emerald-500 text-white text-[10px] font-mono font-bold">
+              {correctCount}/{answeredCount}
+            </span>
+          )}
         </button>
       </div>
 
@@ -1191,11 +1284,125 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                 </p>
               </div>
               <span className="px-3 py-1 rounded-xl bg-blue-100 text-[#0F52BA] text-xs font-bold font-mono self-start sm:self-auto">
-                {multimediaList.length} Recursos Disponibles
+                {multimediaList.length + (curatedPlaylist ? curatedPlaylist.videos.length : 0)} Recursos Disponibles
               </span>
             </div>
 
-            {/* A. VIDEOS EDUCATIVOS VERIFICADOS */}
+            {/* A. PLAYLIST CURRICULAR OFICIAL DE LA CÁTEDRA */}
+            {curatedPlaylist && (
+              <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-[#0A192F] to-slate-900 text-white shadow-soft-lg space-y-5 border border-blue-800/50">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-blue-800/60">
+                  <div className="space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 text-[11px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
+                        <ListVideo className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Lista de Reproducción Oficial · {curatedPlaylist.subjectTitle}</span>
+                      </span>
+                      <span className="text-xs text-blue-200/70 font-mono">
+                        {curatedPlaylist.videos.length} clases secuenciales
+                      </span>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                      {curatedPlaylist.title}
+                    </h3>
+                    <p className="text-xs text-blue-100/80 leading-relaxed font-sans max-w-2xl">
+                      {curatedPlaylist.description}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <a
+                      href={curatedPlaylist.playlistUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="py-2 px-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-soft transition-all active:scale-95 cursor-pointer"
+                      title="Abrir la lista de reproducción completa en YouTube"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Ver Playlist en YouTube ↗</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Cola Secuencial de Videos de la Lista */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-xs text-blue-200 font-mono">
+                    <span className="font-bold flex items-center gap-1.5">
+                      <span>🎬</span>
+                      <span>Secuencia Temática del Pensum:</span>
+                    </span>
+                    <span className="text-[11px] text-blue-300/70">Curador: {curatedPlaylist.curator}</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {curatedPlaylist.videos.map((vid) => {
+                      const isCurrentTopic =
+                        guide.guideMetadata.title.toLowerCase().includes(vid.topicName.toLowerCase()) ||
+                        vid.topicName.toLowerCase().includes(guide.guideMetadata.title.toLowerCase()) ||
+                        (guide.id && guide.id.includes(vid.id.replace('pl-', '')));
+
+                      return (
+                        <div
+                          key={vid.id}
+                          className={`p-3.5 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
+                            isCurrentTopic
+                              ? 'bg-blue-900/60 border-blue-400 shadow-soft ring-1 ring-blue-400/60'
+                              : 'bg-slate-800/80 hover:bg-slate-800 border-slate-700/80 hover:border-blue-500/50'
+                          }`}
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-200">
+                                Tema #{vid.topicNumber}: {vid.topicName}
+                              </span>
+                              {isCurrentTopic ? (
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 animate-pulse">
+                                  ★ Tema Actual
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-mono text-slate-400">
+                                  ⏱️ {vid.duration}
+                                </span>
+                              )}
+                            </div>
+
+                            <h4 className="text-xs sm:text-sm font-semibold text-white leading-snug line-clamp-2">
+                              {vid.title}
+                            </h4>
+
+                            <p className="text-[11px] text-slate-300 line-clamp-2 font-sans">
+                              {vid.description}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-2 pt-2 border-t border-slate-700/60">
+                            <button
+                              onClick={() => setActiveVideoModal(vid.embedUrl)}
+                              className="flex-1 py-1.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-soft-xs active:scale-[0.98] cursor-pointer"
+                            >
+                              <PlayIcon className="w-3.5 h-3.5 text-white" />
+                              <span>Reproducir Aquí</span>
+                            </button>
+                            <a
+                              href={vid.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="py-1.5 px-3 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                              title="Abrir en YouTube"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5 text-slate-300" />
+                              <span>YouTube ↗</span>
+                            </a>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* B. VIDEOS EDUCATIVOS VERIFICADOS */}
             <div className="space-y-3">
               <h3 className="text-sm font-bold text-slate-900 font-sans flex items-center gap-2">
                 <span>📹 Videos Explicativos Seleccionados</span>
@@ -1596,48 +1803,158 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           </div>
         )}
 
-        {/* PILAR 7: BATERÍA DE AUTOEVALUACIÓN CERTIFICADA */}
+        {/* PILAR 11: EXAMEN DE PRUEBA INTERACTIVO (AUTOEVALUACIÓN FORMAL) */}
         {activeTab === 'EVALUATION' && (
-          <div className="space-y-6 max-w-4xl mx-auto">
+          <div className="space-y-6 max-w-4xl mx-auto py-2 animate-fadeIn">
+            {/* Cabecera del Examen de Prueba */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 gap-3">
-              <div className="p-4 rounded-2xl bg-emerald-50/40 border border-emerald-200/80 shadow-[0_2px_14px_-2px_rgba(5,150,105,0.08)]">
-                <h2 className="text-base font-bold text-slate-900">
-                  7. Batería de Autoevaluación Certificada
-                </h2>
-                <p className="text-xs text-slate-500 font-mono mt-0.5">
-                  Preguntas de selección simple con justificación rigurosa (Concepto Fundamental + Demostración)
+              <div className="p-4 rounded-2xl bg-emerald-50/40 border border-emerald-200/80 shadow-[0_2px_14px_-2px_rgba(5,150,105,0.08)] flex-1">
+                <div className="flex items-center gap-2">
+                  <Award className="w-5 h-5 text-emerald-600" />
+                  <h2 className="text-base font-bold text-slate-900 font-sans">
+                    11. Examen de Prueba Interactivo ({guideMetadata.title})
+                  </h2>
+                </div>
+                <p className="text-xs text-slate-500 font-mono mt-1">
+                  Responde las preguntas para verificar tu retención activa antes del examen formal. Justificación y retroalimentación inmediata paso a paso.
                 </p>
               </div>
 
-              {onStartExamWithQuestions && (
-                <button
-                  onClick={handleLaunchSimulator}
-                  className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow-soft flex items-center gap-2 shrink-0"
-                >
-                  <PlayIcon className="w-3.5 h-3.5 text-white" />
-                  <span>Evaluar en Simulador</span>
-                </button>
+              <div className="flex items-center gap-2 shrink-0">
+                {answeredCount > 0 && (
+                  <button
+                    onClick={handleResetQuiz}
+                    className="py-2 px-3 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-soft-xs active:scale-95 cursor-pointer"
+                    title="Reiniciar el examen de prueba para responder de nuevo"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Reiniciar Prueba</span>
+                  </button>
+                )}
+
+                {onStartExamWithQuestions && (
+                  <button
+                    onClick={handleLaunchSimulator}
+                    className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow-soft flex items-center gap-1.5 shrink-0 transition-all active:scale-95 cursor-pointer"
+                    title="Lanzar este examen en el simulador cronometrado"
+                  >
+                    <PlayIcon className="w-3.5 h-3.5 text-white" />
+                    <span>Simulador Cronometrado</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Panel de Rendimiento y Progreso en Vivo */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 shadow-soft-xs">
+              <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-white border border-slate-200 shadow-soft-2xs">
+                    <Trophy className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-900 block font-sans">
+                      Progreso de la Prueba: {answeredCount} de {totalQuestions} respondidas
+                    </span>
+                    <span className="text-slate-500 text-[11px] font-sans">
+                      Aciertos: <strong className="text-emerald-700 font-bold">{correctCount}</strong> | Efectividad: <strong className="text-blue-700 font-bold">{answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0}%</strong>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-800 shadow-soft-2xs">
+                    Dominio Global: {scorePercentage}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Barra de Progreso Visual Doble (Verde = Aciertos, Rojo = Fallos) */}
+              <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden flex">
+                <div
+                  className="bg-emerald-500 h-2.5 transition-all duration-300"
+                  style={{ width: `${totalQuestions > 0 ? (correctCount / totalQuestions) * 100 : 0}%` }}
+                  title={`Correctas: ${correctCount}`}
+                />
+                <div
+                  className="bg-rose-400 h-2.5 transition-all duration-300"
+                  style={{ width: `${totalQuestions > 0 ? ((answeredCount - correctCount) / totalQuestions) * 100 : 0}%` }}
+                  title={`Incorrectas: ${answeredCount - correctCount}`}
+                />
+              </div>
+
+              {/* Mensaje motivacional contextual */}
+              {answeredCount === totalQuestions && totalQuestions > 0 && (
+                <div className={`p-3 rounded-xl text-xs font-medium flex items-center gap-2 ${
+                  scorePercentage >= 80
+                    ? 'bg-emerald-50 text-emerald-900 border border-emerald-200'
+                    : scorePercentage >= 60
+                    ? 'bg-blue-50 text-blue-900 border border-blue-200'
+                    : 'bg-amber-50 text-amber-900 border border-amber-200'
+                }`}>
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                  <span>
+                    {scorePercentage >= 80
+                      ? '🎉 ¡Excelente desempeño! Dominas los conceptos fundamentales de este tema para el parcial.'
+                      : scorePercentage >= 60
+                      ? '👍 Buen dominio general. Revisa las justificaciones de las preguntas falladas para afinar los detalles.'
+                      : '⚠️ Conviene repasar las alertas de trampas y fórmulas clave antes de presentar la evaluación formal.'}
+                  </span>
+                </div>
               )}
             </div>
 
+            {/* Listado de Preguntas Interactivas */}
             <div className="space-y-4">
               {generatedQuestions?.map((q, idx) => {
-                const isExpanded = expandedQuestionIdx === idx;
+                const isExpanded = revealedExplanations[idx] || expandedQuestionIdx === idx;
+                const chosenAnswer = userSelectedAnswers[idx];
+                const isAnswered = chosenAnswer !== undefined;
+                const isChosenCorrect = isAnswered && chosenAnswer.trim() === q.correcta.trim();
 
                 return (
                   <div
                     key={idx}
-                    className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-soft space-y-4"
+                    className={`p-5 rounded-2xl bg-white border transition-all space-y-4 shadow-soft ${
+                      isAnswered
+                        ? isChosenCorrect
+                          ? 'border-emerald-200 ring-1 ring-emerald-300/50'
+                          : 'border-rose-200 ring-1 ring-rose-300/40'
+                        : 'border-slate-200/90 hover:border-slate-300'
+                    }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono">
-                        Pregunta #{idx + 1} • {q.tema || guideMetadata.title}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-400">
-                        {q.area || guideMetadata.area}
-                      </span>
+                    {/* Encabezado de Pregunta */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono">
+                          Pregunta #{idx + 1} • {q.tema || guideMetadata.title}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
+                          {q.area || guideMetadata.area}
+                        </span>
+                      </div>
+
+                      {/* Estado de Respuesta */}
+                      {isAnswered ? (
+                        isChosenCorrect ? (
+                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold flex items-center gap-1 border border-emerald-300">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>¡Correcta! (+1pto)</span>
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[11px] font-bold flex items-center gap-1 border border-rose-300">
+                            <XCircle className="w-3.5 h-3.5 text-rose-600" />
+                            <span>Respuesta Errónea</span>
+                          </span>
+                        )
+                      ) : (
+                        <span className="text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
+                          Sin responder
+                        </span>
+                      )}
                     </div>
 
+                    {/* Enunciado de la Pregunta */}
                     <div
                       className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug font-sans"
                       dangerouslySetInnerHTML={{
@@ -1645,34 +1962,69 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                       }}
                     />
 
-                    {/* Opciones de Selección Simple */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {/* Opciones de Selección Simple Interactivas */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {q.opciones.map((opt, oIdx) => {
-                        const isCorrect = opt.trim() === q.correcta.trim();
+                        const isOptionCorrect = opt.trim() === q.correcta.trim();
+                        const isThisSelected = chosenAnswer?.trim() === opt.trim();
+
+                        let buttonClasses = 'p-3 rounded-xl border text-xs font-sans flex items-start gap-2.5 transition-all text-left ';
+
+                        if (!isAnswered) {
+                          buttonClasses += 'bg-slate-50/70 hover:bg-blue-50/80 hover:border-blue-400/80 border-slate-200/80 text-slate-800 cursor-pointer active:scale-[0.99]';
+                        } else if (isThisSelected) {
+                          if (isOptionCorrect) {
+                            buttonClasses += 'bg-emerald-50 border-2 border-emerald-500 text-emerald-950 font-semibold shadow-soft-xs';
+                          } else {
+                            buttonClasses += 'bg-rose-50 border-2 border-rose-500 text-rose-950 font-semibold shadow-soft-xs';
+                          }
+                        } else if (isOptionCorrect) {
+                          buttonClasses += 'bg-emerald-50/70 border-2 border-dashed border-emerald-500 text-emerald-900 font-medium';
+                        } else {
+                          buttonClasses += 'bg-slate-50/40 border-slate-200/50 text-slate-400 opacity-60 cursor-default';
+                        }
+
                         return (
-                          <div
+                          <button
                             key={oIdx}
-                            className={`p-3 rounded-xl border text-xs font-sans flex items-start gap-2 ${
-                              isCorrect
-                                ? 'bg-emerald-50/70 border-emerald-300 text-emerald-900 font-medium'
-                                : 'bg-slate-50/50 border-slate-200/70 text-slate-700'
-                            }`}
+                            type="button"
+                            onClick={() => !isAnswered && handleSelectAnswer(idx, opt)}
+                            disabled={isAnswered}
+                            className={buttonClasses}
                           >
-                            <span className="font-mono font-bold uppercase shrink-0">
-                              {String.fromCharCode(65 + oIdx)})
+                            <span className={`font-mono font-bold uppercase shrink-0 mt-0.5 w-5 h-5 rounded-md flex items-center justify-center text-[10px] ${
+                              isThisSelected
+                                ? isOptionCorrect
+                                  ? 'bg-emerald-600 text-white'
+                                  : 'bg-rose-600 text-white'
+                                : isAnswered && isOptionCorrect
+                                ? 'bg-emerald-500 text-white'
+                                : 'bg-slate-200 text-slate-700'
+                            }`}>
+                              {String.fromCharCode(65 + oIdx)}
                             </span>
+
                             <div
                               className="flex-1"
                               dangerouslySetInnerHTML={{
                                 __html: renderLatex(opt),
                               }}
                             />
-                            {isCorrect && (
-                              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-md shrink-0">
-                                Correcta
+
+                            {/* Insignias de retroalimentación inmediata */}
+                            {isAnswered && isThisSelected && (
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0 flex items-center gap-0.5 ${
+                                isOptionCorrect ? 'bg-emerald-200 text-emerald-800' : 'bg-rose-200 text-rose-800'
+                              }`}>
+                                {isOptionCorrect ? '✓ Tu Elección' : '✗ Tu Elección'}
                               </span>
                             )}
-                          </div>
+                            {isAnswered && !isThisSelected && isOptionCorrect && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-200 text-emerald-800 shrink-0">
+                                ✓ Correcta Cátedra
+                              </span>
+                            )}
+                          </button>
                         );
                       })}
                     </div>
@@ -1680,10 +2032,14 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
                     {/* Botón para Desplegar Justificación Estricta */}
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
                       <button
-                        onClick={() =>
-                          setExpandedQuestionIdx(isExpanded ? null : idx)
-                        }
-                        className="text-xs text-[#0F52BA] hover:text-[#0c4396] font-bold flex items-center gap-1"
+                        onClick={() => {
+                          setRevealedExplanations((prev) => ({
+                            ...prev,
+                            [idx]: !isExpanded,
+                          }));
+                          setExpandedQuestionIdx(isExpanded ? null : idx);
+                        }}
+                        className="text-xs text-[#0F52BA] hover:text-[#0c4396] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                       >
                         <span>{isExpanded ? 'Ocultar Justificación' : 'Ver Justificación Formal'}</span>
                         <span>{isExpanded ? '▲' : '▼'}</span>
@@ -1696,7 +2052,10 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
 
                     {/* Justificación Formateada */}
                     {isExpanded && (
-                      <div className="p-4 rounded-xl bg-blue-50/40 border border-blue-200 text-xs text-slate-700 space-y-2 animate-fadeIn font-sans leading-relaxed">
+                      <div className="p-4 rounded-xl bg-blue-50/50 border border-blue-200 text-xs text-slate-700 space-y-2 animate-fadeIn font-sans leading-relaxed">
+                        <div className="flex items-center gap-1.5 font-bold text-blue-900 text-xs">
+                          <span>💡 Justificación y Resolución Oficial:</span>
+                        </div>
                         <div
                           dangerouslySetInnerHTML={{
                             __html: renderLatex(q.justificacion),
