@@ -269,7 +269,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                     : 'text-rose-700 bg-rose-50/70 hover:bg-rose-100 border border-rose-200/60'
                 }`}
               >
-                <span>🎨 Mi Programa UCAB (3 Guías)</span>
+                <span>🎨 Mi Programa UCAB ({ALL_MAFE_DECONSTRUCTED_GUIDES.length} Guías)</span>
               </button>
             )}
 
@@ -568,7 +568,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
             </div>
           </div>
 
-          {/* Grid de las 3 Guías Oficiales Deconstruidas */}
+          {/* Grid de las Guías Oficiales Deconstruidas de María Fernanda */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {ALL_MAFE_DECONSTRUCTED_GUIDES.map((guide) => (
               <div

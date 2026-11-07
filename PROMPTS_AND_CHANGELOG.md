@@ -808,5 +808,25 @@ Este documento registra de forma cronológica y exhaustiva todos los prompts rec
 | `src/components/academic/AcademicGuidesView.tsx` | Actualizar | Contador dinámico de guías y subtítulo curricular actualizado. |
 | `PROMPTS_AND_CHANGELOG.md` | Actualizar | Documentación y registro del Prompt 24. |
 
+---
+
+### Prompt 25: Auditoría y Verificación de Tareas en Notion MCP & Sincronización de Contadores Curriculares
+> **Contenido**:
+> 1. **Revisión Exhaustiva de Notion MCP**:
+>    - Verificación del workspace de Notion para tareas pendientes ("Tareas semanales" y sub-páginas vinculadas).
+>    - Comprobación de que las tareas asociadas a pedidos, inventario, permisos y auditorías pertenecen a *Invoficlib* (las cuales ya se encuentran al 100% completadas y marcadas con `[x]`).
+>    - Comprobación de la tarea de *A new proyect* ("Añade estas guías a el apartado de María Fernanda Valderrama en a new proyect mi app de productividad"), constatando la ingesta completa y canónica de las 7 guías oficiales en PDF en el módulo curricular.
+> 2. **Refinamiento de Consistencia UI**:
+>    - Corrección en la pestaña del catálogo de guías (`AcademicGuidesView.tsx`): reemplazo del texto fijo `(3 Guías)` por el contador reactivo `{ALL_MAFE_DECONSTRUCTED_GUIDES.length} Guías` (9 guías oficiales deconstruidas).
+> 3. **Garantía de Calidad y Build**:
+>    - `tsc -b && vite build`: Compilación exitosa de producción sin errores (5.09s).
+>    - Verificación y sincronización con el repositorio remoto GitHub en la rama `master`.
+
+| Archivo | Acción | Descripción del Cambio |
+| :--- | :--- | :--- |
+| `src/components/academic/AcademicGuidesView.tsx` | Actualizar | Dinamizar el contador de la pestaña de Mafe (`{ALL_MAFE_DECONSTRUCTED_GUIDES.length} Guías`). |
+| `PROMPTS_AND_CHANGELOG.md` | Actualizar | Documentación y registro del Prompt 25. |
+
+
 
 
