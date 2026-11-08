@@ -6,7 +6,11 @@ import { ExamResultsReport } from './ExamResultsReport';
 import { LayersIcon, PlayIcon, AtomIcon } from '../common/Icons';
 import { UCV_EXAM_BANK, UCV_CURRICULUM_MODULES } from '../../data/ucv_intro_course_data';
 import { PROFILE_TAILORED_EXAMS, getQuestionsForTailoredExam } from '../../lib/questionBank';
-import { ALL_ANDRES_QUESTIONS, ANDRES_TAILORED_EXAMS } from '../../data/andres_curriculum_hub';
+import {
+  ALL_ANDRES_QUESTIONS,
+  ANDRES_INTEGRAL_EXAM_QUESTIONS,
+  ANDRES_TAILORED_EXAMS,
+} from '../../data/andres_curriculum_hub';
 import type { AcademicSubject, ExamConfig, Question } from '../../types/exam.types';
 
 interface SimulatorEngineProps {
@@ -136,13 +140,13 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
             <div className="space-y-1">
               <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#0070d1]/20 text-[#38bdf8] border border-[#0070d1]/40 text-xs font-bold font-sans">
                 <span>🎮</span>
-                <span>Colegio Consolación · 1er Año Bachillerato</span>
+                <span>Colegio Consolación · 1er Año Bachillerato · {ALL_ANDRES_QUESTIONS.length} Reactivos</span>
               </div>
               <h2 className="text-2xl font-bold text-white tracking-tight font-sans">
                 Mis Exámenes y Pruebas de Práctica
               </h2>
               <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-                11 evaluaciones correspondientes a cada tema de tu cronograma escolar, con cronómetro, selección simple y explicaciones paso a paso sin fórmulas complejas.
+                {ANDRES_TAILORED_EXAMS.length} evaluaciones completas (de 14 a 36 preguntas cada una, {ALL_ANDRES_QUESTIONS.length} reactivos únicos en total) para todos los temas de tu cronograma escolar, con cronómetro y explicaciones paso a paso.
               </p>
             </div>
 
@@ -151,19 +155,19 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                 startExam(
                   {
                     mode: 'HIGH_SCHOOL_EXAM',
-                    title: 'Simulacro General 1er Año Bachillerato (Todas las Materias)',
-                    totalQuestions: 15,
-                    timeLimitSeconds: 50 * 60,
+                    title: 'Gran Simulacro General 1er Año (Todas las 12 Unidades)',
+                    totalQuestions: ANDRES_INTEGRAL_EXAM_QUESTIONS.length,
+                    timeLimitSeconds: 60 * 60,
                     allowPause: true,
                     shuffleQuestions: true,
                   },
-                  ALL_ANDRES_QUESTIONS
+                  ANDRES_INTEGRAL_EXAM_QUESTIONS
                 );
               }}
               className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] text-white text-xs font-bold transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(0,112,209,0.4)] active:scale-95 shrink-0 border border-[#38bdf8]/30 cursor-pointer"
             >
               <PlayIcon className="w-3.5 h-3.5 text-white" />
-              <span>Simulacro General (15 Preguntas)</span>
+              <span>Simulacro General ({ANDRES_INTEGRAL_EXAM_QUESTIONS.length} Preguntas)</span>
             </button>
           </div>
 
@@ -174,13 +178,13 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
               { id: 'Matemática', label: '📐 Matemática (3)' },
               { id: 'Biología', label: '🔬 Biología (2)' },
               { id: 'Física', label: '⚡ Física (2)' },
-              { id: 'Castellano', label: '📖 Castellano (2)' },
-              { id: 'Diseño', label: '🎨 Computación & Diseño (1)' },
+              { id: 'Castellano', label: '📖 Castellano & Fe (3)' },
+              { id: 'Diseño', label: '💻 Diseño & Informática (2)' },
             ].map((subj) => (
               <button
                 key={subj.id}
                 onClick={() => setSelectedSubjectFilter(subj.id as any)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border shrink-0 ${
                   selectedSubjectFilter === subj.id
                     ? 'bg-[#0070d1] text-white border-[#0070d1] shadow-[0_0_12px_rgba(0,112,209,0.5)] font-bold'
                     : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
@@ -196,6 +200,7 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {ANDRES_TAILORED_EXAMS.filter((ex) => {
             if (selectedSubjectFilter === 'TODAS') return true;
+            if (ex.id === 'exam-andres-simulacro-integral') return false;
             return ex.targetSubject.toLowerCase() === selectedSubjectFilter.toLowerCase();
           }).map((ex) => (
             <div
@@ -238,21 +243,21 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                 className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(0,112,209,0.35)] active:scale-95 cursor-pointer"
               >
                 <PlayIcon className="w-3.5 h-3.5 text-white" />
-                <span>Iniciar Examen de Práctica</span>
+                <span>Iniciar Examen ({ex.questionCount} Preguntas)</span>
               </button>
             </div>
           ))}
         </div>
 
-        {/* Cuestionario Rápido por Materia para Andrés */}
+        {/* Cuestionario Dinámico por Materia para Andrés */}
         <div className="p-6 rounded-3xl bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-blue-900/40 shadow-soft space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white font-sans">
-                Práctica Rápida de Repaso
+                Entrenamiento Aleatorio por Materia
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Genera un quiz express de 5 preguntas aleatorias de tu temario escolar para practicar en 15 minutos.
+                Genera sesiones aleatorias de 12 o 24 preguntas combinando todo el banco de reactivos de la materia seleccionada.
               </p>
             </div>
           </div>
@@ -260,35 +265,71 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
           <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
               {selectedSubjectFilter === 'TODAS'
-                ? 'Preguntas seleccionadas de todas tus materias escolares'
-                : `Preguntas de ${selectedSubjectFilter} (1er Año)`}
+                ? `Banco activo: ${ALL_ANDRES_QUESTIONS.length} preguntas de todas tus materias`
+                : `Banco activo de ${selectedSubjectFilter}: ${
+                    ALL_ANDRES_QUESTIONS.filter(
+                      (q) => q.subject.toLowerCase() === selectedSubjectFilter.toLowerCase()
+                    ).length
+                  } preguntas`}
             </span>
-            <button
-              onClick={() => {
-                const pool =
-                  selectedSubjectFilter === 'TODAS'
-                    ? ALL_ANDRES_QUESTIONS
-                    : ALL_ANDRES_QUESTIONS.filter((q) => q.subject.toLowerCase() === selectedSubjectFilter.toLowerCase());
-                startExam(
-                  {
-                    mode: 'QUICK_PRACTICE',
-                    title:
-                      selectedSubjectFilter === 'TODAS'
-                        ? 'Quiz Express: Todas mis materias'
-                        : `Quiz Express: ${selectedSubjectFilter}`,
-                    subject: selectedSubjectFilter === 'TODAS' ? undefined : (selectedSubjectFilter as any),
-                    totalQuestions: Math.min(5, pool.length || 5),
-                    timeLimitSeconds: 15 * 60,
-                    allowPause: true,
-                    shuffleQuestions: true,
-                  },
-                  pool
-                );
-              }}
-              className="py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black dark:bg-[#131d36] dark:hover:bg-[#1a2747] text-white text-xs font-bold transition-all border border-transparent dark:border-blue-800/40 cursor-pointer self-end sm:self-auto"
-            >
-              Comenzar Quiz Express (5 Preguntas)
-            </button>
+            <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto">
+              <button
+                onClick={() => {
+                  const pool =
+                    selectedSubjectFilter === 'TODAS'
+                      ? ALL_ANDRES_QUESTIONS
+                      : ALL_ANDRES_QUESTIONS.filter(
+                          (q) => q.subject.toLowerCase() === selectedSubjectFilter.toLowerCase()
+                        );
+                  startExam(
+                    {
+                      mode: 'QUICK_PRACTICE',
+                      title:
+                        selectedSubjectFilter === 'TODAS'
+                          ? 'Quiz de Repaso (12 Preguntas): Todas mis materias'
+                          : `Quiz de Repaso (12 Preguntas): ${selectedSubjectFilter}`,
+                      subject: selectedSubjectFilter === 'TODAS' ? undefined : (selectedSubjectFilter as any),
+                      totalQuestions: Math.min(12, pool.length || 12),
+                      timeLimitSeconds: 20 * 60,
+                      allowPause: true,
+                      shuffleQuestions: true,
+                    },
+                    pool
+                  );
+                }}
+                className="py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black dark:bg-[#131d36] dark:hover:bg-[#1a2747] text-white text-xs font-bold transition-all border border-transparent dark:border-blue-800/40 cursor-pointer"
+              >
+                Quiz de Repaso (12 Preguntas)
+              </button>
+              <button
+                onClick={() => {
+                  const pool =
+                    selectedSubjectFilter === 'TODAS'
+                      ? ALL_ANDRES_QUESTIONS
+                      : ALL_ANDRES_QUESTIONS.filter(
+                          (q) => q.subject.toLowerCase() === selectedSubjectFilter.toLowerCase()
+                        );
+                  startExam(
+                    {
+                      mode: 'HIGH_SCHOOL_EXAM',
+                      title:
+                        selectedSubjectFilter === 'TODAS'
+                          ? 'Maratón de Práctica (24 Preguntas): Todas mis materias'
+                          : `Maratón de Práctica (24 Preguntas): ${selectedSubjectFilter}`,
+                      subject: selectedSubjectFilter === 'TODAS' ? undefined : (selectedSubjectFilter as any),
+                      totalQuestions: Math.min(24, pool.length || 24),
+                      timeLimitSeconds: 40 * 60,
+                      allowPause: true,
+                      shuffleQuestions: true,
+                    },
+                    pool
+                  );
+                }}
+                className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] text-white text-xs font-bold transition-all border border-[#38bdf8]/30 cursor-pointer shadow-[0_0_12px_rgba(0,112,209,0.3)]"
+              >
+                Práctica Intensiva (24 Preguntas)
+              </button>
+            </div>
           </div>
         </div>
       </div>

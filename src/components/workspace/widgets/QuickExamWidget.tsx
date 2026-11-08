@@ -1,5 +1,10 @@
 import React from 'react';
+import { useAuth } from '../../../context/AuthContext';
 import { LayersIcon, PlayIcon } from '../../common/Icons';
+import {
+  ALL_ANDRES_QUESTIONS,
+  ANDRES_INTEGRAL_EXAM_QUESTIONS,
+} from '../../../data/andres_curriculum_hub';
 import type { ExamConfig } from '../../../types/exam.types';
 
 interface QuickExamWidgetProps {
@@ -11,9 +16,45 @@ export const QuickExamWidget: React.FC<QuickExamWidgetProps> = ({
   onLaunchExam,
   onNavigateToExams,
 }) => {
+  const { user, academicProfile } = useAuth();
+  const isAndres =
+    academicProfile === 'andres_bachillerato_1' || user?.academic_profile === 'andres_bachillerato_1';
+
   const handleLaunch = (mode: 'UNIVERSITY_EXAM' | 'HIGH_SCHOOL_EXAM' | 'QUICK_PRACTICE') => {
     let config: ExamConfig;
-    if (mode === 'UNIVERSITY_EXAM') {
+    if (isAndres) {
+      if (mode === 'UNIVERSITY_EXAM') {
+        config = {
+          mode: 'HIGH_SCHOOL_EXAM',
+          title: 'Gran Simulacro General 1er Año (36 Preguntas)',
+          totalQuestions: ANDRES_INTEGRAL_EXAM_QUESTIONS.length,
+          timeLimitSeconds: 60 * 60,
+          allowPause: true,
+          shuffleQuestions: true,
+          customQuestions: ANDRES_INTEGRAL_EXAM_QUESTIONS,
+        };
+      } else if (mode === 'HIGH_SCHOOL_EXAM') {
+        config = {
+          mode: 'HIGH_SCHOOL_EXAM',
+          title: 'Examen Escolar 1er Año: Ciencias, Matemática y Lenguaje',
+          totalQuestions: 20,
+          timeLimitSeconds: 40 * 60,
+          allowPause: true,
+          shuffleQuestions: true,
+          customQuestions: ALL_ANDRES_QUESTIONS,
+        };
+      } else {
+        config = {
+          mode: 'QUICK_PRACTICE',
+          title: 'Quiz de Repaso 1er Año (12 Preguntas)',
+          totalQuestions: 12,
+          timeLimitSeconds: 20 * 60,
+          allowPause: true,
+          shuffleQuestions: true,
+          customQuestions: ALL_ANDRES_QUESTIONS,
+        };
+      }
+    } else if (mode === 'UNIVERSITY_EXAM') {
       config = {
         mode: 'UNIVERSITY_EXAM',
         title: 'Examen de Carrera: Física & Matemática Analítica',
@@ -72,19 +113,21 @@ export const QuickExamWidget: React.FC<QuickExamWidgetProps> = ({
 
         {/* Lista de opciones rápidas (Sin tarjetas anidadas) */}
         <div className="divide-y divide-slate-100">
-          {/* Opción 1: Examen Universitario */}
+          {/* Opción 1 */}
           <div className="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-xs font-semibold text-slate-900 font-sans truncate">
-                  Examen Universitario
+                  {isAndres ? 'Gran Simulacro Integral (36Q)' : 'Examen Universitario'}
                 </p>
                 <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-medium">
                   60 min
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5 truncate">
-                Cálculo diferencial, vectores ℝ³ y dinámica newtoniana
+                {isAndres
+                  ? '36 preguntas de todas tus 12 unidades escolares'
+                  : 'Cálculo diferencial, vectores ℝ³ y dinámica newtoniana'}
               </p>
             </div>
             <button
@@ -96,19 +139,21 @@ export const QuickExamWidget: React.FC<QuickExamWidgetProps> = ({
             </button>
           </div>
 
-          {/* Opción 2: Examen de Bachillerato */}
+          {/* Opción 2 */}
           <div className="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-xs font-semibold text-slate-900 font-sans truncate">
-                  Examen de Bachillerato
+                  {isAndres ? 'Práctica Intensiva (20Q)' : 'Examen de Bachillerato'}
                 </p>
                 <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-medium">
-                  45 min
+                  {isAndres ? '40 min' : '45 min'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5 truncate">
-                Química, biología, matemática y razonamiento verbal
+                {isAndres
+                  ? '20 preguntas aleatorias de Matemática, Biología, Física y Lenguaje'
+                  : 'Química, biología, matemática y razonamiento verbal'}
               </p>
             </div>
             <button
@@ -120,19 +165,21 @@ export const QuickExamWidget: React.FC<QuickExamWidgetProps> = ({
             </button>
           </div>
 
-          {/* Opción 3: Cuestionario Rápido */}
+          {/* Opción 3 */}
           <div className="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-xs font-semibold text-slate-900 font-sans truncate">
-                  Cuestionario Rápido
+                  {isAndres ? 'Quiz de Repaso (12Q)' : 'Cuestionario Rápido'}
                 </p>
                 <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-medium">
-                  15 min
+                  {isAndres ? '20 min' : '15 min'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5 truncate">
-                Práctica ágil de 4 preguntas de fijación conceptual
+                {isAndres
+                  ? 'Práctica ágil de 12 preguntas de tu banco de 212 reactivos'
+                  : 'Práctica ágil de 4 preguntas de fijación conceptual'}
               </p>
             </div>
             <button

@@ -11,6 +11,10 @@ import {
 } from '../common/Icons';
 
 import { EmptyState } from '../common/EmptyState';
+import {
+  getSimulatorQuestionsForGuide,
+  resolveAndresGuideIdForEvent,
+} from '../../data/andres';
 
 interface AcademicCalendarViewProps {
   events: EvaluationEvent[];
@@ -79,6 +83,24 @@ export const AcademicCalendarView: React.FC<AcademicCalendarViewProps> = ({
   // Lanzar simulacro en 1 clic del evento seleccionado
   const handleLaunchEventExam = (ev: EvaluationEvent) => {
     if (!onLaunchExam) return;
+
+    const andresGuideKey = resolveAndresGuideIdForEvent(ev.id, ev.guideId);
+    if (andresGuideKey) {
+      const customQuestions = getSimulatorQuestionsForGuide(andresGuideKey);
+      if (customQuestions.length > 0) {
+        onLaunchExam({
+          mode: 'HIGH_SCHOOL_EXAM',
+          title: `Simulacro: ${ev.title}`,
+          subject: ev.subject as any,
+          totalQuestions: customQuestions.length,
+          timeLimitSeconds: Math.max(35, customQuestions.length * 2) * 60,
+          allowPause: true,
+          shuffleQuestions: true,
+          customQuestions,
+        });
+        return;
+      }
+    }
 
     onLaunchExam({
       mode: 'QUICK_PRACTICE',
@@ -584,12 +606,21 @@ export const AcademicCalendarView: React.FC<AcademicCalendarViewProps> = ({
                 className="w-full py-3.5 px-4 rounded-2xl bg-[#0F52BA] hover:bg-[#0d459d] text-white font-bold text-xs shadow-soft flex items-center justify-center gap-2.5 transition-all active:scale-[0.98]"
               >
                 <LayersIcon className="w-4 h-4 text-white" />
-                <span>Hacer Simulacro de este Parcial</span>
+                <span>
+                  {(() => {
+                    const gk = resolveAndresGuideIdForEvent(selectedEvent.id, selectedEvent.guideId);
+                    if (!gk) return 'Hacer Simulacro de este Parcial';
+                    const qCount = getSimulatorQuestionsForGuide(gk).length;
+                    return `Hacer Simulacro de este Tema (${qCount} Preguntas)`;
+                  })()}
+                </span>
               </button>
 
               <button
                 onClick={() => {
-                  const guideId = selectedEvent.guideId;
+                  const guideId =
+                    resolveAndresGuideIdForEvent(selectedEvent.id, selectedEvent.guideId) ||
+                    selectedEvent.guideId;
                   setSelectedEvent(null);
                   if (onNavigateToGuides) onNavigateToGuides(guideId);
                 }}

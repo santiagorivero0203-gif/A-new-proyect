@@ -26,6 +26,7 @@ import type { ExamConfig, Question, AcademicSubject } from '../../../types/exam.
 import { QUESTION_BANK } from '../../../lib/questionBank';
 import { ALL_MAFE_QUESTIONS } from '../../../data/mafe_curriculum_hub';
 import { ALL_ANDRES_QUESTIONS } from '../../../data/andres_curriculum_hub';
+import { getSimulatorQuestionsForGuide } from '../../../data/andres';
 import { UCV_EXAM_BANK } from '../../../data/ucv_intro_course_data';
 
 export interface ProjectTopic {
@@ -33,6 +34,7 @@ export interface ProjectTopic {
   title: string;
   summary: string;
   guideTab?: MainTabType;
+  guideId?: string;
   examSubject?: AcademicSubject;
   examQuestions?: Question[];
 }
@@ -190,15 +192,10 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
 
     // Perfil Andrés (1er Año de Bachillerato · Colegio Católico Carisma Consolación)
     if (profileId === 'andres_bachillerato_1') {
-      const bioQuestions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Biología');
-      const fisQuestions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Física');
-      const matQuestions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática');
-      const casQuestions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Castellano');
-
       return [
         {
           id: 'proj-andres-01',
-          title: 'Laboratorio Escolar: Instrumentos de Medición & Bioseguridad',
+          title: 'Laboratorio Escolar: Instrumentos de Medición, Materia & Bioseguridad',
           subject: 'Biología y Ciencias Naturales (1er Año)',
           deadlineText: 'Jueves, 05 de Noviembre',
           daysRemaining: 4,
@@ -207,25 +204,27 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
           topics: [
             {
               id: 'top-andres-01',
-              title: 'Uso de la Probeta Graduada, Menisco & Material Volumétrico',
-              summary: 'Lectura a la altura visual de la base del menisco cóncavo y cálculo de volumen por desplazamiento.',
+              title: 'Método Científico, Instrumentos de Vidrio & Microscopio Óptico',
+              summary: 'Etapas del método científico, variables experimental/control y cálculo del aumento total del microscopio.',
               guideTab: 'GUIDES',
+              guideId: 'andres-bio-lab-method',
               examSubject: 'Biología',
-              examQuestions: bioQuestions,
+              examQuestions: getSimulatorQuestionsForGuide('andres-bio-lab-method'),
             },
             {
               id: 'top-andres-02',
-              title: 'Microscopio Óptico, Tornillo Micrométrico & Bioseguridad',
-              summary: 'Uso obligatorio de bata blanca de manga larga, manipulación de reactivos y enfoque celular fino.',
+              title: 'Bioseguridad, Menisco, Estados de la Materia & Biomecánica',
+              summary: 'Lectura del menisco, principio de Arquímedes, cambios de fase y palancas del cuerpo humano.',
               guideTab: 'GUIDES',
+              guideId: 'andres-bio-safety-matter',
               examSubject: 'Biología',
-              examQuestions: bioQuestions,
+              examQuestions: getSimulatorQuestionsForGuide('andres-bio-safety-matter'),
             },
           ],
         },
         {
           id: 'proj-andres-02',
-          title: 'Taller en Parejas: Magnitudes Físicas, Conversiones & Mediciones',
+          title: 'Taller en Parejas: Máquinas Simples, Magnitudes SI & Circuitos LED',
           subject: 'Física 1er Año (Prof. Antonio Gonzales)',
           deadlineText: 'Viernes, 06 de Noviembre',
           daysRemaining: 5,
@@ -234,25 +233,27 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
           topics: [
             {
               id: 'top-andres-03',
-              title: 'Unidades del Sistema Internacional (SI) & Factores de Conversión',
-              summary: 'Longitud en metros, masa en kilogramos y tiempo en segundos (1 hora = 3600 segundos).',
+              title: 'Unidades del Sistema Internacional (SI), Conversión & Circuitos LED',
+              summary: 'Longitud en metros, masa en kg, tiempo en segundos (1 h = 3600 s) y circuito eléctrico serie/paralelo.',
               guideTab: 'GUIDES',
+              guideId: 'andres-phys-units-circuits',
               examSubject: 'Física',
-              examQuestions: fisQuestions,
+              examQuestions: getSimulatorQuestionsForGuide('andres-phys-units-circuits'),
             },
             {
               id: 'top-andres-04',
-              title: 'Máquinas Simples: Ley de la Palanca (1er, 2do y 3er Género)',
+              title: 'Máquinas Simples: Ley de la Palanca (1er, 2do y 3er Género) & Poleas',
               summary: 'Equilibrio rotacional P · dp = R · dr, ventaja mecánica en balancines, carretillas y poleas.',
               guideTab: 'GUIDES',
+              guideId: 'andres-phys-machines-units',
               examSubject: 'Física',
-              examQuestions: fisQuestions,
+              examQuestions: getSimulatorQuestionsForGuide('andres-phys-machines-units'),
             },
           ],
         },
         {
           id: 'proj-andres-03',
-          title: 'Evaluación Parcial: Números Enteros ℤ, Recta & Ley de Signos',
+          title: 'Evaluaciones de Matemática: Enteros ℤ, Potenciación & Geometría',
           subject: 'Matemática 1er Año',
           deadlineText: 'Lunes, 09 de Noviembre',
           daysRemaining: 8,
@@ -261,46 +262,97 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
           topics: [
             {
               id: 'top-andres-05',
-              title: 'Suma, Resta y Multiplicación con Números Positivos y Negativos',
-              summary: 'Regla de signos iguales/distintos en sumas y ley de multiplicación (+ por + da +, - por - da +).',
+              title: 'Números Enteros (ℤ), Ley de Signos & Ecuaciones en ℤ',
+              summary: 'Recta numérica, valor absoluto, jerarquía PEMDAS y ecuaciones de primer grado con comprobación.',
               guideTab: 'GUIDES',
+              guideId: 'andres-math-z-equations',
               examSubject: 'Matemática',
-              examQuestions: matQuestions,
+              examQuestions: getSimulatorQuestionsForGuide('andres-math-z-equations'),
             },
             {
               id: 'top-andres-06',
-              title: 'Resolución de Ecuaciones de 1er Grado con la Balanza',
-              summary: 'Despeje paso a paso manteniendo el equilibrio en ambos miembros y comprobación de la solución.',
+              title: 'Potenciación en ℤ, Divisibilidad, m.c.m. & M.C.D.',
+              summary: 'Leyes de exponentes, signo de base negativa, descomposición prima, coincidencia de tiempos y reparto.',
               guideTab: 'GUIDES',
+              guideId: 'andres-math-powers-factors',
               examSubject: 'Matemática',
-              examQuestions: matQuestions,
+              examQuestions: getSimulatorQuestionsForGuide('andres-math-powers-factors'),
+            },
+            {
+              id: 'top-andres-06b',
+              title: 'Geometría Plana: Polígonos, Perímetros, Áreas & Círculo',
+              summary: 'Ángulos complementarios/suplementarios, triángulos, rombo, trapecio y circunferencia.',
+              guideTab: 'GUIDES',
+              guideId: 'andres-math-geometry-perimeters',
+              examSubject: 'Matemática',
+              examQuestions: getSimulatorQuestionsForGuide('andres-math-geometry-perimeters'),
             },
           ],
         },
         {
           id: 'proj-andres-04',
-          title: 'Prueba de Comprensión Lectora: Cuento "Barrabás" (Arturo Uslar Pietri)',
-          subject: 'Castellano y Literatura (1er Año)',
+          title: 'Castellano & Pastoral: Cuento "Barrabás", Sintaxis & Consolación',
+          subject: 'Castellano y Educación en la Fe (1er Año)',
           deadlineText: 'Viernes, 27 de Noviembre',
           daysRemaining: 26,
           urgency: 'NORMAL',
-          progressPercentage: 35,
+          progressPercentage: 40,
           topics: [
             {
               id: 'top-andres-07',
-              title: 'Análisis Literario de "Barrabás" (1928) & Dilema Moral',
-              summary: 'El desconcierto psicológico ante la libertad inesperada y el sacrificio del hombre justo.',
+              title: 'Análisis Literario de "Barrabás" (Uslar Pietri) & Figuras Literarias',
+              summary: 'Argumento, personajes, símil, metáfora, humanización, redacción de biografía y CV estudiantil.',
               guideTab: 'GUIDES',
+              guideId: 'andres-cas-barrabas-grammar',
               examSubject: 'Castellano',
-              examQuestions: casQuestions,
+              examQuestions: getSimulatorQuestionsForGuide('andres-cas-barrabas-grammar'),
             },
             {
               id: 'top-andres-08',
-              title: 'Gramática de la Oración Simple Bimembre & Acentuación SEGA',
-              summary: 'Identificación de sujeto, predicado, objetos directo/indirecto y reglas de agudas, graves y esdrújulas.',
+              title: 'Sintaxis de la Oración Bimembre, Acentuación SEGA & Hiatos',
+              summary: 'Sujeto, predicado, OD, OI, circunstanciales, agudas/graves/esdrújulas y tilde diacrítica.',
               guideTab: 'GUIDES',
+              guideId: 'andres-cas-syntax-accents',
               examSubject: 'Castellano',
-              examQuestions: casQuestions,
+              examQuestions: getSimulatorQuestionsForGuide('andres-cas-syntax-accents'),
+            },
+            {
+              id: 'top-andres-09',
+              title: 'Educación en la Fe: DOMUND, Santa María Rosa Molas & Valores',
+              summary: 'Carisma de la Consolación, Diario de Gratitud y convivencia escolar solidaria.',
+              guideTab: 'GUIDES',
+              guideId: 'andres-fe-consolacion-values',
+              examSubject: 'Castellano',
+              examQuestions: getSimulatorQuestionsForGuide('andres-fe-consolacion-values'),
+            },
+          ],
+        },
+        {
+          id: 'proj-andres-05',
+          title: 'Laboratorio Digital: Teoría del Color, Hardware, Word & Excel',
+          subject: 'Diseño Digital e Informática Práctica (1er Año)',
+          deadlineText: 'Miércoles, 02 de Diciembre',
+          daysRemaining: 31,
+          urgency: 'NORMAL',
+          progressPercentage: 45,
+          topics: [
+            {
+              id: 'top-andres-10',
+              title: 'Diseño Digital: Elementos Visuales, Círculo Cromático & Vectores',
+              summary: 'Punto, línea, plano, armonías cromáticas, RGB vs CMYK, retícula y gráficos vectoriales SVG.',
+              guideTab: 'GUIDES',
+              guideId: 'andres-design-color-grid',
+              examSubject: 'Diseño',
+              examQuestions: getSimulatorQuestionsForGuide('andres-design-color-grid'),
+            },
+            {
+              id: 'top-andres-11',
+              title: 'Informática Práctica: Hardware/Software, Archivos, Word & Excel',
+              summary: 'Evolución del computador, CPU/RAM/SSD, árbol de carpetas y fórmulas =SUMA y =PROMEDIO.',
+              guideTab: 'GUIDES',
+              guideId: 'andres-inf-computing-office',
+              examSubject: 'Diseño',
+              examQuestions: getSimulatorQuestionsForGuide('andres-inf-computing-office'),
             },
           ],
         },
@@ -350,7 +402,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
       return UCV_EXAM_BANK;
     }
     if (profileId === 'andres_bachillerato_1') {
-      return QUESTION_BANK.filter((q) => q.targetProfiles.includes('andres_bachillerato_1'));
+      return ALL_ANDRES_QUESTIONS;
     }
     if (profileId === 'prima_bachillerato_5') {
       return QUESTION_BANK.filter((q) => q.targetProfiles.includes('prima_bachillerato_5'));
@@ -360,6 +412,24 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
 
   // Lanzar examen de prueba enfocado estrictamente en el tema y perfil
   const handleLaunchPracticeExam = (topic: ProjectTopic) => {
+    if (topic.examQuestions && topic.examQuestions.length > 0) {
+      if (onStartExamWithQuestions) {
+        onStartExamWithQuestions(topic.examQuestions, `Examen: ${topic.title}`);
+      } else if (onLaunchExam) {
+        onLaunchExam({
+          mode: profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
+          title: `Examen: ${topic.title}`,
+          totalQuestions: topic.examQuestions.length,
+          timeLimitSeconds: Math.max(30, topic.examQuestions.length * 2) * 60,
+          allowPause: true,
+          shuffleQuestions: true,
+          customQuestions: topic.examQuestions,
+          subject: topic.examSubject,
+        });
+      }
+      return;
+    }
+
     const profileBank = getProfileQuestions();
 
     // Buscar en el banco del estudiante preguntas que coincidan con la materia o palabras clave del tema
@@ -379,8 +449,8 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
 
     const questionsToUse =
       matchingQuestions.length >= 3
-        ? matchingQuestions.slice(0, 5)
-        : profileBank.slice(0, 5);
+        ? matchingQuestions.slice(0, 10)
+        : profileBank.slice(0, 10);
 
     if (onStartExamWithQuestions) {
       onStartExamWithQuestions(questionsToUse, `Práctica: ${topic.title}`);
@@ -389,7 +459,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
         mode: profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
         title: `Práctica: ${topic.title}`,
         totalQuestions: questionsToUse.length,
-        timeLimitSeconds: 15 * 60,
+        timeLimitSeconds: 20 * 60,
         allowPause: true,
         shuffleQuestions: true,
         customQuestions: questionsToUse,
@@ -401,17 +471,37 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
   };
 
   // Ver guía de estudio correspondiente en la vista oficial de guías
-  const handleViewGuide = (_topic: ProjectTopic) => {
+  const handleViewGuide = (topic: ProjectTopic) => {
+    if (topic.guideId) {
+      sessionStorage.setItem('cpe_auto_open_guide_id', topic.guideId);
+    }
     if (onNavigateToTab) {
       onNavigateToTab('GUIDES');
     }
   };
 
+  // Banco combinado de preguntas del proyecto activo (para Simulacro Completo)
+  const activeProjectCombinedQuestions = (() => {
+    const dedicated = activeProject?.topics.flatMap((t) => t.examQuestions || []) || [];
+    if (dedicated.length > 0) {
+      const seen = new Set<string>();
+      return dedicated.filter((q) => {
+        if (seen.has(q.id)) return false;
+        seen.add(q.id);
+        return true;
+      });
+    }
+    const profileBank = getProfileQuestions();
+    return profileBank.slice(0, Math.min(12, profileBank.length));
+  })();
+
   // Lanzar simulacro integral del proyecto con reactivos reales del estudiante
   const handleLaunchFullMockExam = () => {
-    const profileBank = getProfileQuestions();
-    const count = Math.min(10, profileBank.length);
-    const questionsToUse = profileBank.slice(0, count);
+    const questionsToUse =
+      activeProjectCombinedQuestions.length > 36
+        ? activeProjectCombinedQuestions.slice(0, 36)
+        : activeProjectCombinedQuestions;
+    const count = questionsToUse.length;
 
     if (onStartExamWithQuestions) {
       onStartExamWithQuestions(
@@ -423,7 +513,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
         mode: profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
         title: `Simulacro Completo: ${activeProject.title}`,
         totalQuestions: count,
-        timeLimitSeconds: 25 * 60,
+        timeLimitSeconds: Math.max(30, count * 2) * 60,
         allowPause: true,
         shuffleQuestions: true,
         customQuestions: questionsToUse,
@@ -601,7 +691,11 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
                   title="Iniciar un simulacro de prueba cronometrado con preguntas de este tema"
                 >
                   <Layers className="w-3.5 h-3.5" />
-                  <span>Examen de Prueba</span>
+                  <span>
+                    {topic.examQuestions && topic.examQuestions.length > 0
+                      ? `Examen (${topic.examQuestions.length} Preguntas)`
+                      : 'Examen de Prueba'}
+                  </span>
                 </button>
               </div>
             </div>
@@ -615,7 +709,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
               ¿Listo para medir tu preparación integral?
             </span>
             <span className="text-[11px] text-slate-500">
-              Prueba de 10 preguntas que integra todos los temas de esta entrega.
+              Prueba de {Math.min(36, activeProjectCombinedQuestions.length)} preguntas que integra todos los temas de esta entrega.
             </span>
           </div>
 
@@ -624,7 +718,7 @@ export const UpcomingProjectsAndTopicsWidget: React.FC<UpcomingProjectsAndTopics
             className="btn-brand text-xs py-2 px-4 rounded-xl flex items-center gap-2 shrink-0 active:scale-95"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Simulacro Completo</span>
+            <span>Simulacro Completo ({Math.min(36, activeProjectCombinedQuestions.length)})</span>
           </button>
         </div>
       </div>

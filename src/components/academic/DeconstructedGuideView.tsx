@@ -52,6 +52,7 @@ import {
   ALL_MAFE_QUESTIONS,
 } from '../../data/mafe_curriculum_hub';
 import { SANTIAGO_SEMESTER_1_QUESTIONS } from '../../data/santiago_curriculum_hub';
+import { getSimulatorQuestionsForGuide, type AndresGuideKey } from '../../data/andres';
 
 export interface DeconstructedGuideViewProps {
   guide: DeconstructedAcademicGuide;
@@ -549,9 +550,21 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
    */
   const handleLaunchSimulator = () => {
     if (!onStartExamWithQuestions) return;
+    if (isAndresGuide && guide.id) {
+      const directAndresQuestions = getSimulatorQuestionsForGuide(guide.id as AndresGuideKey);
+      if (directAndresQuestions && directAndresQuestions.length > 0) {
+        onStartExamWithQuestions(
+          directAndresQuestions,
+          `Simulación: ${guideMetadata.title}`
+        );
+        return;
+      }
+    }
+
     let adaptedQuestions = convertDeconstructedToQuestions(
       generatedQuestions || [],
-      guideMetadata.title
+      guideMetadata.title,
+      isAndresGuide ? 'andres_bachillerato_1' : undefined
     );
     if (!adaptedQuestions || adaptedQuestions.length === 0) {
       const areaLower = (guideMetadata.area || guide.id || '').toLowerCase();

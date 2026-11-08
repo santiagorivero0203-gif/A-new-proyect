@@ -310,6 +310,76 @@ export const ANDRES_MULTIMEDIA_CATALOG: Record<string, MultimediaResource[]> = {
       description: 'Uso del punto, línea, plano, equilibrio y simetría en la composición gráfica.',
     },
   ],
+
+  // =========================================================================
+  // 11. INFORMÁTICA PRÁCTICA: HARDWARE, SOFTWARE, WORD Y HOJAS DE CÁLCULO
+  // =========================================================================
+  'andres-inf-computing-office': [
+    {
+      id: 'andres-med-inf-01',
+      type: 'video',
+      title: 'Hardware y Software: CPU, Memoria RAM, Disco SSD y Periféricos',
+      url: 'https://www.youtube.com/watch?v=3F-kuNGlN0Q',
+      embedUrl: 'https://www.youtube-nocookie.com/embed/3F-kuNGlN0Q',
+      durationOrSize: '8:20 min',
+      authorOrSource: 'GCFAprendeLibre',
+      description: 'Componentes físicos e intangibles de la computadora explicados de forma visual y sencilla.',
+    },
+    {
+      id: 'andres-med-inf-02',
+      type: 'video',
+      title: 'Introducción a Excel: Celdas, Filas, Columnas y Fórmulas Básicas',
+      url: 'https://www.youtube.com/watch?v=v_R5G1M9m8A',
+      embedUrl: 'https://www.youtube-nocookie.com/embed/v_R5G1M9m8A',
+      durationOrSize: '10:35 min',
+      authorOrSource: 'GCFAprendeLibre',
+      description: 'Cómo usar =SUMA y =PROMEDIO y crear gráficos de barras para evaluaciones prácticas.',
+    },
+    {
+      id: 'andres-med-inf-03',
+      type: 'audio',
+      title: 'Audio-Guía: Atajos de Teclado, Extensiones y Árbol de Carpetas',
+      url: '#audio-andres-informatica',
+      durationOrSize: 'Audio 4:00 min',
+      authorOrSource: 'Locución Académica',
+      description: 'Repaso auditivo de extensiones (.docx, .pdf, .xlsx) y combinaciones rápidas Ctrl+C, Ctrl+V y Ctrl+Z.',
+    },
+  ],
+
+  // =========================================================================
+  // 12. EDUCACIÓN EN LA FE: DOMUND, SANTA MARÍA ROSA MOLAS Y CONSOLACIÓN
+  // =========================================================================
+  'andres-fe-consolacion-values': [
+    {
+      id: 'andres-med-fe-01',
+      type: 'video',
+      title: 'Vida y Obra de Santa María Rosa Molas · Carisma de la Consolación',
+      url: 'https://www.youtube.com/watch?v=6Y8mK0qX4rE',
+      embedUrl: 'https://www.youtube-nocookie.com/embed/6Y8mK0qX4rE',
+      durationOrSize: '7:45 min',
+      authorOrSource: 'Pastoral Consolación',
+      description: 'Historia de Santa María Rosa Molas desde Reus y su legado educativo de misericordia y servicio.',
+    },
+    {
+      id: 'andres-med-fe-02',
+      type: 'video',
+      title: '¿Qué es el DOMUND? Solidaridad y Misión Universal',
+      url: 'https://www.youtube.com/watch?v=1X9zL2pW8vM',
+      embedUrl: 'https://www.youtube-nocookie.com/embed/1X9zL2pW8vM',
+      durationOrSize: '5:30 min',
+      authorOrSource: 'Obras Misionales Pontificias',
+      description: 'El sentido de la Jornada Mundial de las Misiones y cómo vivir la fraternidad cada día.',
+    },
+    {
+      id: 'andres-med-fe-03',
+      type: 'audio',
+      title: 'Audio-Reflexión: Gratitud, Empatía y Convivencia Escolar Fraterna',
+      url: '#audio-andres-fe-consolacion',
+      durationOrSize: 'Audio 3:50 min',
+      authorOrSource: 'Pastoral Escolar',
+      description: 'Síntesis formativa sobre el Diario de Gratitud, el Buen Samaritano y la resolución pacífica de conflictos.',
+    },
+  ],
 };
 
 /**
@@ -503,6 +573,50 @@ export const ANDRES_CURATED_PLAYLISTS: Record<string, CuratedPlaylist> = {
       },
     ],
   },
+  diseno_informatica: {
+    id: 'andres-pl-des-inf',
+    subjectKey: 'diseno_informatica_andres',
+    subjectTitle: 'Diseño Digital & Informática · 1er Año Bachillerato',
+    title: 'Lista Oficial: Color, Retícula, Hardware y Ofimática Escolar',
+    description: 'Videos prácticos sobre círculo cromático, composición visual, partes del computador y hojas de cálculo.',
+    curator: 'Cátedra Escolar Andrés Rivero',
+    playlistUrl: 'https://www.youtube.com/playlist?list=PLeySRPnY35dH0Q8XWc1uXWqYf_M8n3VwG',
+    videos: [
+      {
+        id: 'pl-andres-des-01',
+        topicNumber: 1,
+        topicName: 'Teoría del Color',
+        title: 'El Círculo Cromático de 12 Colores y Armonías',
+        author: 'Arte y Dibujo Escolar',
+        duration: '8:10',
+        url: 'https://www.youtube.com/watch?v=4xR_9_j1p5U',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/4xR_9_j1p5U',
+        description: 'Colores primarios, secundarios, terciarios y temperatura.',
+      },
+      {
+        id: 'pl-andres-des-02',
+        topicNumber: 2,
+        topicName: 'Hardware y Software',
+        title: 'Arquitectura del Computador: CPU, RAM y Periféricos',
+        author: 'GCFAprendeLibre',
+        duration: '8:20',
+        url: 'https://www.youtube.com/watch?v=3F-kuNGlN0Q',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/3F-kuNGlN0Q',
+        description: 'Diferencia entre memoria volátil RAM, almacenamiento SSD y periféricos.',
+      },
+      {
+        id: 'pl-andres-des-03',
+        topicNumber: 3,
+        topicName: 'Hojas de Cálculo',
+        title: 'Fórmulas Básicas en Excel: SUMA y PROMEDIO',
+        author: 'GCFAprendeLibre',
+        duration: '10:35',
+        url: 'https://www.youtube.com/watch?v=v_R5G1M9m8A',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/v_R5G1M9m8A',
+        description: 'Celdas, rangos y automatización de promedios escolares.',
+      },
+    ],
+  },
 };
 
 export function getAndresMultimedia(idOrEvent: string): MultimediaResource[] {
@@ -526,7 +640,10 @@ export function getAndresPlaylistForSubject(subjectOrArea: string): CuratedPlayl
   if (s.includes('física') || s.includes('phys') || s.includes('máquinas') || s.includes('conversión')) {
     return ANDRES_CURATED_PLAYLISTS.fisica;
   }
-  if (s.includes('castellano') || s.includes('lengua') || s.includes('literatura') || s.includes('barrabás') || s.includes('sintaxis')) {
+  if (s.includes('diseño') || s.includes('informática') || s.includes('computación') || s.includes('design') || s.includes('inf')) {
+    return ANDRES_CURATED_PLAYLISTS.diseno_informatica;
+  }
+  if (s.includes('castellano') || s.includes('lengua') || s.includes('literatura') || s.includes('barrabás') || s.includes('sintaxis') || s.includes('fe') || s.includes('consolación')) {
     return ANDRES_CURATED_PLAYLISTS.castellano;
   }
   return null;

@@ -29,7 +29,12 @@ import {
 import {
   ALL_ANDRES_DECONSTRUCTED_GUIDES,
   ALL_ANDRES_QUESTIONS,
+  ANDRES_INTEGRAL_EXAM_QUESTIONS,
 } from '../../data/andres_curriculum_hub';
+import {
+  getSimulatorQuestionsForGuide,
+  type AndresGuideKey,
+} from '../../data/andres';
 import {
   SANTIAGO_SEMESTER_1_DECONSTRUCTED_GUIDES,
   SANTIAGO_SEMESTER_1_QUESTIONS,
@@ -154,6 +159,17 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
   // Lanzar examen desde una guía deconstruida
   const handleStartExamFromDeconstructed = (guide: DeconstructedAcademicGuide) => {
     if (!onStartExamWithQuestions) return;
+    if (guide.id?.startsWith('andres-')) {
+      const directAndres = getSimulatorQuestionsForGuide(guide.id as AndresGuideKey);
+      if (directAndres && directAndres.length > 0) {
+        onStartExamWithQuestions(
+          directAndres,
+          `Simulación: ${guide.guideMetadata.title}`
+        );
+        return;
+      }
+    }
+
     let questions = convertDeconstructedToQuestions(
       guide.generatedQuestions || [],
       guide.guideMetadata.title,
@@ -168,26 +184,6 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
         questions = [...NOTION_COLOR_QUESTIONS];
       } else if (guide.id === 'mafe-math-design-ucab') {
         questions = [...NOTION_MATH_QUESTIONS];
-      } else if (guide.id === 'andres-math-z-equations') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática' && ['andres-q-mat-001', 'andres-q-mat-002', 'andres-q-mat-003', 'andres-q-mat-007', 'andres-q-mat-008'].includes(q.id));
-      } else if (guide.id === 'andres-math-powers-factors') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática' && ['andres-q-mat-004', 'andres-q-mat-005', 'andres-q-mat-006', 'andres-q-mat-014', 'andres-q-mat-015', 'andres-q-mat-016'].includes(q.id));
-      } else if (guide.id === 'andres-math-geometry-perimeters') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Matemática' && ['andres-q-mat-009', 'andres-q-mat-010', 'andres-q-mat-011', 'andres-q-mat-012', 'andres-q-mat-013'].includes(q.id));
-      } else if (guide.id === 'andres-bio-lab-method') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Biología' && ['andres-q-bio-001', 'andres-q-bio-002', 'andres-q-bio-003', 'andres-q-bio-005', 'andres-q-bio-010'].includes(q.id));
-      } else if (guide.id === 'andres-bio-safety-matter') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Biología' && ['andres-q-bio-004', 'andres-q-bio-006', 'andres-q-bio-007', 'andres-q-bio-008', 'andres-q-bio-009'].includes(q.id));
-      } else if (guide.id === 'andres-phys-machines-units') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Física' && ['andres-q-fis-001', 'andres-q-fis-003', 'andres-q-fis-004', 'andres-q-fis-006'].includes(q.id));
-      } else if (guide.id === 'andres-phys-units-circuits') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Física' && ['andres-q-fis-002', 'andres-q-fis-005', 'andres-q-fis-007', 'andres-q-fis-008', 'andres-q-fis-009', 'andres-q-fis-010'].includes(q.id));
-      } else if (guide.id === 'andres-cas-barrabas-grammar') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Castellano' && ['andres-q-cas-001', 'andres-q-cas-002', 'andres-q-cas-004', 'andres-q-cas-005', 'andres-q-cas-009'].includes(q.id));
-      } else if (guide.id === 'andres-cas-syntax-accents') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Castellano' && ['andres-q-cas-003', 'andres-q-cas-006', 'andres-q-cas-007', 'andres-q-cas-008'].includes(q.id));
-      } else if (guide.id === 'andres-design-color-grid') {
-        questions = ALL_ANDRES_QUESTIONS.filter((q) => q.subject === 'Diseño' || q.id.startsWith('andres-q-des-') || q.id.startsWith('andres-q-inf-'));
       } else if (guide.id === 'santiago-calc1-limits-guide') {
         questions = SANTIAGO_SEMESTER_1_QUESTIONS.filter((q) => q.topic.includes('Límites') || q.topic.includes('Derivadas') || q.subject === 'Matemática');
       } else if (guide.id === 'santiago-fis1-mechanics-guide') {
@@ -200,7 +196,7 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
         questions = isSantiago
           ? SANTIAGO_SEMESTER_1_QUESTIONS.slice(0, 10)
           : isAndres
-          ? ALL_ANDRES_QUESTIONS.slice(0, 10)
+          ? ANDRES_INTEGRAL_EXAM_QUESTIONS
           : ALL_MAFE_QUESTIONS.slice(0, 10);
       }
     }
@@ -241,8 +237,8 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
               { id: 'Matemática', label: '📐 Matemática (3)' },
               { id: 'Biología', label: '🔬 Biología (2)' },
               { id: 'Física', label: '⚡ Física (2)' },
-              { id: 'Castellano', label: '📖 Castellano (2)' },
-              { id: 'Diseño', label: '🎨 Computación & Diseño (1)' },
+              { id: 'Castellano', label: '📖 Castellano & Fe (3)' },
+              { id: 'Diseño', label: '💻 Diseño & Informática (2)' },
             ].map((f) => (
               <button
                 key={f.id}
@@ -712,11 +708,13 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
               <h3 className="text-lg font-bold text-white tracking-tight font-sans flex items-center gap-2">
                 <span>Mis Guías Temáticas Deconstruidas</span>
                 <span className="text-xs font-normal text-[#38bdf8] font-mono px-2 py-0.5 rounded-md bg-blue-950/60 border border-blue-800/40">
-                  {andresSubjectFilter === 'TODAS' ? 'Mostrando todas las 10 guías' : `Filtro: ${andresSubjectFilter}`}
+                  {andresSubjectFilter === 'TODAS'
+                    ? `Mostrando las ${ALL_ANDRES_DECONSTRUCTED_GUIDES.length} guías oficiales`
+                    : `Filtro: ${andresSubjectFilter}`}
                 </span>
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
-                Guías de estudio estructuradas con el Método de 7 Pilares (Conceptos clave, Fórmulas, Ejemplos resueltos, Errores comunes, Mnemotecnias, Cornell y Flashcards). Descarga en Word o PDF para llevar al colegio.
+                Guías de estudio estructuradas con el Método de 7 Pilares (Conceptos clave, Fórmulas, Ejemplos resueltos, Errores comunes, Mnemotecnias, Cornell, Flashcards y Examen de 14–20 preguntas por tema). Descarga en Word o PDF para llevar al colegio.
               </p>
             </div>
 
@@ -724,19 +722,19 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
               <button
                 onClick={() =>
                   onStartExamWithQuestions?.(
-                    ALL_ANDRES_QUESTIONS,
-                    '1er Año Bachillerato · Simulacro General (Todas las Guías)'
+                    ANDRES_INTEGRAL_EXAM_QUESTIONS,
+                    '1er Año Bachillerato · Gran Simulacro Integral (Todas las Unidades)'
                   )
                 }
                 className="bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] active:scale-[0.97] text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-[0_0_20px_rgba(0,112,209,0.4)] flex items-center gap-1.5 transition-all cursor-pointer border border-[#38bdf8]/30"
               >
                 <PlayIcon className="w-3.5 h-3.5 text-white" />
-                <span>Simular Examen Completo ({ALL_ANDRES_QUESTIONS.length})</span>
+                <span>Simular Examen Integral ({ANDRES_INTEGRAL_EXAM_QUESTIONS.length})</span>
               </button>
             </div>
           </div>
 
-          {/* Grid de las 10 Guías Deconstruidas para Andrés */}
+          {/* Grid de las 12 Guías Deconstruidas para Andrés */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {ALL_ANDRES_DECONSTRUCTED_GUIDES.filter((guide) => {
               if (andresSubjectFilter === 'TODAS') return true;
@@ -802,10 +800,10 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                     <button
                       onClick={() => handleStartExamFromDeconstructed(guide)}
                       className="py-2 px-3.5 rounded-xl text-xs font-bold bg-[#0070d1] hover:bg-[#005fb3] text-white shadow-soft flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98]"
-                      title="Simular examen con preguntas de esta guía"
+                      title="Simular examen completo con todas las preguntas de esta guía"
                     >
                       <PlayIcon className="w-3.5 h-3.5 text-white" />
-                      <span>Examen</span>
+                      <span>Examen ({guide.generatedQuestions?.length || 16})</span>
                     </button>
                   </div>
                 </div>
