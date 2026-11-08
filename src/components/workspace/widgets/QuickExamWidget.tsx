@@ -178,7 +178,7 @@ export const QuickExamWidget: React.FC<QuickExamWidgetProps> = ({
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5 truncate">
                 {isAndres
-                  ? 'Práctica ágil de 12 preguntas de tu banco de 212 reactivos'
+                  ? `Práctica ágil de 12 preguntas de tu banco de ${ALL_ANDRES_QUESTIONS.length} reactivos`
                   : 'Práctica ágil de 4 preguntas de fijación conceptual'}
               </p>
             </div>

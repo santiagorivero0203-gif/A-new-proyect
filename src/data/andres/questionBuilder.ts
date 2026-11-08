@@ -29,8 +29,8 @@ export interface AndresQuestionSeed {
   topic: string;
   /** ID de la guía deconstruida asociada */
   guideId: string;
-  /** Nivel de exigencia calibrado para 12-13 años */
-  difficulty: 'Básico' | 'Intermedio';
+  /** Nivel de exigencia calibrado para 1er Año de Bachillerato (12-13 años) */
+  difficulty: 'Básico' | 'Intermedio' | 'Avanzado';
   /** Enunciado claro y contextualizado */
   questionText: string;
   /** Expresión matemática o física opcional en formato KaTeX */

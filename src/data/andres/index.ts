@@ -3,8 +3,8 @@
  * @description Punto de entrada unificado para el ecosistema académico expandido de
  * Andrés Rivero (1er Año de Bachillerato · Educación Media General · Colegio Consolación).
  *
- * Resumen cuantitativo del banco oficial (212 reactivos únicos):
- * - Matemática 1 (Enteros ℤ y Ecuaciones):             20 reactivos (`andres-math-z-equations`)
+ * Resumen cuantitativo del banco oficial (222 reactivos únicos):
+ * - Matemática 1 (Enteros ℤ, Signos de Agrupación y Operaciones Largas): 30 reactivos (`andres-math-z-equations`)
  * - Matemática 2 (Potenciación, Primos, m.c.m./M.C.D.):20 reactivos (`andres-math-powers-factors`)
  * - Matemática 3 (Geometría, Ángulos y Perímetros):    18 reactivos (`andres-math-geometry-perimeters`)
  * - Biología 1 (Método Científico y Laboratorio):      18 reactivos (`andres-bio-lab-method`)
@@ -17,7 +17,7 @@
  * - Informática Práctica (Hardware, Archivos y Excel): 16 reactivos (`andres-inf-computing-office`)
  * - Educación en la Fe (DOMUND y Carisma Consolación): 14 reactivos (`andres-fe-consolacion-values`)
  * -----------------------------------------------------------------------------------------------
- * TOTAL:                                              212 reactivos únicos distribuidos en A/B/C/D.
+ * TOTAL:                                              222 reactivos únicos distribuidos en A/B/C/D.
  */
 
 import type { Question } from '../../types/exam.types';
@@ -183,7 +183,9 @@ export function resolveAndresGuideIdForEvent(eventId?: string, explicitGuideId?:
  * de cada uno de los 12 bloques del cronograma) para el Simulacro General Integral.
  */
 export const ANDRES_INTEGRAL_EXAM_IDS: string[] = [
-  ...ANDRES_MATH_Z_SEEDS.slice(0, 3).map((s) => s.id),
+  'andres-m1-008',
+  'andres-m1-022',
+  'andres-m1-026',
   ...ANDRES_MATH_POWERS_SEEDS.slice(0, 3).map((s) => s.id),
   ...ANDRES_MATH_GEOMETRY_SEEDS.slice(0, 3).map((s) => s.id),
   ...ANDRES_BIO_METHOD_SEEDS.slice(0, 3).map((s) => s.id),

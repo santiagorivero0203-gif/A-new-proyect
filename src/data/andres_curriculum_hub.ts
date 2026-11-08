@@ -618,6 +618,12 @@ export const ANDRES_MATH_Z_EQUATIONS_GUIDE: DeconstructedAcademicGuide = {
     '• **Producto de potencias de igual base:** Se copia la base y se suman los exponentes: $a^m \\cdot a^n = a^{m+n}$.',
     '• **Potencia de una potencia:** Se multiplican los exponentes: $(a^m)^n = a^{m \\cdot n}$.',
     '',
+    '### ELIMINACIÓN DE SIGNOS DE AGRUPACIÓN ANIDADOS: ( ), [ ] Y { }',
+    'En operaciones largas con enteros se resuelven siempre **de adentro hacia afuera** respetando la jerarquía:',
+    '1. **Primero los paréntesis $( )$**, luego los **corchetes $[ ]$** y finalmente las **llaves $\\{ \\}$**.',
+    '2. Dentro de cada agrupación se ejecutan **primero multiplicaciones y divisiones** y **después sumas y restas**.',
+    '3. Un signo negativo delante de cualquier agrupación cambia el signo del resultado interior: $-(-a) = +a$ y $-(+a) = -a$.',
+    '',
     '### ECUACIONES DE 1ER GRADO: EL SECRETO DE LA BALANZA',
     'Una ecuación es una balanza de dos platos perfectamente nivelada. Para encontrar el valor de $x$ sin que la balanza se desequilibre:',
     '> **Cualquier operación que apliques al lado izquierdo, debes aplicarla con la misma fuerza y número al lado derecho.**',
@@ -667,6 +673,16 @@ export const ANDRES_MATH_Z_EQUATIONS_GUIDE: DeconstructedAcademicGuide = {
         '4. Efectuar la suma final: $+28 - 28 = 0$.',
       ],
       finalResult: '$E = 0$',
+    },
+    {
+      title: 'Operación combinada larga con paréntesis, corchetes, llaves y productos',
+      problemStatement: 'Calcula paso a paso el valor de: $M = 30 - 2 \\cdot \\{ 15 - 3 \\cdot [ (-12) \\div 3 + 7 ] - (-5) \\}$.',
+      deductiveSteps: [
+        '1. Resolvemos primero el corchete interno respetando la división antes de la suma: $(-12) \\div 3 + 7 = -4 + 7 = +3$.',
+        '2. Sustituimos dentro de la llave: $\\{ 15 - 3 \\cdot (+3) - (-5) \\}$. Multiplicamos $3 \\cdot 3 = 9$ y cambiamos $-(-5) = +5$: $\\{ 15 - 9 + 5 \\} = +11$.',
+        '3. Multiplicamos la llave por el factor exterior $-2$ (¡nunca restes $30 - 2$ antes de multiplicar!): $30 - 2 \\cdot (+11) = 30 - 22 = +8$.',
+      ],
+      finalResult: '$M = +8$',
     },
     {
       title: 'Despeje de una Ecuación Lineal mediante la Balanza',
@@ -1792,18 +1808,18 @@ export const ALL_ANDRES_QUESTIONS: Question[] = ALL_ANDRES_EXPANDED_QUESTIONS;
 // 9. MODELOS DE EXAMEN PRECONFIGURADOS PARA ANDRÉS RIVERO (13 EXÁMENES)
 // =====================================================================
 export const ANDRES_TAILORED_EXAMS = [
-  // 1. Matemática: Números Enteros ℤ y Ecuaciones (20 preguntas)
+  // 1. Matemática: Números Enteros ℤ, Operaciones Combinadas Largas y Ecuaciones (30 preguntas)
   {
     id: 'exam-andres-math-1',
     profileId: ANDRES_PROFILE,
-    title: 'Matemática · Números Enteros ℤ, Ley de Signos y Ecuaciones',
+    title: 'Matemática · Números Enteros ℤ, Signos de Agrupación y Ecuaciones',
     subtitle: 'Evaluación Parcial Completa · I Momento',
-    durationMinutes: 45,
-    questionCount: 20,
-    badge: 'Matemática ℤ',
+    durationMinutes: 60,
+    questionCount: 30,
+    badge: 'Matemática ℤ (30Q)',
     colorScheme: 'emerald' as const,
     description:
-      '20 reactivos de operaciones en ℤ, recta numérica, valor absoluto, eliminación de signos de agrupación, ley de signos y ecuaciones con la balanza.',
+      '30 reactivos de operaciones en ℤ: sumas algebraicas largas, eliminación jerárquica de paréntesis, corchetes y llaves, operaciones combinadas con productos y cocientes, valor absoluto y ecuaciones con paréntesis.',
     targetSubject: 'Matemática' as const,
     targetTopicKeyword: 'ℤ',
     fixedQuestionIds: getExamIdsForGuide('andres-math-z-equations'),
