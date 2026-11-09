@@ -44,6 +44,12 @@ import {
   exportGuideToPdf,
   OFFICIAL_NOTION_PDF_LINKS,
 } from '../../utils/documentExport';
+import {
+  getWrittenExamForGuide,
+  getWrittenExamsForProfile,
+} from '../../data/writtenExams';
+import type { WrittenExamDocument } from '../../types/writtenExamDocument.types';
+import { WrittenExamDocumentModal } from '../exams/WrittenExamDocumentModal';
 
 export interface AcademicGuidesViewProps {
   onStartExamWithQuestions?: (questions: Question[], title: string) => void;
@@ -98,6 +104,8 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
   // Estado para Guías Deconstruidas con Gemini IA
   const [selectedDeconstructedGuide, setSelectedDeconstructedGuide] =
     useState<DeconstructedAcademicGuide | null>(null);
+  const [selectedWrittenExamDoc, setSelectedWrittenExamDoc] =
+    useState<WrittenExamDocument | null>(null);
 
   // Escuchar si hay una guía específica solicitada desde el Calendario
   useEffect(() => {
@@ -519,6 +527,22 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                         <span>Examen</span>
                       </button>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const doc = getWrittenExamForGuide(
+                          guide.id,
+                          `${guide.guideMetadata.title} ${guide.guideMetadata.area}`,
+                          'santiago_fisica_ucv'
+                        );
+                        if (doc) setSelectedWrittenExamDoc(doc);
+                      }}
+                      className="w-full py-1.5 px-3 rounded-xl text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-800/60 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      title="Abrir Guía Previa y Evaluación Escrita (Formato Hoja de Examen 100 Pts)"
+                    >
+                      <span>📋 Hoja de Examen Escrito (100 pts)</span>
+                    </button>
                   </div>
                 </div>
               );
@@ -674,6 +698,22 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                       <span>Simular</span>
                     </button>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const doc = getWrittenExamForGuide(
+                        guide.id,
+                        `${guide.guideMetadata.title} ${guide.guideMetadata.area}`,
+                        'mafe_diseno_ucab'
+                      );
+                      if (doc) setSelectedWrittenExamDoc(doc);
+                    }}
+                    className="w-full py-1.5 px-3 rounded-xl text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300/80 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    title="Abrir Guía Previa y Evaluación Escrita (Formato Hoja de Examen 100 Pts)"
+                  >
+                    <span>📋 Hoja de Examen Escrito (100 pts)</span>
+                  </button>
                 </div>
               </div>
             ))}
@@ -806,6 +846,22 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
                       <span>Examen ({guide.generatedQuestions?.length || 16})</span>
                     </button>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const doc = getWrittenExamForGuide(
+                        guide.id,
+                        `${guide.guideMetadata.title} ${guide.guideMetadata.area}`,
+                        'andres_bachillerato_1'
+                      );
+                      if (doc) setSelectedWrittenExamDoc(doc);
+                    }}
+                    className="w-full py-1.5 px-3 rounded-xl text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-800/50 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    title="Abrir Guía de Estudio Previa y Evaluación Escrita (Formato Hoja de Examen 100 Pts)"
+                  >
+                    <span>📋 Hoja de Examen Escrito (100 pts)</span>
+                  </button>
                 </div>
               </div>
             ))}
@@ -1224,6 +1280,15 @@ export const AcademicGuidesView: React.FC<AcademicGuidesViewProps> = ({
             />
           </div>
         </div>
+      )}
+
+      {selectedWrittenExamDoc && (
+        <WrittenExamDocumentModal
+          document={selectedWrittenExamDoc}
+          availableDocuments={getWrittenExamsForProfile(selectedWrittenExamDoc.profileId)}
+          onSelectDocument={(doc) => setSelectedWrittenExamDoc(doc)}
+          onClose={() => setSelectedWrittenExamDoc(null)}
+        />
       )}
     </div>
   );
