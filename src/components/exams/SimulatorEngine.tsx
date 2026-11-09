@@ -11,6 +11,13 @@ import {
   ANDRES_INTEGRAL_EXAM_QUESTIONS,
   ANDRES_TAILORED_EXAMS,
 } from '../../data/andres_curriculum_hub';
+import {
+  getWrittenExamsForProfile,
+  getWrittenExamForTailoredExam,
+} from '../../data/writtenExams';
+import type { WrittenExamDocument } from '../../types/writtenExamDocument.types';
+import { WrittenExamDocumentModal } from './WrittenExamDocumentModal';
+import { exportWrittenExamToPdf, exportWrittenExamToWord } from '../../utils/writtenExamExporter';
 import type { AcademicSubject, ExamConfig, Question } from '../../types/exam.types';
 
 interface SimulatorEngineProps {
@@ -49,6 +56,7 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
   const [activeProfileTab, setActiveProfileTab] = useState<
     'santiago_fisica_ucv' | 'andres_bachillerato_1' | 'mafe_diseno_ucab' | 'prima_bachillerato_5'
   >(academicProfile || 'santiago_fisica_ucv');
+  const [selectedWrittenExamDoc, setSelectedWrittenExamDoc] = useState<WrittenExamDocument | null>(null);
 
   // Sincronización reactiva de la pestaña activa cuando el usuario conmuta su perfil académico
   useEffect(() => {
@@ -224,29 +232,113 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                 </p>
               </div>
 
-              <button
-                onClick={() => {
-                  const questions = getQuestionsForTailoredExam(ex);
-                  startExam(
-                    {
-                      mode: 'HIGH_SCHOOL_EXAM',
-                      title: ex.title,
-                      totalQuestions: Math.max(1, Math.min(ex.questionCount, questions.length || ex.questionCount)),
-                      timeLimitSeconds: ex.durationMinutes * 60,
-                      allowPause: true,
-                      shuffleQuestions: true,
-                      subject: ex.targetSubject,
-                    },
-                    questions
-                  );
-                }}
-                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(0,112,209,0.35)] active:scale-95 cursor-pointer"
-              >
-                <PlayIcon className="w-3.5 h-3.5 text-white" />
-                <span>Iniciar Examen ({ex.questionCount} Preguntas)</span>
-              </button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                  onClick={() => {
+                    const questions = getQuestionsForTailoredExam(ex);
+                    startExam(
+                      {
+                        mode: 'HIGH_SCHOOL_EXAM',
+                        title: ex.title,
+                        totalQuestions: Math.max(1, Math.min(ex.questionCount, questions.length || ex.questionCount)),
+                        timeLimitSeconds: ex.durationMinutes * 60,
+                        allowPause: true,
+                        shuffleQuestions: true,
+                        subject: ex.targetSubject,
+                      },
+                      questions
+                    );
+                  }}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#00439c] to-[#0070d1] hover:from-[#003882] hover:to-[#005fb3] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(0,112,209,0.35)] active:scale-95 cursor-pointer"
+                >
+                  <PlayIcon className="w-3.5 h-3.5 text-white" />
+                  <span>Simulador ({ex.questionCount} Pregs)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const doc = getWrittenExamForTailoredExam(ex.id, ex.title, 'andres_bachillerato_1');
+                    if (doc) setSelectedWrittenExamDoc(doc);
+                  }}
+                  className="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-blue-950/70 dark:hover:bg-blue-900/80 text-slate-900 dark:text-[#38bdf8] border border-slate-300 dark:border-blue-700/50 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                  title="Abrir Guía de Estudio Previa y Evaluación Escrita (Formato Hoja de Examen 100 Pts)"
+                >
+                  <span>📄</span>
+                  <span>Hoja Escrita (100 pts)</span>
+                </button>
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* SECCIÓN DE HOJAS DE EVALUACIÓN ESCRITA (5 PARTES / 100 PTS) PARA ANDRÉS */}
+        <div className="p-6 rounded-3xl bg-white dark:bg-[#0d1527] border-2 border-blue-200 dark:border-[#0070d1]/50 shadow-soft space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-3">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950 text-[#0070d1] dark:text-[#38bdf8] border border-blue-200 dark:border-blue-800 text-xs font-bold">
+                <span>📄</span>
+                <span>Formato Oficial de Hoja de Examen · 5 Partes · 100 Puntos</span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white font-sans">
+                Guías de Estudio Previas y Evaluaciones Escritas Imprimibles (PDF / Word)
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Documentos completos de 5 páginas con Resumen Lógico de Repaso, Contraste Clave, Casilla de Calificación (100 pts), Ejercicios de I a V Parte con líneas punteadas de procedimiento y Solucionario Oficial.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {getWrittenExamsForProfile('andres_bachillerato_1').map((doc) => {
+              const itemCount = doc.parts.reduce((acc, p) => acc + p.items.length, 0);
+              return (
+                <div
+                  key={doc.id}
+                  className="p-4 rounded-2xl bg-slate-50/90 dark:bg-[#111c35] border border-slate-200 dark:border-blue-900/50 flex flex-col justify-between space-y-3 hover:border-[#0070d1] transition-all"
+                >
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-900 dark:text-blue-300">
+                        {doc.subject}
+                      </span>
+                      <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
+                        {itemCount} Ejercicios · 100 pts
+                      </span>
+                    </div>
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
+                      {doc.unitTitle}
+                    </h4>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-200/70 dark:border-slate-800">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedWrittenExamDoc(doc)}
+                      className="flex-1 py-2 px-2.5 rounded-xl bg-[#0070d1] hover:bg-[#005fb3] text-white text-[11px] font-bold transition-all text-center cursor-pointer"
+                    >
+                      👁️ Ver Examen / Solucionario
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exportWrittenExamToPdf(doc, false)}
+                      className="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-[11px] font-bold transition-all cursor-pointer"
+                      title="Imprimir o Guardar PDF de la Hoja de Examen"
+                    >
+                      PDF
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exportWrittenExamToWord(doc, false)}
+                      className="py-2 px-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold transition-all cursor-pointer"
+                      title="Descargar en Word (.doc)"
+                    >
+                      Word
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Cuestionario Dinámico por Materia para Andrés */}
@@ -332,6 +424,15 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
             </div>
           </div>
         </div>
+
+        {selectedWrittenExamDoc && (
+          <WrittenExamDocumentModal
+            document={selectedWrittenExamDoc}
+            availableDocuments={getWrittenExamsForProfile(selectedWrittenExamDoc.profileId)}
+            onSelectDocument={(doc) => setSelectedWrittenExamDoc(doc)}
+            onClose={() => setSelectedWrittenExamDoc(null)}
+          />
+        )}
       </div>
     );
   }
@@ -451,30 +552,117 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
                 </p>
               </div>
 
-              <button
-                onClick={() => {
-                  // Resuelve modelos fijos (fixedQuestionIds) o filtra por materia/palabra clave
-                  const questions = getQuestionsForTailoredExam(ex);
-                  startExam(
-                    {
-                      mode: ex.profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
-                      title: ex.title,
-                      totalQuestions: Math.max(1, Math.min(ex.questionCount, questions.length || ex.questionCount)),
-                      timeLimitSeconds: ex.durationMinutes * 60,
-                      allowPause: true,
-                      shuffleQuestions: true,
-                      subject: ex.targetSubject,
-                    },
-                    questions
-                  );
-                }}
-                className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-soft-xs active:scale-95"
-              >
-                <PlayIcon className="w-3 h-3 text-indigo-600" />
-                <span>Comenzar Examen Individual</span>
-              </button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                  onClick={() => {
+                    // Resuelve modelos fijos (fixedQuestionIds) o filtra por materia/palabra clave
+                    const questions = getQuestionsForTailoredExam(ex);
+                    startExam(
+                      {
+                        mode: ex.profileId === 'andres_bachillerato_1' ? 'HIGH_SCHOOL_EXAM' : 'UNIVERSITY_EXAM',
+                        title: ex.title,
+                        totalQuestions: Math.max(1, Math.min(ex.questionCount, questions.length || ex.questionCount)),
+                        timeLimitSeconds: ex.durationMinutes * 60,
+                        allowPause: true,
+                        shuffleQuestions: true,
+                        subject: ex.targetSubject,
+                      },
+                      questions
+                    );
+                  }}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-soft-xs active:scale-95"
+                >
+                  <PlayIcon className="w-3 h-3 text-indigo-600" />
+                  <span>Simulador ({ex.questionCount} Pregs)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const doc = getWrittenExamForTailoredExam(ex.id, ex.title, ex.profileId);
+                    if (doc) setSelectedWrittenExamDoc(doc);
+                  }}
+                  className="py-2.5 px-3 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 text-blue-100 border border-blue-400/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shrink-0"
+                  title="Ver Hoja de Evaluación Escrita y Guía Previa (Formato 100 Puntos)"
+                >
+                  <span>📄</span>
+                  <span>Hoja Escrita (100 pts)</span>
+                </button>
+              </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* SECCIÓN DE DOCUMENTOS DE EVALUACIÓN ESCRITA Y GUÍA PREVIA (FORMATO OFICIAL 5 PARTES / 100 PTS) */}
+      <div className="app-card p-6 sm:p-7 rounded-3xl bg-white border-2 border-blue-200/90 shadow-soft-sm space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200 text-xs font-bold font-sans">
+              <span>📄</span>
+              <span>Formato Hoja de Examen Escrito · 5 Partes · 100 Puntos</span>
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight font-sans">
+              Documentos de Evaluación Escrita y Guía Previa por Materia
+            </h3>
+            <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
+              Cada documento incluye Resumen Lógico de Repaso, Contraste Clave, Encabezado de Calificación (100 pts), Ejercicios de I a V Parte con líneas punteadas de procedimiento y Solucionario Oficial Resuelto.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {getWrittenExamsForProfile(activeProfileTab).map((doc) => {
+            const totalItems = doc.parts.reduce((acc, p) => acc + p.items.length, 0);
+            return (
+              <div
+                key={doc.id}
+                className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/90 hover:border-blue-400 transition-all flex flex-col justify-between space-y-3"
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900">
+                      {doc.subject}
+                    </span>
+                    <span className="text-xs font-mono font-bold text-emerald-700">
+                      {totalItems} Ejercicios · 100 Pts
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug">
+                    {doc.unitTitle}
+                  </h4>
+                  <p className="text-xs text-slate-500 line-clamp-2">
+                    {doc.summaryIntro || doc.studySummary?.introParagraph || doc.generalInstructions}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/70">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedWrittenExamDoc(doc)}
+                    className="flex-1 py-2 px-3 rounded-xl bg-[#1e40af] hover:bg-[#1e3a8a] text-white text-xs font-bold transition-all text-center cursor-pointer"
+                  >
+                    👁️ Abrir Hoja de Examen / Solucionario
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exportWrittenExamToPdf(doc, false)}
+                    className="py-2 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all cursor-pointer"
+                    title="Imprimir o Guardar como PDF"
+                  >
+                    PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exportWrittenExamToWord(doc, false)}
+                    className="py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all cursor-pointer"
+                    title="Descargar archivo Word (.doc)"
+                  >
+                    Word
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -874,6 +1062,15 @@ export const SimulatorEngine: React.FC<SimulatorEngineProps> = ({
           </button>
         </div>
       </div>
+
+      {selectedWrittenExamDoc && (
+        <WrittenExamDocumentModal
+          document={selectedWrittenExamDoc}
+          availableDocuments={getWrittenExamsForProfile(selectedWrittenExamDoc.profileId)}
+          onSelectDocument={(doc) => setSelectedWrittenExamDoc(doc)}
+          onClose={() => setSelectedWrittenExamDoc(null)}
+        />
+      )}
     </div>
   );
 };

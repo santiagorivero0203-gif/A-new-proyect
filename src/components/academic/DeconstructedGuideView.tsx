@@ -53,6 +53,9 @@ import {
 } from '../../data/mafe_curriculum_hub';
 import { SANTIAGO_SEMESTER_1_QUESTIONS } from '../../data/santiago_curriculum_hub';
 import { getSimulatorQuestionsForGuide, type AndresGuideKey } from '../../data/andres';
+import { getWrittenExamForGuide, getWrittenExamsForProfile } from '../../data/writtenExams';
+import type { WrittenExamDocument } from '../../types/writtenExamDocument.types';
+import { WrittenExamDocumentModal } from '../exams/WrittenExamDocumentModal';
 
 export interface DeconstructedGuideViewProps {
   guide: DeconstructedAcademicGuide;
@@ -545,6 +548,21 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
   // Enlaces a PDFs oficiales de Notion
   const notionPdfs = guide.id ? OFFICIAL_NOTION_PDF_LINKS[guide.id] : undefined;
 
+  // Documento de Evaluación Escrita y Guía Previa (Formato 5 Partes / 100 Pts)
+  const inferredProfileId = isAndresGuide
+    ? 'andres_bachillerato_1'
+    : guide.id?.startsWith('mafe-') || guide.discipline === 'design'
+    ? 'mafe_diseno_ucab'
+    : guide.id?.startsWith('sofia-') || guide.id?.startsWith('prima-')
+    ? 'prima_bachillerato_5'
+    : 'santiago_fisica_ucv';
+  const defaultWrittenExamDoc = getWrittenExamForGuide(
+    guide.id,
+    `${guideMetadata.title} ${guideMetadata.area || ''}`,
+    inferredProfileId
+  );
+  const [selectedWrittenExamDoc, setSelectedWrittenExamDoc] = useState<WrittenExamDocument | null>(null);
+
   /**
    * Conecta directamente con el Simulador de Exámenes con salvaguarda a banco completo de Santiago
    */
@@ -731,6 +749,19 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
             >
               <Printer className="w-3.5 h-3.5 text-slate-600" />
             </button>
+
+            {/* Botón de Hoja de Examen Escrito (Formato Oficial 5 Partes / 100 Pts) */}
+            {defaultWrittenExamDoc && (
+              <button
+                type="button"
+                onClick={() => setSelectedWrittenExamDoc(defaultWrittenExamDoc)}
+                className="bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold py-1 px-3 rounded-xl shadow-soft transition-all flex items-center gap-1.5 cursor-pointer"
+                title="Abrir Guía de Estudio Previa y Evaluación Escrita (Formato Hoja de Examen 100 Pts)"
+              >
+                <FileText className="w-3.5 h-3.5 text-white" />
+                <span>Hoja Examen (100 pts)</span>
+              </button>
+            )}
 
             {/* Botón Primario de Simulación */}
             {onStartExamWithQuestions && (
@@ -2185,16 +2216,37 @@ export const DeconstructedGuideView: React.FC<DeconstructedGuideViewProps> = ({
           <span>Guía guardada y persistida en tu centro de estudio</span>
         </div>
 
-        {onStartExamWithQuestions && (
-          <button
-            onClick={handleLaunchSimulator}
-            className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-1.5 px-4 rounded-xl shadow-soft transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
-          >
-            <PlayIcon className="w-3.5 h-3.5 text-white" />
-            <span>Simular Examen ({Math.max(totalQuestions, 10)} Preguntas)</span>
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {defaultWrittenExamDoc && (
+            <button
+              type="button"
+              onClick={() => setSelectedWrittenExamDoc(defaultWrittenExamDoc)}
+              className="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-4 rounded-xl shadow-soft transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <FileText className="w-3.5 h-3.5 text-white" />
+              <span>Hoja de Examen Escrito (100 pts)</span>
+            </button>
+          )}
+          {onStartExamWithQuestions && (
+            <button
+              onClick={handleLaunchSimulator}
+              className="bg-[#0F52BA] hover:bg-[#0c4396] text-white text-xs font-bold py-1.5 px-4 rounded-xl shadow-soft transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <PlayIcon className="w-3.5 h-3.5 text-white" />
+              <span>Simular Examen ({Math.max(totalQuestions, 10)} Preguntas)</span>
+            </button>
+          )}
+        </div>
       </div>
+
+      {selectedWrittenExamDoc && (
+        <WrittenExamDocumentModal
+          document={selectedWrittenExamDoc}
+          availableDocuments={getWrittenExamsForProfile(selectedWrittenExamDoc.profileId)}
+          onSelectDocument={(doc) => setSelectedWrittenExamDoc(doc)}
+          onClose={() => setSelectedWrittenExamDoc(null)}
+        />
+      )}
     </div>
   );
 };
